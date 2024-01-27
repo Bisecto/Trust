@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
 
@@ -15,32 +14,37 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  AppUtils appUtils=AppUtils();
+  AppUtils appUtils = AppUtils();
+
   @override
   void initState() {
-    appUtils.checkPermission(context);
+    appUtils.openApp(context);
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.green,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-         // crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Image.asset(AppImages.logoWhite,height: 90,width: 80,),
-            const CustomText(
-              text: AppStrings.appName,
-              color: AppColors.white,
-              weight: FontWeight.bold,
-              size: 25,
-            )
-
-          ],
-        ),
-      ),
-    );
+        backgroundColor: AppColors.white,
+        body: Container(
+          height: AppUtils.deviceScreenSize(context).height,
+          width: AppUtils.deviceScreenSize(context).width,
+          decoration:  BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  AppColors.lightGreen,
+                  AppColors.darkGreen,
+                  AppColors.lightGreen
+                ],
+                begin: Alignment.bottomLeft,
+                end: Alignment.topRight,
+              ),
+              image: DecorationImage(
+                  image: AssetImage(
+                    AppImages.splashScreenFrame,
+                  ),
+                  fit: BoxFit.values[0])),
+          child: Center(child:Image.asset(AppImages.fullLogo)),
+        ));
   }
 }

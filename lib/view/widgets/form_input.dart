@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -16,6 +17,7 @@ class CustomTextFormField extends StatefulWidget {
   final bool isPasswordField;
   final int? maxLength;
   final IconData icon;
+  final Color borderColor;
   final TextEditingController? controller;
   final FormFieldValidator<String>? validator;
 
@@ -23,7 +25,8 @@ class CustomTextFormField extends StatefulWidget {
       {super.key,
       this.maxLength,
       this.maxLines = 1,
-        required this.icon,
+      required this.icon,
+        this.borderColor=AppColors.grey,
       this.isPasswordField = false,
       required this.controller,
       this.validateName,
@@ -64,10 +67,10 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         ),
         Container(
           decoration: BoxDecoration(
-            color: AppColors.grey,
+            color: AppColors.white,
             border: Border.all(
-              color: AppColors.grey, // Choose the color you want for the border
-              width: 2.0, // Choose the width you want for the border
+              color: widget.borderColor, // Choose the color you want for the border
+              width:1.0, // Choose the width you want for the border
             ),
             borderRadius:
                 BorderRadius.circular(8.0), // Choose the border radius you want
@@ -88,21 +91,34 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                 Expanded(
                   child: TextFormField(
                     controller: widget.controller,
-                          style:TextStyle(fontSize: 15),
+                    style: TextStyle(fontSize: 14,color: AppColors.black),
                     decoration: InputDecoration(
-                        suffixIcon: GestureDetector(
+                        prefixIcon: GestureDetector(
                           onTap: () {
-                            if(widget.isPasswordField){
-                            _togglePasswordVisibility();}
+                            if (widget.isPasswordField) {
+                              _togglePasswordVisibility();
+                            }
                           },
                           child: Icon(
-                            widget.isPasswordField?
-                            ( !_obscureText
-                                ? Icons.visibility
-                                : Icons.visibility_off):widget.icon,
+                            widget.icon,
+                          ),
+                        ),
+                        suffixIcon: GestureDetector(
+                          onTap: () {
+                            if (widget.isPasswordField) {
+                              _togglePasswordVisibility();
+                            }
+                          },
+                          child: Icon(
+                            widget.isPasswordField
+                                ? (!_obscureText
+                                    ? Icons.visibility_off
+                                    : Icons.visibility)
+                                : null,
                           ),
                         ),
                         hintText: widget.hint,
+                        hintStyle: TextStyle(fontSize: 14,color: AppColors.lightDivider),
                         border: InputBorder.none),
                     keyboardType: TextInputType.text,
                     validator: widget.validator,
@@ -110,7 +126,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                     maxLines: widget.maxLines,
                     maxLength: widget.maxLength,
                     obscureText: _obscureText,
-                    onFieldSubmitted: (val){
+                    onFieldSubmitted: (val) {
                       widget.onFieldSubmitted!();
                     },
                     onChanged: (String val) {

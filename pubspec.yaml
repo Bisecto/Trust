@@ -49,6 +49,8 @@ dependencies:
   http:
   tuple: ^2.0.2
   webview_flutter:
+  modal_bottom_sheet: ^3.0.0-pre
+  pin_plus_keyboard: ^2.0.6
 
 dev_dependencies:
   flutter_test:
@@ -75,7 +77,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
-    - assets/lottie_files/
+  #- assets/lottie_files/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

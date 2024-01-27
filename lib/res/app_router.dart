@@ -1,6 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:teller_trust/view/auth/sign_up_screen.dart';
+import 'package:teller_trust/view/the_app_screens/bills_page.dart';
+import 'package:teller_trust/view/the_app_screens/card_page.dart';
+import 'package:teller_trust/view/the_app_screens/home_page.dart';
 
-
+import '../view/auth/otp_pin_pages/verify_otp.dart';
+import '../view/auth/sign_in_screen.dart';
+import '../view/important_pages/not_found_page.dart';
+import '../view/on_boarding/main_on_boarding_screen.dart';
+import '../view/splash_screen.dart';
+import '../view/the_app_screens/landing_page.dart';
+import '../view/the_app_screens/more_page.dart';
+import '../view/the_app_screens/send_page.dart';
 
 class AppRouter {
   ///All route name
@@ -10,17 +21,21 @@ class AppRouter {
   static const String onBoardingScreen = "/on-boarding-screen";
 
   /// AUTH SCREENS
-  static const String signInPage = "/sign-in-page";
-  static const String createAccountPage = "/sign-up-page";
+  static const String signInScreen = "/sign-in-page";
+  static const String signUpScreen = "/sign-up-page";
 
-  //static const String otpPage = "/otp-page";
-  static const String signUpPageGetStarted = "/sign-up-page-get-started";
+  static const String otpVerification = "/otp-page";
 
   ///IMPORTANT SCREENS
   static const String noInternetScreen = "/no-internet";
 
   ///LANDING PAGE LandingPage
   static const String landingPage = "/landing-page";
+  static const String homePage = "/home-page";
+  static const String sendPage = "/send-page";
+  static const String billsPage = "/bills-page";
+  static const String cardPage = "/card-page";
+  static const String morePage = "/more-page";
   static const String notificationPage = "/notification-page";
 
   static const String chooseLocation = "/choose-location-page";
@@ -31,35 +46,29 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const SplashScreen());
       case onBoardingScreen:
         return MaterialPageRoute(builder: (_) => const OnBoardingScreen());
-      case signInPage:
-        return MaterialPageRoute(builder: (_) => const SignInPage());
-      case signUpPageGetStarted:
+      case signUpScreen:
+        return MaterialPageRoute(builder: (_) => const SignUpScreen());
+      case otpVerification:
         return MaterialPageRoute(
-            builder: (_) => const CreateAccountGetStartedPage());
-      // case otpPage:
-      //   return MaterialPageRoute(builder: (_) =>  OTPPage(email: '',));
+            builder: (_) => VerifyOtp(
+                  email: 'userEmail',
+                ));
+      case signInScreen:
+        return MaterialPageRoute(builder: (_) => const SignInScreen());
+
       case landingPage:
-        final UserModel userModel = routeSettings.arguments as UserModel;
-        final GasPriceDetail gasPriceDetail = routeSettings.arguments as GasPriceDetail;
-        final int currentIndex = routeSettings.arguments as int;
+        return MaterialPageRoute(builder: (_) => const LandingPage());
+      case homePage:
+        return MaterialPageRoute(builder: (_) => const HomePage());
+      case sendPage:
+        return MaterialPageRoute(builder: (_) => const SendPage());
+      case billsPage:
+        return MaterialPageRoute(builder: (_) => const BillsPage());
+      case cardPage:
+        return MaterialPageRoute(builder: (_) => const CardPage());
+      case morePage:
+        return MaterialPageRoute(builder: (_) => const MorePage());
 
-        return MaterialPageRoute(
-            builder: (_) => LandingPage(
-                  userModel: userModel, gasPriceDetail: gasPriceDetail, currentIndex: currentIndex,
-                ));
-      case createAccountPage:
-        return MaterialPageRoute(builder: (_) => const CreateAccountPage());
-      case notificationPage:
-        return MaterialPageRoute(builder: (_) => const NotificationPage());
-      case chooseLocation:
-        final String gasKG = routeSettings.arguments as String;
-        final UserModel userModel = routeSettings.arguments as UserModel;
-        final GasPriceDetail gasPriceDetail = routeSettings.arguments as GasPriceDetail;
-
-        return MaterialPageRoute(
-            builder: (_) => ChooseLocation(
-                  gasKG: gasKG, userModel: userModel, gasPriceDetail: gasPriceDetail,
-                ));
       default:
         return MaterialPageRoute(builder: (_) => const NotFoundPage());
     }

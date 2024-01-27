@@ -26,18 +26,18 @@ class AppValidator{
     if (password.length < 6) {
       return 'Password too short.';
     }
-    // if (!password.contains(RegExp(r'[A-Z]'))) {
-    //   return 'Password must contain at least one uppercase.';
-    // }
-    // if (!password.contains(RegExp(r'[a-z]'))) {
-    //   return 'Password must contain at least one lowercase.';
-    // }
-    // if (!password.contains(RegExp(r'[0-9]'))) {
-    //   return 'Password must contain at least one digit.';
-    // }
-    // if (!password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-    //   return 'Password must contain at least one special \ncharacter.';
-    // }
+    if (!password.contains(RegExp(r'[A-Z]'))) {
+      return 'Password must contain at least one uppercase.';
+    }
+    if (!password.contains(RegExp(r'[a-z]'))) {
+      return 'Password must contain at least one lowercase.';
+    }
+    if (!password.contains(RegExp(r'[0-9]'))) {
+      return 'Password must contain at least one digit.';
+    }
+    if (!password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+      return 'Password must contain at least one special \ncharacter.';
+    }
     else {
       return null;
     }
@@ -59,20 +59,6 @@ class AppValidator{
     // if (!password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
     //   return 'Password must contain at least one special \ncharacter.';
     // }
-    else {
-      return null;
-    }
-  }
-  static String? gasKgvalidator(String? numKgs) {
-    if (numKgs == null || numKgs.isEmpty) {
-      return 'Required.';
-    } else if(double.parse(numKgs)<5){
-      return "Qty should not be less than 5Kg";
-    }
-    // if (numKgs.length < 6) {
-    //   return 'Password too short.';
-    // }
-
     else {
       return null;
     }

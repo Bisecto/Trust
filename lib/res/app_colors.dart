@@ -9,10 +9,12 @@ class AppColors{
   static const Color disableButtonColor =Color(0xFFF5F5F5);
   static const Color greyAccent=Color(0xFFF6EDE9);
   static const Color black = Colors.black;
-  static const Color lightShadowGreenColor = Color(0xffF0FAF0);
-  static const Color green = Color(0xff4A8C4D);
+  static const Color lightShadowGreenColor = Color(0xFFECFADD);
+  static const Color green = Color(0xff2FB763);
+  static const Color lightGreen = Color(0xff208D28);
+  static const Color darkGreen = Color(0xff185C32);
   static const Color white = Color(0xFFFFFFFF);
-  static const Color lightPrimaryGreen=Color(0xFF98D99A);
+  static const Color lightPrimaryGreen=Color(0xFF6BA483);
   static const Color blue=Color(0xFF00119D);
   static const Color red=Color(0xFFEE3720);
   static const Color yellow=Color(0xFFFFCB45);

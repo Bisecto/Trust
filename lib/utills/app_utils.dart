@@ -7,6 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:teller_trust/utills/shared_preferences.dart';
 
+import '../res/app_router.dart';
+import 'app_navigator.dart';
+
 
 
 class AppUtils {
@@ -21,85 +24,10 @@ class AppUtils {
     String password = await SharedPref.getString('password');
     print(8);
 
-    if (!isFirstOpen) {
-      ///Check if user is logged in
-      /// or take them to home page
-      print(9);
+    if (isFirstOpen) {
 
-      AuthRepository authRepository = AuthRepository();
-      OrderRepository orderRepository = OrderRepository();
-      if (email.isEmpty) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) => const SignInPage(),
-          ),
-        );
-      } else {
-        try {
-          print(10);
-
-          var response = await authRepository.signIn(email, password);
-          if (response.statusCode == 200 || response.statusCode == 201) {
-            String? cookie = response.headers['set-cookie'];
-            await SharedPref.putString("user_login_cookie", cookie!);
-            var res = await orderRepository.getgasPrice(cookie);
-            print(11);
-            print(response.body);
-            UserModel userModel =
-                UserModel.fromJson(json.decode(response.body));
-            print(userModel.email);
-            print(userModel.id);
-            print(userModel.firstname);
-            print(userModel.otp);
-            print(response.body);
-            if (userModel.verified) {
-              print(12);
-              if (userModel.surname == '') {
-                AppNavigator.pushAndRemovePreviousPages(context,
-                    page: UserProfilePage(
-                      email: email,
-                      userModel: userModel,
-                      isupdate: false,
-                    ));
-              } else {
-                if (res.statusCode == 200 || res.statusCode == 201) {
-                  GasPriceDetail gasPriceDetail =
-                      GasPriceDetail.fromJson(json.decode(res.body)['data']);
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => LandingPage(
-                          userModel: userModel, gasPriceDetail: gasPriceDetail, currentIndex: 0,),
-                    ),
-                  );
-                }
-
-              }
-            } else {
-              print(13);
-
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) => const SignInPage(),
-                ),
-              );
-            }
-          }
-        } catch (e) {
-          print(14);
-
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) => const SignInPage(),
-            ),
-          );
-          print(e);
-        }
-      }
-
+      AppNavigator.pushAndReplaceName(context,
+          name: AppRouter.onBoardingScreen);
 
     } else {
       print(15);

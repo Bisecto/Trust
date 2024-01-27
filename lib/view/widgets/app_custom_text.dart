@@ -107,10 +107,22 @@ class TextStyles {
         double size = 16,
         String text3 = '',
         String text4 = '',
+        String text5 = '',
+        String text6 = '',
+        String text7 = '',
+        String text8 = '',
+        String text9 = '',
+        String text10 = '',
         FontWeight? weight = FontWeight.w400,
         Function? onPress1,
         bool centerText = false,
         Color? color2 = AppColors.green,
+        Color? color5 = AppColors.green,
+        Color? color6 = AppColors.green,
+        Color? color7 = AppColors.green,
+        Color? color8 = AppColors.green,
+        Color? color9 = AppColors.green,
+        Color? color10 = AppColors.green,
         Color? color = const Color.fromARGB(255, 73, 71, 71),
         TextDecoration decoration = TextDecoration.none,
         Function? onPress2}) {
@@ -156,6 +168,48 @@ class TextStyles {
               },
             text: text4,
             style: TextStyle(color: color2, fontSize: size, fontWeight: weight)),
+        TextSpan(
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                onPress2!();
+              },
+            text: text5,
+            style: TextStyle(color: color5, fontSize: size, fontWeight: weight)),
+        TextSpan(
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                onPress2!();
+              },
+            text: text6,
+            style: TextStyle(color: color6, fontSize: size, fontWeight: weight)),
+        TextSpan(
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                onPress2!();
+              },
+            text: text7,
+            style: TextStyle(color: color7, fontSize: size, fontWeight: weight)),
+        TextSpan(
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                onPress2!();
+              },
+            text: text8,
+            style: TextStyle(color: color8, fontSize: size, fontWeight: weight)),
+        TextSpan(
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                onPress2!();
+              },
+            text: text9,
+            style: TextStyle(color: color9, fontSize: size, fontWeight: weight)),
+        TextSpan(
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                onPress2!();
+              },
+            text: text10,
+            style: TextStyle(color: color10, fontSize: size, fontWeight: weight)),
       ]),
     );
   }

@@ -1,15 +1,14 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:teller_trust/res/app_colors.dart';
+import 'package:teller_trust/res/app_router.dart';
+import 'package:teller_trust/res/app_strings.dart';
 
 void main() {
-  if(Platform.isAndroid) {
-    AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
-  }
-  runApp(BlocProvider(
-    create: (_) => AuthBloc(),
-    child: MyApp(),
-  ));
+  runApp(
+    MyApp(),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -24,7 +23,7 @@ class MyApp extends StatelessWidget {
       title: AppStrings.appName,
       themeMode: ThemeMode.light,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.blue),
+        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.green),
         useMaterial3: true,
       ),
       onGenerateRoute: _appRoutes.onGenerateRoute,

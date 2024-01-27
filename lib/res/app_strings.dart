@@ -14,7 +14,11 @@ class AppStrings{
   static const String createAnAccount="Create an account";
   static const String signInToExistingAccount="Sign in to existing account";
   static const String welcome="Welcome to Teller Trust";
-  static const String welcomeDescription="Create an account and start ordering gas and gas supplies today!";
+  static const String magic="The Magic is Happening";
+  static const String magicDescription="We are setting up your account\nYou can count with us...\n1...2...3...";
+  static const String welcomeDescription="Join the tribe of people paying their bills, and subscriptions the Tella way.\n\nTo get started, please sign into your account or create a new one";
+  static const String verifySomething="We want to verify something";
+  static const String verifySomethingDescription="You are required to input the 5 digit OTP we just sent to your Email Address";
   static const String alreadyHaveAnAccount="Already Have an Account";
 
 
