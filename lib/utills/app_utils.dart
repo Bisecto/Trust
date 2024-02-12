@@ -1,42 +1,47 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:cross_connectivity/cross_connectivity.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:teller_trust/utills/shared_preferences.dart';
 
 import '../res/app_router.dart';
 import 'app_navigator.dart';
 
-
-
 class AppUtils {
-
-
-
-
-
   openApp(context) async {
     bool isFirstOpen = (await SharedPref.getBool('isFirstOpen')) ?? true;
-    String email = await SharedPref.getString('email');
+    String userData = await SharedPref.getString('userData');
     String password = await SharedPref.getString('password');
+    print(userData);
+    print(password);
     print(8);
 
-    if (isFirstOpen) {
-
-      AppNavigator.pushAndReplaceName(context,
-          name: AppRouter.onBoardingScreen);
-
+    if (!isFirstOpen) {
+      if (userData.isEmpty && password.isEmpty) {
+        Future.delayed(const Duration(seconds: 3), () {
+          AppNavigator.pushAndReplaceName(context,
+              name: AppRouter.landingPage);
+        });
+      } else {
+        Future.delayed(const Duration(seconds: 3), () {
+          AppNavigator.pushAndReplaceName(context,
+              name: AppRouter.landingPage);
+        });
+      }
     } else {
       print(15);
 
       await SharedPref.putBool('isFirstOpen', false);
       if (Platform.isAndroid) {
-        AppNavigator.pushAndReplaceName(context,
-            name: AppRouter.onBoardingScreen);
-
+        Future.delayed(const Duration(seconds: 3), () {
+          AppNavigator.pushAndReplaceName(context,
+              name: AppRouter.onBoardingScreen);
+        });
       } else {
         Future.delayed(const Duration(seconds: 3), () {
           AppNavigator.pushAndReplaceName(context,
@@ -44,6 +49,25 @@ class AppUtils {
         });
       }
     }
+  }
+
+  ///Future<String?>
+  static getId() async {
+    var deviceInfo = DeviceInfoPlugin();
+    if (Platform.isIOS) {
+      // import 'dart:io'
+      var iosDeviceInfo = await deviceInfo.iosInfo;
+      return iosDeviceInfo.identifierForVendor; // unique ID on iOS
+    } else if (Platform.isAndroid) {
+      var androidDeviceInfo = await deviceInfo.androidInfo;
+      return androidDeviceInfo.id; // unique ID on Android
+    }
+  }
+
+  void copyToClipboard(textToCopy) {
+    Clipboard.setData(ClipboardData(text: textToCopy));
+    // You can also show a snackbar or any other feedback to the user.
+    print('Text copied to clipboard: $textToCopy');
   }
 
   static Size deviceScreenSize(BuildContext context) {

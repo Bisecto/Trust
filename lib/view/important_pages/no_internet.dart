@@ -1,4 +1,4 @@
-import 'package:cross_connectivity/cross_connectivity.dart';
+//import 'package:cross_connectivity/cross_connectivity.dart';
 import 'package:flutter/material.dart';
 
 import '../../res/app_colors.dart';
@@ -41,13 +41,13 @@ class NoInternet extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24),
             child: FormButton(
               onPressed: () {
-                Connectivity().checkConnection().then((connected) async {
-                  if (connected) {
-                    callBack();
-                  } else {
-                    MSG.errorSnackBar(context, 'No Internet Connection');
-                  }
-                });
+                // Connectivity().checkConnection().then((connected) async {
+                //   if (connected) {
+                //     callBack();
+                //   } else {
+                //     MSG.errorSnackBar(context, 'No Internet Connection');
+                //   }
+                // });
               },
               text: 'TRY AGAIN',
               textColor: AppColors.white,

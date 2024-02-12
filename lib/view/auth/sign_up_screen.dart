@@ -1,14 +1,18 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:teller_trust/model/user.dart';
 import 'package:teller_trust/res/app_colors.dart';
 import 'package:teller_trust/res/app_images.dart';
 import 'package:teller_trust/utills/app_navigator.dart';
 import 'package:teller_trust/utills/app_utils.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
 
+import '../../bloc/auth_bloc/auth_bloc.dart';
 import '../../res/app_router.dart';
 import '../../res/app_strings.dart';
 import '../../utills/app_validator.dart';
+import '../important_pages/dialog_box.dart';
+import '../important_pages/not_found_page.dart';
 import '../widgets/form_button.dart';
 import '../widgets/form_input.dart';
 
@@ -28,271 +32,385 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _phoneController = TextEditingController();
 
   final _passwordController = TextEditingController();
+  final AuthBloc authBloc = AuthBloc();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    authBloc.add(InitialEvent());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: AppColors.lightShadowGreenColor,
-      body: SingleChildScrollView(
-        child: Container(
-          height: AppUtils.deviceScreenSize(context).height,
-          width: AppUtils.deviceScreenSize(context).width,
-          child: Stack(
-            //alignment: Alignment.,
-            children: [
-              Positioned(
-                right: 20,
-                left: 5,
-                //top: 20,
-                //bottom: 20,
-                child: Container(
-                  height: AppUtils.deviceScreenSize(context).height * 0.5,
-                  width: AppUtils.deviceScreenSize(context).width,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(AppImages.authAppLogoImage),
-                      fit: BoxFit.fill,
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Align(
-                      alignment: Alignment.topLeft,
-                      child: SafeArea(
-                        child: Column(
-                          children: [
-                            if (Navigator.canPop(context))
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Container(
-                                  height: 50,
-                                  width: 50,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      border:
-                                          Border.all(color: AppColors.green)),
-                                  child: const Icon(Icons.arrow_back),
+      body: BlocConsumer<AuthBloc, AuthState>(
+          bloc: authBloc,
+          listenWhen: (previous, current) => current is! AuthInitial,
+          buildWhen: (previous, current) => current is! AuthInitial,
+          listener: (context, state) {
+            if (state is AuthOtpRequestState) {
+              MSG.snackBar(context, state.msg);
+              verifyAlertDialog(context);
+
+              // AppNavigator.pushAndStackNamed(context,
+              //     name: AppRouter.otpPage);
+            } else if (state is ErrorState) {
+              MSG.warningSnackBar(context, state.error);
+            }  else if (state is VerificationContinueState) {
+              AppNavigator.pushAndStackNamed(context,
+                  name: AppRouter.otpVerification);
+            }else if (state is SuccessState) {
+              // AppNavigator.pushAndStackPage(context,
+              // page: UserProfilePage(
+              // email: state.userEmail,
+              // ));
+              // }
+            }
+          },
+          builder: (context, state) {
+            switch (state.runtimeType) {
+              // case PostsFetchingState:
+              //   return const Center(
+              //     child: CircularProgressIndicator(),
+              //   );
+              case AuthInitial || ErrorState:
+                return SingleChildScrollView(
+                  child: Container(
+                    height: AppUtils.deviceScreenSize(context).height,
+                    width: AppUtils.deviceScreenSize(context).width,
+                    child: Stack(
+                      //alignment: Alignment.,
+                      children: [
+                        Positioned(
+                          top: 20,
+                          right: 0,
+                          left: 5,
+                          //top: 20,
+                          //bottom: 20,
+                          child: Container(
+                            height:
+                                AppUtils.deviceScreenSize(context).height * 0.5,
+                            width: AppUtils.deviceScreenSize(context).width,
+                            decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(AppImages.authAppLogoImage),
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: SafeArea(
+                                  child: Column(
+                                    children: [
+                                      if (Navigator.canPop(context))
+                                        GestureDetector(
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Container(
+                                            height: 50,
+                                            width: 50,
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                                border: Border.all(
+                                                    color: AppColors.green)),
+                                            child: const Icon(Icons.arrow_back),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                          ],
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Positioned.fill(
-                top: AppUtils.deviceScreenSize(context).height * 0.25,
-                bottom: 20,
-                right: 20,
-                left: 20,
-                child: GestureDetector(
-                  onTap: () {
-                    FocusScope.of(context).unfocus();
-                  },
-                  child: Container(
-                    //height: AppUtils.deviceScreenSize(context).height * 0.7,
-                    width: AppUtils.deviceScreenSize(context).width,
-                    decoration: BoxDecoration(
-                        color: AppColors.white,
-                        borderRadius: BorderRadius.circular(15)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            bottom: AppUtils.deviceScreenSize(context).height *
-                                0.08,
-                            top: 0,
-                            right: 0,
-                            left: 0,
-                            child: SingleChildScrollView(
-                              physics: const ScrollPhysics(),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const CustomText(
-                                    text: "Sign Up",
-                                    weight: FontWeight.w600,
-                                    size: 20,
-                                  ),
-                                  const CustomText(
-                                    text:
-                                        "Create an account to enable you pay bills",
-                                    //weight: FontWeight.bold,
-                                    size: 16,
-                                  ),
+                        Positioned.fill(
+                          top: AppUtils.deviceScreenSize(context).height * 0.25,
+                          bottom: 20,
+                          right: 20,
+                          left: 20,
+                          child: GestureDetector(
+                            onTap: () {
+                              FocusScope.of(context).unfocus();
+                            },
+                            child: Container(
+                              //height: AppUtils.deviceScreenSize(context).height * 0.7,
+                              width: AppUtils.deviceScreenSize(context).width,
+                              decoration: BoxDecoration(
+                                  color: AppColors.white,
+                                  borderRadius: BorderRadius.circular(15)),
+                              child: Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Stack(
+                                  children: [
+                                    Positioned(
+                                      bottom: AppUtils.deviceScreenSize(context)
+                                              .height *
+                                          0.08,
+                                      top: 0,
+                                      right: 0,
+                                      left: 0,
+                                      child: SingleChildScrollView(
+                                        //controller: ScrollController(),
+                                        physics: const ScrollPhysics(),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const CustomText(
+                                              text: "Sign Up",
+                                              weight: FontWeight.w600,
+                                              size: 20,
+                                            ),
+                                            const CustomText(
+                                              text:
+                                                  "Create an account to enable you pay bills",
+                                              //weight: FontWeight.bold,
+                                              size: 14,
+                                              color: AppColors.textColor,
+                                            ),
 
-                                  // ),
-                                  // Row(
-                                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  //   children: [
-                                  //     GestureDetector(
-                                  //       onTap: () {
-                                  //         //Navigator.pop(context);
-                                  //       },
-                                  //       child: Container(
-                                  //         height: 50,
-                                  //         width: AppUtils.deviceScreenSize(context).width /
-                                  //             2.5,
-                                  //         decoration: const BoxDecoration(
-                                  //           image: DecorationImage(
-                                  //             image: AssetImage(AppImages.Google),
-                                  //             fit: BoxFit.fill,
-                                  //           ),
-                                  //         ),
-                                  //         // child: const Icon(Icons.arrow_back),
-                                  //       ),
-                                  //     ),
-                                  //     GestureDetector(
-                                  //       onTap: () {
-                                  //         //Navigator.pop(context);
-                                  //       },
-                                  //       child: Container(
-                                  //         height: 50,
-                                  //         width: AppUtils.deviceScreenSize(context).width /
-                                  //             2.5,
-                                  //         decoration: const BoxDecoration(
-                                  //           image: DecorationImage(
-                                  //             image: AssetImage(AppImages.apple),
-                                  //             fit: BoxFit.fill,
-                                  //           ),
-                                  //         ),
-                                  //         // child: const Icon(Icons.arrow_back),
-                                  //       ),
-                                  //     )
-                                  //   ],
-                                  // ),
-                                  // const SizedBox(
-                                  //   height: 10,
-                                  // ),
-                                  // DividerWithTextWidget(text: "or signup with"),
-                                  // const SizedBox(
-                                  //   height: 10,
-                                  // ),
-                                  Form(
-                                      key: _formKey,
-                                      child: Column(
-                                        children: [
-                                          CustomTextFormField(
-                                            hint: 'First Name',
-                                            label: '',
-                                            controller: _firstNameController,
-                                            validator:
-                                                AppValidator.validateTextfield,
-                                            icon: Icons.person_2_outlined,
-                                            borderColor: _firstNameController
-                                                    .text.isNotEmpty
-                                                ? AppColors.green
-                                                : AppColors.grey,
-                                          ),
-                                          CustomTextFormField(
-                                            hint: 'Middle Name',
-                                            label: '',
-                                            controller: _middleNameController,
-                                            validator:
-                                                AppValidator.validateTextfield,
-                                            icon: Icons.person_2_outlined,
-                                            borderColor: _middleNameController
-                                                    .text.isNotEmpty
-                                                ? AppColors.green
-                                                : AppColors.grey,
-                                          ),
-                                          CustomTextFormField(
-                                            hint: 'Surname',
-                                            label: '',
-                                            controller: _surNameController,
-                                            validator:
-                                                AppValidator.validateTextfield,
-                                            icon: Icons.person_2_outlined,
-                                            borderColor: _surNameController
-                                                    .text.isNotEmpty
-                                                ? AppColors.green
-                                                : AppColors.grey,
-                                          ),
-                                          CustomTextFormField(
-                                            hint: 'Email',
-                                            label: '',
-                                            controller: _emailController,
-                                            validator:
-                                                AppValidator.validateEmail,
-                                            icon: Icons.email_outlined,
-                                            borderColor:
-                                                _emailController.text.isNotEmpty
-                                                    ? AppColors.green
-                                                    : AppColors.grey,
-                                          ),
-                                          CustomTextFormField(
-                                            hint: 'Phone Number',
-                                            label: '',
-                                            controller: _phoneController,
-                                            validator:
-                                                AppValidator.validateTextfield,
-                                            icon: Icons.local_phone_outlined,
-                                            borderColor:
-                                                _phoneController.text.isNotEmpty
-                                                    ? AppColors.green
-                                                    : AppColors.grey,
-                                          ),
-                                          CustomTextFormField(
-                                            label: '',
-                                            isPasswordField: true,
-                                            validator:
-                                                AppValidator.validatePassword,
-                                            controller: _passwordController,
-                                            hint: 'Password',
-                                            icon: Icons.lock_outline,
-                                            borderColor: _passwordController
-                                                    .text.isNotEmpty
-                                                ? AppColors.green
-                                                : AppColors.grey,
-                                            isobscure: true,
-                                          ),
-                                        ],
-                                      )),
-                                ],
+                                            // ),
+                                            // Row(
+                                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            //   children: [
+                                            //     GestureDetector(
+                                            //       onTap: () {
+                                            //         //Navigator.pop(context);
+                                            //       },
+                                            //       child: Container(
+                                            //         height: 50,
+                                            //         width: AppUtils.deviceScreenSize(context).width /
+                                            //             2.5,
+                                            //         decoration: const BoxDecoration(
+                                            //           image: DecorationImage(
+                                            //             image: AssetImage(AppImages.Google),
+                                            //             fit: BoxFit.fill,
+                                            //           ),
+                                            //         ),
+                                            //         // child: const Icon(Icons.arrow_back),
+                                            //       ),
+                                            //     ),
+                                            //     GestureDetector(
+                                            //       onTap: () {
+                                            //         //Navigator.pop(context);
+                                            //       },
+                                            //       child: Container(
+                                            //         height: 50,
+                                            //         width: AppUtils.deviceScreenSize(context).width /
+                                            //             2.5,
+                                            //         decoration: const BoxDecoration(
+                                            //           image: DecorationImage(
+                                            //             image: AssetImage(AppImages.apple),
+                                            //             fit: BoxFit.fill,
+                                            //           ),
+                                            //         ),
+                                            //         // child: const Icon(Icons.arrow_back),
+                                            //       ),
+                                            //     )
+                                            //   ],
+                                            // ),
+                                            // const SizedBox(
+                                            //   height: 10,
+                                            // ),
+                                            // DividerWithTextWidget(text: "or signup with"),
+                                            // const SizedBox(
+                                            //   height: 10,
+                                            // ),
+                                            Form(
+                                                key: _formKey,
+                                                child: Column(
+                                                  children: [
+                                                    CustomTextFormField(
+                                                      hint: 'First Name',
+                                                      label: '',
+                                                      controller:
+                                                          _firstNameController,
+                                                      validator: AppValidator
+                                                          .validateTextfield,
+                                                      icon: Icons
+                                                          .person_2_outlined,
+                                                      borderColor:
+                                                          _firstNameController
+                                                                  .text
+                                                                  .isNotEmpty
+                                                              ? AppColors.green
+                                                              : AppColors.grey,
+                                                    ),
+                                                    CustomTextFormField(
+                                                      hint: 'Middle Name',
+                                                      label: '',
+                                                      controller:
+                                                          _middleNameController,
+                                                      validator: AppValidator
+                                                          .validateTextfield,
+                                                      icon: Icons
+                                                          .person_2_outlined,
+                                                      borderColor:
+                                                          _middleNameController
+                                                                  .text
+                                                                  .isNotEmpty
+                                                              ? AppColors.green
+                                                              : AppColors.grey,
+                                                    ),
+                                                    CustomTextFormField(
+                                                      hint: 'Surname',
+                                                      label: '',
+                                                      controller:
+                                                          _surNameController,
+                                                      validator: AppValidator
+                                                          .validateTextfield,
+                                                      icon: Icons
+                                                          .person_2_outlined,
+                                                      borderColor:
+                                                          _surNameController
+                                                                  .text
+                                                                  .isNotEmpty
+                                                              ? AppColors.green
+                                                              : AppColors.grey,
+                                                    ),
+                                                    CustomTextFormField(
+                                                      hint: 'Email',
+                                                      label: '',
+                                                      controller:
+                                                          _emailController,
+                                                      validator: AppValidator
+                                                          .validateEmail,
+                                                      icon:
+                                                          Icons.email_outlined,
+                                                      borderColor:
+                                                          _emailController.text
+                                                                  .isNotEmpty
+                                                              ? AppColors.green
+                                                              : AppColors.grey,
+                                                    ),
+                                                    CustomTextFormField(
+                                                      hint: 'Phone Number',
+                                                      label: '',
+                                                      controller:
+                                                          _phoneController,
+                                                      validator: AppValidator
+                                                          .validateTextfield,
+                                                      icon: Icons
+                                                          .local_phone_outlined,
+                                                      borderColor:
+                                                          _phoneController.text
+                                                                  .isNotEmpty
+                                                              ? AppColors.green
+                                                              : AppColors.grey,
+                                                    ),
+                                                    CustomTextFormField(
+                                                      label: '',
+                                                      isPasswordField: true,
+                                                      validator: AppValidator
+                                                          .validatePassword,
+                                                      controller:
+                                                          _passwordController,
+                                                      hint: 'Password',
+                                                      icon: Icons.lock_outline,
+                                                      borderColor:
+                                                          _passwordController
+                                                                  .text
+                                                                  .isNotEmpty
+                                                              ? AppColors.green
+                                                              : AppColors.grey,
+                                                      isobscure: true,
+                                                    ),
+                                                  ],
+                                                )),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      bottom: 0,
+                                      top: AppUtils.deviceScreenSize(context)
+                                              .height *
+                                          0.59,
+                                      right: 0,
+                                      left: 0,
+                                      child: FormButton(
+                                        onPressed: () {
+                                          if (_formKey.currentState!
+                                              .validate()) {
+                                            //User user=
+                                            Map<dynamic, String> user = {
+                                              "firstName":
+                                                  _firstNameController.text,
+                                              "middleName":
+                                                  _middleNameController.text,
+                                              "lastName":
+                                                  _surNameController.text,
+                                              "email": _emailController.text,
+                                              "phone": _phoneController.text,
+                                              "password":
+                                                  _passwordController.text,
+                                              "confirmPassword":
+                                                  _passwordController.text,
+                                              "emailVerifyUrl":
+                                                  "http://localhost:4319/" ""
+                                            };
+
+                                            print(user);
+                                            authBloc
+                                                .add(SignUpEventClick(user));
+                                            //verifyAlertDialog(context);
+                                          }
+                                        },
+                                        text: 'Continue',
+                                        borderColor: AppColors.green,
+                                        bgColor: AppColors.green,
+                                        textColor: AppColors.white,
+                                        borderRadius: 10,
+                                        //disableButton: !_formKey.currentState!.validate(),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                          Positioned(
-                            bottom: 0,
-                            top: AppUtils.deviceScreenSize(context).height *
-                                0.59,
-                            right: 0,
-                            left: 0,
-                            child: FormButton(
-                              onPressed: () {
-                                if (!_formKey.currentState!.validate()) {
-                                  verifyAlertDialog(context);
-                                }
-                              },
-
-                              text: 'Continue',
-                              borderColor: AppColors.green,
-                              bgColor: AppColors.green,
-                              textColor: AppColors.white,
-                              borderRadius: 10,
-                              // disableButton: _formKey.currentState!
-                              //     .validate()??false,
-                            ),
-                          ),
-                        ],
-                      ),
+                        )
+                      ],
                     ),
                   ),
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
+                );
+
+              // case AuthOtpRequestState:
+              //   final otpData = state as AuthOtpRequestState;
+              //   return Center(
+              //     child: ,
+              //   );
+              // return OTPPage(
+              // email: otpData.email,
+              // otpReason: 'account_verification',
+              // );
+              // case UpdateUserProfileState:
+              // final profileState = state as UpdateUserProfileState;
+              //
+              // return UserProfilePage(
+              // email: profileState.userEmail,
+              // );
+              case LoadingState:
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              default:
+                return const Center(
+                  child: NotFoundPage(),
+                );
+            }
+          }),
     );
   }
 
-  verifyAlertDialog(BuildContext context) {
+  verifyAlertDialog(BuildContext context,) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -348,8 +466,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     padding: const EdgeInsets.fromLTRB(15.0, 0, 20, 0),
                     child: FormButton(
                       onPressed: () {
-                        AppNavigator.pushAndStackNamed(context,
-                            name: AppRouter.otpVerification);
+                        authBloc.add(VerificationContinueEvent());
                       },
                       height: 50,
                       // width: AppUtils.deviceScreenSize(context).width / 2.5,

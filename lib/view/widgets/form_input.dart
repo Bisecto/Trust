@@ -18,14 +18,18 @@ class CustomTextFormField extends StatefulWidget {
   final int? maxLength;
   final IconData icon;
   final Color borderColor;
+  final TextInputType textInputType;
   final TextEditingController? controller;
   final FormFieldValidator<String>? validator;
+  final Color backgroundColor;
 
   const CustomTextFormField(
       {super.key,
       this.maxLength,
       this.maxLines = 1,
+        this.textInputType=TextInputType.text,
       required this.icon,
+        this.backgroundColor=AppColors.white,
         this.borderColor=AppColors.grey,
       this.isPasswordField = false,
       required this.controller,
@@ -67,13 +71,13 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         ),
         Container(
           decoration: BoxDecoration(
-            color: AppColors.white,
+            color: widget.backgroundColor,
             border: Border.all(
               color: widget.borderColor, // Choose the color you want for the border
               width:1.0, // Choose the width you want for the border
             ),
             borderRadius:
-                BorderRadius.circular(8.0), // Choose the border radius you want
+                BorderRadius.circular(10.0), // Choose the border radius you want
           ),
           child: Padding(
             padding: const EdgeInsets.only(left: 5.0),
@@ -83,7 +87,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                   const Text(
                     '+234', // Replace with your label text
                     style: TextStyle(
-                      fontWeight: FontWeight.bold,
+                      //fontWeight: FontWeight.bold,
                       fontSize: 15,
                     ),
                   ),
@@ -91,6 +95,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                 Expanded(
                   child: TextFormField(
                     controller: widget.controller,
+
                     style: TextStyle(fontSize: 14,color: AppColors.black),
                     decoration: InputDecoration(
                         prefixIcon: GestureDetector(
@@ -120,7 +125,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                         hintText: widget.hint,
                         hintStyle: TextStyle(fontSize: 14,color: AppColors.lightDivider),
                         border: InputBorder.none),
-                    keyboardType: TextInputType.text,
+                    keyboardType: widget.textInputType,
                     validator: widget.validator,
                     //obscureText: widget.isobscure,
                     maxLines: widget.maxLines,

@@ -43,7 +43,7 @@ class FormButton extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(borderRadius),), border:
-      Border.all(color: borderColor, width: borderWidth)
+      Border.all(color: (!disableButton)?borderColor:Colors.transparent, width: borderWidth)
       ),
       child: ElevatedButton(
         onPressed: (disableButton) ? null : onPressed,

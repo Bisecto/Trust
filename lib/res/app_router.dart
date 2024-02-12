@@ -4,6 +4,7 @@ import 'package:teller_trust/view/the_app_screens/bills_page.dart';
 import 'package:teller_trust/view/the_app_screens/card_page.dart';
 import 'package:teller_trust/view/the_app_screens/home_page.dart';
 
+import '../view/auth/sign_in_with_access_pin_and_biometrics.dart';
 import '../view/auth/otp_pin_pages/verify_otp.dart';
 import '../view/auth/sign_in_screen.dart';
 import '../view/important_pages/not_found_page.dart';
@@ -25,6 +26,8 @@ class AppRouter {
   static const String signUpScreen = "/sign-up-page";
 
   static const String otpVerification = "/otp-page";
+  static const String signInWIthAccessPinBiometrics =
+      "/sign-in-wIth-access-pin-biometrics";
 
   ///IMPORTANT SCREENS
   static const String noInternetScreen = "/no-internet";
@@ -58,6 +61,8 @@ class AppRouter {
 
       case landingPage:
         return MaterialPageRoute(builder: (_) => const LandingPage());
+      case signInWIthAccessPinBiometrics:
+        return MaterialPageRoute(builder: (_) => const SignInWIthAccessPinBiometrics());
       case homePage:
         return MaterialPageRoute(builder: (_) => const HomePage());
       case sendPage:

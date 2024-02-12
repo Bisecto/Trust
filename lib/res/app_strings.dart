@@ -1,5 +1,5 @@
 class AppStrings{
-  static const String appName = 'TellerTrust';
+  static const String appName = 'Tella Trust';
   static const String networkErrorMessage = "Network error, try again later";
   static const String logoutMessage = "Are you sure you want to logout?";
   static const String deleteAccountMessage = "Are you sure you want to delete your account? As this action cannot be reversed if completed.";
@@ -22,9 +22,4 @@ class AppStrings{
   static const String alreadyHaveAnAccount="Already Have an Account";
 
 
-
-  static const String googleMapApiKey="AIzaSyC6vsU2Ka16m5mlW6Me5ST1sN8otUXNDgI";
-
-
-  static const String appBaseUrl="http://k8s-default-buygasba-3dd77db27f-720892726.us-west-2.elb.amazonaws.com/";
 }

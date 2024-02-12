@@ -30,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
           height: AppUtils.deviceScreenSize(context).height,
           width: AppUtils.deviceScreenSize(context).width,
           decoration:  BoxDecoration(
-              gradient: LinearGradient(
+              gradient: const LinearGradient(
                 colors: [
                   AppColors.lightGreen,
                   AppColors.darkGreen,
@@ -40,7 +40,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 end: Alignment.topRight,
               ),
               image: DecorationImage(
-                  image: AssetImage(
+                  image: const AssetImage(
                     AppImages.splashScreenFrame,
                   ),
                   fit: BoxFit.values[0])),
