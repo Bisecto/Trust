@@ -347,4 +347,3 @@ class _SignInWIthAccessPinBiometricsState
   }
 }
 
-class CustomAppKeyBoard {}

@@ -26,7 +26,7 @@ class _BillsPageState extends State<BillsPage> {
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
-        title: CustomText(
+        title: const CustomText(
           text: "Services",
           size: 18,
           weight: FontWeight.bold,
@@ -55,7 +55,7 @@ class _BillsPageState extends State<BillsPage> {
                     case 0:
                       modalSheet.showMaterialModalBottomSheet(
                         backgroundColor: Colors.transparent,
-                        shape: RoundedRectangleBorder(
+                        shape: const RoundedRectangleBorder(
                           borderRadius:
                               BorderRadius.vertical(top: Radius.circular(20.0)),
                         ),
@@ -72,7 +72,7 @@ class _BillsPageState extends State<BillsPage> {
                     case 1:
                       modalSheet.showMaterialModalBottomSheet(
                         backgroundColor: Colors.transparent,
-                        shape: RoundedRectangleBorder(
+                        shape: const RoundedRectangleBorder(
                           borderRadius:
                               BorderRadius.vertical(top: Radius.circular(20.0)),
                         ),
@@ -89,7 +89,7 @@ class _BillsPageState extends State<BillsPage> {
                     case 3:
                       modalSheet.showMaterialModalBottomSheet(
                         backgroundColor: Colors.transparent,
-                        shape: RoundedRectangleBorder(
+                        shape: const RoundedRectangleBorder(
                           borderRadius:
                               BorderRadius.vertical(top: Radius.circular(20.0)),
                         ),
@@ -121,7 +121,7 @@ class _BillsPageState extends State<BillsPage> {
           backgroundColor: service.backgroundColor,
           child: SvgPicture.asset(service.image),
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         CustomText(

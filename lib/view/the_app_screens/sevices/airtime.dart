@@ -1,3 +1,5 @@
+import 'package:custom_pin_screen/custom_pin_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:teller_trust/model/quick_access_model.dart';
 
@@ -6,9 +8,11 @@ import '../../../res/app_list.dart';
 import '../../../utills/app_navigator.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/app_validator.dart';
+import '../../auth/otp_pin_pages/confirm_with_otp.dart';
 import '../../widgets/app_custom_text.dart';
 import '../../widgets/form_button.dart';
 import '../../widgets/form_input.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
 class AirtimePurchase extends StatefulWidget {
   final Services services;
@@ -169,7 +173,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                             icon: Icons.flag,
 
                             //isMobileNumber: true,
-                            borderColor: _selectedAmtController.text.isNotEmpty
+                            borderColor: _beneficiaryController.text.isNotEmpty
                                 ? AppColors.green
                                 : AppColors.grey,
                           ),
@@ -177,7 +181,20 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                           ///Remember to add beneficiary
                           FormButton(
                             onPressed: () {
-                              if (!_formKey.currentState!.validate()) {
+                              if (_formKey.currentState!.validate()) {
+                                modalSheet.showMaterialModalBottomSheet(
+                                  backgroundColor: Colors.transparent,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.vertical(top: Radius.circular(20.0)),
+                                  ),
+                                  context: context,
+                                  builder: (context) => Padding(
+                                    padding: const EdgeInsets.only(top: 200.0),
+                                    child: ConfirmWithPin(),
+                                  ),
+                                );
+
                                 //AppNavigator.pushNamedAndRemoveUntil(context, name5: AppRouter.landingPage);
                               }
                             },

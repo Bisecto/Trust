@@ -1,13 +1,23 @@
 import 'dart:developer';
 
+import 'package:custom_pin_screen/custom_pin_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:teller_trust/model/quick_access_model.dart';
 import 'package:teller_trust/res/app_colors.dart';
 import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/res/app_list.dart';
+import 'package:teller_trust/utills/app_navigator.dart';
 import 'package:teller_trust/utills/app_utils.dart';
+import 'package:teller_trust/utills/shared_preferences.dart';
+import 'package:teller_trust/view/the_app_screens/sevices/add_fundz.dart';
+import 'package:teller_trust/view/the_app_screens/sevices/airtime.dart';
+import 'package:teller_trust/view/the_app_screens/sevices/data.dart';
+import 'package:teller_trust/view/the_app_screens/sevices/internet.dart';
+import 'package:teller_trust/view/the_app_screens/sevices/send_funds.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
 import '../../res/app_images.dart';
 import '../important_pages/dialog_box.dart';
@@ -21,12 +31,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool selector = true;
+  bool isMoneyBlocked = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
-
       body: SafeArea(
           child: SingleChildScrollView(
         child: Padding(
@@ -162,12 +172,13 @@ class _HomePageState extends State<HomePage> {
                 decoration: BoxDecoration(
                     color: AppColors.white,
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: AppColors.grey)
-                ),child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: CustomText(text: "See All",),
-              ),
-
+                    border: Border.all(color: AppColors.grey)),
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: CustomText(
+                    text: "See All",
+                  ),
+                ),
               ),
             )
           ],
@@ -198,9 +209,8 @@ class _HomePageState extends State<HomePage> {
               child: SvgPicture.asset(
             AppIcons.looper1,
             width: double.infinity,
-                fit: BoxFit.fill,
-
-              )),
+            fit: BoxFit.fill,
+          )),
           // Positioned(child: SvgPicture.asset(AppIcons.looper2)),
           Positioned(
               child: Container(
@@ -210,37 +220,97 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.all(10.0),
               child: Column(
                 children: [
-                  const Align(
-                      alignment: Alignment.topRight,
-                      child: Icon(
-                        Icons.remove_red_eye,
-                        color: AppColors.white,
-                      )),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SvgPicture.asset(AppIcons.naira),
-                      const CustomText(
-                        text: "17,926,502.00",
-                        size: 22,
-                        weight: FontWeight.bold,
-                        color: AppColors.white,
-                      )
-                    ],
+                  GestureDetector(
+                    onTap: () async {
+                      setState(() {
+                        isMoneyBlocked = !isMoneyBlocked;
+                      });
+                      //await SharedPref.putBool("isMoneyblocked",!isMoneyBlocked);
+                    },
+                    child: Align(
+                        alignment: Alignment.topRight,
+                        child: Icon(
+                          isMoneyBlocked
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                          color: AppColors.white,
+                        )),
                   ),
+                  if (!isMoneyBlocked)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(AppIcons.naira),
+                        const CustomText(
+                          text: "26,502.00",
+                          size: 22,
+                          weight: FontWeight.bold,
+                          color: AppColors.white,
+                        )
+                      ],
+                    ),
+                  if (isMoneyBlocked)
+                    const CustomText(
+                      text: "*******",
+                      size: 22,
+                      weight: FontWeight.bold,
+                      color: AppColors.white,
+                    ),
                   const SizedBox(
                     height: 20,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      childBalanceCardContainer(AppIcons.add, "Add Funds"),
-                      childBalanceCardContainer(AppIcons.send, "Send"),
+                      GestureDetector(
+                          onTap: () {
+                            modalSheet.showMaterialModalBottomSheet(
+                              backgroundColor: Colors.transparent,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(30.0)),
+                              ),
+                              context: context,
+                              builder: (context) => Padding(
+                                padding: const EdgeInsets.only(top: 100.0),
+                                child: AddFunds(),
+                              ),
+                            );
+                          },
+                          child: childBalanceCardContainer(
+                              AppIcons.add, "Add Funds")),
+                      GestureDetector(
+                          onTap: () {
+                            AppNavigator.pushAndStackPage(context,
+                                page: SendFunds());
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => PinAuthentication(
+                            //       onChanged: (v) {
+                            //         if (kDebugMode) {
+                            //           print(v);
+                            //         }
+                            //       },
+                            //       onSpecialKeyTap: () {},
+                            //       specialKey: const SizedBox(),
+                            //       useFingerprint: true,
+                            //       onbuttonClick: () {},
+                            //       submitLabel: const Text(
+                            //         'Submit',
+                            //         style: TextStyle(color: Colors.white, fontSize: 20),
+                            //       ),
+                            //     ),
+                            //   ),
+                            // );
+                          },
+                          child:
+                              childBalanceCardContainer(AppIcons.send, "Send")),
                       childBalanceCardContainer(
                           AppIcons.switch1, "Switch Account"),
                     ],
                   ),
-                  SizedBox(height:10),
+                  SizedBox(height: 10),
                   accountNumberContainer("8765564367")
                 ],
               ),
@@ -263,7 +333,66 @@ class _HomePageState extends State<HomePage> {
         ),
         itemCount: 8, //AppList().serviceItems.length,
         itemBuilder: (context, index) {
-          return quickActionsItem(AppList().serviceItems[index]);
+          return GestureDetector(
+              onTap: () {
+                switch (index) {
+                  case 0:
+                    modalSheet.showMaterialModalBottomSheet(
+                      backgroundColor: Colors.transparent,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(20.0)),
+                      ),
+                      context: context,
+                      builder: (context) => Padding(
+                        padding: const EdgeInsets.only(top: 100.0),
+                        child: AirtimePurchase(
+                            services: AppList().serviceItems[index]),
+                      ),
+                    );
+                    // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
+                    //     services: AppList().serviceItems[index]));
+                    return;
+                  case 1:
+                    modalSheet.showMaterialModalBottomSheet(
+                      backgroundColor: Colors.transparent,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(20.0)),
+                      ),
+                      context: context,
+                      builder: (context) => Padding(
+                        padding: const EdgeInsets.only(top: 100.0),
+                        child: DataPurchase(
+                            services: AppList().serviceItems[index]),
+                      ),
+                    );
+                    // AppNavigator.pushAndStackPage(context, page: DataPurchase(
+                    //     services: AppList().serviceItems[index]));
+                    return;
+                  case 3:
+                    modalSheet.showMaterialModalBottomSheet(
+                      backgroundColor: Colors.transparent,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(20.0)),
+                      ),
+                      context: context,
+                      builder: (context) => Padding(
+                        padding: const EdgeInsets.only(top: 100.0),
+                        child: InternetPurchase(
+                            services: AppList().serviceItems[index]),
+                      ),
+                    );
+                    // AppNavigator.pushAndStackPage(context, page: InternetPurchase(
+                    //     services: AppList().serviceItems[index]));
+                    return;
+                }
+
+                //showAirtimeModal(context, AppList().serviceItems[index]);
+              },
+
+              child: quickActionsItem(AppList().serviceItems[index]));
         },
       ),
     );
@@ -280,7 +409,7 @@ class _HomePageState extends State<HomePage> {
             colors: [
               Colors.green.shade50,
               Colors.blue.shade50,
-              Colors.blue.shade100
+              Colors.blue.shade50
             ],
             begin: Alignment.topLeft,
             end: Alignment.topRight,
@@ -297,10 +426,10 @@ class _HomePageState extends State<HomePage> {
               Container(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-
                   children: [
-                    SizedBox(height: 15,),
-
+                    SizedBox(
+                      height: 15,
+                    ),
                     const CustomText(
                       text: "Airtime Purchase",
                     ),
@@ -317,14 +446,15 @@ class _HomePageState extends State<HomePage> {
                               padding: const EdgeInsets.all(8.0),
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: AppColors.lightShadowGreenColor,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: AppColors.green)
-                                ),child: Padding(
+                                    color: AppColors.lightShadowGreenColor,
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(color: AppColors.green)),
+                                child: Padding(
                                   padding: const EdgeInsets.all(5.0),
-                                  child: CustomText(text: "08123457146",),
+                                  child: CustomText(
+                                    text: "08123457146",
+                                  ),
                                 ),
-
                               ),
                             ),
                             Padding(
@@ -333,31 +463,31 @@ class _HomePageState extends State<HomePage> {
                                 decoration: BoxDecoration(
                                     color: AppColors.white,
                                     borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(color: AppColors.grey)
-                                ),child: Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: CustomText(text: "N 1,500.00",),
-                              ),
-
+                                    border: Border.all(color: AppColors.grey)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: CustomText(
+                                    text: "N 1,500.00",
+                                  ),
+                                ),
                               ),
                             ),
                           ],
                         ),
-                        Icon(Icons.restart_alt)
+                        SvgPicture.asset(AppIcons.reload)
                       ],
                     ),
                     Divider()
-
                   ],
                 ),
               ),
               Container(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-
                   children: [
-                    SizedBox(height: 15,),
-
+                    SizedBox(
+                      height: 15,
+                    ),
                     const CustomText(
                       text: "Data Purchase",
                     ),
@@ -374,14 +504,15 @@ class _HomePageState extends State<HomePage> {
                               padding: const EdgeInsets.all(8.0),
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: AppColors.lightShadowGreenColor,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: AppColors.green)
-                                ),child: Padding(
+                                    color: AppColors.lightShadowGreenColor,
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(color: AppColors.green)),
+                                child: Padding(
                                   padding: const EdgeInsets.all(5.0),
-                                  child: CustomText(text: "08123457146",),
+                                  child: CustomText(
+                                    text: "08123457146",
+                                  ),
                                 ),
-
                               ),
                             ),
                             Padding(
@@ -390,30 +521,31 @@ class _HomePageState extends State<HomePage> {
                                 decoration: BoxDecoration(
                                     color: AppColors.white,
                                     borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(color: AppColors.grey)
-                                ),child: Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: CustomText(text: "N 1,500.00",),
-                              ),
-
+                                    border: Border.all(color: AppColors.grey)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: CustomText(
+                                    text: "N 1,500.00",
+                                  ),
+                                ),
                               ),
                             ),
                           ],
                         ),
-                        Icon(Icons.restart_alt)
+                        SvgPicture.asset(AppIcons.reload)
                       ],
                     ),
                     Divider()
-
                   ],
                 ),
-              ), Container(
+              ),
+              Container(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-
                   children: [
-                    SizedBox(height: 15,),
-
+                    SizedBox(
+                      height: 15,
+                    ),
                     const CustomText(
                       text: "Data Purchase",
                     ),
@@ -430,14 +562,15 @@ class _HomePageState extends State<HomePage> {
                               padding: const EdgeInsets.all(8.0),
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: AppColors.lightShadowGreenColor,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: AppColors.green)
-                                ),child: Padding(
+                                    color: AppColors.lightShadowGreenColor,
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(color: AppColors.green)),
+                                child: Padding(
                                   padding: const EdgeInsets.all(5.0),
-                                  child: CustomText(text: "08123457146",),
+                                  child: CustomText(
+                                    text: "08123457146",
+                                  ),
                                 ),
-
                               ),
                             ),
                             Padding(
@@ -446,30 +579,31 @@ class _HomePageState extends State<HomePage> {
                                 decoration: BoxDecoration(
                                     color: AppColors.white,
                                     borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(color: AppColors.grey)
-                                ),child: Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: CustomText(text: "N 1,500.00",),
-                              ),
-
+                                    border: Border.all(color: AppColors.grey)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: CustomText(
+                                    text: "N 1,500.00",
+                                  ),
+                                ),
                               ),
                             ),
                           ],
                         ),
-                        Icon(Icons.restart_alt)
+                        SvgPicture.asset(AppIcons.reload)
                       ],
                     ),
                     Divider()
-
                   ],
                 ),
-              ), Container(
+              ),
+              Container(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-
                   children: [
-                    SizedBox(height: 15,),
-
+                    SizedBox(
+                      height: 15,
+                    ),
                     const CustomText(
                       text: "Data Purchase",
                     ),
@@ -486,14 +620,15 @@ class _HomePageState extends State<HomePage> {
                               padding: const EdgeInsets.all(8.0),
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: AppColors.lightShadowGreenColor,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: AppColors.green)
-                                ),child: Padding(
+                                    color: AppColors.lightShadowGreenColor,
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(color: AppColors.green)),
+                                child: Padding(
                                   padding: const EdgeInsets.all(5.0),
-                                  child: CustomText(text: "08123457146",),
+                                  child: CustomText(
+                                    text: "08123457146",
+                                  ),
                                 ),
-
                               ),
                             ),
                             Padding(
@@ -502,21 +637,21 @@ class _HomePageState extends State<HomePage> {
                                 decoration: BoxDecoration(
                                     color: AppColors.white,
                                     borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(color: AppColors.grey)
-                                ),child: Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: CustomText(text: "N 1,500.00",),
-                              ),
-
+                                    border: Border.all(color: AppColors.grey)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: CustomText(
+                                    text: "N 1,500.00",
+                                  ),
+                                ),
                               ),
                             ),
                           ],
                         ),
-                        Icon(Icons.restart_alt)
+                        SvgPicture.asset(AppIcons.reload)
                       ],
                     ),
                     Divider()
-
                   ],
                 ),
               ),
@@ -559,7 +694,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget accountNumberContainer(String accNumber) {
     return Container(
-      height:50,
+      height: 50,
       decoration: BoxDecoration(
           color: AppColors.lightgreen2,
           borderRadius: BorderRadius.circular(10)),
@@ -594,7 +729,7 @@ class _HomePageState extends State<HomePage> {
                     text: "Copied",
                     color: AppColors.white,
                   )));
-                  AppUtils().copyToClipboard(accNumber);
+                  AppUtils().copyToClipboard(accNumber, context);
                   // MSG.infoSnackBar(context, "copied");
                 },
                 child: const Icon(Icons.copy))
@@ -603,5 +738,4 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
 }

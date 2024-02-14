@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:teller_trust/utills/shared_preferences.dart';
+import 'package:teller_trust/view/important_pages/dialog_box.dart';
 
 import '../res/app_router.dart';
 import 'app_navigator.dart';
@@ -24,13 +25,11 @@ class AppUtils {
     if (!isFirstOpen) {
       if (userData.isEmpty && password.isEmpty) {
         Future.delayed(const Duration(seconds: 3), () {
-          AppNavigator.pushAndReplaceName(context,
-              name: AppRouter.landingPage);
+          AppNavigator.pushAndReplaceName(context, name: AppRouter.landingPage);
         });
       } else {
         Future.delayed(const Duration(seconds: 3), () {
-          AppNavigator.pushAndReplaceName(context,
-              name: AppRouter.landingPage);
+          AppNavigator.pushAndReplaceName(context, name: AppRouter.landingPage);
         });
       }
     } else {
@@ -64,8 +63,9 @@ class AppUtils {
     }
   }
 
-  void copyToClipboard(textToCopy) {
+  void copyToClipboard(textToCopy, context) {
     Clipboard.setData(ClipboardData(text: textToCopy));
+    MSG.snackBar(context, "$textToCopy copied");
     // You can also show a snackbar or any other feedback to the user.
     print('Text copied to clipboard: $textToCopy');
   }

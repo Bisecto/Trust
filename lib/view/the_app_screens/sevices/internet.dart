@@ -7,9 +7,11 @@ import '../../../res/app_list.dart';
 import '../../../utills/app_navigator.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/app_validator.dart';
+import '../../auth/otp_pin_pages/confirm_with_otp.dart';
 import '../../widgets/app_custom_text.dart';
 import '../../widgets/form_button.dart';
 import '../../widgets/form_input.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
 class InternetPurchase extends StatefulWidget {
   final Services services;
@@ -137,9 +139,19 @@ class _InternetPurchaseState extends State<InternetPurchase> {
                           ///Remember to add beneficiary
                           FormButton(
                             onPressed: () {
-                              if (!_formKey.currentState!.validate()) {
-                                //AppNavigator.pushNamedAndRemoveUntil(context, name5: AppRouter.landingPage);
-                              }
+                              if (_formKey.currentState!.validate()) {
+                                modalSheet.showMaterialModalBottomSheet(
+                                  backgroundColor: Colors.transparent,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.vertical(top: Radius.circular(20.0)),
+                                  ),
+                                  context: context,
+                                  builder: (context) => Padding(
+                                    padding: const EdgeInsets.only(top: 200.0),
+                                    child: ConfirmWithPin(),
+                                  ),
+                                );                              }
                             },
                             disableButton: AppValidator.validateTextfield(
                                 _selectedAmtController.text) !=

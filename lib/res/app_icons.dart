@@ -1,8 +1,31 @@
-class AppIcons{
+class AppIcons {
   static const String _iconBaseUrl = 'assets/icons/';
 
   static const home = '${_iconBaseUrl}home.svg';
   static const card = '${_iconBaseUrl}card.svg';
+  static const profileDetails = '${_iconBaseUrl}profile_details.svg';
+  static const person = '${_iconBaseUrl}person.svg';
+  static const email = '${_iconBaseUrl}email.svg';
+  static const phone = '${_iconBaseUrl}phone.svg';
+  static const securityAppBar = '${_iconBaseUrl}security_appBar.svg';
+  static const notificationAppBar = '${_iconBaseUrl}notification_appBar.svg';
+  static const beneficiaryAppBar = '${_iconBaseUrl}beneficiary_appBar.svg';
+  static const accountSettingAppBar = '${_iconBaseUrl}account_setting_appBar.svg';
+  static const virtualCard1 = '${_iconBaseUrl}virtual_card_1.svg';
+  static const virtualCard2 = '${_iconBaseUrl}virtual_card_2.svg';
+  static const virtualCard3 = '${_iconBaseUrl}virtual_card_3.svg';
+  static const deliveryFee = '${_iconBaseUrl}delivery_fee.svg';
+  static const tellaCardRequest = '${_iconBaseUrl}tella_card_request.svg';
+
+  static const tellaRewards = '${_iconBaseUrl}tella_reward.svg';
+  static const accounsetting = '${_iconBaseUrl}account_settings.svg';
+  static const security = '${_iconBaseUrl}security.svg';
+  static const statement = '${_iconBaseUrl}statement.svg';
+  static const notificationSetting = '${_iconBaseUrl}notification_setting.svg';
+  static const getHelp = '${_iconBaseUrl}get_help.svg';
+  static const legal = '${_iconBaseUrl}legal.svg';
+  static const aboutTellaTrust = '${_iconBaseUrl}about_tella_.svg';
+  static const logOut = '${_iconBaseUrl}log_out.svg';
   static const bill = '${_iconBaseUrl}bill.svg';
   static const more = '${_iconBaseUrl}more.svg';
   static const send = '${_iconBaseUrl}send.svg';
@@ -10,6 +33,17 @@ class AppIcons{
   static const qrCode = '${_iconBaseUrl}qr_code.svg';
   static const looper1 = '${_iconBaseUrl}looper_1.svg';
   static const naira = '${_iconBaseUrl}naira.svg';
+  static const reload = '${_iconBaseUrl}reload.svg';
+  static const moneyTfInfo = '${_iconBaseUrl}money_tf_notification.svg';
+  static const yourNgnAccount = '${_iconBaseUrl}your_ngn_account.svg';
+  static const copy = '${_iconBaseUrl}copy.svg';
+  static const squareCancel = '${_iconBaseUrl}square_cancel.svg';
+  static const dailyLimit = '${_iconBaseUrl}daily_limit.svg';
+  static const profileLabel = '${_iconBaseUrl}profile_label.svg';
+  static const profiletext = '${_iconBaseUrl}profile_text.svg';
+  static const purchaseReceipt = '${_iconBaseUrl}purchase_receipt.svg';
+  static const cancel = '${_iconBaseUrl}cancel.svg';
+  static const biometric = '${_iconBaseUrl}biometric.svg';
   static const add = '${_iconBaseUrl}add.svg';
   static const switch1 = '${_iconBaseUrl}switch.svg';
   static const airtime = '${_iconBaseUrl}airtime.svg';
@@ -22,6 +56,4 @@ class AppIcons{
   static const betting = '${_iconBaseUrl}Betting.svg';
   static const flight = '${_iconBaseUrl}flight.svg';
   static const ticket = '${_iconBaseUrl}tickets.svg';
-
-
 }

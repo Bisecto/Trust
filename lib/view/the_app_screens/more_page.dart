@@ -1,4 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:teller_trust/res/app_icons.dart';
+import 'package:teller_trust/utills/app_utils.dart';
+import 'package:teller_trust/view/the_app_screens/more_pages/notification.dart';
+import 'package:teller_trust/view/the_app_screens/more_pages/security_page.dart';
+
+import '../../res/app_colors.dart';
+import '../../utills/app_navigator.dart';
+import 'more_pages/account_settings.dart';
 
 class MorePage extends StatefulWidget {
   const MorePage({super.key});
@@ -10,6 +19,89 @@ class MorePage extends StatefulWidget {
 class _MorePageState extends State<MorePage> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold();
+    return Scaffold(
+      backgroundColor: AppColors.white,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              height: 230,
+              decoration: BoxDecoration(
+                  color: AppColors.lightShadowGreenColor,
+                  borderRadius:
+                      BorderRadius.vertical(bottom: Radius.circular(30))),
+              child: Column(
+                children: [
+                  Container(
+                    height: 170,
+                    width: AppUtils.deviceScreenSize(context).width,
+                    decoration: BoxDecoration(
+                        color: Color.fromRGBO(227, 255, 214, 100),
+                        borderRadius:
+                            BorderRadius.vertical(bottom: Radius.circular(30))),
+                    child: SafeArea(
+                      child: Column(
+                        children: [
+                          SvgPicture.asset(AppIcons.profiletext),
+                          SvgPicture.asset(AppIcons.profileLabel)
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Container(
+                    height: 42,
+                    child: SvgPicture.asset(AppIcons.dailyLimit),
+                  )
+                ],
+              ),
+            ),
+            Column(
+              children: [
+                SizedBox(
+                  height: 10,
+                ),
+                SvgPicture.asset(AppIcons.tellaRewards),
+                SizedBox(
+                  height: 10,
+                ),
+                GestureDetector(
+                    onTap: () {
+                      AppNavigator.pushAndStackPage(context,
+                          page: AccountSetting());
+                    },
+                    child: SvgPicture.asset(AppIcons.accounsetting)),
+                GestureDetector(
+                    onTap: () {
+                      AppNavigator.pushAndStackPage(context, page: Security());
+                    },
+                    child: SvgPicture.asset(AppIcons.security)),
+                SvgPicture.asset(AppIcons.statement),
+                GestureDetector(
+                    onTap: () {
+                      AppNavigator.pushAndStackPage(context,
+                          page: NotificationSetting());
+                    },
+                    child: SvgPicture.asset(AppIcons.notificationSetting)),
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Divider(),
+                ),
+                SvgPicture.asset(AppIcons.getHelp),
+                SvgPicture.asset(AppIcons.legal),
+                SvgPicture.asset(AppIcons.aboutTellaTrust),
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Divider(),
+                ),
+                SvgPicture.asset(AppIcons.logOut),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
   }
 }

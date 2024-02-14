@@ -1,6 +1,5 @@
 class AppImages {
   static const String _imageBaseUrl = 'assets/images/';
-
   static const logo = '${_imageBaseUrl}logo.png';
   static const fullLogo = '${_imageBaseUrl}full_logo.png';
   static const apple = '${_imageBaseUrl}Apple.png';
@@ -18,5 +17,7 @@ class AppImages {
   static const airtel = '${_imageBaseUrl}airtel.png';
   static const mobile = '${_imageBaseUrl}9mobile.png';
   static const glo = '${_imageBaseUrl}glo.png';
+  static const physicalCardStraight = '${_imageBaseUrl}physical_card_straight.png';
+  static const virtualCardStraight = '${_imageBaseUrl}virtual_card_straight.png';
 
 }
