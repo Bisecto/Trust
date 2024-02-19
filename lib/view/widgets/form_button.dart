@@ -32,7 +32,7 @@ class FormButton extends StatelessWidget {
     this.textColor = AppColors.white,
     this.disableButton = false,
     this.width = double.infinity,
-    this.height = 42,
+    this.height = 48,
     this.weight = FontWeight.w600,  this.borderColor = Colors.transparent, this.borderWidth = 0, this.borderRadius = 4,
   }) : super(key: key);
 

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:teller_trust/res/app_icons.dart';
+import 'package:teller_trust/view/the_app_screens/more_pages/change_password.dart';
+import 'package:teller_trust/view/the_app_screens/more_pages/kyc_verification.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/profile_details.dart';
 
 import '../../../res/app_colors.dart';
@@ -46,11 +48,23 @@ class _AccountSettingState extends State<AccountSetting> {
                       title: "Profile Details",
                       description: "Account name, email, phone"),
                 ),
-                const CustomContainerFirTitleDesc(
-                    title: "KYC", description: "Identification document"),
-                const CustomContainerFirTitleDesc(
-                    title: "Change Password",
-                    description: "Secure access to your account"),
+                GestureDetector(
+                  onTap: () {
+                    AppNavigator.pushAndStackPage(context,
+                        page: const KycVerification());
+                  },
+                  child: const CustomContainerFirTitleDesc(
+                      title: "KYC", description: "Identification document"),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    AppNavigator.pushAndStackPage(context,
+                        page: const ChangePassword());
+                  },
+                  child: const CustomContainerFirTitleDesc(
+                      title: "Change Password",
+                      description: "Secure access to your account"),
+                ),
                 const CustomContainerFirTitleDesc(
                     title: "Change 4-Digit Access PIN",
                     description: "Secure alternative account Access account"),

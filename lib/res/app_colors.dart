@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 class AppColors{
 
 
-
   static const Color disableButtonColor =Color(0xFFF5F5F5);
   static const Color greyAccent=Color(0xFFF6EDE9);
   static const Color black = Colors.black;
@@ -18,6 +17,12 @@ class AppColors{
   static const Color grey=Color(0xFFE8E8E8);
 
 //light colors
+  static const Color appBarMainColor = Color(0xffF3FFEB);
+  static const Color purple = Color(0xff9747FF);
+  static const Color lightPurple = Color(0xffEED3F9);
+  static const Color orange = Color(0xffFFA02E);
+  static const Color lightOrange = Color(0xffFFF3D5);
+  static const Color appBarSubColor = Color(0xffE3FAD6);
   static const Color lightPrimary = Color(0xffF5F5F5);
   static const Color lightgrey = Color(0xff828DA9);
   static const Color lightgreen2 = Color(0xffd1fcc1);

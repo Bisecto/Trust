@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/utills/app_utils.dart';
+import 'package:teller_trust/view/the_app_screens/more_pages/get_help.dart';
+import 'package:teller_trust/view/the_app_screens/more_pages/legal.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/notification.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/security_page.dart';
 
@@ -25,7 +27,7 @@ class _MorePageState extends State<MorePage> {
         child: Column(
           children: [
             Container(
-              height: 230,
+              height: 235,
               decoration: BoxDecoration(
                   color: AppColors.lightShadowGreenColor,
                   borderRadius:
@@ -33,7 +35,7 @@ class _MorePageState extends State<MorePage> {
               child: Column(
                 children: [
                   Container(
-                    height: 170,
+                    height: 175,
                     width: AppUtils.deviceScreenSize(context).width,
                     decoration: BoxDecoration(
                         color: Color.fromRGBO(227, 255, 214, 100),
@@ -89,8 +91,18 @@ class _MorePageState extends State<MorePage> {
                   padding: const EdgeInsets.all(20.0),
                   child: Divider(),
                 ),
-                SvgPicture.asset(AppIcons.getHelp),
-                SvgPicture.asset(AppIcons.legal),
+                GestureDetector(
+                    onTap: () {
+                      AppNavigator.pushAndStackPage(context,
+                          page: GetHelp());
+                    },
+                    child: SvgPicture.asset(AppIcons.getHelp)),
+                GestureDetector(
+                    onTap: () {
+                      AppNavigator.pushAndStackPage(context,
+                          page: Legal());
+                  },
+                    child: SvgPicture.asset(AppIcons.legal)),
                 SvgPicture.asset(AppIcons.aboutTellaTrust),
                 Padding(
                   padding: const EdgeInsets.all(20.0),

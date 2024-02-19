@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:teller_trust/utills/app_utils.dart';
 
 import '../../res/app_colors.dart';
 import 'app_custom_text.dart';
@@ -30,9 +31,11 @@ class CustomContainerFirTitleDesc extends StatelessWidget {
                   CustomText(
                     text: title,
                     weight: FontWeight.bold,
+                    maxLines: 3,
                   ),
                   CustomText(
                     text: description,
+                    maxLines: 3,
                   )
                 ],
               ),
@@ -40,6 +43,69 @@ class CustomContainerFirTitleDesc extends StatelessWidget {
                 Icons.arrow_forward_ios,
                 color: AppColors.grey,
               )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CustomContainerFirTitleDescIcon extends StatelessWidget {
+  final String title;
+  final String description;
+  final Widget iconData;
+
+  const CustomContainerFirTitleDescIcon(
+      {super.key,
+      required this.title,
+      required this.description,
+      required this.iconData});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10.0),
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(color: AppColors.grey)),
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Row(
+            //mainAxisAlignment: MainAxisAlignment.,
+
+            children: [
+              iconData,
+              SizedBox(
+                width: 10,
+              ),
+              Container(
+                //width: double.maxFinite,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomText(
+                          text: title,
+                          weight: FontWeight.bold,
+                          maxLines: 3,
+                        ),
+                        CustomText(
+                          text: description,
+                          maxLines: 3,
+                        )
+                      ],
+                    ),
+                    // const Icon(
+                    //   Icons.arrow_forward_ios,
+                    //   color: AppColors.grey,
+                    // )
+                  ],
+                ),
+              ),
             ],
           ),
         ),
@@ -81,6 +147,7 @@ class CustomContainerForToggle extends StatelessWidget {
                   CustomText(
                     text: title,
                     weight: FontWeight.bold,
+                    maxLines: 3,
                   ),
                   CustomText(
                     text: description,
@@ -133,8 +200,45 @@ class CustomContainerWithIcon extends StatelessWidget {
               ),
               CustomText(
                 text: title,
+                maxLines: 3,
                 weight: FontWeight.w500,
               ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+class CustomContainerWithRightIcon extends StatelessWidget {
+  final String title;
+
+  const CustomContainerWithRightIcon({
+    super.key,
+    required this.title,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 15.0),
+      child: Container(
+        decoration: BoxDecoration(
+            //color: AppColors.lightPrimary,
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(color: AppColors.grey)),
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+
+              CustomText(
+                text: title,
+                maxLines: 3,
+                weight: FontWeight.w500,
+              ),
+              Icon(Icons.arrow_forward_ios,color: AppColors.grey)
             ],
           ),
         ),

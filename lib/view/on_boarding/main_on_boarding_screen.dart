@@ -127,7 +127,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                             CustomText(
                               text: onBoardingText[index],
                               color: AppColors.textColor,
-                              size: 22,
+                              size: 28,
                               weight: FontWeight.bold,
                             ),
                             Padding(
@@ -135,7 +135,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                               child: CustomText(
                                 text: onBoardingSubText[index],
                                 color: AppColors.textColor,
-                                size: 16,
+                                size: 14,
                                 maxLines: 4,
                                 textAlign: TextAlign.center,
                               ),

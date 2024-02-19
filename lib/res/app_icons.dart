@@ -7,6 +7,7 @@ class AppIcons {
   static const person = '${_iconBaseUrl}person.svg';
   static const email = '${_iconBaseUrl}email.svg';
   static const phone = '${_iconBaseUrl}phone.svg';
+  static const splashScreen = '${_iconBaseUrl}splash_screen.svg';
   static const securityAppBar = '${_iconBaseUrl}security_appBar.svg';
   static const notificationAppBar = '${_iconBaseUrl}notification_appBar.svg';
   static const beneficiaryAppBar = '${_iconBaseUrl}beneficiary_appBar.svg';
@@ -56,4 +57,10 @@ class AppIcons {
   static const betting = '${_iconBaseUrl}Betting.svg';
   static const flight = '${_iconBaseUrl}flight.svg';
   static const ticket = '${_iconBaseUrl}tickets.svg';
+  static const change4DigitPassword = '${_iconBaseUrl}change_4_digit_password.svg';
+  static const changePassword = '${_iconBaseUrl}change_password.svg';
+  static const kycVerification = '${_iconBaseUrl}kyc_verification.svg';
+  static const transactionPin = '${_iconBaseUrl}transaction_pin.svg';
+  static const getHelpAppBar = '${_iconBaseUrl}get_help_app_bar.svg';
+  static const legalAppBar = '${_iconBaseUrl}legal_app_bar.svg';
 }

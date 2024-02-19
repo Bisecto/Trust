@@ -26,6 +26,7 @@ class _BillsPageState extends State<BillsPage> {
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
+        backgroundColor: AppColors.white,
         title: const CustomText(
           text: "Services",
           size: 18,
@@ -43,7 +44,7 @@ class _BillsPageState extends State<BillsPage> {
         child: GridView.builder(
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4,
+            crossAxisCount: 3,
             crossAxisSpacing: 20.0,
             mainAxisSpacing: 8.0,
           ),
@@ -127,7 +128,7 @@ class _BillsPageState extends State<BillsPage> {
         CustomText(
           text: service.title,
           color: AppColors.black,
-          size: 15,
+          size: 14,
         )
       ],
     );

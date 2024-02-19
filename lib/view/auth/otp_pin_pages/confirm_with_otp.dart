@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:otp_text_field/otp_field.dart';
 import 'package:pin_plus_keyboard/package/controllers/pin_input_controller.dart';
 import 'package:pin_plus_keyboard/package/pin_plus_keyboard_package.dart';
 import 'package:teller_trust/utills/app_navigator.dart';
@@ -22,7 +21,6 @@ class ConfirmWithPin extends StatefulWidget {
 }
 
 class _ConfirmWithPinState extends State<ConfirmWithPin> {
-  OtpFieldController otpFieldController = OtpFieldController();
   PinInputController pinInputController = PinInputController(length: 4);
   final AuthBloc authBloc = AuthBloc();
 

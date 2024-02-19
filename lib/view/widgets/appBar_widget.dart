@@ -7,15 +7,17 @@ import '../../utills/app_utils.dart';
 
 class CustomAppBar extends StatelessWidget {
   final String title;
+  final Color mainColor;
+  final Color subColor;
 
-  const CustomAppBar({super.key, required this.title});
+  const CustomAppBar({super.key, required this.title,this.subColor=AppColors.appBarSubColor,this.mainColor=AppColors.appBarMainColor});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 120,
       decoration: BoxDecoration(
-          color: AppColors.lightShadowGreenColor,
+          color:subColor,
           borderRadius: BorderRadius.vertical(bottom: Radius.circular(30))),
       child: Column(
         children: [
@@ -23,7 +25,7 @@ class CustomAppBar extends StatelessWidget {
             height: 100,
             width: AppUtils.deviceScreenSize(context).width,
             decoration: BoxDecoration(
-                color: Color.fromRGBO(227, 255, 214, 100),
+                color: mainColor,
                 borderRadius:
                     BorderRadius.vertical(bottom: Radius.circular(30))),
             child: Row(
