@@ -56,7 +56,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor:currentIndex==0||currentIndex==2? AppColors.lightShadowGreenColor:AppColors.white,
+      //backgroundColor:currentIndex==0||currentIndex==2? AppColors.lightShadowGreenColor:AppColors.white,
       body: SafeArea(
         child: Column(
           children: <Widget>[
@@ -86,7 +86,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                 slideBuilder: (index) {
                   return Center(
                     child: SizedBox(
-                      width: AppUtils.deviceScreenSize(context).width / 1.3,
+                      width: AppUtils.deviceScreenSize(context).width / 1.35,
                       // Set the desired width of the container
                       height: AppUtils.deviceScreenSize(context).height * 0.65,
                       // Set the desired height of the container
@@ -101,46 +101,51 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       // ),
                       child: Align(
                         alignment: Alignment.center,
-                        child: Column(
-                          // crossAxisAlignment:
-                          // CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: AppUtils.deviceScreenSize(context).width /
-                                  1.5,
-                              // Set the desired width of the container
-                              height:
-                                  AppUtils.deviceScreenSize(context).height *
-                                      0.4,
-                              // Set the desired height of the container
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(32),
-                                image: DecorationImage(
-                                  image: AssetImage(onboardingImages[index]),
-                                  // Replace with your actual image file path
-                                  fit: BoxFit
-                                      .cover, // You can adjust the fit property to cover, contain, or others
+                        child: SingleChildScrollView(
+                          child: Column(
+                            // crossAxisAlignment:
+                            // CrossAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: AppUtils.deviceScreenSize(context).width /
+                                    1.5,
+                                // Set the desired width of the container
+                                height:
+                                    AppUtils.deviceScreenSize(context).height *
+                                        0.4,
+                                // Set the desired height of the container
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(32),
+                                  image: DecorationImage(
+                                    image: AssetImage(onboardingImages[index]),
+                                    // Replace with your actual image file path
+                                    fit: BoxFit
+                                        .cover, // You can adjust the fit property to cover, contain, or others
+                                  ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(height: 20),
-                            CustomText(
-                              text: onBoardingText[index],
-                              color: AppColors.textColor,
-                              size: 28,
-                              weight: FontWeight.bold,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: CustomText(
-                                text: onBoardingSubText[index],
+                              const SizedBox(height: 20),
+                              CustomText(
+                                text: onBoardingText[index],
                                 color: AppColors.textColor,
-                                size: 14,
-                                maxLines: 4,
+                                maxLines: 2,
+                                size: 28,
+                                weight: FontWeight.bold,
                                 textAlign: TextAlign.center,
+
                               ),
-                            ),
-                          ],
+                              Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: CustomText(
+                                  text: onBoardingSubText[index],
+                                  color: AppColors.textColor,
+                                  size: 16,
+                                  maxLines: 4,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

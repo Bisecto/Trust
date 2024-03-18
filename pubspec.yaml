@@ -55,7 +55,8 @@ dependencies:
   persistent_bottom_nav_bar: ^4.0.2
   device_info_plus:
   local_auth: ^2.1.8
-  custom_pin_screen: "^0.3.0"
+  custom_pin_screen: ^0.3.0
+  dio:
 
 dev_dependencies:
   flutter_test:

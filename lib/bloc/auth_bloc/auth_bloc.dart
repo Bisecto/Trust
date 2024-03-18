@@ -86,8 +86,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             AppUtils.convertString(json.decode(response.body)['message']),
             user));
       } else {
-        emit(ErrorState(
-            AppUtils.convertString(json.decode(response.body)['message'])));
+        // emit(ErrorState(
+        //     AppUtils.convertString(json.decode(response.body)['message'])));
         //print(event.password);
         print(json.decode(response.body));
         emit(AuthInitial());
@@ -103,11 +103,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       Emitter<AuthState> emit) async {
     emit(LoadingState());
     AuthRepository authRepository = AuthRepository();
+    String userId= SharedPref.getString("userId").toString();
+    print(userId);
+    print(userId);
+    print(userId);
+    print(userId);
+    print(userId);
+    print(userId);
     Map<dynamic, String> data = {
-      "userId": "46a73f07-e1a2-4d85-b1f6-3538e847d729",
+      "userId": userId,
       "accessPin": event.accessPin,
       "confirmAccessPin": event.confirmAccessPin
     };
+    print(data);
     try {
       var response =
       await authRepository.authPostRequest(data, AppApis.createAccessPin);
@@ -153,7 +161,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Map<dynamic, String> data = {
       "userData": event.userData,
       "password": event.password,
-      "deviceId": "eDMeP7882w4813q9"
+      "deviceId": "eDMeP7882w4813q0"
     };
     try {
       var response = await authRepository.authPostRequest(data, AppApis.login);

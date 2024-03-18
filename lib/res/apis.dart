@@ -1,5 +1,5 @@
 class AppApis {
-  static String appBaseUrl = "https://api.tellatrust.com";
+  static String appBaseUrl = "https://api-tellatrust.onrender.com";
 
   ///Authentication Endpoints
   static String signUpApi = "$appBaseUrl/auth/c/register";

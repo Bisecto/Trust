@@ -248,8 +248,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                       label: '',
                                                       controller:
                                                           _middleNameController,
-                                                      validator: AppValidator
-                                                          .validateTextfield,
+                                                      // validator: AppValidator
+                                                      //     .validateTextfield,
                                                       icon: Icons
                                                           .person_2_outlined,
                                                       borderColor:

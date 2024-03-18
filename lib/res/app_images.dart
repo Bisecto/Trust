@@ -19,5 +19,6 @@ class AppImages {
   static const glo = '${_imageBaseUrl}glo.png';
   static const physicalCardStraight = '${_imageBaseUrl}physical_card_straight.png';
   static const virtualCardStraight = '${_imageBaseUrl}virtual_card_straight.png';
+  static const splashLogo = '${_imageBaseUrl}splash_logo.png';
 
 }

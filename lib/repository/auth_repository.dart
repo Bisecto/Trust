@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:teller_trust/res/apis.dart';
-
+import 'package:dio/dio.dart';
 import '../model/user.dart';
 import '../res/app_strings.dart';
 import 'package:http/http.dart' as http;
@@ -11,6 +11,8 @@ class AuthRepository {
       Map<dynamic, String> data, String apiUrl,
       {String accessToken = '', String refreshToken = ''}) async {
     print(apiUrl);
+    print(apiUrl);
+
     var headers = {
       'x-access-token': accessToken,
       'x-refresh-token': refreshToken,
@@ -24,6 +26,8 @@ class AuthRepository {
       headers: headers,
       body: body,
     );
+    print(apiUrl);
+    print(response);
     return response;
   }
 

@@ -25,11 +25,11 @@ class AppUtils {
     if (!isFirstOpen) {
       if (userData.isEmpty && password.isEmpty) {
         Future.delayed(const Duration(seconds: 3), () {
-          AppNavigator.pushAndReplaceName(context, name: AppRouter.landingPage);
+          AppNavigator.pushAndReplaceName(context, name: AppRouter.onBoardingScreen);
         });
       } else {
         Future.delayed(const Duration(seconds: 3), () {
-          AppNavigator.pushAndReplaceName(context, name: AppRouter.landingPage);
+          AppNavigator.pushAndReplaceName(context, name: AppRouter.onBoardingScreen);
         });
       }
     } else {

@@ -27,32 +27,37 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
-      body: SvgPicture.asset(
-        AppIcons.splashScreen,
-        height: AppUtils.deviceScreenSize(context).height,
-        width: AppUtils.deviceScreenSize(context).width,
-      ),
-      // Container(
-      //   height: AppUtils.deviceScreenSize(context).height,
-      //   width: AppUtils.deviceScreenSize(context).width,
-      //   decoration:  BoxDecoration(
-      //       gradient: const LinearGradient(
-      //         colors: [
-      //           AppColors.lightGreen,
-      //           AppColors.darkGreen,
-      //           AppColors.lightGreen
-      //         ],
-      //         begin: Alignment.bottomLeft,
-      //         end: Alignment.topRight,
-      //       ),
-      //       // image: DecorationImage(
-      //       //     image: const AssetImage(
-      //       //       AppImages.splashScreenFrame,
-      //       //     ),
-      //       //     fit: BoxFit.values[0])),
-      //   child: Center(child:Image.asset(AppImages.fullLogo)),
-      // )
-    );
+        backgroundColor: AppColors.white,
+        body: Image.asset(
+          AppImages.splashLogo,
+          height: AppUtils.deviceScreenSize(context).height,
+          width: AppUtils.deviceScreenSize(context).width,
+        )
+        // SvgPicture.asset(
+        //   AppIcons.splashScreen,
+        //   height: AppUtils.deviceScreenSize(context).height,
+        //   width: AppUtils.deviceScreenSize(context).width,
+        // ),
+        // Container(
+        //   height: AppUtils.deviceScreenSize(context).height,
+        //   width: AppUtils.deviceScreenSize(context).width,
+        //   decoration:  BoxDecoration(
+        //       gradient: const LinearGradient(
+        //         colors: [
+        //           AppColors.lightGreen,
+        //           AppColors.darkGreen,
+        //           AppColors.lightGreen
+        //         ],
+        //         begin: Alignment.bottomLeft,
+        //         end: Alignment.topRight,
+        //       ),
+        //       // image: DecorationImage(
+        //       //     image: const AssetImage(
+        //       //       AppImages.splashScreenFrame,
+        //       //     ),
+        //       //     fit: BoxFit.values[0])),
+        //   child: Center(child:Image.asset(AppImages.fullLogo)),
+        // )
+        );
   }
 }
