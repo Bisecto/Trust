@@ -140,7 +140,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    selectAmount("2000"),
+                    //selectAmount("2000"),
                     selectAmount("1500"),
                     selectAmount("1000"),
                     selectAmount("500"),

@@ -36,6 +36,7 @@ class CustomContainerFirTitleDesc extends StatelessWidget {
                   CustomText(
                     text: description,
                     maxLines: 3,
+                    size: 14,
                   )
                 ],
               ),

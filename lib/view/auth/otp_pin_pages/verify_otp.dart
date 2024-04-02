@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/otp_field_style.dart';
 import 'package:otp_text_field/style.dart';
+import 'package:teller_trust/utills/shared_preferences.dart';
 import 'package:teller_trust/view/auth/otp_pin_pages/create_pin.dart';
 
 import '../../../bloc/auth_bloc/auth_bloc.dart';
@@ -15,11 +18,13 @@ import '../../important_pages/dialog_box.dart';
 import '../../important_pages/not_found_page.dart';
 import '../../widgets/app_custom_text.dart';
 import '../../widgets/form_button.dart';
+import '../sign_in_with_access_pin_and_biometrics.dart';
 
 class VerifyOtp extends StatefulWidget {
   String email;
+  bool isRegister;
 
-  VerifyOtp({super.key, required this.email});
+  VerifyOtp({super.key, required this.email, required this.isRegister});
 
   @override
   State<VerifyOtp> createState() => _VerifyOtpState();
@@ -33,6 +38,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
   void initState() {
     // TODO: implement initState
     authBloc.add(InitialEvent());
+    startTimer();
     super.initState();
   }
 
@@ -48,7 +54,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
           bloc: authBloc,
           listenWhen: (previous, current) => current is! AuthInitial,
           buildWhen: (previous, current) => current is! AuthInitial,
-          listener: (context, state) {
+          listener: (context, state) async {
             if (state is AuthOtpRequestState) {
               MSG.snackBar(context, state.msg);
               // AppNavigator.pushAndStackNamed(context,
@@ -57,18 +63,38 @@ class _VerifyOtpState extends State<VerifyOtp> {
               MSG.warningSnackBar(context, state.error);
             } else if (state is AuthOtpVerifySucess) {
               MSG.snackBar(context, state.msg);
-              AppNavigator.pushAndStackPage(context, page: CreatePin());
-            } else if (state is SuccessState) {
+              if (widget.isRegister) {
+                AppNavigator.pushAndStackPage(context, page: const CreatePin());
+              } else {
+                String userData=await SharedPref.getString('temUserData');
+                String password=await SharedPref.getString('temUserPassword');
+                authBloc.add(InitiateSignInEventClick(userData,password));
+                //MSG.snackBar(context, state.msg);
+
+
+              }
+            } else if (state is InitiatedLoginState) {
+              AppNavigator.pushAndStackPage(context,
+                  page: SignInWIthAccessPinBiometrics(
+                    userName: state.userName,
+                  ));
               // AppNavigator.pushAndStackPage(context,
               // page: UserProfilePage(
               // email: state.userEmail,
               // ));
               // }
+            } else if (state is AuthChangeDeviceOtpRequestState) {
+              MSG.warningSnackBar(context, state.msg);
+              AppNavigator.pushAndStackPage(context, page: VerifyOtp(email: state.email, isRegister: false,));
+              //authBloc.add(VerificationContinueEvent());
+
+              // MSG.snackBar(context, state.msg);
+              //verifyAlertDialog(context);
             }
           },
           builder: (context, state) {
             switch (state.runtimeType) {
-              case AuthInitial || ErrorState:
+              case (AuthInitial || ErrorState)||OTPRequestSuccessState:
                 return SingleChildScrollView(
                   child: Container(
                     height: AppUtils.deviceScreenSize(context).height,
@@ -85,7 +111,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
                             height:
                                 AppUtils.deviceScreenSize(context).height * 0.5,
                             width: AppUtils.deviceScreenSize(context).width,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               image: DecorationImage(
                                 image: AssetImage(AppImages.authAppLogoImage),
                                 fit: BoxFit.fill,
@@ -192,8 +218,8 @@ class _VerifyOtpState extends State<VerifyOtp> {
                                         onPressed: () {
                                           if (isCompleted) {
                                             print(addedPin);
-                                            authBloc.add(
-                                                VerifyOTPEventCLick(addedPin));
+                                            authBloc.add(VerifyOTPEventCLick(
+                                                addedPin, widget.isRegister));
                                           } else {
                                             MSG.warningSnackBar(
                                                 context, "OTP field is empty");
@@ -217,6 +243,36 @@ class _VerifyOtpState extends State<VerifyOtp> {
                                       const SizedBox(
                                         height: 10,
                                       ),
+                                      Center(
+                                          child: TextStyles.richTexts(
+                                              onPress1: () {
+                                                if (_start == 0) {
+                                                  // authBloc.add(RequestResetPasswordEventClick(
+                                                  //     widget.email,false));
+                                                  authBloc.add(
+                                                      PasswordResetRequestOtpEventCLick(
+                                                          widget.email));
+                                                  setState(() {
+                                                    _start = 59;
+                                                    startTimer();
+                                                  });
+                                                } else {
+                                                  MSG.warningSnackBar(context,
+                                                      'Resend Code after 59s');
+                                                }
+                                              },
+                                              onPress2: () {},
+                                              size: 14,
+                                              weight: FontWeight.w600,
+                                              //color: const Color.fromARGB(255, 19, 48, 63),
+                                              color2: AppColors.darkGreen,
+                                              //text1: '',
+                                              decoration:
+                                                  TextDecoration.underline,
+                                              text2: 'Resend code after',
+                                              color: AppColors.black,
+                                              text3: '  00:$_start s',
+                                              text4: ''))
                                     ],
                                   ),
                                 ),
@@ -239,6 +295,27 @@ class _VerifyOtpState extends State<VerifyOtp> {
                 );
             }
           }),
+    );
+  }
+
+  String smsOTP = '';
+  late Timer _timer;
+  int _start = 59;
+
+  void startTimer() {
+    const oneSec = Duration(seconds: 1);
+    _timer = Timer.periodic(
+      oneSec,
+      (Timer timer) {
+        if (_start == 0) {
+          //_start = 59;
+          _timer.cancel();
+        } else {
+          setState(() {
+            _start--;
+          });
+        }
+      },
     );
   }
 }

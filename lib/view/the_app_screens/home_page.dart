@@ -19,11 +19,14 @@ import 'package:teller_trust/view/the_app_screens/sevices/send_funds.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
+import '../../model/user.dart';
 import '../../res/app_images.dart';
 import '../important_pages/dialog_box.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  User user;
+
+  HomePage({super.key, required this.user});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -101,16 +104,19 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget homeProfileContainer() {
+    //print(widget.user.imageUrl);
+   // try{
     return Container(
       height: 50,
       width: AppUtils.deviceScreenSize(context).width,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Row(
+          Row(
             children: [
               CircleAvatar(
-                backgroundImage: AssetImage(AppImages.profileAvatar),
+                //backgroundImage: NetworkImage(),
+                child: SvgPicture.network(widget.user.imageUrl,height: 25,width: 25,),
               ),
               SizedBox(
                 width: 10,
@@ -122,7 +128,7 @@ class _HomePageState extends State<HomePage> {
                     text: "Hello",
                   ),
                   CustomText(
-                    text: "Okafor Precious",
+                    text: "${widget.user.lastName} ${widget.user.firstName}",
                     weight: FontWeight.w600,
                   ),
                 ],
@@ -144,6 +150,11 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     );
+    // } catch (e) {
+    //   print('Error loading image: $e');
+    //   // Handle the error gracefully, such as displaying a placeholder image or error message
+    //  // return Placeholder(); // Placeholder widget as an example
+    // }
   }
 
   Widget homeBalance() {
@@ -341,7 +352,7 @@ class _HomePageState extends State<HomePage> {
                       backgroundColor: Colors.transparent,
                       shape: const RoundedRectangleBorder(
                         borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(20.0)),
+                            BorderRadius.vertical(top: Radius.circular(20.0)),
                       ),
                       context: context,
                       builder: (context) => Padding(
@@ -358,7 +369,7 @@ class _HomePageState extends State<HomePage> {
                       backgroundColor: Colors.transparent,
                       shape: const RoundedRectangleBorder(
                         borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(20.0)),
+                            BorderRadius.vertical(top: Radius.circular(20.0)),
                       ),
                       context: context,
                       builder: (context) => Padding(
@@ -375,7 +386,7 @@ class _HomePageState extends State<HomePage> {
                       backgroundColor: Colors.transparent,
                       shape: const RoundedRectangleBorder(
                         borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(20.0)),
+                            BorderRadius.vertical(top: Radius.circular(20.0)),
                       ),
                       context: context,
                       builder: (context) => Padding(
@@ -391,7 +402,6 @@ class _HomePageState extends State<HomePage> {
 
                 //showAirtimeModal(context, AppList().serviceItems[index]);
               },
-
               child: quickActionsItem(AppList().serviceItems[index]));
         },
       ),
@@ -713,12 +723,12 @@ class _HomePageState extends State<HomePage> {
                 const CustomText(
                   text: " Tella Trust Account Number ",
                   color: AppColors.darkGreen,
-                  size: 15,
+                  size: 13,
                 ),
                 CustomText(
                   text: accNumber,
                   color: AppColors.black,
-                  size: 15,
+                  size: 14,
                 ),
               ],
             ),

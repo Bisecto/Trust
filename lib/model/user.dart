@@ -1,43 +1,52 @@
+// To parse this JSON data, do
+//
+//     final user = userFromJson(jsonString);
+
+
 class User {
   String firstName;
-  String lastName;
   String middleName;
-  String id;
+  String lastName;
   String email;
   String phone;
+  String userId;
   dynamic emailVerified;
   bool phoneVerified;
+  String imageUrl;
 
   User({
     required this.firstName,
-    required this.lastName,
     required this.middleName,
-    required this.id,
+    required this.lastName,
     required this.email,
     required this.phone,
+    required this.userId,
     required this.emailVerified,
     required this.phoneVerified,
+    required this.imageUrl,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
-        firstName: json["firstName"],
-        lastName: json["lastName"],
-        middleName: json["middleName"],
-        id: json["id"],
-        email: json["email"],
-        phone: json["phone"],
-        emailVerified: json["emailVerified"],
-        phoneVerified: json["phoneVerified"],
-      );
+    firstName: json["firstName"]??"",
+    middleName: json["middleName"]??"",
+    lastName: json["lastName"]??"",
+    email: json["email"]??"",
+    phone: json["phone"]??"",
+    userId: json["userId"]??json["id"]??"",
+    emailVerified: json["emailVerified"],
+    phoneVerified: json["phoneVerified"]??true,
+    imageUrl: json["imageUrl"]??"",
+  );
 
   Map<String, dynamic> toJson() => {
-        "firstName": firstName,
-        "lastName": lastName,
-        "middleName": middleName,
-        "id": id,
-        "email": email,
-        "phone": phone,
-        "emailVerified": emailVerified,
-        "phoneVerified": phoneVerified,
-      };
+    "firstName": firstName,
+    "middleName": middleName,
+    "lastName": lastName,
+    "email": email,
+    "phone": phone,
+    "userId": userId,
+    "emailVerified": emailVerified,
+    "phoneVerified": phoneVerified,
+    "imageUrl": imageUrl,
+  };
 }

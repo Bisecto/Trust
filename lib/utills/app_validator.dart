@@ -42,6 +42,29 @@ class AppValidator{
       return null;
     }
   }
+  static String? validateAccountNumberfield(String? text) {
+    if (text == null) {
+      return 'Account Number field is empty.';
+    }else if (text.toString().length!=10) {
+      return 'Account Number should be 10 characters.';
+    }
+
+    // if (!password.contains(RegExp(r'[A-Z]'))) {
+    //   return 'Password must contain at least one uppercase.';
+    // }
+    // if (!password.contains(RegExp(r'[a-z]'))) {
+    //   return 'Password must contain at least one lowercase.';
+    // }
+    // if (!password.contains(RegExp(r'[0-9]'))) {
+    //   return 'Password must contain at least one digit.';
+    // }
+    // if (!password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+    //   return 'Password must contain at least one special \ncharacter.';
+    // }
+    else {
+      return null;
+    }
+  }
   static String? validateTextfield(String? text) {
     if (text == null || text.isEmpty) {
       return 'Required.';

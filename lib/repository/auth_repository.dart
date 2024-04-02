@@ -9,12 +9,13 @@ import 'package:http/http.dart' as http;
 class AuthRepository {
   Future<http.Response> authPostRequest(
       Map<dynamic, String> data, String apiUrl,
-      {String accessToken = '', String refreshToken = ''}) async {
+      {String accessToken = '',String accessPIN = '', String refreshToken = ''}) async {
     print(apiUrl);
     print(apiUrl);
 
     var headers = {
       'x-access-token': accessToken,
+      'x-access-pin': accessPIN,
       'x-refresh-token': refreshToken,
       'Content-Type': 'application/json'
     };

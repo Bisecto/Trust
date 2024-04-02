@@ -11,13 +11,7 @@ import 'app_icons.dart';
 import 'app_images.dart';
 
 class AppList {
-  List<Widget> landPageScreens = [
-    const HomePage(),
-    const SendPage(),
-    const BillsPage(),
-    const CardPage(),
-    const MorePage()
-  ];
+
   final List<Services> serviceItems = [
     Services("Airtime", AppIcons.airtime, AppColors.lightShadowGreenColor),
     Services("Data", AppIcons.data, AppColors.lightShadowAmber),

@@ -4,6 +4,7 @@ import 'package:teller_trust/view/the_app_screens/bills_page.dart';
 import 'package:teller_trust/view/the_app_screens/card_page.dart';
 import 'package:teller_trust/view/the_app_screens/home_page.dart';
 
+import '../model/user.dart';
 import '../view/auth/sign_in_with_access_pin_and_biometrics.dart';
 import '../view/auth/otp_pin_pages/verify_otp.dart';
 import '../view/auth/sign_in_screen.dart';
@@ -25,7 +26,7 @@ class AppRouter {
   static const String signInScreen = "/sign-in-page";
   static const String signUpScreen = "/sign-up-page";
 
-  static const String otpVerification = "/otp-page";
+  //static const String otpVerification = "/otp-page";
   static const String signInWIthAccessPinBiometrics =
       "/sign-in-wIth-access-pin-biometrics";
 
@@ -33,8 +34,8 @@ class AppRouter {
   static const String noInternetScreen = "/no-internet";
 
   ///LANDING PAGE LandingPage
-  static const String landingPage = "/landing-page";
-  static const String homePage = "/home-page";
+  //static const String landingPage = "/landing-page";
+ // static const String homePage = "/home-page";
   static const String sendPage = "/send-page";
   static const String billsPage = "/bills-page";
   static const String cardPage = "/card-page";
@@ -51,28 +52,33 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const OnBoardingScreen());
       case signUpScreen:
         return MaterialPageRoute(builder: (_) => const SignUpScreen());
-      case otpVerification:
-        return MaterialPageRoute(
-            builder: (_) => VerifyOtp(
-                  email: 'userEmail',
-                ));
+      // case otpVerification:
+      //   return MaterialPageRoute(
+      //       builder: (_) => VerifyOtp(
+      //             email: 'userEmail', isRegister: true,
+      //           ));
       case signInScreen:
         return MaterialPageRoute(builder: (_) => const SignInScreen());
 
-      case landingPage:
-        return MaterialPageRoute(builder: (_) => const LandingPage());
+      // case landingPage:
+      //   final User user =
+      //   routeSettings.arguments as User;
+      //   return MaterialPageRoute(builder: (_) => const LandingPage(user: user,));
       case signInWIthAccessPinBiometrics:
-        return MaterialPageRoute(builder: (_) => const SignInWIthAccessPinBiometrics());
-      case homePage:
-        return MaterialPageRoute(builder: (_) => const HomePage());
+        return MaterialPageRoute(builder: (_) =>  SignInWIthAccessPinBiometrics(userName: 'name',));
+      // case homePage:
+      //   final User user =
+      //   routeSettings.arguments as User;
+      //
+      //   return MaterialPageRoute(builder: (_) =>  HomePage(user: user,));
       case sendPage:
         return MaterialPageRoute(builder: (_) => const SendPage());
       case billsPage:
         return MaterialPageRoute(builder: (_) => const BillsPage());
       case cardPage:
         return MaterialPageRoute(builder: (_) => const CardPage());
-      case morePage:
-        return MaterialPageRoute(builder: (_) => const MorePage());
+      // case morePage:
+      //   return MaterialPageRoute(builder: (_) => const MorePage());
 
       default:
         return MaterialPageRoute(builder: (_) => const NotFoundPage());

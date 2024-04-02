@@ -8,6 +8,7 @@ import 'package:pin_plus_keyboard/package/controllers/pin_input_controller.dart'
 import 'package:pin_plus_keyboard/package/pin_plus_keyboard_package.dart';
 import 'package:teller_trust/res/app_router.dart';
 import 'package:teller_trust/view/important_pages/dialog_box.dart';
+import 'package:teller_trust/view/the_app_screens/landing_page.dart';
 
 import '../../../bloc/auth_bloc/auth_bloc.dart';
 import '../../../res/app_colors.dart';
@@ -54,9 +55,10 @@ class _ConfirmPinState extends State<ConfirmPin> {
               } else if (state is SuccessState) {
                 welcomeAlertDialog(context);
                 await Future.delayed(const Duration(seconds: 3));
-                AppNavigator.pushNamedAndRemoveUntil(context,
-                    name: AppRouter.landingPage);
-                // }
+                AppNavigator.pushAndRemovePreviousPages(context, page: LandingPage(user: state.data));
+                // AppNavigator.pushNamedAndRemoveUntil(context,
+                //     name: AppRouter.landingPage,);
+                // // }
               }
             },
             builder: (context, state) {

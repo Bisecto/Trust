@@ -5,6 +5,8 @@ import 'package:otp_text_field/otp_field.dart';
 import 'package:pin_plus_keyboard/package/controllers/pin_input_controller.dart';
 import 'package:pin_plus_keyboard/package/pin_plus_keyboard_package.dart';
 import 'package:teller_trust/utills/shared_preferences.dart';
+import 'package:teller_trust/view/auth/sign_in_screen.dart';
+import 'package:teller_trust/view/the_app_screens/landing_page.dart';
 import '../../bloc/auth_bloc/auth_bloc.dart';
 import '../../res/app_colors.dart';
 import '../../res/app_images.dart';
@@ -20,7 +22,9 @@ import '../widgets/form_input.dart';
 import 'package:local_auth/local_auth.dart';
 
 class SignInWIthAccessPinBiometrics extends StatefulWidget {
-  const SignInWIthAccessPinBiometrics({super.key});
+  String userName;
+
+  SignInWIthAccessPinBiometrics({super.key, required this.userName});
 
   @override
   State<SignInWIthAccessPinBiometrics> createState() =>
@@ -32,12 +36,24 @@ class _SignInWIthAccessPinBiometricsState
   OtpFieldController otpFieldController = OtpFieldController();
   PinInputController pinInputController = PinInputController(length: 4);
   final AuthBloc authBloc = AuthBloc();
+bool canUseBiometrics=false;
+  final LocalAuthentication auth = LocalAuthentication();
 
   @override
   void initState() {
     // TODO: implement initState
     authBloc.add(InitialEvent());
     super.initState();
+    getCanUseBiometrics();
+  }
+  getCanUseBiometrics() async {
+    var availableBiometrics = await auth.getAvailableBiometrics();
+    print(availableBiometrics);
+    canUseBiometrics = await auth.canCheckBiometrics &&
+        await auth.isDeviceSupported() &&
+        availableBiometrics.isNotEmpty;
+
+    //notifyListeners();
   }
 
   @override
@@ -53,11 +69,11 @@ class _SignInWIthAccessPinBiometricsState
               if (state is ErrorState) {
                 MSG.warningSnackBar(context, state.error);
               } else if (state is SuccessState) {
-                welcomeAlertDialog(context);
-                await Future.delayed(const Duration(seconds: 3));
-                AppNavigator.pushNamedAndRemoveUntil(context,
-                    name: AppRouter.landingPage);
-                // }
+                //await Future.delayed(const Duration(seconds: 3));
+                AppNavigator.pushAndReplacePage(context, page: LandingPage(user: state.data));
+                // AppNavigator.pushNamedAndRemoveUntil(context,
+                //     name: AppRouter.landingPage,);
+                // // }
               }
             },
             builder: (context, state) {
@@ -145,8 +161,8 @@ class _SignInWIthAccessPinBiometricsState
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        const CustomText(
-                                          text: "John,",
+                                        CustomText(
+                                          text: "${widget.userName},",
                                           weight: FontWeight.w600,
                                           size: 16,
                                         ),
@@ -154,10 +170,59 @@ class _SignInWIthAccessPinBiometricsState
                                           text:
                                               "Please confirm your pin to access you Trust",
                                           //weight: FontWeight.bold,
-                                          size: 14,
+                                          size: 12,
                                         ),
                                         const SizedBox(
                                           height: 20,
+                                        ),
+                                        Row(
+                                          children: [
+                                            const CustomText(
+                                              text:
+                                              "Not you?",
+                                              //weight: FontWeight.bold,
+                                              size: 12,
+                                            ),
+                                            const SizedBox(width: 10,),
+                                            GestureDetector(
+                                              onTap: () async {
+
+                                                await SharedPref.remove("password");
+                                                await SharedPref.remove("email");
+                                                await SharedPref.remove("phone");
+                                                await SharedPref.remove("accessPin");
+                                                await SharedPref.remove("userId");
+                                                await SharedPref.remove("firstname");
+                                                await SharedPref.remove("lastname");
+                                                await SharedPref.remove("userData");
+                                                await SharedPref.remove("refresh-token");
+                                                await SharedPref.remove("access-token");
+                                                SharedPref.remove("temUserData");
+                                                SharedPref.remove("temUserPhone");
+                                                SharedPref.remove("temUserPassword");
+                                                AppNavigator.pushAndReplacePage(context, page: const SignInScreen());
+                                              },
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(color: AppColors.red),
+                                                  borderRadius: BorderRadius.circular(10)
+                                                ),
+                                                child: const Padding(
+                                                  padding: EdgeInsets.fromLTRB(10,4.0,10,4),
+                                                  child: CustomText(
+                                                    text:
+                                                    "Logout",
+                                                    //weight: FontWeight.bold,
+                                                    color: AppColors.red,
+                                                    size: 12,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
                                         ),
                                         // PinAuthentication(
                                         //   onChanged: (v) {
@@ -189,29 +254,33 @@ class _SignInWIthAccessPinBiometricsState
                                           cancelColor: AppColors.black,
                                           inputBorderRadius:
                                               BorderRadius.circular(10),
-                                          leftExtraInputWidget: GestureDetector(
+                                          leftExtraInputWidget: canUseBiometrics?GestureDetector(
                                               onTap: () async {
-                                                final LocalAuthentication
-                                                    _localAuthentication =
-                                                    LocalAuthentication();
-                                                bool isBiometricAvailable =
-                                                    await _localAuthentication
-                                                        .canCheckBiometrics;
-                                                if (isBiometricAvailable) {
-                                                  LocalAuthentication();
-                                                  bool isAuthenticated =
-                                                      await _localAuthentication
-                                                          .authenticate(
-                                                              localizedReason:
-                                                                  'Authenticate '
-                                                                  'using biometrics');
-                                                  if (isAuthenticated) {
-                                                    print(12345678);
-                                                  }
-                                                } else {
-                                                  MSG.warningSnackBar(context,
-                                                      "No biometrics is set");
+                                                bool didAuthenticate = await AppUtils.biometrics("Please authenticate to sign in");
+                                                if (didAuthenticate) {
+                                                  //model.signIn(context, withBiometrics: true);
                                                 }
+                                                // final LocalAuthentication
+                                                //     _localAuthentication =
+                                                //     LocalAuthentication();
+                                                // bool isBiometricAvailable =
+                                                //     await _localAuthentication
+                                                //         .canCheckBiometrics;
+                                                // if (isBiometricAvailable) {
+                                                //   LocalAuthentication();
+                                                //   bool isAuthenticated =
+                                                //       await _localAuthentication
+                                                //           .authenticate(
+                                                //               localizedReason:
+                                                //                   'Authenticate '
+                                                //                   'using biometrics');
+                                                //   if (isAuthenticated) {
+                                                //     print(12345678);
+                                                //   }
+                                                // } else {
+                                                //   MSG.warningSnackBar(context,
+                                                //       "No biometrics is set");
+                                                // }
                                               },
                                               child: Padding(
                                                 padding:
@@ -226,9 +295,9 @@ class _SignInWIthAccessPinBiometricsState
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10)),
-                                                    child: Icon(
+                                                    child: const Icon(
                                                         Icons.fingerprint)),
-                                              )),
+                                              )):const SizedBox(),
                                           keyoardBtnBorderRadius:
                                               BorderRadius.circular(10),
                                           //inputElevation: 3,
@@ -243,9 +312,17 @@ class _SignInWIthAccessPinBiometricsState
                                               pinInputController,
                                           onSubmit: () async {
                                             /// ignore: avoid_print
-                                            String userData=await SharedPref.getString('userData');
-                                            String password=await SharedPref.getString('password');
-                                            authBloc.add(SignInEventClick(userData,password,pinInputController.text,'accessPin'));
+                                            String userData =
+                                                await await SharedPref.getString(
+                                                    'userData');
+                                            String password =
+                                                await await SharedPref.getString(
+                                                    'password');
+                                            authBloc.add(SignInEventClick(
+                                                userData,
+                                                password,
+                                                pinInputController.text,
+                                                'accessPin'));
                                             // if (widget.pin !=
                                             //     pinInputController.text) {
                                             //   MSG.warningSnackBar(
@@ -346,4 +423,3 @@ class _SignInWIthAccessPinBiometricsState
         });
   }
 }
-

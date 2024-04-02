@@ -10,15 +10,20 @@ class CustomAppBar extends StatelessWidget {
   final Color mainColor;
   final Color subColor;
 
-  const CustomAppBar({super.key, required this.title,this.subColor=AppColors.appBarSubColor,this.mainColor=AppColors.appBarMainColor});
+  const CustomAppBar(
+      {super.key,
+      required this.title,
+      this.subColor = AppColors.appBarSubColor,
+      this.mainColor = AppColors.appBarMainColor});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 120,
       decoration: BoxDecoration(
-          color:subColor,
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(30))),
+          color: subColor,
+          borderRadius:
+              const BorderRadius.vertical(bottom: Radius.circular(30))),
       child: Column(
         children: [
           Container(
@@ -27,14 +32,17 @@ class CustomAppBar extends StatelessWidget {
             decoration: BoxDecoration(
                 color: mainColor,
                 borderRadius:
-                    BorderRadius.vertical(bottom: Radius.circular(30))),
+                    const BorderRadius.vertical(bottom: Radius.circular(30))),
             child: Row(
               children: [
                 SafeArea(
                     child: Padding(
                   padding: const EdgeInsets.only(left: 20.0),
                   child: GestureDetector(
-                      onTap: () {Navigator.pop(context);}, child: SvgPicture.asset(title)),
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: SvgPicture.asset(title)),
                 ))
               ],
             ),

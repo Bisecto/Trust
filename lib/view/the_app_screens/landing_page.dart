@@ -2,12 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/res/app_list.dart';
+import 'package:teller_trust/view/the_app_screens/send_page.dart';
 
+import '../../model/user.dart';
 import '../../res/app_colors.dart';
 import '../../res/app_images.dart';
+import 'bills_page.dart';
+import 'card_page.dart';
+import 'home_page.dart';
+import 'more_page.dart';
 
 class LandingPage extends StatefulWidget {
-  const LandingPage({super.key});
+  User user;
+   LandingPage({super.key, required this.user});
 
   @override
   State<LandingPage> createState() => _LandingPageState();
@@ -15,7 +22,20 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPageState extends State<LandingPage> {
   int _currentIndex = 0;
+  List<Widget> landPageScreens = [];
 
+  @override
+  void initState() {
+    // TODO: implement initState
+  landPageScreens = [
+    HomePage(user: widget.user,),
+    const SendPage(),
+    const BillsPage(),
+    const CardPage(),
+     MorePage(user: widget.user,)
+  ];
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +43,8 @@ class _LandingPageState extends State<LandingPage> {
 
       body: IndexedStack(
         children: [
-          AppList().landPageScreens[_currentIndex],
+
+          landPageScreens[_currentIndex],
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

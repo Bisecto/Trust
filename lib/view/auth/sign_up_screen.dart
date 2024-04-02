@@ -1,14 +1,15 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:teller_trust/model/user.dart';
+import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 import 'package:teller_trust/res/app_colors.dart';
 import 'package:teller_trust/res/app_images.dart';
 import 'package:teller_trust/utills/app_navigator.dart';
 import 'package:teller_trust/utills/app_utils.dart';
+import 'package:teller_trust/view/auth/otp_pin_pages/verify_otp.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
 
 import '../../bloc/auth_bloc/auth_bloc.dart';
-import '../../res/app_router.dart';
 import '../../res/app_strings.dart';
 import '../../utills/app_validator.dart';
 import '../important_pages/dialog_box.dart';
@@ -40,6 +41,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     authBloc.add(InitialEvent());
     super.initState();
   }
+  bool onPasswordValidated = false;
+
 
   @override
   Widget build(BuildContext context) {
@@ -60,8 +63,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
             } else if (state is ErrorState) {
               MSG.warningSnackBar(context, state.error);
             }  else if (state is VerificationContinueState) {
-              AppNavigator.pushAndStackNamed(context,
-                  name: AppRouter.otpVerification);
+              AppNavigator.pushAndStackPage(context, page: VerifyOtp(email:  _emailController.text, isRegister: true));
+              // AppNavigator.pushAndStackNamed(context,
+              //     name: AppRouter.otpVerification);
             }else if (state is SuccessState) {
               // AppNavigator.pushAndStackPage(context,
               // page: UserProfilePage(
@@ -78,7 +82,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               //   );
               case AuthInitial || ErrorState:
                 return SingleChildScrollView(
-                  child: Container(
+                  child: SizedBox(
                     height: AppUtils.deviceScreenSize(context).height,
                     width: AppUtils.deviceScreenSize(context).width,
                     child: Stack(
@@ -322,6 +326,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                               : AppColors.grey,
                                                       isobscure: true,
                                                     ),
+                                                    Padding(
+                                                      padding: const EdgeInsets.all(12.0),
+                                                      child: FlutterPwValidator(
+                                                        controller: _passwordController,
+                                                        minLength: 8,
+                                                        uppercaseCharCount: 1,
+                                                        numericCharCount: 1,
+                                                        specialCharCount: 1,
+                                                        width: 400,
+                                                        height: 150,
+                                                        onSuccess: () {
+                                                          setState(() {
+                                                            onPasswordValidated = true;
+                                                          });
+                                                        },
+                                                        onFail: () {
+                                                          setState(() {
+                                                            onPasswordValidated = false;
+                                                          });
+                                                        },
+                                                      ),
+                                                    ),
+
                                                   ],
                                                 )),
                                           ],
@@ -353,11 +380,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                   _passwordController.text,
                                               "confirmPassword":
                                                   _passwordController.text,
-                                              "emailVerifyUrl":
-                                                  "http://localhost:4319/" ""
                                             };
 
-                                            print(user);
+                                            if (kDebugMode) {
+                                              print(user);
+                                            }
                                             authBloc
                                                 .add(SignUpEventClick(user));
                                             //verifyAlertDialog(context);
@@ -417,7 +444,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           return AlertDialog(
             backgroundColor: Colors.white,
             contentPadding: EdgeInsets.zero,
-            shape: RoundedRectangleBorder(
+            shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20.0)),
             ),
             content: Container(
@@ -443,7 +470,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             topRight: Radius.circular(20),
                             topLeft: Radius.circular(20))),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   const CustomText(
@@ -451,7 +478,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     weight: FontWeight.bold,
                     size: 18,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   const CustomText(
@@ -477,7 +504,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       borderRadius: 10,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   )
                 ],
@@ -491,7 +518,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 class DividerWithTextWidget extends StatelessWidget {
   final String text;
 
-  DividerWithTextWidget({required this.text});
+  const DividerWithTextWidget({super.key, required this.text});
 
   @override
   Widget build(BuildContext context) {

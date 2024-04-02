@@ -36,6 +36,7 @@ class CustomText extends StatelessWidget {
       softWrap: true,
       overflow: TextOverflow.ellipsis,
       style: TextStyle(
+        fontFamily: "CeraPro",
         decoration:
             (underline) ? TextDecoration.underline : TextDecoration.none,
         decorationColor: AppColors.green,

@@ -65,7 +65,8 @@ class FormButton extends StatelessWidget {
             const SizedBox(width: 10,),
             Text(
               text,
-              style: TextStyle(fontSize: textSize, fontWeight: weight,color: textColor),
+              style: TextStyle(                  fontFamily: "CeraPro",
+                  fontSize: textSize, fontWeight: weight,color: textColor),
             ),
           ],
         ),
@@ -110,7 +111,8 @@ class FormBorderButton extends StatelessWidget {
           child: Text(
             text,
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300, color: txtColor),
+            style: TextStyle(                  fontFamily: "CeraPro",
+                fontSize: 12, fontWeight: FontWeight.w300, color: txtColor),
           ),
         ),
       ),
@@ -163,7 +165,8 @@ class FormIconButton extends StatelessWidget {
               ),
               label: Text(
                 text,
-                style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w100),
+                style: TextStyle(                  fontFamily: "CeraPro",
+                    fontSize: fontSize, fontWeight: FontWeight.w100),
               ),
               onPressed: onPressed,
             )));
