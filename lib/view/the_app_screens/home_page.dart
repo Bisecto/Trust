@@ -3,8 +3,12 @@ import 'dart:developer';
 import 'package:custom_pin_screen/custom_pin_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:teller_trust/model/personal_profile.dart';
 import 'package:teller_trust/model/quick_access_model.dart';
+import 'package:teller_trust/model/wallet_info.dart';
 import 'package:teller_trust/res/app_colors.dart';
 import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/res/app_list.dart';
@@ -19,14 +23,16 @@ import 'package:teller_trust/view/the_app_screens/sevices/send_funds.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
+import '../../bloc/app_bloc/app_bloc.dart';
 import '../../model/user.dart';
 import '../../res/app_images.dart';
 import '../important_pages/dialog_box.dart';
+import 'more_pages/withdrawal_account.dart';
 
 class HomePage extends StatefulWidget {
-  User user;
-
-  HomePage({super.key, required this.user});
+  HomePage({
+    super.key,
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -35,6 +41,32 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   bool selector = true;
   bool isMoneyBlocked = false;
+  String firstname = "";
+  String lastname = "";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    getName();
+    super.initState();
+  }
+
+  Future<void> getName() async {
+    firstname = await SharedPref.getString('firstName');
+    lastname = await SharedPref.getString('lastName');
+    isMoneyBlocked = await SharedPref.getBool('isMoneyBlocked');
+    print(isMoneyBlocked);
+    print(isMoneyBlocked);
+    print(isMoneyBlocked);
+    print(isMoneyBlocked);
+    print(isMoneyBlocked);
+    print(isMoneyBlocked);
+    print(isMoneyBlocked);
+    print(isMoneyBlocked);
+    print(isMoneyBlocked);
+    print(isMoneyBlocked);
+    print(isMoneyBlocked);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,51 +136,111 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget homeProfileContainer() {
-    //print(widget.user.imageUrl);
-   // try{
-    return Container(
-      height: 50,
-      width: AppUtils.deviceScreenSize(context).width,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              CircleAvatar(
-                //backgroundImage: NetworkImage(),
-                child: SvgPicture.network(widget.user.imageUrl,height: 25,width: 25,),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomText(
-                    text: "Hello",
-                  ),
-                  CustomText(
-                    text: "${widget.user.lastName} ${widget.user.firstName}",
-                    weight: FontWeight.w600,
-                  ),
-                ],
-              )
-            ],
-          ),
-          Row(
-            children: [
-              SvgPicture.asset(AppIcons.qrCode),
-              const SizedBox(
-                width: 10,
-              ),
-              CircleAvatar(
-                child: SvgPicture.asset(AppIcons.notification),
-                backgroundColor: AppColors.lightPrimary,
-              )
-            ],
-          )
-        ],
-      ),
+    return BlocBuilder<AppBloc, AppState>(
+      builder: (context, state) {
+        if (state is SuccessState) {
+          PersonalInfo personalInfo = state.customerProfile.personalInfo;
+          // Use user data here
+          return Container(
+            height: 50,
+            width: AppUtils.deviceScreenSize(context).width,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    CircleAvatar(
+                      //backgroundImage: NetworkImage(),
+                      child: SvgPicture.network(
+                        personalInfo.imageUrl,
+                        height: 25,
+                        width: 25,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomText(
+                          text: "Hello",
+                        ),
+                        CustomText(
+                          text:
+                              "${personalInfo.lastName} ${personalInfo.firstName}",
+                          weight: FontWeight.w600,
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+                Row(
+                  children: [
+                    SvgPicture.asset(AppIcons.qrCode),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    CircleAvatar(
+                      backgroundColor: AppColors.lightPrimary,
+                      child: SvgPicture.asset(AppIcons.notification),
+                    )
+                  ],
+                )
+              ],
+            ),
+          );
+        } else {
+          return Container(
+            height: 50,
+            width: AppUtils.deviceScreenSize(context).width,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    CircleAvatar(
+                      //backgroundImage: NetworkImage(),
+                      child: SvgPicture.network(
+                        AppIcons.person,
+                        height: 25,
+                        width: 25,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomText(
+                          text: "Hello",
+                        ),
+                        CustomText(
+                          text: "$lastname $firstname",
+                          weight: FontWeight.w600,
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+                Row(
+                  children: [
+                    SvgPicture.asset(AppIcons.qrCode),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    CircleAvatar(
+                      backgroundColor: AppColors.lightPrimary,
+                      child: SvgPicture.asset(AppIcons.notification),
+                    )
+                  ],
+                )
+              ],
+            ),
+          ); // Show loading indicator or handle error state
+        }
+      },
     );
     // } catch (e) {
     //   print('Error loading image: $e');
@@ -168,6 +260,58 @@ class _HomePageState extends State<HomePage> {
         const SizedBox(
           height: 10,
         ),
+        Column(
+          children: [
+            GestureDetector(
+              onTap: () {
+                AppNavigator.pushAndStackPage(context,
+                    page: const WithdrawalAccount());
+              },
+              child: Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Container(
+                    height: 70,
+                    decoration: BoxDecoration(
+                        color: AppColors.lightPrimary,
+                        borderRadius: BorderRadius.circular(20)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const CircleAvatar(
+                            //backgroundImage: AssetImage(AppImages.airtel),
+                            child: Icon(
+                              Icons.notification_important_rounded,
+                              color: AppColors.green,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CustomText(
+                                text: "Add a withdrawal account",
+                                weight: FontWeight.bold,
+                                maxLines: 3,
+                              ),
+                              // CustomText(
+                              //   text: "description",
+                              //   maxLines: 3,
+                              //   size: 14,
+                              // )
+                            ],
+                          )
+                        ],
+                      ),
+                    )),
+              ),
+            ),
+          ],
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -175,6 +319,7 @@ class _HomePageState extends State<HomePage> {
               padding: EdgeInsets.all(10.0),
               child: CustomText(
                 text: "Quick Actions",
+                weight: FontWeight.bold,
               ),
             ),
             Padding(
@@ -235,6 +380,8 @@ class _HomePageState extends State<HomePage> {
                     onTap: () async {
                       setState(() {
                         isMoneyBlocked = !isMoneyBlocked;
+                        SharedPref.putBool('isMoneyBlocked', !isMoneyBlocked);
+                        //isMoneyBlocked = await SharedPref.getBool('isMoneyBlocked') ?? false;
                       });
                       //await SharedPref.putBool("isMoneyblocked",!isMoneyBlocked);
                     },
@@ -248,17 +395,39 @@ class _HomePageState extends State<HomePage> {
                         )),
                   ),
                   if (!isMoneyBlocked)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(AppIcons.naira),
-                        const CustomText(
-                          text: "26,502.00",
-                          size: 22,
-                          weight: FontWeight.bold,
-                          color: AppColors.white,
-                        )
-                      ],
+                    BlocBuilder<AppBloc, AppState>(
+                      builder: (context, state) {
+                        if (state is SuccessState) {
+                          WalletInfo walletInfo =
+                              state.customerProfile.walletInfo;
+                          // Use user data here
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(AppIcons.naira),
+                              CustomText(
+                                text: walletInfo.balance.toString(),
+                                size: 22,
+                                weight: FontWeight.bold,
+                                color: AppColors.white,
+                              )
+                            ],
+                          );
+                        } else {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(AppIcons.naira),
+                              const CustomText(
+                                text: "0.00",
+                                size: 22,
+                                weight: FontWeight.bold,
+                                color: AppColors.white,
+                              )
+                            ],
+                          ); // Show loading indicator or handle error state
+                        }
+                      },
                     ),
                   if (isMoneyBlocked)
                     const CustomText(

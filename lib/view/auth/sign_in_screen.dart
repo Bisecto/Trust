@@ -13,10 +13,13 @@ import 'package:teller_trust/view/widgets/app_custom_text.dart';
 import '../../bloc/auth_bloc/auth_bloc.dart';
 import '../../res/app_router.dart';
 import '../../utills/app_validator.dart';
+import '../../utills/constants/loading_dialog.dart';
+import '../../utills/enums/toast_mesage.dart';
 import '../important_pages/dialog_box.dart';
 import '../important_pages/not_found_page.dart';
 import '../widgets/form_button.dart';
 import '../widgets/form_input.dart';
+import '../widgets/show_toast.dart';
 import 'forgot_password/request_otp.dart';
 import 'otp_pin_pages/create_pin.dart';
 import 'otp_pin_pages/verify_otp.dart';
@@ -62,38 +65,68 @@ class _SignInScreenState extends State<SignInScreen> {
       body: BlocConsumer<AuthBloc, AuthState>(
           bloc: authBloc,
           listenWhen: (previous, current) => current is! AuthInitial,
-          buildWhen: (previous, current) => current is! AuthInitial,
-          listener: (context, state) {
+          buildWhen: (previous, current) => current is AuthInitial,
+          listener: (context, state) async {
             if (state is InitiatedLoginState) {
               if (state.isBiometricPinSet) {
-                MSG.snackBar(context, state.msg);
+                //MSG.snackBar(context, state.msg);
 
                 AppNavigator.pushAndStackPage(context,
                     page: SignInWIthAccessPinBiometrics(
                       userName: state.userName,
                     ));
+                showToast(
+                    context: context,
+                    title: 'Successful',
+                    subtitle: state.msg,
+                    type: ToastMessageType.success);
+
               } else {
-                MSG.snackBar(context, "Logged in. You have not created an access PIN");
+                // MSG.snackBar(context, "Logged in. You have not created an access PIN");
 
                 AppNavigator.pushAndStackPage(context, page: const CreatePin());
+                showToast(
+                    context: context,
+                    title: 'Info',
+                    subtitle: "Logged in. You have not created an access PIN",
+                    type: ToastMessageType.info);
               }
-            } else if (state is AuthOtpRequestState) {
-              MSG.warningSnackBar(context, state.msg);
+            }
+            else if (state is AuthOtpRequestState) {
+              //MSG.warningSnackBar(context, state.msg);
+              // showToast(
+              //     context: context,
+              //     title: 'Info',
+              //     subtitle: state.msg,
+              //     type: ToastMessageType.info);
               // MSG.snackBar(context, state.msg);
-              verifyAlertDialog(context);
-            } else if (state is AuthChangeDeviceOtpRequestState) {
-              MSG.warningSnackBar(context, state.msg);
+              verifyAlertDialog(context,state.msg);
+            }else if (state is AuthChangeDeviceOtpRequestState) {
+
+              //MSG.warningSnackBar(context, state.error);
               AppNavigator.pushAndStackPage(context,
                   page: VerifyOtp(
                     email: state.email,
                     isRegister: false,
                   ));
+              showToast(
+                  context: context,
+                  title: 'Info',
+                  subtitle: state.msg,
+                  type: ToastMessageType.info);
+
               //authBloc.add(VerificationContinueEvent());
 
               // MSG.snackBar(context, state.msg);
               //verifyAlertDialog(context);
             } else if (state is ErrorState) {
-              MSG.warningSnackBar(context, state.error);
+              showToast(
+                  context: context,
+                  title: 'Error Occurred',
+                  subtitle: state.error,
+                  type: ToastMessageType.error);
+
+              //MSG.warningSnackBar(context, state.error);
             } else if (state is VerificationContinueState) {
               AppNavigator.pushAndStackPage(context,
                   page: VerifyOtp(
@@ -237,7 +270,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                                             _emailController
                                                                 .text,
                                                             _passwordController
-                                                                .text));
+                                                                .text,context));
                                                     // await Future.delayed(const Duration(seconds: 3));
                                                     //AppNavigator.pushNamedAndRemoveUntil(context, name: AppRouter.landingPage);
                                                   }
@@ -368,10 +401,10 @@ class _SignInScreenState extends State<SignInScreen> {
               // return UserProfilePage(
               // email: profileState.userEmail,
               // );
-              case LoadingState:
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
+              // case LoadingState:
+              //   return const Center(
+              //     child: CircularProgressIndicator(),
+              //   );
               default:
                 return const Center(
                   child: NotFoundPage(),
@@ -383,9 +416,12 @@ class _SignInScreenState extends State<SignInScreen> {
 
   verifyAlertDialog(
     BuildContext context,
+      String msg
   ) {
     showDialog(
         context: context,
+        barrierDismissible:false,
+
         builder: (BuildContext context) {
           return AlertDialog(
             backgroundColor: Colors.white,
@@ -427,8 +463,8 @@ class _SignInScreenState extends State<SignInScreen> {
                   SizedBox(
                     height: 10,
                   ),
-                  const CustomText(
-                    text: AppStrings.verifySomethingDescription,
+                   CustomText(
+                    text: msg,
                     // weight: FontWeight.bold,
                     size: 16,
                     color: AppColors.textColor,
@@ -439,7 +475,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     padding: const EdgeInsets.fromLTRB(15.0, 0, 20, 0),
                     child: FormButton(
                       onPressed: () {
-                        authBloc.add(VerificationContinueEvent());
+                        authBloc.add(VerificationContinueEvent(context));
                       },
                       height: 50,
                       // width: AppUtils.deviceScreenSize(context).width / 2.5,

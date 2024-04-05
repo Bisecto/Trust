@@ -18,6 +18,8 @@ class AppApis {
 
 
   static String addWithdrawalAccount = "$appBaseUrl/c/w/add-withdrawal-nuban";
+  static String userProfile = "$appBaseUrl/user/c/profile";
+  //static String userProfile = "$appBaseUrl/user/c/profile";
 
 
   static String refreshToken =

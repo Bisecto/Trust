@@ -16,8 +16,10 @@ import '../../../res/app_images.dart';
 import '../../../res/app_strings.dart';
 import '../../../utills/app_navigator.dart';
 import '../../../utills/app_utils.dart';
+import '../../../utills/enums/toast_mesage.dart';
 import '../../important_pages/not_found_page.dart';
 import '../../widgets/app_custom_text.dart';
+import '../../widgets/show_toast.dart';
 
 class ConfirmPin extends StatefulWidget {
   final String pin;
@@ -48,14 +50,17 @@ class _ConfirmPinState extends State<ConfirmPin> {
         body: BlocConsumer<AuthBloc, AuthState>(
             bloc: authBloc,
             listenWhen: (previous, current) => current is! AuthInitial,
-            buildWhen: (previous, current) => current is! AuthInitial,
+            buildWhen: (previous, current) => current is AuthInitial,
             listener: (context, state) async {
               if (state is ErrorState) {
-                MSG.warningSnackBar(context, state.error);
-              } else if (state is SuccessState) {
+                showToast(
+                    context: context,
+                    title: 'Error',
+                    subtitle: state.error,
+                    type: ToastMessageType.error);              } else if (state is SuccessState) {
                 welcomeAlertDialog(context);
                 await Future.delayed(const Duration(seconds: 3));
-                AppNavigator.pushAndRemovePreviousPages(context, page: LandingPage(user: state.data));
+                AppNavigator.pushNamedAndRemoveUntil(context, name: AppRouter.landingPage);
                 // AppNavigator.pushNamedAndRemoveUntil(context,
                 //     name: AppRouter.landingPage,);
                 // // }
@@ -193,12 +198,15 @@ class _ConfirmPinState extends State<ConfirmPin> {
                                             /// ignore: avoid_print
                                             if (widget.pin !=
                                                 pinInputController.text) {
-                                              MSG.warningSnackBar(context,
-                                                  "Pin does not match");
+                                              showToast(
+                                                  context: context,
+                                                  title: 'Warning',
+                                                  subtitle: "PIN does not match",
+                                                  type: ToastMessageType.warning);
                                             } else {
                                               authBloc.add(CreatePinEvent(
                                                   widget.pin,
-                                                  pinInputController.text));
+                                                  pinInputController.text,context));
                                             }
                                             print(
                                                 "Text is : ${pinInputController.text}");
@@ -216,10 +224,10 @@ class _ConfirmPinState extends State<ConfirmPin> {
                       ),
                     ),
                   );
-                case LoadingState:
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
+                // case LoadingState:
+                //   return const Center(
+                //     child: CircularProgressIndicator(),
+                //   );
                 default:
                   return const Center(
                     child: NotFoundPage(),
@@ -231,6 +239,7 @@ class _ConfirmPinState extends State<ConfirmPin> {
   welcomeAlertDialog(BuildContext context) {
     showDialog(
         context: context,
+        barrierDismissible:false,
         builder: (BuildContext context) {
           return AlertDialog(
             backgroundColor: Colors.white,

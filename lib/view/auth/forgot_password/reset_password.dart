@@ -14,11 +14,13 @@ import '../../../res/app_router.dart';
 import '../../../utills/app_navigator.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/app_validator.dart';
+import '../../../utills/enums/toast_mesage.dart';
 import '../../important_pages/dialog_box.dart';
 import '../../important_pages/not_found_page.dart';
 import '../../widgets/app_custom_text.dart';
 import '../../widgets/form_button.dart';
 import '../../widgets/form_input.dart';
+import '../../widgets/show_toast.dart';
 
 class ResetPassword extends StatefulWidget {
   String email;
@@ -55,13 +57,24 @@ class _ResetPasswordState extends State<ResetPassword> {
       body: BlocConsumer<AuthBloc, AuthState>(
           bloc: authBloc,
           listenWhen: (previous, current) => current is! AuthInitial,
-          buildWhen: (previous, current) => current is! AuthInitial,
+          buildWhen: (previous, current) => current is AuthInitial,
           listener: (context, state) {
             if (state is PasswordResetSuccessState) {
-              MSG.snackBar(context, state.msg);
+             // MSG.snackBar(context, state.msg);
+
               AppNavigator.pushAndStackPage(context, page: SignInScreen());
+              showToast(
+                  context: context,
+                  title: 'Successful',
+                  subtitle: state.msg,
+                  type: ToastMessageType.success);
+
             } else if (state is ErrorState) {
-              MSG.warningSnackBar(context, state.error);
+              showToast(
+                  context: context,
+                  title: 'Error',
+                  subtitle: state.error,
+                  type: ToastMessageType.error);
             }
           },
           builder: (context, state) {
@@ -244,7 +257,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                                                         addedPin,
                                                         _passwordController
                                                             .text,
-                                                        _confirmPasswordController.text));
+                                                        _confirmPasswordController.text,context));
                                                     // await Future.delayed(const Duration(seconds: 3));
                                                     //AppNavigator.pushNamedAndRemoveUntil(context, name: AppRouter.landingPage);
                                                   }
@@ -294,10 +307,10 @@ class _ResetPasswordState extends State<ResetPassword> {
                   ),
                 );
 
-              case LoadingState:
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
+              // case LoadingState:
+              //   return const Center(
+              //     child: CircularProgressIndicator(),
+              //   );
               default:
                 return const Center(
                   child: NotFoundPage(),

@@ -15,11 +15,14 @@ import '../../res/app_strings.dart';
 import '../../utills/app_navigator.dart';
 import '../../utills/app_utils.dart';
 import '../../utills/app_validator.dart';
+import '../../utills/enums/toast_mesage.dart';
 import '../important_pages/dialog_box.dart';
 import '../important_pages/not_found_page.dart';
 import '../widgets/app_custom_text.dart';
 import '../widgets/form_input.dart';
 import 'package:local_auth/local_auth.dart';
+
+import '../widgets/show_toast.dart';
 
 class SignInWIthAccessPinBiometrics extends StatefulWidget {
   String userName;
@@ -64,13 +67,16 @@ bool canUseBiometrics=false;
         body: BlocConsumer<AuthBloc, AuthState>(
             bloc: authBloc,
             listenWhen: (previous, current) => current is! AuthInitial,
-            buildWhen: (previous, current) => current is! AuthInitial,
+            buildWhen: (previous, current) => current is AuthInitial,
             listener: (context, state) async {
               if (state is ErrorState) {
-                MSG.warningSnackBar(context, state.error);
-              } else if (state is SuccessState) {
+                showToast(
+                    context: context,
+                    title: 'Error',
+                    subtitle: state.error,
+                    type: ToastMessageType.error);              } else if (state is SuccessState) {
                 //await Future.delayed(const Duration(seconds: 3));
-                AppNavigator.pushAndReplacePage(context, page: LandingPage(user: state.data));
+                AppNavigator.pushNamedAndRemoveUntil(context, name: AppRouter.landingPage);
                 // AppNavigator.pushNamedAndRemoveUntil(context,
                 //     name: AppRouter.landingPage,);
                 // // }
@@ -322,7 +328,7 @@ bool canUseBiometrics=false;
                                                 userData,
                                                 password,
                                                 pinInputController.text,
-                                                'accessPin'));
+                                                'accessPin',context));
                                             // if (widget.pin !=
                                             //     pinInputController.text) {
                                             //   MSG.warningSnackBar(
@@ -346,10 +352,10 @@ bool canUseBiometrics=false;
                       ),
                     ),
                   );
-                case LoadingState:
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
+                // case LoadingState:
+                //   return const Center(
+                //     child: CircularProgressIndicator(),
+                //   );
                 default:
                   return const Center(
                     child: NotFoundPage(),

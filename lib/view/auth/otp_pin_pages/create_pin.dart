@@ -13,9 +13,11 @@ import '../../../bloc/auth_bloc/auth_bloc.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/app_images.dart';
 import '../../../utills/app_utils.dart';
+import '../../../utills/enums/toast_mesage.dart';
 import '../../important_pages/dialog_box.dart';
 import '../../important_pages/not_found_page.dart';
 import '../../widgets/app_custom_text.dart';
+import '../../widgets/show_toast.dart';
 
 class CreatePin extends StatefulWidget {
   const CreatePin({
@@ -48,11 +50,14 @@ class _CreatePinState extends State<CreatePin> {
       body: BlocConsumer<AuthBloc, AuthState>(
           bloc: authBloc,
           listenWhen: (previous, current) => current is! AuthInitial,
-          buildWhen: (previous, current) => current is! AuthInitial,
+          buildWhen: (previous, current) => current is AuthInitial,
           listener: (context, state) {
               if (state is ErrorState) {
-              MSG.warningSnackBar(context, state.error);
-            }   else if (state is VerificationContinueState) {
+                showToast(
+                    context: context,
+                    title: 'Error',
+                    subtitle: state.error,
+                    type: ToastMessageType.error);            }   else if (state is VerificationContinueState) {
               AppNavigator.pushAndStackPage(context,
               page: ConfirmPin(
               pin: pinInputController.text,
@@ -211,7 +216,7 @@ class _CreatePinState extends State<CreatePin> {
 
                                           onSubmit: () {
                                             /// ignore: avoid_print
-                                           authBloc.add(VerificationContinueEvent());
+                                           authBloc.add(VerificationContinueEvent(context));
                                             print("Text is : " +
                                                 pinInputController.text);
                                           },
@@ -228,10 +233,10 @@ class _CreatePinState extends State<CreatePin> {
                       ),
                     ),
                   );
-              case LoadingState:
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
+              // case LoadingState:
+              //   return const Center(
+              //     child: CircularProgressIndicator(),
+              //   );
               default:
                 return const Center(
                   child: NotFoundPage(),

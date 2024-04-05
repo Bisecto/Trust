@@ -6,8 +6,8 @@ import '../model/user.dart';
 import '../res/app_strings.dart';
 import 'package:http/http.dart' as http;
 
-class AuthRepository {
-  Future<http.Response> authPostRequest(
+class AppRepository {
+  Future<http.Response> appPostRequest(
       Map<dynamic, String> data, String apiUrl,
       {String accessToken = '',String accessPIN = '', String refreshToken = ''}) async {
     print(apiUrl);
@@ -32,14 +32,17 @@ class AuthRepository {
     return response;
   }
 
-  Future<http.Response> authGetRequest(User user, String apiUrl) async {
+  Future<http.Response> appGetRequest( String apiUrl, {String accessToken = '',String accessPIN = '', String refreshToken = ''}) async {
     print(98765456789);
-    final response = await http.post(
+    var headers = {
+      'x-access-token': accessToken,
+      'x-access-pin': accessPIN,
+      'x-refresh-token': refreshToken,
+      'Content-Type': 'application/json'
+    };
+    final response = await http.get(
       Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(user),
+      headers:headers,
     );
     return response;
   }

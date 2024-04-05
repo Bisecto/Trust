@@ -11,12 +11,15 @@ import '../../../res/app_colors.dart';
 import '../../../res/app_icons.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/app_validator.dart';
+import '../../../utills/enums/toast_mesage.dart';
 import '../../important_pages/dialog_box.dart';
 import '../../important_pages/not_found_page.dart';
 import '../../widgets/appBar_widget.dart';
 import '../../widgets/custom_container.dart';
 import '../../widgets/form_input.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
+
+import '../../widgets/show_toast.dart';
 
 class ChangePassword extends StatefulWidget {
   const ChangePassword({super.key});
@@ -53,15 +56,22 @@ class _ChangePasswordState extends State<ChangePassword> {
               BlocConsumer<AuthBloc, AuthState>(
                   bloc: authBloc,
                   listenWhen: (previous, current) => current is! AuthInitial,
-                  buildWhen: (previous, current) => current is! AuthInitial,
+                  buildWhen: (previous, current) => current is AuthInitial,
                   listener: (context, state) async {
                     if (state is ErrorState) {
-                      MSG.warningSnackBar(context, state.error);
-                    } else if (state is SuccessState) {
+                                          showToast(
+                                              context: context,
+                                              title: 'Error',
+                                              subtitle: state.error,
+                                              type: ToastMessageType.error);                    } else if (state is SuccessState) {
                       Navigator.pop(context);
                       Navigator.pop(context);
-
-                      MSG.snackBar(context, "Password changed successful");
+                      showToast(
+                          context: context,
+                          title: 'Successful',
+                          subtitle: "Password changed successful",
+                          type: ToastMessageType.success);
+                      //MSG.snackBar(context, "Password changed successful");
                       // welcomeAlertDialog(context);
                       // await Future.delayed(const Duration(seconds: 3));
                       // AppNavigator.pushNamedAndRemoveUntil(context,
@@ -154,7 +164,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                               top: Radius.circular(20.0)),
                                         ),
                                         context: context,
-                                        builder: (context) =>PinContinue(authBloc: authBloc, data: data,)
+                                        builder: (context) =>PinContinue(authBloc: authBloc, data: data, context: context,)
                                       );
                                     },
                                     text: "Continue",
@@ -165,10 +175,10 @@ class _ChangePasswordState extends State<ChangePassword> {
                           ),
                         ),
                       );
-                      case LoadingState:
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
+                      // case LoadingState:
+                      //   return const Center(
+                      //     child: CircularProgressIndicator(),
+                      //   );
                       default:
                         return const Center(
                           child: NotFoundPage(),
@@ -185,7 +195,8 @@ class _ChangePasswordState extends State<ChangePassword> {
 class PinContinue extends StatefulWidget {
   AuthBloc authBloc;
   Map<dynamic,String> data;
-   PinContinue({super.key, required this.authBloc, required this.data});
+  BuildContext context;
+   PinContinue({super.key, required this.authBloc, required this.data,required this.context});
 
   @override
   State<PinContinue> createState() => _PinContinueState();
@@ -246,8 +257,10 @@ class _PinContinueState extends State<PinContinue> {
                           pinInputController: pinInputController,
 
                           onSubmit: () {
-                            Navigator.pop(context);
-                            widget.authBloc.add(ChangePasswordEvent(pinInputController.text,widget.data));
+                           //Navigator.pop(context);
+                            widget.authBloc.add(ChangePasswordEvent(pinInputController.text,widget.data,widget.context));
+                           //Navigator.pop(context);
+
 
                           },
                           keyboardFontFamily: '',

@@ -12,10 +12,12 @@ import 'package:teller_trust/view/widgets/app_custom_text.dart';
 import '../../bloc/auth_bloc/auth_bloc.dart';
 import '../../res/app_strings.dart';
 import '../../utills/app_validator.dart';
+import '../../utills/enums/toast_mesage.dart';
 import '../important_pages/dialog_box.dart';
 import '../important_pages/not_found_page.dart';
 import '../widgets/form_button.dart';
 import '../widgets/form_input.dart';
+import '../widgets/show_toast.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -41,8 +43,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     authBloc.add(InitialEvent());
     super.initState();
   }
-  bool onPasswordValidated = false;
 
+  bool onPasswordValidated = false;
 
   @override
   Widget build(BuildContext context) {
@@ -52,21 +54,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
       body: BlocConsumer<AuthBloc, AuthState>(
           bloc: authBloc,
           listenWhen: (previous, current) => current is! AuthInitial,
-          buildWhen: (previous, current) => current is! AuthInitial,
+          buildWhen: (previous, current) => current is AuthInitial,
           listener: (context, state) {
             if (state is AuthOtpRequestState) {
-              MSG.snackBar(context, state.msg);
-              verifyAlertDialog(context);
-
+              // MSG.snackBar(context, state.msg);
+              verifyAlertDialog(context,state.msg);
+              // showToast(
+              //     context: context,
+              //     title: 'Info',
+              //     subtitle: state.error,
+              //     type: ToastMessageType.error);
               // AppNavigator.pushAndStackNamed(context,
               //     name: AppRouter.otpPage);
             } else if (state is ErrorState) {
-              MSG.warningSnackBar(context, state.error);
-            }  else if (state is VerificationContinueState) {
-              AppNavigator.pushAndStackPage(context, page: VerifyOtp(email:  _emailController.text, isRegister: true));
+              showToast(
+                  context: context,
+                  title: 'Error',
+                  subtitle: state.error,
+                  type: ToastMessageType.error);
+            } else if (state is VerificationContinueState) {
+              AppNavigator.pushAndStackPage(context,
+                  page: VerifyOtp(
+                      email: _emailController.text, isRegister: true));
               // AppNavigator.pushAndStackNamed(context,
               //     name: AppRouter.otpVerification);
-            }else if (state is SuccessState) {
+            } else if (state is SuccessState) {
               // AppNavigator.pushAndStackPage(context,
               // page: UserProfilePage(
               // email: state.userEmail,
@@ -327,9 +339,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                       isobscure: true,
                                                     ),
                                                     Padding(
-                                                      padding: const EdgeInsets.all(12.0),
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              12.0),
                                                       child: FlutterPwValidator(
-                                                        controller: _passwordController,
+                                                        controller:
+                                                            _passwordController,
                                                         minLength: 8,
                                                         uppercaseCharCount: 1,
                                                         numericCharCount: 1,
@@ -338,17 +353,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                         height: 150,
                                                         onSuccess: () {
                                                           setState(() {
-                                                            onPasswordValidated = true;
+                                                            onPasswordValidated =
+                                                                true;
                                                           });
                                                         },
                                                         onFail: () {
                                                           setState(() {
-                                                            onPasswordValidated = false;
+                                                            onPasswordValidated =
+                                                                false;
                                                           });
                                                         },
                                                       ),
                                                     ),
-
                                                   ],
                                                 )),
                                           ],
@@ -385,8 +401,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                             if (kDebugMode) {
                                               print(user);
                                             }
-                                            authBloc
-                                                .add(SignUpEventClick(user));
+                                            authBloc.add(SignUpEventClick(
+                                                user, context));
                                             //verifyAlertDialog(context);
                                           }
                                         },
@@ -424,10 +440,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
               // return UserProfilePage(
               // email: profileState.userEmail,
               // );
-              case LoadingState:
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
+              // case LoadingState:
+              //   return const Center(
+              //     child: CircularProgressIndicator(),
+              //   );
               default:
                 return const Center(
                   child: NotFoundPage(),
@@ -437,9 +453,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  verifyAlertDialog(BuildContext context,) {
+  verifyAlertDialog(
+    BuildContext context,
+      String msg
+  ) {
     showDialog(
         context: context,
+        barrierDismissible:false,
         builder: (BuildContext context) {
           return AlertDialog(
             backgroundColor: Colors.white,
@@ -481,8 +501,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   const SizedBox(
                     height: 10,
                   ),
-                  const CustomText(
-                    text: AppStrings.verifySomethingDescription,
+                   CustomText(
+                    text: msg,//AppStrings.verifySomethingDescription,
                     // weight: FontWeight.bold,
                     size: 16,
                     color: AppColors.textColor,
@@ -493,7 +513,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     padding: const EdgeInsets.fromLTRB(15.0, 0, 20, 0),
                     child: FormButton(
                       onPressed: () {
-                        authBloc.add(VerificationContinueEvent());
+                        authBloc.add(VerificationContinueEvent(context));
                       },
                       height: 50,
                       // width: AppUtils.deviceScreenSize(context).width / 2.5,

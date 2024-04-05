@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:teller_trust/view/auth/sign_up_screen.dart';
 import 'package:teller_trust/view/the_app_screens/bills_page.dart';
 import 'package:teller_trust/view/the_app_screens/card_page.dart';
 import 'package:teller_trust/view/the_app_screens/home_page.dart';
 
+import '../bloc/app_bloc/app_bloc.dart';
 import '../model/user.dart';
 import '../view/auth/sign_in_with_access_pin_and_biometrics.dart';
 import '../view/auth/otp_pin_pages/verify_otp.dart';
@@ -34,7 +36,7 @@ class AppRouter {
   static const String noInternetScreen = "/no-internet";
 
   ///LANDING PAGE LandingPage
-  //static const String landingPage = "/landing-page";
+  static const String landingPage = "/landing-page";
  // static const String homePage = "/home-page";
   static const String sendPage = "/send-page";
   static const String billsPage = "/bills-page";
@@ -60,10 +62,10 @@ class AppRouter {
       case signInScreen:
         return MaterialPageRoute(builder: (_) => const SignInScreen());
 
-      // case landingPage:
-      //   final User user =
-      //   routeSettings.arguments as User;
-      //   return MaterialPageRoute(builder: (_) => const LandingPage(user: user,));
+       case landingPage:
+         return MaterialPageRoute(builder: (_) =>  BlocProvider(
+             create: (_) => AppBloc(),
+             child: LandingPage()));
       case signInWIthAccessPinBiometrics:
         return MaterialPageRoute(builder: (_) =>  SignInWIthAccessPinBiometrics(userName: 'name',));
       // case homePage:

@@ -2,13 +2,14 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:teller_trust/res/apis.dart';
-import 'package:teller_trust/view/auth/otp_pin_pages/verify_otp.dart';
 
 import '../../model/user.dart';
-import '../../repository/auth_repository.dart';
+import '../../repository/app_repository.dart';
 import '../../utills/app_utils.dart';
+import '../../utills/constants/loading_dialog.dart';
 import '../../utills/shared_preferences.dart';
 
 part 'auth_event.dart';
@@ -33,24 +34,35 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<FutureOr<void>> signUpEventClick(
       SignUpEventClick event, Emitter<AuthState> emit) async {
     //emit(LoadingState());
-
-    AuthRepository authRepository = AuthRepository();
+    showDialog(
+        barrierDismissible: false,
+        context: event.context,
+        builder: (_) {
+          return const LoadingDialog('Creating Account...');
+        });
+    AppRepository authRepository = AppRepository();
     try {
       var response =
-          await authRepository.authPostRequest(event.data, AppApis.signUpApi);
+          await authRepository.appPostRequest(event.data, AppApis.signUpApi);
       print(response.statusCode);
       print(response.body);
+
       if (response.statusCode == 200 || response.statusCode == 201) {
         await SharedPref.putString("password", event.data["password"]!);
         await SharedPref.putString("email", event.data["email"]!);
         await SharedPref.putString("phone", event.data['phone']!);
-        emit(AuthInitial());
+        await SharedPref.putString("userData", event.data['phone']!);
+        Navigator.pop(event.context);
         emit(AuthOtpRequestState(
             AppUtils.convertString(json.decode(response.body)['message'] +
                 " OTP: " +
                 json.decode(response.body)['data']['verifyToken']),
             event.data["email"]!));
+        emit(AuthInitial());
+
       } else {
+        Navigator.pop(event.context);
+
         emit(ErrorState(
             AppUtils.convertString(json.decode(response.body)['message'])));
         //print(event.password);
@@ -58,6 +70,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthInitial());
       }
     } catch (e) {
+      Navigator.pop(event.context);
+
       print(e);
       emit(AuthInitial());
       print(12345678);
@@ -71,8 +85,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   Future<FutureOr<void>> verifyOTPEventCLick(
       VerifyOTPEventCLick event, Emitter<AuthState> emit) async {
-    emit(LoadingState());
-    AuthRepository authRepository = AuthRepository();
+    showDialog(
+        barrierDismissible: false,
+        context: event.context,
+        builder: (_) {
+          return const LoadingDialog('Verifying OTP...');
+        });
+    AppRepository authRepository = AppRepository();
     // User user =
     //     User();
     String deviceId = await AppUtils.getId();
@@ -88,7 +107,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     };
     print(data);
     try {
-      var response = await authRepository.authPostRequest(
+      var response = await authRepository.appPostRequest(
           !event.isDeviceChange ? deviceData : data,
           !event.isDeviceChange
               ? AppApis.verifyDeviceChange
@@ -106,11 +125,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         User user = User.fromJson(json.decode(response.body)['data']);
         print(response.body);
         await SharedPref.putString("userId", user.userId);
-        emit(AuthInitial());
+        Navigator.pop(event.context);
         emit(AuthOtpVerifySucess(
             AppUtils.convertString(json.decode(response.body)['message']),
             user));
+        emit(AuthInitial());
+
       } else {
+        Navigator.pop(event.context);
+
         emit(ErrorState(
             AppUtils.convertString(json.decode(response.body)['message'])));
         //print(event.password);
@@ -118,6 +141,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthInitial());
       }
     } catch (e) {
+      Navigator.pop(event.context);
       print(e);
       emit(AuthInitial());
       print(12345678);
@@ -126,8 +150,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   Future<FutureOr<void>> createPinEvent(
       CreatePinEvent event, Emitter<AuthState> emit) async {
-    emit(LoadingState());
-    AuthRepository authRepository = AuthRepository();
+    showDialog(
+        barrierDismissible: false,
+        context: event.context,
+        builder: (_) {
+          return const LoadingDialog('Creating Access PIN...');
+        });
+    AppRepository authRepository = AppRepository();
     String userId = await SharedPref.getString("userId");
     print(userId);
     print(userId);
@@ -143,25 +172,55 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     print(data);
     try {
       var response =
-          await authRepository.authPostRequest(data, AppApis.createAccessPin);
-      print(response.statusCode);
+          await authRepository.appPostRequest(data, AppApis.createAccessPin);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        User user = User.fromJson(json.decode(response.body)['data']);
-        print(response.body);
-        await SharedPref.putString("accessPin", event.accessPin);
-        await SharedPref.putString("email", user.email);
-        await SharedPref.putString("phone", user.phone);
-        await SharedPref.putString("userId", user.userId);
-        await SharedPref.putString("firstname", user.firstName);
-        await SharedPref.putString("lastName", user.lastName);
-        emit(AuthInitial());
+        String deviceID = await AppUtils.getId();
+        String userData=await SharedPref.getString('userData');
+        String password=await SharedPref.getString('password');
+        Map<dynamic, String> loginData = {
+          "userData": userData,
+          "password": password,
+          "accessPin": event.accessPin,
+          "loginOption": "accessPin",
+        };
+        await SharedPref.putString(
+            "refresh-token", response.headers['refresh-token']!);
 
-        emit(SuccessState(
-          user,
-          AppUtils.convertString(json.decode(response.body)['message']),
-        ));
+        var loginResponse = await authRepository.appPostRequest(
+            loginData, AppApis.loginAccessPin,
+            refreshToken: response.headers['refresh-token']!);
+        print(loginResponse.statusCode);
+
+        print(loginResponse.body);
+        if (loginResponse.statusCode == 200 || loginResponse.statusCode == 201) {
+          await SharedPref.putString("userData", userData);
+          await SharedPref.putString("password", password);
+          User user = User.fromJson(jsonDecode(loginResponse.body)['data']);
+          await SharedPref.putString("firstName", user.firstName);
+          await SharedPref.putString("lastName", user.lastName);
+          await SharedPref.putString(
+              "access-token", loginResponse.headers['access-token']!);
+
+          Navigator.pop(event.context);
+
+          emit(SuccessState(
+            user,
+            AppUtils.convertString(json.decode(loginResponse.body)['message']),
+          ));
+          emit(AuthInitial());
+        }else{
+          Navigator.pop(event.context);
+
+          emit(ErrorState(
+              AppUtils.convertString(json.decode(loginResponse.body)['message'])));
+          //print(event.password);
+          print(json.decode(loginResponse.body));
+          emit(AuthInitial());
+        }
       } else {
+        Navigator.pop(event.context);
+
         emit(ErrorState(
             AppUtils.convertString(json.decode(response.body)['message'])));
         //print(event.password);
@@ -170,6 +229,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     } catch (e) {
       print(e);
+      Navigator.pop(event.context);
+
       emit(AuthInitial());
       print(12345678);
     }
@@ -181,16 +242,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   Future<FutureOr<void>> initiateSignInEventClick(
       InitiateSignInEventClick event, Emitter<AuthState> emit) async {
-    emit(LoadingState());
+    showDialog(
+        barrierDismissible: false,
+        context: event.context,
+        builder: (_) {
+          return const LoadingDialog('Initiating login...');
+        });
     String deviceID = await AppUtils.getId();
-    AuthRepository authRepository = AuthRepository();
+    AppRepository authRepository = AppRepository();
     Map<dynamic, String> data = {
       "userData": event.userData,
       "password": event.password,
       "deviceId": deviceID
     };
     try {
-      var response = await authRepository.authPostRequest(data, AppApis.login);
+      var response = await authRepository.appPostRequest(data, AppApis.login);
 
       print(response.statusCode);
       print(response.body);
@@ -211,6 +277,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         print(response.headers['refresh-token']);
         await SharedPref.putString(
             "refresh-token", response.headers['refresh-token']!);
+        Navigator.pop(event.context);
 
         emit(InitiatedLoginState(
             //userData,
@@ -222,6 +289,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           json.decode(response.body)['errorCode'] == 'E302') {
         SharedPref.putString('temUserData', event.userData);
         SharedPref.putString('temUserPassword', event.password);
+        Navigator.pop(event.context);
+
         await SharedPref.putString(
             "phone", json.decode(response.body)['data']['phone']);
         emit(AuthOtpRequestState(
@@ -238,15 +307,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         await SharedPref.putString(
             "phone", json.decode(response.body)['data']['phone']);
+        Navigator.pop(event.context);
 
-        emit(AuthInitial());
         emit(AuthChangeDeviceOtpRequestState(
             AppUtils.convertString(json.decode(response.body)['message'] +
                 "OTP " +
                 json.decode(response.body)['data']['verifyToken']),
             json.decode(response.body)['data']['phone'],
             true));
+        emit(AuthInitial());
+
       } else {
+        Navigator.pop(event.context);
+
         emit(ErrorState(
             AppUtils.convertString(json.decode(response.body)['message'])));
         print(event.password);
@@ -255,6 +328,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     } catch (e) {
       print(e);
+      Navigator.pop(event.context);
+
       emit(AuthInitial());
       print(12345678);
     }
@@ -262,10 +337,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   FutureOr<void> signInEventClick(
       SignInEventClick event, Emitter<AuthState> emit) async {
-    emit(LoadingState());
+    showDialog(
+        barrierDismissible: false,
+        context: event.context,
+        builder: (_) {
+          return const LoadingDialog('Signing user in...');
+        });
     String refreshToken = await SharedPref.getString("refresh-token");
 
-    AuthRepository authRepository = AuthRepository();
+    AppRepository authRepository = AppRepository();
     Map<dynamic, String> data = {
       "userData": event.userData,
       "password": event.password,
@@ -273,7 +353,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       "loginOption": event.loginOption,
     };
     try {
-      var response = await authRepository.authPostRequest(
+      var response = await authRepository.appPostRequest(
           data, AppApis.loginAccessPin,
           refreshToken: refreshToken);
       print(response.statusCode);
@@ -295,11 +375,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         //   print('$name: $values');
         // });
         //await SharedPref.putString("lastName", userData.lastName);
-        emit(AuthInitial());
+        Navigator.pop(event.context);
 
         emit(SuccessState(userData,
             AppUtils.convertString(json.decode(response.body)['message'])));
+        emit(AuthInitial());
+
       } else {
+        Navigator.pop(event.context);
+
         emit(ErrorState(
             AppUtils.convertString(json.decode(response.body)['message'])));
         //print(event.password);
@@ -308,6 +392,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     } catch (e) {
       print(e);
+      Navigator.pop(event.context);
+
       emit(AuthInitial());
       print(12345678);
     }
@@ -315,17 +401,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   Future<FutureOr<void>> changePinEvent(
       ChangePinEvent event, Emitter<AuthState> emit) async {
-    emit(LoadingState());
+    showDialog(
+        barrierDismissible: false,
+        context: event.context,
+        builder: (_) {
+          return const LoadingDialog('Changing pin...');
+        });
     String accessToken = await SharedPref.getString("access-token");
 
-    AuthRepository authRepository = AuthRepository();
+    AppRepository authRepository = AppRepository();
     Map<dynamic, String> data = {
       "oldAccessPin": event.oldPin,
       "newAccessPin": event.accessPin,
       "confirmAccessPin": event.confirmAccessPin
     };
     try {
-      var response = await authRepository.authPostRequest(
+      var response = await authRepository.appPostRequest(
           data, AppApis.changeAccessPin,
           accessToken: accessToken);
       print(response.statusCode);
@@ -357,11 +448,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         // });
         //await SharedPref.putString("lastName", userData.lastName);
         await SharedPref.putString("accessPin", event.accessPin);
-        emit(AuthInitial());
+        Navigator.pop(event.context);
 
         emit(SuccessState(userData,
             AppUtils.convertString(json.decode(response.body)['message'])));
+        emit(AuthInitial());
+
       } else {
+        Navigator.pop(event.context);
+
         emit(ErrorState(
             AppUtils.convertString(json.decode(response.body)['message'])));
         //print(event.password);
@@ -370,6 +465,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     } catch (e) {
       print(e);
+      Navigator.pop(event.context);
+
       emit(AuthInitial());
       print(12345678);
     }
@@ -377,22 +474,27 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   Future<FutureOr<void>> changePasswordEvent(
       ChangePasswordEvent event, Emitter<AuthState> emit) async {
-    emit(LoadingState());
+    showDialog(
+        barrierDismissible: false,
+        context: event.context,
+        builder: (_) {
+          return const LoadingDialog('Changing password ...');
+        });
     String accessToken = await SharedPref.getString("access-token");
 
-    AuthRepository authRepository = AuthRepository();
+    AppRepository authRepository = AppRepository();
     // Map<dynamic, String> data = {
     //   "oldPassword": event.oldPassword,
     //   "newPassword": event.newPassword,
     //   "confirmPassword": event.confirmNewPassword
     // };
     try {
-      var response = await authRepository.authPostRequest(
+      var response = await authRepository.appPostRequest(
           event.data, AppApis.changePassword,
           accessToken: accessToken, accessPIN: event.pin);
       print(response.statusCode);
 
-      print(response.body);
+     // print(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
         // await SharedPref.putString("userData", event.userData);
         await SharedPref.putString("password", event.data['newPassword']!);
@@ -409,11 +511,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         //   print('$name: $values');
         // });
         //await SharedPref.putString("lastName", userData.lastName);
-        emit(AuthInitial());
+        Navigator.pop(event.context);
 
         emit(SuccessState(userData,
             AppUtils.convertString(json.decode(response.body)['message'])));
+        emit(AuthInitial());
+
       } else {
+        Navigator.pop(event.context);
+
         emit(ErrorState(
             AppUtils.convertString(json.decode(response.body)['message'])));
         //print(event.password);
@@ -421,21 +527,33 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthInitial());
       }
     } catch (e) {
+
+      //Navigator.pop(event.context);
+
       print(e);
       emit(AuthInitial());
+      emit(ErrorState("There was a problem"));
+
+      Navigator.pop(event.context);
+
       print(12345678);
     }
   }
 
   Future<FutureOr<void>> passwordResetRequestOtpEventCLick(
       PasswordResetRequestOtpEventCLick event, Emitter<AuthState> emit) async {
-    emit(LoadingState());
+    showDialog(
+        barrierDismissible: false,
+        context: event.context,
+        builder: (_) {
+          return const LoadingDialog('Requesting OTP...');
+        });
     //String accessToken = await SharedPref.getString("access-token");
 
-    AuthRepository authRepository = AuthRepository();
+    AppRepository authRepository = AppRepository();
     Map<dynamic, String> data = {"userData": event.data, "medium": "phone"};
     try {
-      var response = await authRepository.authPostRequest(
+      var response = await authRepository.appPostRequest(
         data,
         AppApis.sendPhoneToken,
       );
@@ -448,13 +566,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         // print(response.headers.keys);
         // await SharedPref.putString(
         //     "access-token", response.headers['access-token']!);
-        emit(AuthInitial());
+        Navigator.pop(event.context);
 
         emit(OTPRequestSuccessState(AppUtils.convertString(
             json.decode(response.body)['message'] +
                 " OTP " +
                 json.decode(response.body)['data']['verifyToken'])));
+        emit(AuthInitial());
+
       } else {
+        Navigator.pop(event.context);
+
         emit(ErrorState(
             AppUtils.convertString(json.decode(response.body)['message'])));
         //print(event.password);
@@ -463,6 +585,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     } catch (e) {
       print(e);
+      Navigator.pop(event.context);
+
       emit(AuthInitial());
       print(12345678);
     }
@@ -470,10 +594,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   Future<FutureOr<void>> resetPasswordEvent(
       ResetPasswordEvent event, Emitter<AuthState> emit) async {
-    emit(LoadingState());
+    showDialog(
+        barrierDismissible: false,
+        context: event.context,
+        builder: (_) {
+          return const LoadingDialog('Reseting password...');
+        });
     //String accessToken = await SharedPref.getString("access-token");
 
-    AuthRepository authRepository = AuthRepository();
+    AppRepository authRepository = AppRepository();
     Map<dynamic, String> data = {
       "userData": event.userData,
       "token": event.token,
@@ -481,7 +610,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       "confirmPassword": event.confirmPassword
     };
     try {
-      var response = await authRepository.authPostRequest(
+      var response = await authRepository.appPostRequest(
         data,
         //accessToken: accessToken,
         AppApis.resetPassword,
@@ -492,11 +621,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (response.statusCode == 200 || response.statusCode == 201) {
         // await SharedPref.putString(
         //     "access-token", response.headers['access-token']!);
-        emit(AuthInitial());
+        Navigator.pop(event.context);
 
         emit(PasswordResetSuccessState(
             AppUtils.convertString(json.decode(response.body)['message'])));
+        emit(AuthInitial());
+
       } else {
+        Navigator.pop(event.context);
         emit(ErrorState(
             AppUtils.convertString(json.decode(response.body)['message'])));
         //print(event.password);
@@ -505,6 +637,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     } catch (e) {
       print(e);
+      Navigator.pop(event.context);
       emit(AuthInitial());
       print(12345678);
     }

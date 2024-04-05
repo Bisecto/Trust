@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/res/app_list.dart';
 import 'package:teller_trust/view/the_app_screens/send_page.dart';
 
+import '../../bloc/app_bloc/app_bloc.dart';
 import '../../model/user.dart';
 import '../../res/app_colors.dart';
 import '../../res/app_images.dart';
@@ -13,8 +15,8 @@ import 'home_page.dart';
 import 'more_page.dart';
 
 class LandingPage extends StatefulWidget {
-  User user;
-   LandingPage({super.key, required this.user});
+
+  LandingPage({super.key});
 
   @override
   State<LandingPage> createState() => _LandingPageState();
@@ -27,15 +29,21 @@ class _LandingPageState extends State<LandingPage> {
   @override
   void initState() {
     // TODO: implement initState
-  landPageScreens = [
-    HomePage(user: widget.user,),
-    const SendPage(),
-    const BillsPage(),
-    const CardPage(),
-     MorePage(user: widget.user,)
-  ];
+    context.read<AppBloc>().add(InitialEvent());
+
+    landPageScreens = [
+      HomePage(
+      ),
+      const SendPage(),
+      const BillsPage(),
+      const CardPage(),
+      MorePage(
+
+      )
+    ];
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,13 +51,12 @@ class _LandingPageState extends State<LandingPage> {
 
       body: IndexedStack(
         children: [
-
           landPageScreens[_currentIndex],
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: AppColors.white,
-showUnselectedLabels: true,
+        showUnselectedLabels: true,
         currentIndex: _currentIndex,
         selectedItemColor: AppColors.green,
         unselectedItemColor: AppColors.lightDivider,

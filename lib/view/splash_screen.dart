@@ -28,11 +28,20 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: AppColors.darkGreen,
-        body: Image.asset(
-          AppImages.splashLogo,
-          height: AppUtils.deviceScreenSize(context).height,
-          width: AppUtils.deviceScreenSize(context).width+50,
+        body: Container(
+            height: AppUtils.deviceScreenSize(context).height,
+            width: AppUtils.deviceScreenSize(context).width,
+          decoration: BoxDecoration(
+              color: AppColors.darkGreen,
+
+              image: DecorationImage(image: AssetImage(AppImages.splashLogo,),fit: BoxFit.fill)
+          ),
         )
+        // Image.asset(
+        //   AppImages.splashLogo,
+        //   height: AppUtils.deviceScreenSize(context).height,
+        //   width: AppUtils.deviceScreenSize(context).width+50,
+        // )
         // SvgPicture.asset(
         //   AppIcons.splashScreen,
         //   height: AppUtils.deviceScreenSize(context).height,

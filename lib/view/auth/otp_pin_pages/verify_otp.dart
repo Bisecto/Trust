@@ -14,10 +14,12 @@ import '../../../res/app_images.dart';
 import '../../../res/app_router.dart';
 import '../../../utills/app_navigator.dart';
 import '../../../utills/app_utils.dart';
+import '../../../utills/enums/toast_mesage.dart';
 import '../../important_pages/dialog_box.dart';
 import '../../important_pages/not_found_page.dart';
 import '../../widgets/app_custom_text.dart';
 import '../../widgets/form_button.dart';
+import '../../widgets/show_toast.dart';
 import '../sign_in_with_access_pin_and_biometrics.dart';
 
 class VerifyOtp extends StatefulWidget {
@@ -53,25 +55,33 @@ class _VerifyOtpState extends State<VerifyOtp> {
       body: BlocConsumer<AuthBloc, AuthState>(
           bloc: authBloc,
           listenWhen: (previous, current) => current is! AuthInitial,
-          buildWhen: (previous, current) => current is! AuthInitial,
+          buildWhen: (previous, current) => current is AuthInitial,
           listener: (context, state) async {
             if (state is AuthOtpRequestState) {
-              MSG.snackBar(context, state.msg);
+              //MSG.snackBar(context, state.msg);
+              showToast(
+                  context: context,
+                  title: 'Info',
+                  subtitle: state.msg,
+                  type: ToastMessageType.info);
               // AppNavigator.pushAndStackNamed(context,
               //     name: AppRouter.otpPage);
             } else if (state is ErrorState) {
-              MSG.warningSnackBar(context, state.error);
+              showToast(
+                  context: context,
+                  title: 'Error',
+                  subtitle: state.error,
+                  type: ToastMessageType.error);
             } else if (state is AuthOtpVerifySucess) {
-              MSG.snackBar(context, state.msg);
+              // MSG.snackBar(context, state.msg);
               if (widget.isRegister) {
                 AppNavigator.pushAndStackPage(context, page: const CreatePin());
               } else {
-                String userData=await SharedPref.getString('temUserData');
-                String password=await SharedPref.getString('temUserPassword');
-                authBloc.add(InitiateSignInEventClick(userData,password));
+                String userData = await SharedPref.getString('temUserData');
+                String password = await SharedPref.getString('temUserPassword');
+                authBloc
+                    .add(InitiateSignInEventClick(userData, password, context));
                 //MSG.snackBar(context, state.msg);
-
-
               }
             } else if (state is InitiatedLoginState) {
               AppNavigator.pushAndStackPage(context,
@@ -84,17 +94,32 @@ class _VerifyOtpState extends State<VerifyOtp> {
               // ));
               // }
             } else if (state is AuthChangeDeviceOtpRequestState) {
-              MSG.warningSnackBar(context, state.msg);
-              AppNavigator.pushAndStackPage(context, page: VerifyOtp(email: state.email, isRegister: false,));
+             // MSG.warningSnackBar(context, state.msg);
+              AppNavigator.pushAndStackPage(context,
+                  page: VerifyOtp(
+                    email: state.email,
+                    isRegister: false,
+                  ));
+              showToast(
+                  context: context,
+                  title: 'Info',
+                  subtitle: state.msg,
+                  type: ToastMessageType.info);
               //authBloc.add(VerificationContinueEvent());
 
               // MSG.snackBar(context, state.msg);
               //verifyAlertDialog(context);
+            }else if(state is OTPRequestSuccessState){
+              showToast(
+                  context: context,
+                  title: 'Info',
+                  subtitle: state.msg,
+                  type: ToastMessageType.info);
             }
           },
           builder: (context, state) {
             switch (state.runtimeType) {
-              case (AuthInitial || ErrorState)||OTPRequestSuccessState:
+              case (AuthInitial || ErrorState):
                 return SingleChildScrollView(
                   child: Container(
                     height: AppUtils.deviceScreenSize(context).height,
@@ -219,10 +244,17 @@ class _VerifyOtpState extends State<VerifyOtp> {
                                           if (isCompleted) {
                                             print(addedPin);
                                             authBloc.add(VerifyOTPEventCLick(
-                                                addedPin, widget.isRegister));
+                                                addedPin,
+                                                widget.isRegister,
+                                                context));
                                           } else {
-                                            MSG.warningSnackBar(
-                                                context, "OTP field is empty");
+                                            showToast(
+                                                context: context,
+                                                title: 'Warning',
+                                                subtitle: "OTP field is empty",
+                                                type: ToastMessageType.warning);
+                                            // MSG.warningSnackBar(
+                                            //     context, "OTP field is empty");
                                           }
 
                                           //  //if(otpFieldController.)
@@ -251,17 +283,34 @@ class _VerifyOtpState extends State<VerifyOtp> {
                                                   //     widget.email,false));
                                                   authBloc.add(
                                                       PasswordResetRequestOtpEventCLick(
-                                                          widget.email));
+                                                          widget.email,
+                                                          context));
                                                   setState(() {
                                                     _start = 59;
                                                     startTimer();
                                                   });
-                                                } else {
-                                                  MSG.warningSnackBar(context,
-                                                      'Resend Code after 59s');
+                                                } else
+                                                {
+                                                  setState(() {
+                                                    MSG.warningSnackBar(context,
+                                                        'Resend Code after 59s');                                                  });
                                                 }
                                               },
-                                              onPress2: () {},
+                                              onPress2: () {   if (_start == 0) {
+                                                // authBloc.add(RequestResetPasswordEventClick(
+                                                //     widget.email,false));
+                                                authBloc.add(
+                                                    PasswordResetRequestOtpEventCLick(
+                                                        widget.email,
+                                                        context));
+                                                setState(() {
+                                                  _start = 59;
+                                                  startTimer();
+                                                });
+                                              } else
+                                              {
+                                                MSG.warningSnackBar(context,
+                                                    'Resend Code after 59s');                                              }},
                                               size: 14,
                                               weight: FontWeight.w600,
                                               //color: const Color.fromARGB(255, 19, 48, 63),
@@ -285,10 +334,10 @@ class _VerifyOtpState extends State<VerifyOtp> {
                   ),
                 );
 
-              case LoadingState:
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
+              // case LoadingState:
+              //   return const Center(
+              //     child: CircularProgressIndicator(),
+              //   );
               default:
                 return const Center(
                   child: NotFoundPage(),

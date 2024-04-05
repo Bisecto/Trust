@@ -14,8 +14,7 @@ import '../../widgets/app_custom_text.dart';
 import '../../widgets/custom_container.dart';
 
 class AccountSetting extends StatefulWidget {
-  User user;
-   AccountSetting({super.key, required this.user});
+   AccountSetting({super.key,});
 
   @override
   State<AccountSetting> createState() => _AccountSettingState();
@@ -48,7 +47,7 @@ class _AccountSettingState extends State<AccountSetting> {
                     GestureDetector(
                       onTap: () {
                         AppNavigator.pushAndStackPage(context,
-                            page:  ProfileDetails(user: widget.user,));
+                            page:  ProfileDetails());
                       },
                       child: const CustomContainerFirTitleDesc(
                           title: "Profile Details",

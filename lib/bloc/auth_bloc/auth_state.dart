@@ -7,7 +7,7 @@ class OnClickeEventState extends AuthState {}
 
 class AuthInitial extends AuthState {}
 
-class LoadingState extends AuthState {}
+// class LoadingState extends AuthState {}
 
 class VerificationContinueState extends OnClickeEventState {
   // final String userData;

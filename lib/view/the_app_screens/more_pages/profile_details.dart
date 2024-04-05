@@ -9,8 +9,7 @@ import '../../widgets/appBar_widget.dart';
 import '../../widgets/custom_container.dart';
 
 class ProfileDetails extends StatefulWidget {
-  User user;
-   ProfileDetails({super.key,required this.user});
+   ProfileDetails({super.key,});
 
   @override
   State<ProfileDetails> createState() => _ProfileDetailsState();
@@ -33,35 +32,35 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: CustomContainerWithIcon(
-                    title: widget.user.lastName,
+                    title: "widget.user.lastName",
                     iconData: SvgPicture.asset(AppIcons.person),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: CustomContainerWithIcon(
-                    title: widget.user.firstName,
+                    title: "widget.user.firstName",
                     iconData: SvgPicture.asset(AppIcons.person),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: CustomContainerWithIcon(
-                    title: widget.user.middleName,
+                    title: "widget.user.middleName",
                     iconData: SvgPicture.asset(AppIcons.person),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: CustomContainerWithIcon(
-                    title: widget.user.email,
+                    title: "widget.user.email",
                     iconData: SvgPicture.asset(AppIcons.email),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: CustomContainerWithIcon(
-                    title: widget.user.phone,
+                    title: "widget.user.phone",
                     iconData: SvgPicture.asset(AppIcons.phone),
                   ),
                 ),

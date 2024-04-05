@@ -15,9 +15,8 @@ import '../../utills/shared_preferences.dart';
 import 'more_pages/account_settings.dart';
 
 class MorePage extends StatefulWidget {
-  User user;
 
-  MorePage({super.key, required this.user});
+  MorePage({super.key, });
 
   @override
   State<MorePage> createState() => _MorePageState();
@@ -78,7 +77,7 @@ class _MorePageState extends State<MorePage> {
                     onTap: () {
                       AppNavigator.pushAndStackPage(context,
                           page: AccountSetting(
-                            user: widget.user,
+
                           ));
                     },
                     child: SvgPicture.asset(AppIcons.accounsetting)),
