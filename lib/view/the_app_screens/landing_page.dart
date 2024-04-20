@@ -6,6 +6,7 @@ import 'package:teller_trust/res/app_list.dart';
 import 'package:teller_trust/view/the_app_screens/send_page.dart';
 
 import '../../bloc/app_bloc/app_bloc.dart';
+import '../../bloc/category_bloc/category_bloc.dart';
 import '../../model/user.dart';
 import '../../res/app_colors.dart';
 import '../../res/app_images.dart';
@@ -15,7 +16,6 @@ import 'home_page.dart';
 import 'more_page.dart';
 
 class LandingPage extends StatefulWidget {
-
   LandingPage({super.key});
 
   @override
@@ -30,16 +30,14 @@ class _LandingPageState extends State<LandingPage> {
   void initState() {
     // TODO: implement initState
     context.read<AppBloc>().add(InitialEvent());
+    context.read<CategoryBloc>().add(ListCategoryEvent("1", "5"));
 
     landPageScreens = [
-      HomePage(
-      ),
+      HomePage(),
       const SendPage(),
       const BillsPage(),
       const CardPage(),
-      MorePage(
-
-      )
+      MorePage()
     ];
     super.initState();
   }

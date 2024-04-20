@@ -13,12 +13,18 @@ class ErrorState extends AppState {
   final String error;
 
   ErrorState(this.error);
-}class WirthdrawalAccountAddedError extends AppState {
+}
+
+class WirthdrawalAccountAddedError extends AppState {
   final String error;
 
   WirthdrawalAccountAddedError(this.error);
-}class WirthdrawalAccountAdded extends AppState {
-  WirthdrawalAccountAdded();
+}
+
+class WirthdrawalAccountAdded extends AppState {
+  CustomerProfile customerProfile;
+
+  WirthdrawalAccountAdded(this.customerProfile);
 }
 
 class SuccessState extends AppState {

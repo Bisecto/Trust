@@ -42,6 +42,8 @@ class _ChangePasswordState extends State<ChangePassword> {
     super.initState();
   }
 
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,11 +61,12 @@ class _ChangePasswordState extends State<ChangePassword> {
                   buildWhen: (previous, current) => current is AuthInitial,
                   listener: (context, state) async {
                     if (state is ErrorState) {
-                                          showToast(
-                                              context: context,
-                                              title: 'Error',
-                                              subtitle: state.error,
-                                              type: ToastMessageType.error);                    } else if (state is SuccessState) {
+                      showToast(
+                          context: context,
+                          title: 'Error',
+                          subtitle: state.error,
+                          type: ToastMessageType.error);
+                    } else if (state is SuccessState) {
                       Navigator.pop(context);
                       Navigator.pop(context);
                       showToast(
@@ -82,99 +85,125 @@ class _ChangePasswordState extends State<ChangePassword> {
                   builder: (context, state) {
                     switch (state.runtimeType) {
                       case AuthInitial || ErrorState:
-                        return
-                       Padding(
-                        padding: const EdgeInsets.all(0.0),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-
-                              Padding(
-                                padding: const EdgeInsets.all(15.0),
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-
-                                      Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: CustomText(
-                                          text: "Let's help you restore your password",
-                                          weight: FontWeight.w600,
-                                        ),
+                        return Padding(
+                          padding: const EdgeInsets.all(0.0),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: SingleChildScrollView(
+                                    child: Form(
+                                      key: _formKey,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: CustomText(
+                                              text:
+                                                  "Let's help you restore your password",
+                                              weight: FontWeight.w600,
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: CustomContainerWithIcon(
+                                              title: 'Cprecious0310@gmail.com',
+                                              iconData: SvgPicture.asset(
+                                                  AppIcons.email),
+                                            ),
+                                          ),
+                                          CustomTextFormField(
+                                            label: '',
+                                            isPasswordField: true,
+                                            validator:
+                                                AppValidator.validatePassword,
+                                            controller: _oldPasswordController,
+                                            hint: 'Old Password',
+                                            icon: Icons.password,
+                                            borderColor: _oldPasswordController
+                                                    .text.isNotEmpty
+                                                ? AppColors.green
+                                                : AppColors.grey,
+                                          ),
+                                          CustomTextFormField(
+                                            label: '',
+                                            isPasswordField: true,
+                                            validator:
+                                                AppValidator.validatePassword,
+                                            controller: _newPasswordController,
+                                            hint: 'New Password',
+                                            icon: Icons.password,
+                                            borderColor: _newPasswordController
+                                                    .text.isNotEmpty
+                                                ? AppColors.green
+                                                : AppColors.grey,
+                                          ),
+                                          CustomTextFormField(
+                                            label: '',
+                                            isPasswordField: true,
+                                            validator:
+                                                AppValidator.validatePassword,
+                                            controller:
+                                                _confirmPasswordController,
+                                            hint: 'Confirm Password',
+                                            icon: Icons.password,
+                                            borderColor:
+                                                _confirmPasswordController
+                                                        .text.isNotEmpty
+                                                    ? AppColors.green
+                                                    : AppColors.grey,
+                                          ),
+                                        ],
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: CustomContainerWithIcon(
-                                          title: 'Cprecious0310@gmail.com',
-                                          iconData: SvgPicture.asset(AppIcons.email),
-                                        ),
-                                      ),
-                                      CustomTextFormField(
-                                        label: '',
-                                        isPasswordField: true,
-                                        validator: AppValidator.validatePassword,
-                                        controller: _oldPasswordController,
-                                        hint: 'Old Password',
-                                        icon: Icons.password,
-                                        borderColor: _oldPasswordController.text.isNotEmpty
-                                            ? AppColors.green
-                                            : AppColors.grey,
-                                      ),
-                                      CustomTextFormField(
-                                        label: '',
-                                        isPasswordField: true,
-                                        validator: AppValidator.validatePassword,
-                                        controller: _newPasswordController,
-                                        hint: 'New Password',
-                                        icon: Icons.password,
-                                        borderColor: _newPasswordController.text.isNotEmpty
-                                            ? AppColors.green
-                                            : AppColors.grey,
-                                      ),
-                                      CustomTextFormField(
-                                        label: '',
-                                        isPasswordField: true,
-                                        validator: AppValidator.validatePassword,
-                                        controller: _confirmPasswordController,
-                                        hint: 'Confirm Password',
-                                        icon: Icons.password,
-                                        borderColor: _confirmPasswordController.text.isNotEmpty
-                                            ? AppColors.green
-                                            : AppColors.grey,
-                                      ),
-                                    ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(10, 0, 10, 30),
-                                child: FormButton(
-                                    onPressed: () {
-                                      Map<dynamic,String> data={
-                                        "oldPassword": _oldPasswordController.text,
-                                        "newPassword": _newPasswordController.text,
-                                        "confirmPassword": _confirmPasswordController.text,
-                                      };
-                                      modalSheet.showMaterialModalBottomSheet(
-                                        backgroundColor: Colors.transparent,
-                                        shape: const RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.vertical(
-                                              top: Radius.circular(20.0)),
-                                        ),
-                                        context: context,
-                                        builder: (context) =>PinContinue(authBloc: authBloc, data: data, context: context,)
-                                      );
-                                    },
-                                    text: "Continue",
-                                    bgColor: AppColors.green,
-                                    borderRadius: 12),
-                              )
-                            ],
+                                Padding(
+                                  padding: EdgeInsets.fromLTRB(10, 0, 10, 30),
+                                  child: FormButton(
+                                      onPressed: () {
+                                        Map<dynamic, String> data = {
+                                          "oldPassword":
+                                              _oldPasswordController.text,
+                                          "newPassword":
+                                              _newPasswordController.text,
+                                          "confirmPassword":
+                                              _confirmPasswordController.text,
+                                        };
+                                        if (_formKey.currentState!.validate()) {
+                                          modalSheet
+                                              .showMaterialModalBottomSheet(
+                                                  backgroundColor:
+                                                      Colors.transparent,
+                                                  shape:
+                                                      const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.vertical(
+                                                            top:
+                                                                Radius.circular(
+                                                                    20.0)),
+                                                  ),
+                                                  context: context,
+                                                  builder: (context) =>
+                                                      PinContinue(
+                                                        authBloc: authBloc,
+                                                        data: data,
+                                                        context: context,
+                                                      ));
+                                        }
+                                      },
+                                      text: "Continue",
+                                      bgColor: AppColors.green,
+                                      borderRadius: 12),
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                      );
+                        );
                       // case LoadingState:
                       //   return const Center(
                       //     child: CircularProgressIndicator(),
@@ -187,16 +216,20 @@ class _ChangePasswordState extends State<ChangePassword> {
                   }),
             ],
           ),
-        ));}
-
-
-
+        ));
+  }
 }
+
 class PinContinue extends StatefulWidget {
   AuthBloc authBloc;
-  Map<dynamic,String> data;
+  Map<dynamic, String> data;
   BuildContext context;
-   PinContinue({super.key, required this.authBloc, required this.data,required this.context});
+
+  PinContinue(
+      {super.key,
+      required this.authBloc,
+      required this.data,
+      required this.context});
 
   @override
   State<PinContinue> createState() => _PinContinueState();
@@ -208,15 +241,13 @@ class _PinContinueState extends State<PinContinue> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: AppUtils.deviceScreenSize(context).height/1.3,
-
+      height: AppUtils.deviceScreenSize(context).height / 1.3,
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         backgroundColor: AppColors.white,
         body: SingleChildScrollView(
           child: Column(
             children: [
-
               Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: SingleChildScrollView(
@@ -225,12 +256,10 @@ class _PinContinueState extends State<PinContinue> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         CustomText(
-                          text:
-                          "Please enter your PIN to change password.",
+                          text: "Please enter your PIN to change password.",
                           weight: FontWeight.bold,
                           size: 16,
                           maxLines: 3,
-
                         ),
                         const SizedBox(
                           height: 20,
@@ -239,7 +268,7 @@ class _PinContinueState extends State<PinContinue> {
                           keyboardButtonShape: KeyboardButtonShape.defaultShape,
                           inputShape: InputShape.defaultShape,
                           keyboardMaxWidth:
-                          AppUtils.deviceScreenSize(context).width,
+                              AppUtils.deviceScreenSize(context).width,
                           inputHasBorder: true,
                           inputFillColor: AppColors.white,
                           inputHeight: 55,
@@ -253,15 +282,17 @@ class _PinContinueState extends State<PinContinue> {
                           buttonFillColor: AppColors.white,
                           btnTextColor: AppColors.black,
                           buttonBorderColor: AppColors.grey,
-                          spacing: AppUtils.deviceScreenSize(context).height * 0.06,
+                          spacing:
+                              AppUtils.deviceScreenSize(context).height * 0.06,
                           pinInputController: pinInputController,
 
                           onSubmit: () {
-                           //Navigator.pop(context);
-                            widget.authBloc.add(ChangePasswordEvent(pinInputController.text,widget.data,widget.context));
-                           //Navigator.pop(context);
-
-
+                            //Navigator.pop(context);
+                            widget.authBloc.add(ChangePasswordEvent(
+                                pinInputController.text,
+                                widget.data,
+                                widget.context));
+                            //Navigator.pop(context);
                           },
                           keyboardFontFamily: '',
                         ),

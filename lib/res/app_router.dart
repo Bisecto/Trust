@@ -62,10 +62,13 @@ class AppRouter {
       case signInScreen:
         return MaterialPageRoute(builder: (_) => const SignInScreen());
 
-       case landingPage:
-         return MaterialPageRoute(builder: (_) =>  BlocProvider(
-             create: (_) => AppBloc(),
-             child: LandingPage()));
+      case landingPage:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => AppBloc(),
+            child: LandingPage(),
+          ),
+        );
       case signInWIthAccessPinBiometrics:
         return MaterialPageRoute(builder: (_) =>  SignInWIthAccessPinBiometrics(userName: 'name',));
       // case homePage:

@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:teller_trust/model/customer_profile.dart';
 import 'package:teller_trust/model/personal_profile.dart';
@@ -10,6 +11,7 @@ import 'package:teller_trust/model/wallet_info.dart';
 import 'package:teller_trust/repository/app_repository.dart';
 import 'package:teller_trust/res/apis.dart';
 
+import '../../model/category_model.dart';
 import '../../model/user.dart';
 import '../../utills/app_utils.dart';
 import '../../utills/constants/loading_dialog.dart';
@@ -37,28 +39,28 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     AppRepository appRepository = AppRepository();
     String accessToken = await SharedPref.getString("access-token");
 
-    //try {
-    var profileResponse = await appRepository.appGetRequest(
-      AppApis.userProfile,
-      accessToken: accessToken,
-    );
-    print("Profile status COde ${profileResponse.statusCode}");
-    print("Profile Data ${profileResponse.body}");
-    if (profileResponse.statusCode == 200 ||
-        profileResponse.statusCode == 201) {
-      CustomerProfile customerProfile =
-          CustomerProfile.fromJson(json.decode(profileResponse.body)['data']);
-
-      emit(SuccessState(customerProfile)); // Emit success state with data
-    } else {
-      emit(ErrorState(AppUtils.convertString(
-          json.decode(profileResponse.body)['message'])));
-      print(json.decode(profileResponse.body));
+    try {
+      var profileResponse = await appRepository.appGetRequest(
+        AppApis.userProfile,
+        accessToken: accessToken,
+      );
+      print("Profile status COde ${profileResponse.statusCode}");
+      print("Profile Data ${profileResponse.body}");
+      if (profileResponse.statusCode == 200 ||
+          profileResponse.statusCode == 201) {
+        CustomerProfile customerProfile =
+            CustomerProfile.fromJson(json.decode(profileResponse.body)['data']);
+        updateData(customerProfile);
+        emit(SuccessState(customerProfile)); // Emit success state with data
+      } else {
+        emit(ErrorState(AppUtils.convertString(
+            json.decode(profileResponse.body)['message'])));
+        print(json.decode(profileResponse.body));
+      }
+    } catch (e) {
+      emit(ErrorState("An error occurred while fetching user profile."));
+      print(e);
     }
-    // } catch (e) {
-    //   emit(ErrorState("An error occurred while fetching user profile."));
-    //   print(e);
-    // }
   }
 
   void updateData(CustomerProfile _customerProfile) {
@@ -74,7 +76,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         builder: (_) {
           return const LoadingDialog('Processing...');
         });
-    //String accessToken = await SharedPref.getString("access-token");
+    String accessToken = await SharedPref.getString("access-token");
 
     AppRepository appRepository = AppRepository();
     Map<dynamic, String> data = {
@@ -84,21 +86,38 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     };
     try {
       var response = await appRepository.appPostRequest(
-        data,
-        //accessToken: accessToken,
-        AppApis.addWithdrawalAccount,
-      );
+          data,
+          accessToken: accessToken,
+          AppApis.addWithdrawalAccount,
+          accessPIN: event.pin);
       print(response.statusCode);
 
       print(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
-        // await SharedPref.putString(
-        //     "access-token", response.headers['access-token']!);
-        Navigator.pop(event.context);
+        var profileResponse = await appRepository.appGetRequest(
+          AppApis.userProfile,
+          accessToken: accessToken,
+        );
+        print("Profile status COde ${profileResponse.statusCode}");
+        print("Profile Data ${profileResponse.body}");
+        if (profileResponse.statusCode == 200 ||
+            profileResponse.statusCode == 201) {
+          CustomerProfile customerProfile = CustomerProfile.fromJson(
+              json.decode(profileResponse.body)['data']);
+          updateData(customerProfile);
+          Navigator.pop(event.context);
+          //event.context.read<AppBloc>().add(updateData( updatedProfile));
+          updateData(customerProfile);
 
-        // emit(PasswordResetSuccessState(
-        //     AppUtils.convertString(json.decode(response.body)['message'])));
-        emit(WirthdrawalAccountAdded());
+          emit(WirthdrawalAccountAdded(customerProfile));
+        } else {
+          Navigator.pop(event.context);
+
+          emit(WirthdrawalAccountAddedError(AppUtils.convertString(
+              json.decode(profileResponse.body)['message'])));
+
+          print(json.decode(profileResponse.body));
+        }
       } else {
         Navigator.pop(event.context);
         emit(WirthdrawalAccountAddedError(

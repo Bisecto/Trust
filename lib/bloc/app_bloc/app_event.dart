@@ -10,9 +10,10 @@ class AddWithdrawalAccount extends AppEvent {
   final String bvn;
 
   final String bankCode;
+  final String pin;
 
   final BuildContext context;
 
   AddWithdrawalAccount(
-      this.accountNumber, this.bankCode, this.bvn, this.context);
+      this.accountNumber, this.bankCode, this.bvn, this.pin, this.context);
 }

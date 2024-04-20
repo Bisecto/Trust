@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:teller_trust/utills/app_navigator.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/airtime.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/data.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/internet.dart';
 
+import '../../bloc/category_bloc/category_bloc.dart';
+import '../../model/category_model.dart';
 import '../../model/quick_access_model.dart';
 import '../../res/app_colors.dart';
 import '../../res/app_icons.dart';
@@ -40,93 +43,108 @@ class _BillsPageState extends State<BillsPage> {
         ],
       ),
       body: Container(
-        //height: 210,
-        child: GridView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            crossAxisSpacing: 20.0,
-            mainAxisSpacing: 8.0,
-          ),
-          itemCount: AppList().serviceItems.length,
-          itemBuilder: (context, index) {
-            return GestureDetector(
-                onTap: () {
-                  switch (index) {
-                    case 0:
-                      modalSheet.showMaterialModalBottomSheet(
-                        backgroundColor: Colors.transparent,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.vertical(top: Radius.circular(20.0)),
-                        ),
-                        context: context,
-                        builder: (context) => Padding(
-                          padding: const EdgeInsets.only(top: 100.0),
-                          child: AirtimePurchase(
-                              services: AppList().serviceItems[index]),
-                        ),
-                      );
-                      // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
-                      //     services: AppList().serviceItems[index]));
-                      return;
-                    case 1:
-                      modalSheet.showMaterialModalBottomSheet(
-                        backgroundColor: Colors.transparent,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.vertical(top: Radius.circular(20.0)),
-                        ),
-                        context: context,
-                        builder: (context) => Padding(
-                          padding: const EdgeInsets.only(top: 100.0),
-                          child: DataPurchase(
-                              services: AppList().serviceItems[index]),
-                        ),
-                      );
-                      // AppNavigator.pushAndStackPage(context, page: DataPurchase(
-                      //     services: AppList().serviceItems[index]));
-                      return;
-                    case 3:
-                      modalSheet.showMaterialModalBottomSheet(
-                        backgroundColor: Colors.transparent,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.vertical(top: Radius.circular(20.0)),
-                        ),
-                        context: context,
-                        builder: (context) => Padding(
-                          padding: const EdgeInsets.only(top: 100.0),
-                          child: InternetPurchase(
-                              services: AppList().serviceItems[index]),
-                        ),
-                      );
-                      // AppNavigator.pushAndStackPage(context, page: InternetPurchase(
-                      //     services: AppList().serviceItems[index]));
-                      return;
-                  }
-
-                  //showAirtimeModal(context, AppList().serviceItems[index]);
-                },
-                child: gridItem(AppList().serviceItems[index]));
-          },
-        ),
-      ),
+          //height: 210,
+          child: BlocBuilder<CategoryBloc, CategoryState>(
+        builder: (context, state) {
+          if (state is CategorySuccessState) {
+            CategoryModel categoryModel = state.categoryModel;
+            List<Item> items = categoryModel.data.items;
+            //Use user data here
+            return GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 20.0,
+                mainAxisSpacing: 8.0,
+              ),
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                    // onTap: () {
+                    //   switch (index) {
+                    //     case 0:
+                    //       modalSheet.showMaterialModalBottomSheet(
+                    //         backgroundColor: Colors.transparent,
+                    //         shape: const RoundedRectangleBorder(
+                    //           borderRadius:
+                    //               BorderRadius.vertical(top: Radius.circular(20.0)),
+                    //         ),
+                    //         context: context,
+                    //         builder: (context) => Padding(
+                    //           padding: const EdgeInsets.only(top: 100.0),
+                    //           child: AirtimePurchase(
+                    //               services: AppList().serviceItems[index]),
+                    //         ),
+                    //       );
+                    //       // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
+                    //       //     services: AppList().serviceItems[index]));
+                    //       return;
+                    //     case 1:
+                    //       modalSheet.showMaterialModalBottomSheet(
+                    //         backgroundColor: Colors.transparent,
+                    //         shape: const RoundedRectangleBorder(
+                    //           borderRadius:
+                    //               BorderRadius.vertical(top: Radius.circular(20.0)),
+                    //         ),
+                    //         context: context,
+                    //         builder: (context) => Padding(
+                    //           padding: const EdgeInsets.only(top: 100.0),
+                    //           child: DataPurchase(
+                    //               services: AppList().serviceItems[index]),
+                    //         ),
+                    //       );
+                    //       // AppNavigator.pushAndStackPage(context, page: DataPurchase(
+                    //       //     services: AppList().serviceItems[index]));
+                    //       return;
+                    //     case 3:
+                    //       modalSheet.showMaterialModalBottomSheet(
+                    //         backgroundColor: Colors.transparent,
+                    //         shape: const RoundedRectangleBorder(
+                    //           borderRadius:
+                    //               BorderRadius.vertical(top: Radius.circular(20.0)),
+                    //         ),
+                    //         context: context,
+                    //         builder: (context) => Padding(
+                    //           padding: const EdgeInsets.only(top: 100.0),
+                    //           child: InternetPurchase(
+                    //               services: AppList().serviceItems[index]),
+                    //         ),
+                    //       );
+                    //       // AppNavigator.pushAndStackPage(context, page: InternetPurchase(
+                    //       //     services: AppList().serviceItems[index]));
+                    //       return;
+                    //   }
+                    //
+                    //   //showAirtimeModal(context, AppList().serviceItems[index]);
+                    // },
+                    child: gridItem(items[index]));
+              },
+            );
+          } else {
+            return const CustomText(
+              text: "There",
+              size: 15,
+              weight: FontWeight.bold,
+              color: AppColors.white,
+            ); // Show loading indicator or handle error state
+          }
+        },
+      )),
     );
   }
 
-  Widget gridItem(Services service) {
+  Widget gridItem(Item item) {
     return Column(
       children: [
         CircleAvatar(
-          backgroundColor: service.backgroundColor,
-          child: SvgPicture.asset(service.image),
+          //backgroundColor: service.backgroundColor,
+          child: Image.network(item.image),
         ),
         const SizedBox(
           height: 10,
         ),
         CustomText(
-          text: service.title,
+          text: item.name,
           color: AppColors.black,
           size: 14,
         )

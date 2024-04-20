@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:custom_pin_screen/custom_pin_screen.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:teller_trust/bloc/category_bloc/category_bloc.dart';
 import 'package:teller_trust/model/personal_profile.dart';
 import 'package:teller_trust/model/quick_access_model.dart';
 import 'package:teller_trust/model/wallet_info.dart';
@@ -24,6 +26,7 @@ import 'package:teller_trust/view/widgets/app_custom_text.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
 import '../../bloc/app_bloc/app_bloc.dart';
+import '../../model/category_model.dart';
 import '../../model/user.dart';
 import '../../res/app_images.dart';
 import '../important_pages/dialog_box.dart';
@@ -122,7 +125,7 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-          Container(
+          SizedBox(
             height: AppUtils.deviceScreenSize(context).height +
                 400, // Set an appropriate height
             child: TabBarView(
@@ -140,58 +143,64 @@ class _HomePageState extends State<HomePage> {
       builder: (context, state) {
         if (state is SuccessState) {
           PersonalInfo personalInfo = state.customerProfile.personalInfo;
+          print(json.encode(state.customerProfile));
           // Use user data here
-          return Container(
-            height: 50,
-            width: AppUtils.deviceScreenSize(context).width,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    CircleAvatar(
-                      //backgroundImage: NetworkImage(),
-                      child: SvgPicture.network(
-                        personalInfo.imageUrl,
-                        height: 25,
-                        width: 25,
+          return GestureDetector(
+            onTap: () {
+              print(json.encode(state.customerProfile));
+            },
+            child: SizedBox(
+              height: 50,
+              width: AppUtils.deviceScreenSize(context).width,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        //backgroundImage: NetworkImage(),
+                        child: SvgPicture.network(
+                          personalInfo.imageUrl,
+                          height: 25,
+                          width: 25,
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CustomText(
-                          text: "Hello",
-                        ),
-                        CustomText(
-                          text:
-                              "${personalInfo.lastName} ${personalInfo.firstName}",
-                          weight: FontWeight.w600,
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-                Row(
-                  children: [
-                    SvgPicture.asset(AppIcons.qrCode),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    CircleAvatar(
-                      backgroundColor: AppColors.lightPrimary,
-                      child: SvgPicture.asset(AppIcons.notification),
-                    )
-                  ],
-                )
-              ],
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomText(
+                            text: "Hello",
+                          ),
+                          CustomText(
+                            text:
+                                "${personalInfo.lastName} ${personalInfo.firstName}",
+                            weight: FontWeight.w600,
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      SvgPicture.asset(AppIcons.qrCode),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      CircleAvatar(
+                        backgroundColor: AppColors.lightPrimary,
+                        child: SvgPicture.asset(AppIcons.notification),
+                      )
+                    ],
+                  )
+                ],
+              ),
             ),
           );
         } else {
-          return Container(
+          return SizedBox(
             height: 50,
             width: AppUtils.deviceScreenSize(context).width,
             child: Row(
@@ -265,7 +274,9 @@ class _HomePageState extends State<HomePage> {
             GestureDetector(
               onTap: () {
                 AppNavigator.pushAndStackPage(context,
-                    page: const WithdrawalAccount());
+                    page: BlocProvider.value(
+                        value: context.read<AppBloc>(),
+                        child: WithdrawalAccount()));
               },
               child: Padding(
                 padding: EdgeInsets.all(10.0),
@@ -369,7 +380,7 @@ class _HomePageState extends State<HomePage> {
           )),
           // Positioned(child: SvgPicture.asset(AppIcons.looper2)),
           Positioned(
-              child: Container(
+              child: SizedBox(
             height: 220,
             // color: AppColors.red,
             child: Padding(
@@ -502,78 +513,94 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget quickActionsWidget() {
-    return Container(
-      height: 210,
-      child: GridView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 4,
-          crossAxisSpacing: 8.0,
-          mainAxisSpacing: 8.0,
-        ),
-        itemCount: 8, //AppList().serviceItems.length,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-              onTap: () {
-                switch (index) {
-                  case 0:
-                    modalSheet.showMaterialModalBottomSheet(
-                      backgroundColor: Colors.transparent,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(20.0)),
-                      ),
-                      context: context,
-                      builder: (context) => Padding(
-                        padding: const EdgeInsets.only(top: 100.0),
-                        child: AirtimePurchase(
-                            services: AppList().serviceItems[index]),
-                      ),
-                    );
-                    // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
-                    //     services: AppList().serviceItems[index]));
-                    return;
-                  case 1:
-                    modalSheet.showMaterialModalBottomSheet(
-                      backgroundColor: Colors.transparent,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(20.0)),
-                      ),
-                      context: context,
-                      builder: (context) => Padding(
-                        padding: const EdgeInsets.only(top: 100.0),
-                        child: DataPurchase(
-                            services: AppList().serviceItems[index]),
-                      ),
-                    );
-                    // AppNavigator.pushAndStackPage(context, page: DataPurchase(
-                    //     services: AppList().serviceItems[index]));
-                    return;
-                  case 3:
-                    modalSheet.showMaterialModalBottomSheet(
-                      backgroundColor: Colors.transparent,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(20.0)),
-                      ),
-                      context: context,
-                      builder: (context) => Padding(
-                        padding: const EdgeInsets.only(top: 100.0),
-                        child: InternetPurchase(
-                            services: AppList().serviceItems[index]),
-                      ),
-                    );
-                    // AppNavigator.pushAndStackPage(context, page: InternetPurchase(
-                    //     services: AppList().serviceItems[index]));
-                    return;
-                }
-
-                //showAirtimeModal(context, AppList().serviceItems[index]);
+    return BlocBuilder<CategoryBloc, CategoryState>(
+      builder: (context, state) {
+        if (state is CategorySuccessState) {
+          CategoryModel categoryModel = state.categoryModel;
+          List<Item> items = categoryModel.data.items;
+          //Use user data here
+          return SizedBox(
+            height:  105 ,
+            child: GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                crossAxisSpacing: 8.0,
+                mainAxisSpacing: 8.0,
+              ),
+              itemCount: 4, //AppList().serviceItems.length,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                    // onTap: () {
+                    //   switch (index) {
+                    //     case 0:
+                    //       modalSheet.showMaterialModalBottomSheet(
+                    //         backgroundColor: Colors.transparent,
+                    //         shape: const RoundedRectangleBorder(
+                    //           borderRadius:
+                    //               BorderRadius.vertical(top: Radius.circular(20.0)),
+                    //         ),
+                    //         context: context,
+                    //         builder: (context) => Padding(
+                    //           padding: const EdgeInsets.only(top: 100.0),
+                    //           child: AirtimePurchase(
+                    //               services: AppList().serviceItems[index]),
+                    //         ),
+                    //       );
+                    //       // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
+                    //       //     services: AppList().serviceItems[index]));
+                    //       return;
+                    //     case 1:
+                    //       modalSheet.showMaterialModalBottomSheet(
+                    //         backgroundColor: Colors.transparent,
+                    //         shape: const RoundedRectangleBorder(
+                    //           borderRadius:
+                    //               BorderRadius.vertical(top: Radius.circular(20.0)),
+                    //         ),
+                    //         context: context,
+                    //         builder: (context) => Padding(
+                    //           padding: const EdgeInsets.only(top: 100.0),
+                    //           child: DataPurchase(
+                    //               services: AppList().serviceItems[index]),
+                    //         ),
+                    //       );
+                    //       // AppNavigator.pushAndStackPage(context, page: DataPurchase(
+                    //       //     services: AppList().serviceItems[index]));
+                    //       return;
+                    //     case 3:
+                    //       modalSheet.showMaterialModalBottomSheet(
+                    //         backgroundColor: Colors.transparent,
+                    //         shape: const RoundedRectangleBorder(
+                    //           borderRadius:
+                    //               BorderRadius.vertical(top: Radius.circular(20.0)),
+                    //         ),
+                    //         context: context,
+                    //         builder: (context) => Padding(
+                    //           padding: const EdgeInsets.only(top: 100.0),
+                    //           child: InternetPurchase(
+                    //               services: AppList().serviceItems[index]),
+                    //         ),
+                    //       );
+                    //       // AppNavigator.pushAndStackPage(context, page: InternetPurchase(
+                    //       //     services: AppList().serviceItems[index]));
+                    //       return;
+                    //   }
+                    //
+                    //   //showAirtimeModal(context, AppList().serviceItems[index]);
+                    // },
+                    child: quickActionsItem(items[index]));
               },
-              child: quickActionsItem(AppList().serviceItems[index]));
-        },
-      ),
+            ),
+          );
+        } else {
+          return const CustomText(
+            text: "There",
+            size: 15,
+            weight: FontWeight.bold,
+            color: AppColors.white,
+          ); // Show loading indicator or handle error state
+        }
+      },
     );
   }
 
@@ -856,15 +883,15 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget quickActionsItem(Services service) {
+  Widget quickActionsItem(Item item) {
     return Column(
       children: [
         CircleAvatar(
-          backgroundColor: service.backgroundColor,
-          child: SvgPicture.asset(service.image),
+          //backgroundColor: service.backgroundColor,
+          child: Image.network(item.image),
         ),
         CustomText(
-          text: service.title,
+          text: item.name,
           color: AppColors.textColor,
         )
       ],
