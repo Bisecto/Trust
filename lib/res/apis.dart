@@ -23,6 +23,8 @@ class AppApis {
 
 ///PRODUCTS ENDPOINTS
   static String listCategory = "$appBaseUrl/c/p/list-category";
+  static String listProduct = "$appBaseUrl/c/p/list-product";
+  static String listService = "$appBaseUrl/c/p/list-service";
 
   static String refreshToken =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0NmE3M2YwNy1lMWEyLTRkODUtYjFmNi0zNTM4ZTg0N2Q3MjkiLCJleHAiOjE3MTAxNTk0OTIsImlhdCI6MTcwNzU2NzQ5Mn0.QLpqzjkn9PSzI3tnyOL0rHxCPZUx9dEOw14W2EQtE_M";

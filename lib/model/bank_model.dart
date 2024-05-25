@@ -9,42 +9,42 @@ class BankModel {
   int totalItems;
   int totalPages;
   int currentPage;
-  List<Item> items;
+  List<Bank> banks;
 
   BankModel({
     required this.totalItems,
     required this.totalPages,
     required this.currentPage,
-    required this.items,
+    required this.banks,
   });
 
   factory BankModel.fromJson(Map<String, dynamic> json) => BankModel(
     totalItems: json["totalItems"],
     totalPages: json["totalPages"],
     currentPage: json["currentPage"],
-    items: List<Item>.from(json["items"].map((x) => Item.fromJson(x))),
+    banks: List<Bank>.from(json["items"].map((x) => Bank.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
     "totalItems": totalItems,
     "totalPages": totalPages,
     "currentPage": currentPage,
-    "items": List<dynamic>.from(items.map((x) => x.toJson())),
+    "items": List<dynamic>.from(banks.map((x) => x.toJson())),
   };
 }
 
-class Item {
+class Bank {
   String bankCode;
   String bankName;
   dynamic bankType;
 
-  Item({
+  Bank({
     required this.bankCode,
     required this.bankName,
     required this.bankType,
   });
 
-  factory Item.fromJson(Map<String, dynamic> json) => Item(
+  factory Bank.fromJson(Map<String, dynamic> json) => Bank(
     bankCode: json["bankCode"],
     bankName: json["bankName"],
     bankType: json["bankType"],

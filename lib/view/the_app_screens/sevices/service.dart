@@ -2,6 +2,7 @@ import 'package:custom_pin_screen/custom_pin_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:teller_trust/model/quick_access_model.dart';
+import 'package:teller_trust/model/service_model.dart';
 
 import '../../../model/category_model.dart';
 import '../../../res/app_colors.dart';
@@ -16,7 +17,7 @@ import '../../widgets/form_input.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
 class ServicePurchase extends StatefulWidget {
-  final Item service;
+  final Service service;
 
   const ServicePurchase({super.key,required this.service});
 

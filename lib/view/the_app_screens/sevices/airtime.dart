@@ -1,8 +1,10 @@
 import 'package:custom_pin_screen/custom_pin_screen.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:teller_trust/model/quick_access_model.dart';
 
+import '../../../bloc/product_bloc/product_bloc.dart';
+import '../../../model/category_model.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/app_list.dart';
 import '../../../utills/app_navigator.dart';
@@ -15,15 +17,22 @@ import '../../widgets/form_input.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
 class AirtimePurchase extends StatefulWidget {
-  final Services services;
+  final Category category;
 
-  const AirtimePurchase({super.key, required this.services});
+  const AirtimePurchase({super.key, required this.category});
 
   @override
   State<AirtimePurchase> createState() => _AirtimePurchaseState();
 }
 
 class _AirtimePurchaseState extends State<AirtimePurchase> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    context.read<ProductBloc>().add(ListServiceEvent("1", "4",widget.category.id));
+
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

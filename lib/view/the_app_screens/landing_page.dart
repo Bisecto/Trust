@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:teller_trust/bloc/product_bloc/product_bloc.dart';
 import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/res/app_list.dart';
 import 'package:teller_trust/view/the_app_screens/send_page.dart';
 
 import '../../bloc/app_bloc/app_bloc.dart';
-import '../../bloc/category_bloc/category_bloc.dart';
 import '../../model/user.dart';
 import '../../res/app_colors.dart';
 import '../../res/app_images.dart';
@@ -30,7 +30,7 @@ class _LandingPageState extends State<LandingPage> {
   void initState() {
     // TODO: implement initState
     context.read<AppBloc>().add(InitialEvent());
-    context.read<CategoryBloc>().add(ListCategoryEvent("1", "5"));
+    context.read<ProductBloc>().add(ListCategoryEvent("1", "5"));
 
     landPageScreens = [
       HomePage(),

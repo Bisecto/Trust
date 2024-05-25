@@ -1,14 +1,18 @@
+// To parse this JSON data, do
+//
+//     final serviceModel = serviceModelFromJson(jsonString);
 
-class CategoryModel {
+
+class ServiceModel {
   String message;
   Data data;
 
-  CategoryModel({
+  ServiceModel({
     required this.message,
     required this.data,
   });
 
-  factory CategoryModel.fromJson(Map<String, dynamic> json) => CategoryModel(
+  factory ServiceModel.fromJson(Map<String, dynamic> json) => ServiceModel(
     message: json["message"],
     data: Data.fromJson(json["data"]),
   );
@@ -23,51 +27,51 @@ class Data {
   int totalItems;
   int totalPages;
   int currentPage;
-  List<Category> categories;
+  List<Service> services;
 
   Data({
     required this.totalItems,
     required this.totalPages,
     required this.currentPage,
-    required this.categories,
+    required this.services,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
     totalItems: json["totalItems"],
     totalPages: json["totalPages"],
     currentPage: json["currentPage"],
-    categories: List<Category>.from(json["items"].map((x) => Category.fromJson(x))),
+    services: List<Service>.from(json["items"].map((x) => Service.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
     "totalItems": totalItems,
     "totalPages": totalPages,
     "currentPage": currentPage,
-    "items": List<dynamic>.from(categories.map((x) => x.toJson())),
+    "items": List<dynamic>.from(services.map((x) => x.toJson())),
   };
 }
 
-class Category {
+class Service {
   String image;
   String id;
   String name;
   String slug;
-  RequiredFields requiredFields;
+  Category category;
 
-  Category({
+  Service({
     required this.image,
     required this.id,
     required this.name,
     required this.slug,
-    required this.requiredFields,
+    required this.category,
   });
 
-  factory Category.fromJson(Map<String, dynamic> json) => Category(
+  factory Service.fromJson(Map<String, dynamic> json) => Service(
     image: json["image"],
     id: json["id"],
     name: json["name"],
-    slug: json["slug"]??'',
-    requiredFields: RequiredFields.fromJson(json["requiredFields"]),
+    slug: json["slug"],
+    category: Category.fromJson(json["category"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -75,34 +79,30 @@ class Category {
     "id": id,
     "name": name,
     "slug": slug,
-    "requiredFields": requiredFields.toJson(),
+    "category": category.toJson(),
   };
 }
 
-class RequiredFields {
-  String phone;
-  String? amount;
-  String? cardNumber;
-  String? meterNumber;
+class Category {
+  String id;
+  String name;
+  String slug;
 
-  RequiredFields({
-    required this.phone,
-    this.amount,
-    this.cardNumber,
-    this.meterNumber,
+  Category({
+    required this.id,
+    required this.name,
+    required this.slug,
   });
 
-  factory RequiredFields.fromJson(Map<String, dynamic> json) => RequiredFields(
-    phone: json["phone"],
-    amount: json["amount"],
-    cardNumber: json["cardNumber"],
-    meterNumber: json["meterNumber"],
+  factory Category.fromJson(Map<String, dynamic> json) => Category(
+    id: json["id"],
+    name: json["name"],
+    slug: json["slug"],
   );
 
   Map<String, dynamic> toJson() => {
-    "phone": phone,
-    "amount": amount,
-    "cardNumber": cardNumber,
-    "meterNumber": meterNumber,
+    "id": id,
+    "name": name,
+    "slug": slug,
   };
 }

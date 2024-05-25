@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:teller_trust/model/category_model.dart';
 import 'package:teller_trust/model/quick_access_model.dart';
 import 'package:teller_trust/view/widgets/drop_down.dart';
 
@@ -14,9 +15,9 @@ import '../../widgets/form_input.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
 class InternetPurchase extends StatefulWidget {
-  final Services services;
+  final Category category;
 
-  const InternetPurchase({super.key, required this.services});
+  const InternetPurchase({super.key, required this.category});
 
   @override
   State<InternetPurchase> createState() => _InternetPurchaseState();

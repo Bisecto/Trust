@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:teller_trust/bloc/product_bloc/product_bloc.dart';
 import 'package:teller_trust/utills/app_navigator.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/airtime.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/data.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/internet.dart';
 
-import '../../bloc/category_bloc/category_bloc.dart';
 import '../../model/category_model.dart';
 import '../../model/quick_access_model.dart';
 import '../../res/app_colors.dart';
@@ -44,11 +44,11 @@ class _BillsPageState extends State<BillsPage> {
       ),
       body: Container(
           //height: 210,
-          child: BlocBuilder<CategoryBloc, CategoryState>(
+          child: BlocBuilder<ProductBloc, ProductState>(
         builder: (context, state) {
           if (state is CategorySuccessState) {
             CategoryModel categoryModel = state.categoryModel;
-            List<Item> items = categoryModel.data.items;
+            List<Category> items = categoryModel.data.categories;
             //Use user data here
             return GridView.builder(
               physics: const NeverScrollableScrollPhysics(),
@@ -133,18 +133,18 @@ class _BillsPageState extends State<BillsPage> {
     );
   }
 
-  Widget gridItem(Item item) {
+  Widget gridItem(Category category) {
     return Column(
       children: [
         CircleAvatar(
           //backgroundColor: service.backgroundColor,
-          child: Image.network(item.image),
+          child: Image.network(category.image),
         ),
         const SizedBox(
           height: 10,
         ),
         CustomText(
-          text: item.name,
+          text: category.name,
           color: AppColors.black,
           size: 14,
         )

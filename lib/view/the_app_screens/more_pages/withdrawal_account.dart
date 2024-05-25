@@ -227,9 +227,9 @@ class _BankListState extends State<BankList> {
                 if (state is bankBloc.SuccessState) {
                   return Expanded(
                     child: ListView.builder(
-                      itemCount: state.bankModel.items.length,
+                      itemCount: state.bankModel.banks.length,
                       itemBuilder: (context, index) {
-                        final bank = state.bankModel.items[index];
+                        final bank = state.bankModel.banks[index];
                         return ListTile(
                           onTap: () {
                             widget.onBankSelected(bank.bankName, bank.bankCode);

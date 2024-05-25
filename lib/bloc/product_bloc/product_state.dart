@@ -1,0 +1,28 @@
+part of 'product_bloc.dart';
+
+@immutable
+abstract class ProductState {}
+
+final class ProductInitial extends ProductState {}
+class CategoryLoadingState extends ProductState {}
+class ServiceLoadingState extends ProductState {}
+
+class ServiceErrorState extends ProductState {
+  final String error;
+
+  ServiceErrorState(this.error);
+}class CategoryErrorState extends ProductState {
+  final String error;
+
+  CategoryErrorState(this.error);
+}
+
+class CategorySuccessState extends ProductState {
+  final CategoryModel categoryModel;
+
+  CategorySuccessState(this.categoryModel);
+}class ServiceSuccessState extends ProductState {
+  final ServiceModel serviceModel;
+
+  ServiceSuccessState(this.serviceModel);
+}

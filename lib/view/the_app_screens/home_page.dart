@@ -2,12 +2,11 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:custom_pin_screen/custom_pin_screen.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:teller_trust/bloc/category_bloc/category_bloc.dart';
+import 'package:teller_trust/bloc/product_bloc/product_bloc.dart';
 import 'package:teller_trust/model/personal_profile.dart';
 import 'package:teller_trust/model/quick_access_model.dart';
 import 'package:teller_trust/model/wallet_info.dart';
@@ -513,11 +512,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget quickActionsWidget() {
-    return BlocBuilder<CategoryBloc, CategoryState>(
+    return BlocBuilder<ProductBloc, ProductState>(
       builder: (context, state) {
         if (state is CategorySuccessState) {
           CategoryModel categoryModel = state.categoryModel;
-          List<Item> items = categoryModel.data.items;
+          List<Category> items = categoryModel.data.categories;
           //Use user data here
           return SizedBox(
             height:  105 ,
@@ -548,7 +547,7 @@ class _HomePageState extends State<HomePage> {
                             builder: (context) => Padding(
                               padding: const EdgeInsets.only(top: 100.0),
                               child: AirtimePurchase(
-                                  services: AppList().serviceItems[index]),
+                                  category: items[index]),
                             ),
                           );
                           // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
@@ -565,7 +564,7 @@ class _HomePageState extends State<HomePage> {
                             builder: (context) => Padding(
                               padding: const EdgeInsets.only(top: 100.0),
                               child: DataPurchase(
-                                  services: AppList().serviceItems[index]),
+                                  category: items[index]),
                             ),
                           );
                           // AppNavigator.pushAndStackPage(context, page: DataPurchase(
@@ -582,7 +581,7 @@ class _HomePageState extends State<HomePage> {
                             builder: (context) => Padding(
                               padding: const EdgeInsets.only(top: 100.0),
                               child: InternetPurchase(
-                                  services: AppList().serviceItems[index]),
+                                  category: items[index]),
                             ),
                           );
                           // AppNavigator.pushAndStackPage(context, page: InternetPurchase(
@@ -904,15 +903,15 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget quickActionsItem(Item item) {
+  Widget quickActionsItem(Category category) {
     return Column(
       children: [
         CircleAvatar(
           //backgroundColor: service.backgroundColor,
-          child: Image.network(item.image),
+          child: Image.network(category.image),
         ),
         CustomText(
-          text: item.name,
+          text: category.name,
           color: AppColors.textColor,
         )
       ],
