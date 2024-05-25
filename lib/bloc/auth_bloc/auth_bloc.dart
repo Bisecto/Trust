@@ -54,9 +54,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         await SharedPref.putString("userData", event.data['phone']!);
         Navigator.pop(event.context);
         emit(AuthOtpRequestState(
-            AppUtils.convertString(json.decode(response.body)['message'] +
-                " OTP: " +
-                json.decode(response.body)['data']['verifyToken']),
+            AppUtils.convertString(json.decode(response.body)['message']),
             event.data["email"]!));
         emit(AuthInitial());
 
@@ -255,7 +253,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       "password": event.password,
       "deviceId": deviceID
     };
-    try {
+    //try {
       var response = await authRepository.appPostRequest(data, AppApis.login);
 
       print(response.statusCode);
@@ -294,9 +292,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         await SharedPref.putString(
             "phone", json.decode(response.body)['data']['phone']);
         emit(AuthOtpRequestState(
-            AppUtils.convertString(json.decode(response.body)['message'] +
-                " OTP: " +
-                json.decode(response.body)['data']['verifyToken']),
+            AppUtils.convertString(json.decode(response.body)['message'] ),
             event.userData));
         emit(AuthInitial());
 
@@ -310,9 +306,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         Navigator.pop(event.context);
 
         emit(AuthChangeDeviceOtpRequestState(
-            AppUtils.convertString(json.decode(response.body)['message'] +
-                "OTP " +
-                json.decode(response.body)['data']['verifyToken']),
+            AppUtils.convertString(json.decode(response.body)['message'] ),
             json.decode(response.body)['data']['phone'],
             true));
         emit(AuthInitial());
@@ -326,13 +320,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         print(json.decode(response.body));
         emit(AuthInitial());
       }
-    } catch (e) {
-      print(e);
-      Navigator.pop(event.context);
-
-      emit(AuthInitial());
-      print(12345678);
-    }
+    // } catch (e) {
+    //   print(e);
+    //   Navigator.pop(event.context);
+    //
+    //   emit(AuthInitial());
+    //   print(12345678);
+    // }
   }
 
   FutureOr<void> signInEventClick(
@@ -569,9 +563,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         Navigator.pop(event.context);
 
         emit(OTPRequestSuccessState(AppUtils.convertString(
-            json.decode(response.body)['message'] +
-                " OTP " +
-                json.decode(response.body)['data']['verifyToken'])));
+            json.decode(response.body)['message'])));
         emit(AuthInitial());
 
       } else {
