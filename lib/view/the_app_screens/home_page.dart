@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> getName() async {
     firstname = await SharedPref.getString('firstName');
     lastname = await SharedPref.getString('lastName');
-    isMoneyBlocked = await SharedPref.getBool('isMoneyBlocked');
+    isMoneyBlocked = await SharedPref.getBool('isMoneyBlocked')??false;
     print(isMoneyBlocked);
     print(isMoneyBlocked);
     print(isMoneyBlocked);
@@ -531,63 +531,84 @@ class _HomePageState extends State<HomePage> {
               itemCount: 4, //AppList().serviceItems.length,
               itemBuilder: (context, index) {
                 return GestureDetector(
-                    // onTap: () {
-                    //   switch (index) {
-                    //     case 0:
-                    //       modalSheet.showMaterialModalBottomSheet(
-                    //         backgroundColor: Colors.transparent,
-                    //         shape: const RoundedRectangleBorder(
-                    //           borderRadius:
-                    //               BorderRadius.vertical(top: Radius.circular(20.0)),
-                    //         ),
-                    //         context: context,
-                    //         builder: (context) => Padding(
-                    //           padding: const EdgeInsets.only(top: 100.0),
-                    //           child: AirtimePurchase(
-                    //               services: AppList().serviceItems[index]),
-                    //         ),
-                    //       );
-                    //       // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
-                    //       //     services: AppList().serviceItems[index]));
-                    //       return;
-                    //     case 1:
-                    //       modalSheet.showMaterialModalBottomSheet(
-                    //         backgroundColor: Colors.transparent,
-                    //         shape: const RoundedRectangleBorder(
-                    //           borderRadius:
-                    //               BorderRadius.vertical(top: Radius.circular(20.0)),
-                    //         ),
-                    //         context: context,
-                    //         builder: (context) => Padding(
-                    //           padding: const EdgeInsets.only(top: 100.0),
-                    //           child: DataPurchase(
-                    //               services: AppList().serviceItems[index]),
-                    //         ),
-                    //       );
-                    //       // AppNavigator.pushAndStackPage(context, page: DataPurchase(
-                    //       //     services: AppList().serviceItems[index]));
-                    //       return;
-                    //     case 3:
-                    //       modalSheet.showMaterialModalBottomSheet(
-                    //         backgroundColor: Colors.transparent,
-                    //         shape: const RoundedRectangleBorder(
-                    //           borderRadius:
-                    //               BorderRadius.vertical(top: Radius.circular(20.0)),
-                    //         ),
-                    //         context: context,
-                    //         builder: (context) => Padding(
-                    //           padding: const EdgeInsets.only(top: 100.0),
-                    //           child: InternetPurchase(
-                    //               services: AppList().serviceItems[index]),
-                    //         ),
-                    //       );
-                    //       // AppNavigator.pushAndStackPage(context, page: InternetPurchase(
-                    //       //     services: AppList().serviceItems[index]));
-                    //       return;
-                    //   }
-                    //
-                    //   //showAirtimeModal(context, AppList().serviceItems[index]);
-                    // },
+                    onTap: () {
+                      String selectedAction='';
+                      setState(() {
+                        selectedAction=items[index].name;
+                      });
+                      switch (selectedAction) {
+                        case "Airtime":
+                          modalSheet.showMaterialModalBottomSheet(
+                            backgroundColor: Colors.transparent,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.vertical(top: Radius.circular(20.0)),
+                            ),
+                            context: context,
+                            builder: (context) => Padding(
+                              padding: const EdgeInsets.only(top: 100.0),
+                              child: AirtimePurchase(
+                                  services: AppList().serviceItems[index]),
+                            ),
+                          );
+                          // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
+                          //     services: AppList().serviceItems[index]));
+                          return;
+                        case "Data":
+                          modalSheet.showMaterialModalBottomSheet(
+                            backgroundColor: Colors.transparent,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.vertical(top: Radius.circular(20.0)),
+                            ),
+                            context: context,
+                            builder: (context) => Padding(
+                              padding: const EdgeInsets.only(top: 100.0),
+                              child: DataPurchase(
+                                  services: AppList().serviceItems[index]),
+                            ),
+                          );
+                          // AppNavigator.pushAndStackPage(context, page: DataPurchase(
+                          //     services: AppList().serviceItems[index]));
+                          return;
+                        case 'Cable TV':
+                          modalSheet.showMaterialModalBottomSheet(
+                            backgroundColor: Colors.transparent,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.vertical(top: Radius.circular(20.0)),
+                            ),
+                            context: context,
+                            builder: (context) => Padding(
+                              padding: const EdgeInsets.only(top: 100.0),
+                              child: InternetPurchase(
+                                  services: AppList().serviceItems[index]),
+                            ),
+                          );
+                          // AppNavigator.pushAndStackPage(context, page: InternetPurchase(
+                          //     services: AppList().serviceItems[index]));
+                          return;
+                        // case 'Electricity':
+                        //   modalSheet.showMaterialModalBottomSheet(
+                        //     backgroundColor: Colors.transparent,
+                        //     shape: const RoundedRectangleBorder(
+                        //       borderRadius:
+                        //           BorderRadius.vertical(top: Radius.circular(20.0)),
+                        //     ),
+                        //     context: context,
+                        //     builder: (context) => Padding(
+                        //       padding: const EdgeInsets.only(top: 100.0),
+                        //       child: Electricity(
+                        //           services: AppList().serviceItems[index]),
+                        //     ),
+                        //   );
+                        //   // AppNavigator.pushAndStackPage(context, page: InternetPurchase(
+                        //   //     services: AppList().serviceItems[index]));
+                        //   return;
+                      }
+
+                      //showAirtimeModal(context, AppList().serviceItems[index]);
+                    },
                     child: quickActionsItem(items[index]));
               },
             ),
