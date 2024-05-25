@@ -383,7 +383,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           if (_formKey.currentState!
                                               .validate()) {
                                             //User user=
-                                            Map<dynamic, String> user = {
+                                            Map<String, dynamic> user = {
                                               "firstName":
                                                   _firstNameController.text,
                                               "middleName":

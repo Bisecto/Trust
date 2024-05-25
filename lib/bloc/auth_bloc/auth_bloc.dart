@@ -94,11 +94,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     //     User();
     String deviceId = await AppUtils.getId();
 
-    Map<dynamic, String> data = {
+    Map<String, dynamic> data = {
       "token": event.token,
       "phone": await SharedPref.getString("phone"),
     };
-    Map<dynamic, String> deviceData = {
+    Map<String, dynamic> deviceData = {
       "token": event.token,
       "userData": await SharedPref.getString("phone"),
       "deviceId": deviceId
@@ -162,7 +162,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     print(userId);
     print(userId);
     print(userId);
-    Map<dynamic, String> data = {
+    Map<String, dynamic> data = {
       "userId": userId,
       "accessPin": event.accessPin,
       "confirmAccessPin": event.confirmAccessPin
@@ -176,7 +176,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         String deviceID = await AppUtils.getId();
         String userData=await SharedPref.getString('userData');
         String password=await SharedPref.getString('password');
-        Map<dynamic, String> loginData = {
+        Map<String, dynamic> loginData = {
           "userData": userData,
           "password": password,
           "accessPin": event.accessPin,
@@ -248,7 +248,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         });
     String deviceID = await AppUtils.getId();
     AppRepository authRepository = AppRepository();
-    Map<dynamic, String> data = {
+    Map<String, dynamic> data = {
       "userData": event.userData,
       "password": event.password,
       "deviceId": deviceID
@@ -340,7 +340,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     String refreshToken = await SharedPref.getString("refresh-token");
 
     AppRepository authRepository = AppRepository();
-    Map<dynamic, String> data = {
+    Map<String, dynamic> data = {
       "userData": event.userData,
       "password": event.password,
       "accessPin": event.accessPin,
@@ -404,7 +404,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     String accessToken = await SharedPref.getString("access-token");
 
     AppRepository authRepository = AppRepository();
-    Map<dynamic, String> data = {
+    Map<String, dynamic> data = {
       "oldAccessPin": event.oldPin,
       "newAccessPin": event.accessPin,
       "confirmAccessPin": event.confirmAccessPin
@@ -448,6 +448,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             AppUtils.convertString(json.decode(response.body)['message'])));
         emit(AuthInitial());
 
+      }else if (response.statusCode == 401) {
+        emit(AccessTokenExpireState());
       } else {
         Navigator.pop(event.context);
 
@@ -477,7 +479,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     String accessToken = await SharedPref.getString("access-token");
 
     AppRepository authRepository = AppRepository();
-    // Map<dynamic, String> data = {
+    // Map<String, dynamic> data = {
     //   "oldPassword": event.oldPassword,
     //   "newPassword": event.newPassword,
     //   "confirmPassword": event.confirmNewPassword
@@ -511,7 +513,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             AppUtils.convertString(json.decode(response.body)['message'])));
         emit(AuthInitial());
 
-      } else {
+      } else if (response.statusCode == 401) {
+        emit(AccessTokenExpireState());
+      }else {
         Navigator.pop(event.context);
 
         emit(ErrorState(
@@ -545,7 +549,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     //String accessToken = await SharedPref.getString("access-token");
 
     AppRepository authRepository = AppRepository();
-    Map<dynamic, String> data = {"userData": event.data, "medium": "phone"};
+    Map<String, dynamic> data = {"userData": event.data, "medium": "phone"};
     try {
       var response = await authRepository.appPostRequest(
         data,
@@ -595,7 +599,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     //String accessToken = await SharedPref.getString("access-token");
 
     AppRepository authRepository = AppRepository();
-    Map<dynamic, String> data = {
+    Map<String, dynamic> data = {
       "userData": event.userData,
       "token": event.token,
       "password": event.password,

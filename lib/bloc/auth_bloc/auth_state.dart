@@ -69,3 +69,4 @@ class AuthOtpVerifySucess extends AuthState {
 
   AuthOtpVerifySucess(this.msg, this.user);
 }
+class AccessTokenExpireState extends AuthState {}

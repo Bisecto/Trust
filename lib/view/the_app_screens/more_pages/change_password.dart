@@ -166,7 +166,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                   padding: EdgeInsets.fromLTRB(10, 0, 10, 30),
                                   child: FormButton(
                                       onPressed: () {
-                                        Map<dynamic, String> data = {
+                                        Map<String, dynamic> data = {
                                           "oldPassword":
                                               _oldPasswordController.text,
                                           "newPassword":
@@ -222,7 +222,7 @@ class _ChangePasswordState extends State<ChangePassword> {
 
 class PinContinue extends StatefulWidget {
   AuthBloc authBloc;
-  Map<dynamic, String> data;
+  Map<String, dynamic> data;
   BuildContext context;
 
   PinContinue(

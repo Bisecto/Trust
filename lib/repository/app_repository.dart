@@ -7,9 +7,10 @@ import '../res/app_strings.dart';
 import 'package:http/http.dart' as http;
 
 class AppRepository {
-  Future<http.Response> appPostRequest(
-      Map<dynamic, String> data, String apiUrl,
-      {String accessToken = '',String accessPIN = '', String refreshToken = ''}) async {
+  Future<http.Response> appPostRequest(Map<String, dynamic> data, String apiUrl,
+      {String accessToken = '',
+      String accessPIN = '',
+      String refreshToken = ''}) async {
     print(apiUrl);
     print(apiUrl);
 
@@ -32,7 +33,10 @@ class AppRepository {
     return response;
   }
 
-  Future<http.Response> appGetRequest( String apiUrl, {String accessToken = '',String accessPIN = '', String refreshToken = ''}) async {
+  Future<http.Response> appGetRequest(String apiUrl,
+      {String accessToken = '',
+      String accessPIN = '',
+      String refreshToken = ''}) async {
     print(98765456789);
     var headers = {
       'x-access-token': accessToken,
@@ -42,7 +46,7 @@ class AppRepository {
     };
     final response = await http.get(
       Uri.parse(apiUrl),
-      headers:headers,
+      headers: headers,
     );
     return response;
   }

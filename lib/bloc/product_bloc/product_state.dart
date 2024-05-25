@@ -26,3 +26,10 @@ class CategorySuccessState extends ProductState {
 
   ServiceSuccessState(this.serviceModel);
 }
+class AccessTokenExpireState extends ProductState {}
+class PurchaseSuccess extends ProductState {}
+class PurchaseErrorState extends ProductState {
+  final String error;
+  PurchaseErrorState(this.error);
+}
+

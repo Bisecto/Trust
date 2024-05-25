@@ -79,7 +79,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     String accessToken = await SharedPref.getString("access-token");
 
     AppRepository appRepository = AppRepository();
-    Map<dynamic, String> data = {
+    Map<String,dynamic> data = {
       "accountNumber": event.accountNumber,
       "bvn": event.bvn,
       "bankCode": event.bankCode

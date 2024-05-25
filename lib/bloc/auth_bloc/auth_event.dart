@@ -20,7 +20,7 @@ class VerifyOTPEventCLick extends AuthEvent {
 }
 
 class SignUpEventClick extends AuthEvent {
-  final Map<dynamic, String> data;
+  final Map<String, dynamic> data;
   final BuildContext context;
 
   SignUpEventClick(this.data,this.context);
@@ -66,7 +66,7 @@ class ChangePinEvent extends AuthEvent {
 }
 class ChangePasswordEvent extends AuthEvent {
   final String pin;
-  Map<dynamic,String> data;
+  Map<String, dynamic> data;
   final BuildContext context;
 
 

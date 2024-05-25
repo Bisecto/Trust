@@ -14,8 +14,16 @@ import '../../the_app_screens/sevices/purchase_receipt.dart';
 import '../../widgets/app_custom_text.dart';
 
 class ConfirmWithPin extends StatefulWidget {
-  const ConfirmWithPin({super.key});
+  String title;
+  BuildContext context;
+  //final Function() onPressed;
 
+
+  ConfirmWithPin(
+      {super.key,
+        required this.title,
+        required this.context,    //required this.onPressed,
+      });
   @override
   State<ConfirmWithPin> createState() => _ConfirmWithPinState();
 }
@@ -39,16 +47,17 @@ class _ConfirmWithPinState extends State<ConfirmWithPin> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // const CustomText(
-                  //   text: "Confirm Your Security Pin",
-                  //   weight: FontWeight.w600,
-                  //   size: 20,
-                  // ),
-                  const CustomText(
-                    text: "Input your transaction pin to confirm purchase",
-                    //weight: FontWeight.bold,
+                  CustomText(
+                    text: widget.title,
+                    weight: FontWeight.bold,
                     size: 16,
+                    maxLines: 3,
                   ),
+                  // const CustomText(
+                  //   text: "Input your transaction pin to confirm purchase",
+                  //   //weight: FontWeight.bold,
+                  //   size: 16,
+                  // ),
                   const SizedBox(
                     height: 20,
                   ),
@@ -76,7 +85,9 @@ class _ConfirmWithPinState extends State<ConfirmWithPin> {
 
                     onSubmit: () async {
                       /// ignore: avoid_print
-                      AppNavigator.pushAndStackPage(context, page: PurchaseReceipt());
+                      Navigator.pop(context, pinInputController.text);
+
+                      //AppNavigator.pushAndStackPage(context, page: PurchaseReceipt());
                       print("Text is : ${pinInputController.text}");
                     },
                     keyboardFontFamily: '',

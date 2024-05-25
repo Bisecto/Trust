@@ -39,7 +39,7 @@ class _SignInWIthAccessPinBiometricsState
   OtpFieldController otpFieldController = OtpFieldController();
   PinInputController pinInputController = PinInputController(length: 4);
   final AuthBloc authBloc = AuthBloc();
-bool canUseBiometrics=false;
+  bool canUseBiometrics = false;
   final LocalAuthentication auth = LocalAuthentication();
 
   @override
@@ -49,7 +49,9 @@ bool canUseBiometrics=false;
     super.initState();
     getCanUseBiometrics();
   }
+
   getCanUseBiometrics() async {
+    //widget.userName=await SharedPref.getString('firstName');
     var availableBiometrics = await auth.getAvailableBiometrics();
     print(availableBiometrics);
     canUseBiometrics = await auth.canCheckBiometrics &&
@@ -74,9 +76,11 @@ bool canUseBiometrics=false;
                     context: context,
                     title: 'Error',
                     subtitle: state.error,
-                    type: ToastMessageType.error);              } else if (state is SuccessState) {
+                    type: ToastMessageType.error);
+              } else if (state is SuccessState) {
                 //await Future.delayed(const Duration(seconds: 3));
-                AppNavigator.pushNamedAndRemoveUntil(context, name: AppRouter.landingPage);
+                AppNavigator.pushNamedAndRemoveUntil(context,
+                    name: AppRouter.landingPage);
                 // AppNavigator.pushNamedAndRemoveUntil(context,
                 //     name: AppRouter.landingPage,);
                 // // }
@@ -184,40 +188,57 @@ bool canUseBiometrics=false;
                                         Row(
                                           children: [
                                             const CustomText(
-                                              text:
-                                              "Not you?",
+                                              text: "Not you?",
                                               //weight: FontWeight.bold,
                                               size: 12,
                                             ),
-                                            const SizedBox(width: 10,),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
                                             GestureDetector(
                                               onTap: () async {
-
-                                                await SharedPref.remove("password");
-                                                await SharedPref.remove("email");
-                                                await SharedPref.remove("phone");
-                                                await SharedPref.remove("accessPin");
-                                                await SharedPref.remove("userId");
-                                                await SharedPref.remove("firstname");
-                                                await SharedPref.remove("lastname");
-                                                await SharedPref.remove("userData");
-                                                await SharedPref.remove("refresh-token");
-                                                await SharedPref.remove("access-token");
-                                                SharedPref.remove("temUserData");
-                                                SharedPref.remove("temUserPhone");
-                                                SharedPref.remove("temUserPassword");
-                                                AppNavigator.pushAndReplacePage(context, page: const SignInScreen());
+                                                await SharedPref.remove(
+                                                    "password");
+                                                await SharedPref.remove(
+                                                    "email");
+                                                await SharedPref.remove(
+                                                    "phone");
+                                                await SharedPref.remove(
+                                                    "accessPin");
+                                                await SharedPref.remove(
+                                                    "userId");
+                                                await SharedPref.remove(
+                                                    "firstname");
+                                                await SharedPref.remove(
+                                                    "lastname");
+                                                await SharedPref.remove(
+                                                    "userData");
+                                                await SharedPref.remove(
+                                                    "refresh-token");
+                                                await SharedPref.remove(
+                                                    "access-token");
+                                                SharedPref.remove(
+                                                    "temUserData");
+                                                SharedPref.remove(
+                                                    "temUserPhone");
+                                                SharedPref.remove(
+                                                    "temUserPassword");
+                                                AppNavigator.pushAndReplacePage(
+                                                    context,
+                                                    page: const SignInScreen());
                                               },
                                               child: Container(
                                                 decoration: BoxDecoration(
-                                                  border: Border.all(color: AppColors.red),
-                                                  borderRadius: BorderRadius.circular(10)
-                                                ),
+                                                    border: Border.all(
+                                                        color: AppColors.red),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
                                                 child: const Padding(
-                                                  padding: EdgeInsets.fromLTRB(10,4.0,10,4),
+                                                  padding: EdgeInsets.fromLTRB(
+                                                      10, 4.0, 10, 4),
                                                   child: CustomText(
-                                                    text:
-                                                    "Logout",
+                                                    text: "Logout",
                                                     //weight: FontWeight.bold,
                                                     color: AppColors.red,
                                                     size: 12,
@@ -260,50 +281,56 @@ bool canUseBiometrics=false;
                                           cancelColor: AppColors.black,
                                           inputBorderRadius:
                                               BorderRadius.circular(10),
-                                          leftExtraInputWidget: canUseBiometrics?GestureDetector(
-                                              onTap: () async {
-                                                bool didAuthenticate = await AppUtils.biometrics("Please authenticate to sign in");
-                                                if (didAuthenticate) {
-                                                  //model.signIn(context, withBiometrics: true);
-                                                }
-                                                // final LocalAuthentication
-                                                //     _localAuthentication =
-                                                //     LocalAuthentication();
-                                                // bool isBiometricAvailable =
-                                                //     await _localAuthentication
-                                                //         .canCheckBiometrics;
-                                                // if (isBiometricAvailable) {
-                                                //   LocalAuthentication();
-                                                //   bool isAuthenticated =
-                                                //       await _localAuthentication
-                                                //           .authenticate(
-                                                //               localizedReason:
-                                                //                   'Authenticate '
-                                                //                   'using biometrics');
-                                                //   if (isAuthenticated) {
-                                                //     print(12345678);
-                                                //   }
-                                                // } else {
-                                                //   MSG.warningSnackBar(context,
-                                                //       "No biometrics is set");
-                                                // }
-                                              },
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(5.0),
-                                                child: Container(
-                                                    height: 70,
-                                                    width: 100,
-                                                    decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color:
-                                                                AppColors.grey),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10)),
-                                                    child: const Icon(
-                                                        Icons.fingerprint)),
-                                              )):const SizedBox(),
+                                          leftExtraInputWidget: canUseBiometrics
+                                              ? GestureDetector(
+                                                  onTap: () async {
+                                                    bool didAuthenticate =
+                                                        await AppUtils.biometrics(
+                                                            "Please authenticate to sign in");
+                                                    if (didAuthenticate) {
+                                                      //model.signIn(context, withBiometrics: true);
+                                                    }
+                                                    // final LocalAuthentication
+                                                    //     _localAuthentication =
+                                                    //     LocalAuthentication();
+                                                    // bool isBiometricAvailable =
+                                                    //     await _localAuthentication
+                                                    //         .canCheckBiometrics;
+                                                    // if (isBiometricAvailable) {
+                                                    //   LocalAuthentication();
+                                                    //   bool isAuthenticated =
+                                                    //       await _localAuthentication
+                                                    //           .authenticate(
+                                                    //               localizedReason:
+                                                    //                   'Authenticate '
+                                                    //                   'using biometrics');
+                                                    //   if (isAuthenticated) {
+                                                    //     print(12345678);
+                                                    //   }
+                                                    // } else {
+                                                    //   MSG.warningSnackBar(context,
+                                                    //       "No biometrics is set");
+                                                    // }
+                                                  },
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            5.0),
+                                                    child: Container(
+                                                        height: 70,
+                                                        width: 100,
+                                                        decoration: BoxDecoration(
+                                                            border: Border.all(
+                                                                color: AppColors
+                                                                    .grey),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10)),
+                                                        child: const Icon(
+                                                            Icons.fingerprint)),
+                                                  ))
+                                              : const SizedBox(),
                                           keyoardBtnBorderRadius:
                                               BorderRadius.circular(10),
                                           //inputElevation: 3,
@@ -319,16 +346,17 @@ bool canUseBiometrics=false;
                                           onSubmit: () async {
                                             /// ignore: avoid_print
                                             String userData =
-                                                await await SharedPref.getString(
-                                                    'userData');
+                                                await await SharedPref
+                                                    .getString('userData');
                                             String password =
-                                                await await SharedPref.getString(
-                                                    'password');
+                                                await await SharedPref
+                                                    .getString('password');
                                             authBloc.add(SignInEventClick(
                                                 userData,
                                                 password,
                                                 pinInputController.text,
-                                                'accessPin',context));
+                                                'accessPin',
+                                                context));
                                             // if (widget.pin !=
                                             //     pinInputController.text) {
                                             //   MSG.warningSnackBar(

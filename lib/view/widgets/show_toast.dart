@@ -31,6 +31,7 @@ Future<bool?> alert({
     context: context,
     title: title,
     desc: subtitle,
+
     image: Lottie.asset(_getImage(alertType),height: 100,width: 100),
     padding: const EdgeInsets.all(20),
     closeIcon:  Padding(
@@ -50,6 +51,7 @@ Future<bool?> alert({
     style: AlertStyle(
       backgroundColor: Colors.white,
       overlayColor: Colors.black54,
+      isCloseButton:false,
       isButtonVisible: false,
       animationType: AnimationType.grow,
       buttonAreaPadding: const EdgeInsets.all(0),
@@ -57,7 +59,6 @@ Future<bool?> alert({
       constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width * 0.7,maxWidth: MediaQuery.of(context).size.width * 0.7),
       titleStyle:  TextStyle(color: getColor(alertType), fontWeight: FontWeight.w600, fontSize: 20, fontFamily: 'CeraPro'),
       descStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.w500, fontSize: 15, fontFamily: 'CeraPro'),
-      isCloseButton: true,
       isOverlayTapDismiss: true,
       descTextAlign: TextAlign.center,
       animationDuration: const Duration(milliseconds: 400),

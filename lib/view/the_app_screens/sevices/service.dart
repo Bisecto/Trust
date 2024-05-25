@@ -182,22 +182,35 @@ class _ServicePurchaseState extends State<ServicePurchase> {
 
                           ///Remember to add beneficiary
                           FormButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (_formKey.currentState!.validate()) {
-                                modalSheet.showMaterialModalBottomSheet(
-                                  backgroundColor: Colors.transparent,
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                    BorderRadius.vertical(top: Radius.circular(20.0)),
-                                  ),
-                                  context: context,
-                                  builder: (context) => Padding(
-                                    padding: const EdgeInsets.only(top: 200.0),
-                                    child: ConfirmWithPin(),
-                                  ),
-                                );
-
-                                //AppNavigator.pushNamedAndRemoveUntil(context, name5: AppRouter.landingPage);
+                                var transactionPin = '';
+                                transactionPin =
+                                    await modalSheet.showMaterialModalBottomSheet(
+                                    backgroundColor: Colors.transparent,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(
+                                          top: Radius.circular(20.0)),
+                                    ),
+                                    context: context,
+                                    builder: (context) => ConfirmWithPin(
+                                      context: context,
+                                      title:
+                                      'Input your transaction pin to continue',
+                                    ));
+                                print(transactionPin);
+                                if (transactionPin != '') {
+                                  //AppNavigator.pushAndStackPage(context, page: SetTransactionPin());
+                                  // billBloc.add(AirtimePurchaseEventClick(
+                                  //     numberTextEditingControlller.text,
+                                  //     amtTextEditingControlller.text,
+                                  //     //'airtel',
+                                  //     selectedServiceProvider,
+                                  //     transactionPin,
+                                  //     context,
+                                  //     saveBeneficiary));
+                                  // //AppNavigator.pushAndStackPage(context, page: PaymentSuccess());
+                                }
                               }
                             },
                             disableButton: AppValidator.validateTextfield(
