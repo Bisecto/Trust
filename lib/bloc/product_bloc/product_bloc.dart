@@ -123,7 +123,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     String accessToken = await SharedPref.getString("access-token");
     try {
       Map<String,dynamic> data={
-        "productId": "660bbd40-35c5-42c7-83b6-63f55e179e7d",//event.productId,
+        "productId":event.productId, //"660bbd40-35c5-42c7-83b6-63f55e179e7d",//event.productId,
         "requiredFields": {
           "phone": event.phone,
           "amount": event.amount

@@ -30,7 +30,7 @@ class _LandingPageState extends State<LandingPage> {
   void initState() {
     // TODO: implement initState
     context.read<AppBloc>().add(InitialEvent());
-    context.read<ProductBloc>().add(ListCategoryEvent("1", "5"));
+    context.read<ProductBloc>().add(ListCategoryEvent("1", "8"));
 
     landPageScreens = [
       HomePage(),

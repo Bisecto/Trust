@@ -13,6 +13,7 @@ import '../../../res/app_list.dart';
 import '../../../utills/app_navigator.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/app_validator.dart';
+import '../../../utills/enums/toast_mesage.dart';
 import '../../../utills/shared_preferences.dart';
 import '../../auth/otp_pin_pages/confirm_with_otp.dart';
 import '../../auth/sign_in_with_access_pin_and_biometrics.dart';
@@ -20,6 +21,8 @@ import '../../widgets/app_custom_text.dart';
 import '../../widgets/form_button.dart';
 import '../../widgets/form_input.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
+
+import '../../widgets/show_toast.dart';
 
 class DataPurchase extends StatefulWidget {
   final mainCategory.Category category;
@@ -60,304 +63,341 @@ class _DataPurchaseState extends State<DataPurchase> {
           child: Padding(
             padding: const EdgeInsets.all(0.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  height: 100,
-                  decoration: const BoxDecoration(
-                      color: AppColors.darkGreen,
-                      borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(10),
-                          topLeft: Radius.circular(10))),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const CustomText(
-                          text: "Data purchase",
-                          color: AppColors.white,
-                          weight: FontWeight.bold,
-                          size: 18,
-                        ),
-                        Container(
-                          height: 30,
-                        ),
-                        // FormButton(
-                        //   onPressed: () {
-                        //     print(1234);
-                        //     Navigator.of(context).pop();
-                        //   },
-                        //   //text: 'X',
-                        //   height: 50,
-                        //   width: 50,
-                        //   isIcon: true,
-                        //   iconWidget: Icons.cancel,
-                        // ),
-                        GestureDetector(
-                          onTap: () {
-                            print(1234);
-                            Navigator.of(context).pop();
-                            //Navigator.pop(context);
-                          },
-                          child: const SizedBox(
-                            height:50,
-                            //color: AppColors.red,
-                            width:50,
-                            child: Center(
-                              child: Icon(
-                                Icons.cancel,
-                                size: 40,
-                                color: AppColors.white,
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
+              children: [
                 BlocConsumer<ProductBloc, ProductState>(
-                  bloc: productBloc,
-                  builder: (context, state) {
-                    if (state is ServiceSuccessState) {
-                      ServiceModel serviceItem = state.serviceModel;
-                      List<Service> services = serviceItem.data.services;
-                      //Use user data here
-                      return SizedBox(
-                        height: 105,
-                        child: ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          scrollDirection: Axis.horizontal,
-                          // gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          //   crossAxisCount: 4,
-                          //   crossAxisSpacing: 8.0,
-                          //   mainAxisSpacing: 8.0,
-                          // ),
-                          itemCount: services.length,
-                          //AppList().serviceItems.length,
-                          itemBuilder: (context, index) {
-                            return GestureDetector(
-                                onTap: () {
-                                  String selectedAction = '';
-                                  setState(() {
-                                    //selectedAction=services[index].name;
-                                  });
+                    bloc: purchaseProductBloc,
+                    listenWhen: (previous, current) =>
+                        current is! ProductInitial,
+                    listener: (context, state) async {
+                      print(state);
+                      if (state is PurchaseSuccess) {
+                        showToast(
+                            context: context,
+                            title: 'Success',
+                            subtitle: 'Purchase was successful',
+                            type: ToastMessageType.info);
+                        //refresh();
+                        //MSG.snackBar(context, state.msg);
 
-                                  //showAirtimeModal(context, AppList().serviceItems[index]);
-                                },
-                                child: networkProviderItem(services[index].name,
-                                    services[index].image, services[index].id));
-                          },
-                        ),
-                      );
-                    } else {
-                      return const CustomText(
-                        text: "There",
-                        size: 15,
-                        weight: FontWeight.bold,
-                        color: AppColors.white,
-                      ); // Show loading indicator or handle error state
-                    }
-                  },
-                  listener: (BuildContext context, ProductState state) async {
-                    if (state is AccessTokenExpireState) {
-                      String firstame = await SharedPref.getString('firstName');
+                        // AppNavigator.pushAndRemovePreviousPages(context,
+                        //     page: LandingPage(studentProfile: state.studentProfile));
+                      } else if (state is AccessTokenExpireState) {
+                        showToast(
+                            context: context,
+                            title: 'Info',
+                            subtitle: 'Incorrect Access Pin',
+                            type: ToastMessageType.error);
 
-                      AppNavigator.pushAndRemovePreviousPages(context,
-                          page: SignInWIthAccessPinBiometrics(
-                            userName: firstame,
-                          ));
-                    }
-                  },
-                ),
+                        //MSG.warningSnackBar(context, state.error);
 
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                //   children: [
-                //     networkProviderItem(AppList().networkProviders[0],
-                //         AppList().networkProvidersImages[0]),
-                //     networkProviderItem(AppList().networkProviders[1],
-                //         AppList().networkProvidersImages[1]),
-                //     networkProviderItem(AppList().networkProviders[2],
-                //         AppList().networkProvidersImages[2]),
-                //     networkProviderItem(AppList().networkProviders[3],
-                //         AppList().networkProvidersImages[3])
-                //   ],
-                // ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      if (selectedNetwork == '') {
-                        setState(() {
-                          MSG.warningSnackBar(
-                              context, 'Please Select a service provider');
-                        });
-                      } else {
-                        modalSheet.showMaterialModalBottomSheet(
-                          backgroundColor: Colors.transparent,
-                          isDismissible: true,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(20.0),
-                            ),
-                          ),
-                          context: context,
-                          builder: (context) => Padding(
-                            padding: const EdgeInsets.only(top: 200.0),
-                            child: DataPlan(
-                              onDataPlanSelected:
-                                  (String name, String price, String id) {
-                                setState(() {
-                                  selectedDataPlan = name;
-                                  selectedDataPlanPrice = price;
-                                  selectedDataPlanId = id;
-                                });
-                                Navigator.pop(context); // Close modal
-                              },
-                              categoryId: widget.category.id,
-                              serviceId: selectedServiceId,
-                            ),
-                          ),
-                        );
+                        // String firstame =
+                        //     await SharedPref.getString('firstName');
+                        //
+                        // AppNavigator.pushAndRemovePreviousPages(context,
+                        //     page: SignInWIthAccessPinBiometrics(
+                        //       userName: firstame,
+                        //     ));
+                      } else if (state is PurchaseErrorState) {
+                        showToast(
+                            context: context,
+                            title: 'Info',
+                            subtitle: state.error,
+                            type: ToastMessageType.error);
+
+                        //MSG.warningSnackBar(context, state.error);
                       }
                     },
-                    child: Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: AppColors.white,
-                        border: Border.all(
-                          color: selectedServiceId.isNotEmpty
-                              ? AppColors.green
-                              : AppColors.grey,
-                          width: 1.0,
-                        ),
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 25.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: CustomText(
-                                text: selectedDataPlan,
-                                size: 14,
-                                color: selectedDataPlan != "Choose Plan"
-                                    ? Colors.black
-                                    : AppColors.lightDivider,
+                    builder: (context, state) {
+                      return SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              height: 100,
+                              decoration: const BoxDecoration(
+                                  color: AppColors.darkGreen,
+                                  borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(10),
+                                      topLeft: Radius.circular(10))),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const CustomText(
+                                      text: "Data purchase",
+                                      color: AppColors.white,
+                                      weight: FontWeight.bold,
+                                      size: 18,
+                                    ),
+                                    Container(
+                                      height: 30,
+                                    ),
+                                    // FormButton(
+                                    //   onPressed: () {
+                                    //     print(1234);
+                                    //     Navigator.of(context).pop();
+                                    //   },
+                                    //   //text: 'X',
+                                    //   height: 50,
+                                    //   width: 50,
+                                    //   isIcon: true,
+                                    //   iconWidget: Icons.cancel,
+                                    // ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        print(1234);
+                                        Navigator.of(context).pop();
+                                        //Navigator.pop(context);
+                                      },
+                                      child: const SizedBox(
+                                        height: 50,
+                                        //color: AppColors.red,
+                                        width: 50,
+                                        child: Center(
+                                          child: Icon(
+                                            Icons.cancel,
+                                            size: 40,
+                                            color: AppColors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
-                            const Icon(Icons.arrow_drop_down),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            BlocConsumer<ProductBloc, ProductState>(
+                              bloc: productBloc,
+                              builder: (context, state) {
+                                if (state is ServiceSuccessState) {
+                                  ServiceModel serviceItem = state.serviceModel;
+                                  List<Service> services =
+                                      serviceItem.data.services;
+                                  //Use user data here
+                                  return SizedBox(
+                                    height: 105,
+                                    child: ListView.builder(
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      scrollDirection: Axis.horizontal,
+                                      // gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                      //   crossAxisCount: 4,
+                                      //   crossAxisSpacing: 8.0,
+                                      //   mainAxisSpacing: 8.0,
+                                      // ),
+                                      itemCount: services.length,
+                                      //AppList().serviceItems.length,
+                                      itemBuilder: (context, index) {
+                                        return GestureDetector(
+                                            onTap: () {
+                                              String selectedAction = '';
+                                              setState(() {
+                                                //selectedAction=services[index].name;
+                                              });
+
+                                              //showAirtimeModal(context, AppList().serviceItems[index]);
+                                            },
+                                            child: networkProviderItem(
+                                                services[index].name,
+                                                services[index].image,
+                                                services[index].id));
+                                      },
+                                    ),
+                                  );
+                                } else {
+                                  return const CustomText(
+                                    text: "There",
+                                    size: 15,
+                                    weight: FontWeight.bold,
+                                    color: AppColors.white,
+                                  ); // Show loading indicator or handle error state
+                                }
+                              },
+                              listener: (BuildContext context,
+                                  ProductState state) async {
+                                if (state is AccessTokenExpireState) {
+                                  String firstame =
+                                      await SharedPref.getString('firstName');
+
+                                  AppNavigator.pushAndRemovePreviousPages(
+                                      context,
+                                      page: SignInWIthAccessPinBiometrics(
+                                        userName: firstame,
+                                      ));
+                                }
+                              },
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  if (selectedNetwork == '') {
+                                    setState(() {
+                                      MSG.warningSnackBar(context,
+                                          'Please Select a service provider');
+                                    });
+                                  } else {
+                                    modalSheet.showMaterialModalBottomSheet(
+                                      backgroundColor: Colors.transparent,
+                                      isDismissible: true,
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.vertical(
+                                          top: Radius.circular(20.0),
+                                        ),
+                                      ),
+                                      context: context,
+                                      builder: (context) => Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 200.0),
+                                        child: DataPlan(
+                                          onDataPlanSelected: (String name,
+                                              String price, String id) {
+                                            setState(() {
+                                              selectedDataPlan = name;
+                                              selectedDataPlanPrice = price;
+                                              selectedDataPlanId = id;
+                                            });
+                                            Navigator.pop(
+                                                context); // Close modal
+                                          },
+                                          categoryId: widget.category.id,
+                                          serviceId: selectedServiceId,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                                child: Container(
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.white,
+                                    border: Border.all(
+                                      color: selectedServiceId.isNotEmpty
+                                          ? AppColors.green
+                                          : AppColors.grey,
+                                      width: 1.0,
+                                    ),
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 25.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: CustomText(
+                                            text: selectedDataPlan,
+                                            size: 14,
+                                            color: selectedDataPlan !=
+                                                    "Choose Plan"
+                                                ? Colors.black
+                                                : AppColors.lightDivider,
+                                          ),
+                                        ),
+                                        const Icon(Icons.arrow_drop_down),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            if (selectedDataPlanPrice.isNotEmpty)
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: amount(selectedDataPlanPrice),
+                              ),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Form(
+                                  key: _formKey,
+                                  child: Column(
+                                    children: [
+                                      CustomTextFormField(
+                                        hint: 'Input number here',
+                                        label: 'Beneficiary',
+                                        controller: _beneficiaryController,
+                                        textInputType: TextInputType.number,
+                                        validator:
+                                            AppValidator.validateTextfield,
+                                        icon: Icons.flag,
+
+                                        //isMobileNumber: true,
+                                        borderColor: _beneficiaryController
+                                                .text.isNotEmpty
+                                            ? AppColors.green
+                                            : AppColors.grey,
+                                      ),
+
+                                      ///Remember to add beneficiary
+                                      FormButton(
+                                        onPressed: () async {
+                                          if (_formKey.currentState!
+                                              .validate()) {
+                                            var transactionPin = '';
+                                            transactionPin = await modalSheet
+                                                .showMaterialModalBottomSheet(
+                                                backgroundColor:
+                                                Colors.transparent,
+                                                shape:
+                                                const RoundedRectangleBorder(
+                                                  borderRadius:
+                                                  BorderRadius.vertical(
+                                                      top: Radius
+                                                          .circular(
+                                                          20.0)),
+                                                ),
+                                                context: context,
+                                                builder: (context) =>
+                                                    Padding(
+                                                      padding:
+                                                      const EdgeInsets
+                                                          .only(
+                                                          top: 200.0),
+                                                      child: ConfirmWithPin(
+                                                        context: context,
+                                                        title:
+                                                        'Input your transaction pin to continue',
+                                                      ),
+                                                    ));
+                                            print(transactionPin);
+                                            if (transactionPin != '') {
+                                              purchaseProductBloc.add(
+                                                  PurchaseProductEvent(
+                                                      context,
+                                                      double.parse(
+                                                          selectedDataPlanPrice
+                                                              ),
+                                                      _beneficiaryController
+                                                          .text,
+                                                      selectedDataPlanId,
+                                                      transactionPin));
+                                            }
+                                          }
+                                        },
+                                        disableButton: selectedDataPlanId.isNotEmpty &&
+                                            _beneficiaryController.text=='',
+                                        text: 'Purchase Data',
+                                        borderColor: AppColors.darkGreen,
+                                        bgColor: AppColors.darkGreen,
+                                        textColor: AppColors.white,
+                                        borderRadius: 10,
+                                      )
+                                    ],
+                                  )),
+                            ),
                           ],
                         ),
-                      ),
-                    ),
-                  ),
-                ),
-                if (selectedDataPlanPrice.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: amount(selectedDataPlanPrice),
-                  ),
-
-                // Padding(
-                //   padding: const EdgeInsets.all(10),
-                //   child: DropDown(
-                //     //controller: _genderController,
-                //     label: 'Select Data Plan',
-                //     hint: "Choose Plan",
-                //     width: AppUtils.deviceScreenSize(context).width,
-                //     items: AppList().dataPlanList,
-                //     selectedValue: _selectedPlan,
-                //     color: AppColors.white,
-                //     borderRadius: 10,
-                //     height: 50,
-                //   ),
-                // ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Form(
-                      key: _formKey,
-                      child: Column(
-                        children: [
-                          // CustomTextFormField(
-                          //   // hint: '0.00',
-                          //   // label: '',
-                          //   // controller: _selectedAmtController,
-                          //   // textInputType: TextInputType.number,
-                          //   // validator: AppValidator.validateTextfield,
-                          //   // icon: Icons.currency_exchange,
-                          //   // borderColor: _selectedAmtController.text.isNotEmpty
-                          //   //     ? AppColors.green
-                          //   //     : AppColors.grey,
-                          // ),
-                          CustomTextFormField(
-                            hint: 'Input number here',
-                            label: 'Beneficiary',
-                            controller: _beneficiaryController,
-                            textInputType: TextInputType.number,
-                            validator: AppValidator.validateTextfield,
-                            icon: Icons.flag,
-
-                            //isMobileNumber: true,
-                            borderColor: _beneficiaryController.text.isNotEmpty
-                                ? AppColors.green
-                                : AppColors.grey,
-                          ),
-
-                          ///Remember to add beneficiary
-                          FormButton(
-                            onPressed: () async {
-                              if (_formKey.currentState!.validate()) {
-                                var transactionPin = '';
-                                transactionPin = await modalSheet
-                                    .showMaterialModalBottomSheet(
-                                        backgroundColor: Colors.transparent,
-                                        shape: const RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.vertical(
-                                              top: Radius.circular(20.0)),
-                                        ),
-                                        context: context,
-                                        builder: (context) => ConfirmWithPin(
-                                              context: context,
-                                              title:
-                                                  'Input your transaction pin to continue',
-                                            ));
-                                print(transactionPin);
-                                if (transactionPin != '') {
-                                  //AppNavigator.pushAndStackPage(context, page: SetTransactionPin());
-                                  // billBloc.add(AirtimePurchaseEventClick(
-                                  //     numberTextEditingControlller.text,
-                                  //     amtTextEditingControlller.text,
-                                  //     //'airtel',
-                                  //     selectedServiceProvider,
-                                  //     transactionPin,
-                                  //     context,
-                                  //     saveBeneficiary));
-                                  // //AppNavigator.pushAndStackPage(context, page: PaymentSuccess());
-                                }
-                              }
-                            },
-                            disableButton:
-                                AppValidator.validateTextfield(_selectedPlan) !=
-                                    null,
-                            text: 'Purchase Airtime',
-                            borderColor: AppColors.darkGreen,
-                            bgColor: AppColors.darkGreen,
-                            textColor: AppColors.white,
-                            borderRadius: 10,
-                          )
-                        ],
-                      )),
-                ),
+                      );
+                    }),
               ],
             ),
           ),
