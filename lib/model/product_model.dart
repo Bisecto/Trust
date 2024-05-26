@@ -9,6 +9,54 @@ ProductModel productModelFromJson(String str) => ProductModel.fromJson(json.deco
 String productModelToJson(ProductModel data) => json.encode(data.toJson());
 
 class ProductModel {
+  String message;
+  Data data;
+
+  ProductModel({
+    required this.message,
+    required this.data,
+  });
+
+  factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
+    message: json["message"],
+    data: Data.fromJson(json["data"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "message": message,
+    "data": data.toJson(),
+  };
+}
+
+class Data {
+  int totalItems;
+  int totalPages;
+  int currentPage;
+  List<Item> items;
+
+  Data({
+    required this.totalItems,
+    required this.totalPages,
+    required this.currentPage,
+    required this.items,
+  });
+
+  factory Data.fromJson(Map<String, dynamic> json) => Data(
+    totalItems: json["totalItems"],
+    totalPages: json["totalPages"],
+    currentPage: json["currentPage"],
+    items: List<Item>.from(json["items"].map((x) => Item.fromJson(x))),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "totalItems": totalItems,
+    "totalPages": totalPages,
+    "currentPage": currentPage,
+    "items": List<dynamic>.from(items.map((x) => x.toJson())),
+  };
+}
+
+class Item {
   String image;
   String id;
   String name;
@@ -18,7 +66,7 @@ class ProductModel {
   Service service;
   Category category;
 
-  ProductModel({
+  Item({
     required this.image,
     required this.id,
     required this.name,
@@ -29,7 +77,7 @@ class ProductModel {
     required this.category,
   });
 
-  factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
+  factory Item.fromJson(Map<String, dynamic> json) => Item(
     image: json["image"],
     id: json["id"],
     name: json["name"],
@@ -56,49 +104,26 @@ class Category {
   String id;
   String name;
   String slug;
-  RequiredFields requiredFields;
 
   Category({
     required this.id,
     required this.name,
     required this.slug,
-    required this.requiredFields,
   });
 
   factory Category.fromJson(Map<String, dynamic> json) => Category(
     id: json["id"],
     name: json["name"],
     slug: json["slug"],
-    requiredFields: RequiredFields.fromJson(json["requiredFields"]),
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "name": name,
     "slug": slug,
-    "requiredFields": requiredFields.toJson(),
   };
 }
 
-class RequiredFields {
-  String phone;
-  String amount;
-
-  RequiredFields({
-    required this.phone,
-    required this.amount,
-  });
-
-  factory RequiredFields.fromJson(Map<String, dynamic> json) => RequiredFields(
-    phone: json["phone"],
-    amount: json["amount"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "phone": phone,
-    "amount": amount,
-  };
-}
 
 class Service {
   String id;

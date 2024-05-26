@@ -5,7 +5,6 @@ import 'package:custom_pin_screen/custom_pin_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:teller_trust/bloc/product_bloc/product_bloc.dart';
 import 'package:teller_trust/model/personal_profile.dart';
 import 'package:teller_trust/model/quick_access_model.dart';

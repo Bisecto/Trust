@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../../res/app_colors.dart';
 
-
 class FormButton extends StatelessWidget {
   final String text;
   final Color? bgColor;
@@ -21,9 +20,9 @@ class FormButton extends StatelessWidget {
   final FontWeight weight;
   bool isIcon;
 
-   FormButton({
+  FormButton({
     Key? key,
-    this.isIcon=false,
+    this.isIcon = false,
     this.iconWidget,
     this.text = '',
     this.textSize = 16,
@@ -33,7 +32,10 @@ class FormButton extends StatelessWidget {
     this.disableButton = false,
     this.width = double.infinity,
     this.height = 48,
-    this.weight = FontWeight.w600,  this.borderColor = Colors.transparent, this.borderWidth = 0, this.borderRadius = 4,
+    this.weight = FontWeight.w600,
+    this.borderColor = Colors.transparent,
+    this.borderWidth = 0,
+    this.borderRadius = 4,
   }) : super(key: key);
 
   @override
@@ -42,31 +44,40 @@ class FormButton extends StatelessWidget {
       margin: const EdgeInsets.fromLTRB(0, 24, 0, 0),
       width: width,
       height: height,
-      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(borderRadius),), border:
-      Border.all(color: (!disableButton)?borderColor:Colors.transparent, width: borderWidth)
-      ),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(
+            Radius.circular(borderRadius),
+          ),
+          border: Border.all(
+              color: (!disableButton) ? borderColor : Colors.transparent,
+              width: borderWidth)),
       child: ElevatedButton(
         onPressed: (disableButton) ? null : onPressed,
         style: ElevatedButton.styleFrom(
           //backgroundColor: bgColor,
           backgroundColor: bgColor,
           fixedSize: const Size(double.infinity, 48),
-          textStyle:  TextStyle(fontSize: 14, fontWeight: FontWeight.w300, color: textColor),
+          textStyle: TextStyle(
+              fontSize: 14, fontWeight: FontWeight.w300, color: textColor),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius),
-
           ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if(isIcon)
-            Icon(iconWidget),
-            const SizedBox(width: 10,),
+            if (isIcon) Icon(iconWidget),
+            if (isIcon)
+            const SizedBox(
+              width: 10,
+            ),
             Text(
               text,
-              style: TextStyle(                  fontFamily: "CeraPro",
-                  fontSize: textSize, fontWeight: weight,color: textColor),
+              style: TextStyle(
+                  fontFamily: "CeraPro",
+                  fontSize: textSize,
+                  fontWeight: weight,
+                  color: textColor),
             ),
           ],
         ),
@@ -82,7 +93,14 @@ class FormBorderButton extends StatelessWidget {
   final Function() onPressed;
   final double width;
 
-  const FormBorderButton({Key? key, this.text = '', required this.onPressed, this.bgColor, this.width = double.infinity, this.txtColor}) : super(key: key);
+  const FormBorderButton(
+      {Key? key,
+      this.text = '',
+      required this.onPressed,
+      this.bgColor,
+      this.width = double.infinity,
+      this.txtColor})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -100,9 +118,11 @@ class FormBorderButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          elevation: 0, backgroundColor: bgColor,
+          elevation: 0,
+          backgroundColor: bgColor,
           fixedSize: const Size(double.infinity, 35),
-          textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.w300, color: txtColor),
+          textStyle: TextStyle(
+              fontSize: 14, fontWeight: FontWeight.w300, color: txtColor),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(4),
           ),
@@ -111,8 +131,11 @@ class FormBorderButton extends StatelessWidget {
           child: Text(
             text,
             textAlign: TextAlign.center,
-            style: TextStyle(                  fontFamily: "CeraPro",
-                fontSize: 12, fontWeight: FontWeight.w300, color: txtColor),
+            style: TextStyle(
+                fontFamily: "CeraPro",
+                fontSize: 12,
+                fontWeight: FontWeight.w300,
+                color: txtColor),
           ),
         ),
       ),
@@ -132,14 +155,14 @@ class FormIconButton extends StatelessWidget {
 
   const FormIconButton(
       {Key? key,
-        this.text = '',
-        required this.onPressed,
-        this.marginTop = 24,
-        this.bgColor,
-        this.height = 35,
-        this.width = double.infinity,
-        this.fontSize = 14,
-        this.hasIcon = true})
+      this.text = '',
+      required this.onPressed,
+      this.marginTop = 24,
+      this.bgColor,
+      this.height = 35,
+      this.width = double.infinity,
+      this.fontSize = 14,
+      this.hasIcon = true})
       : super(key: key);
 
   @override
@@ -158,15 +181,18 @@ class FormIconButton extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: bgColor ?? AppColors.green,
                 fixedSize: const Size(double.infinity, 48),
-                textStyle: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w100),
+                textStyle:
+                    TextStyle(fontSize: fontSize, fontWeight: FontWeight.w100),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
               label: Text(
                 text,
-                style: TextStyle(                  fontFamily: "CeraPro",
-                    fontSize: fontSize, fontWeight: FontWeight.w100),
+                style: TextStyle(
+                    fontFamily: "CeraPro",
+                    fontSize: fontSize,
+                    fontWeight: FontWeight.w100),
               ),
               onPressed: onPressed,
             )));

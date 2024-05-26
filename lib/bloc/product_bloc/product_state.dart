@@ -33,3 +33,20 @@ class PurchaseErrorState extends ProductState {
   PurchaseErrorState(this.error);
 }
 
+class ProductErrorState extends ProductState {
+  final String error;
+
+  ProductErrorState(this.error);
+}
+
+class ProductLoadingState extends ProductState {
+  ProductLoadingState();
+}
+
+class ProductSuccessState extends ProductState {
+  final ProductModel productModel;
+
+  //final String msg;
+
+  ProductSuccessState(this.productModel);
+}

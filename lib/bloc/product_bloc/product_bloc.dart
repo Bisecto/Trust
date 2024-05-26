@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
+import 'package:teller_trust/model/product_model.dart';
 
 import '../../model/category_model.dart';
 import '../../model/service_model.dart';
@@ -21,7 +22,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   ProductBloc() : super(ProductInitial()) {
     on<ListCategoryEvent>(listCategoryEvent);
     on<ListServiceEvent>(listServiceEvent);
-    on<ListProductEvent>(listProductEvent);
+    on<FetchProduct>(fetchProduct);
     on<PurchaseProductEvent>(purchaseProductEvent);
     // on<ProductEvent>((event, emit) {
     //   // TODO: implement event handler
@@ -108,46 +109,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       print(e);
     }
   }
-  FutureOr<void> listProductEvent(
-      ListProductEvent event, Emitter<ProductState> emit) async {
-    emit(ServiceLoadingState()); // Emit loading state at the start of the event
 
-    AppRepository appRepository = AppRepository();
-    String accessToken = await SharedPref.getString("access-token");
-    try {
-      var listServiceResponse = await appRepository.appGetRequest(
-        '${AppApis.listService}?page=${event.page}&pageSize=${event.pageSize}&categoryId=${event.categoryId}',
-        accessToken: accessToken,
-      );
-      // var listProductResponse = await appRepository.appGetRequest(
-      //   '${AppApis.listProduct}?page=${event.page}&pageSize=${event.pageSize}&categoryId=${event.categoryId}&serviceId=152d04b2-476c-45b3-bf39-4cb5faf43569',
-      //   accessToken: accessToken,
-      // );
-      //print(listProductResponse.body);
-
-      print(
-          "ListServiceResponse status Code ${listServiceResponse.statusCode}");
-      print("ListServiceResponse Data ${listServiceResponse.body}");
-      print(json.decode(listServiceResponse.body));
-      if (listServiceResponse.statusCode == 200 ||
-          listServiceResponse.statusCode == 201) {
-        ServiceModel serviceModel =
-            ServiceModel.fromJson(json.decode(listServiceResponse.body));
-        //updateData(customerProfile);
-        print(serviceModel);
-        emit(ServiceSuccessState(serviceModel)); // Emit success state with data
-      } else if (listServiceResponse.statusCode == 401) {
-        emit(AccessTokenExpireState());
-      } else {
-        emit(ServiceErrorState(AppUtils.convertString(
-            json.decode(listServiceResponse.body)['message'])));
-        print(json.decode(listServiceResponse.body));
-      }
-    } catch (e) {
-      emit(ServiceErrorState("An error occurred while fetching categories."));
-      print(e);
-    }
-  }
 
   FutureOr<void> purchaseProductEvent(PurchaseProductEvent event, Emitter<ProductState> emit)async {
     showDialog(
@@ -197,5 +159,45 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       emit(PurchaseErrorState("An error occurred while fetching categories."));
       print(e);
     }
+  }
+
+  FutureOr<void> fetchProduct(FetchProduct event, Emitter<ProductState> emit
+      ) async {
+    emit(ProductLoadingState()); // Emit loading state at the start of the event
+
+    AppRepository appRepository = AppRepository();
+    String accessToken = await SharedPref.getString("access-token");
+    // try {
+    var listServiceResponse = await appRepository.appGetRequest(
+      '${AppApis.listProduct}?page=${event.page}&pageSize=${event.pageSize}&categoryId=${event.categoryId}&serviceId=${event.serviceId}',
+      accessToken: accessToken,
+    );
+    // var listProductResponse = await appRepository.appGetRequest(
+    //   '${AppApis.listProduct}?page=${event.page}&pageSize=${event.pageSize}&categoryId=${event.categoryId}&serviceId=152d04b2-476c-45b3-bf39-4cb5faf43569',
+    //   accessToken: accessToken,
+    // );
+    //print(listProductResponse.body);
+
+    print(
+        "productModel status Code ${listServiceResponse.statusCode}");
+    print("productModel Data ${listServiceResponse.body}");
+    print(json.decode(listServiceResponse.body));
+    if (listServiceResponse.statusCode == 200 ||
+        listServiceResponse.statusCode == 201) {
+      ProductModel productModel =ProductModel.fromJson(json.decode(listServiceResponse.body));
+      //updateData(customerProfile);
+      print(productModel);
+      emit(ProductSuccessState(productModel)); // Emit success state with data
+    } else if (listServiceResponse.statusCode == 401) {
+      emit(AccessTokenExpireState());
+    } else {
+      emit(ProductErrorState(AppUtils.convertString(
+          json.decode(listServiceResponse.body)['message'])));
+      print(json.decode(listServiceResponse.body));
+    }
+    // } catch (e) {
+    //   emit(ProductErrorState("An error occurred while fetching categories."));
+    //   print(e);
+    // }
   }
 }

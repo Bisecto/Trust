@@ -1,21 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:teller_trust/model/category_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
+import 'package:teller_trust/model/category_model.dart' as mainCategory;
 import 'package:teller_trust/model/quick_access_model.dart';
+import 'package:teller_trust/view/important_pages/dialog_box.dart';
 import 'package:teller_trust/view/widgets/drop_down.dart';
 
+import '../../../bloc/product_bloc/product_bloc.dart';
+import '../../../model/service_model.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/app_list.dart';
 import '../../../utills/app_navigator.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/app_validator.dart';
+import '../../../utills/shared_preferences.dart';
 import '../../auth/otp_pin_pages/confirm_with_otp.dart';
+import '../../auth/sign_in_with_access_pin_and_biometrics.dart';
 import '../../widgets/app_custom_text.dart';
 import '../../widgets/form_button.dart';
 import '../../widgets/form_input.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
 class DataPurchase extends StatefulWidget {
-  final Category category;
+  final mainCategory.Category category;
 
   const DataPurchase({super.key, required this.category});
 
@@ -24,13 +31,28 @@ class DataPurchase extends StatefulWidget {
 }
 
 class _DataPurchaseState extends State<DataPurchase> {
+  ProductBloc productBloc = ProductBloc();
+  ProductBloc purchaseProductBloc = ProductBloc();
+  String selectedDataPlan = 'Choose Plan';
+  String selectedDataPlanPrice = '';
+  String selectedDataPlanId = '';
+  String selectedServiceId = '';
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    productBloc.add(ListServiceEvent("1", "4", widget.category.id));
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
         height: AppUtils.deviceScreenSize(context).height - 100,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
             color: AppColors.white,
             borderRadius: BorderRadius.only(
                 topRight: Radius.circular(10), topLeft: Radius.circular(10))),
@@ -41,8 +63,8 @@ class _DataPurchaseState extends State<DataPurchase> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Container(
-                  height: 50,
-                  decoration: BoxDecoration(
+                  height: 100,
+                  decoration: const BoxDecoration(
                       color: AppColors.darkGreen,
                       borderRadius: BorderRadius.only(
                           topRight: Radius.circular(10),
@@ -52,19 +74,43 @@ class _DataPurchaseState extends State<DataPurchase> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        CustomText(
+                        const CustomText(
                           text: "Data purchase",
                           color: AppColors.white,
-                          weight: FontWeight.w600,
+                          weight: FontWeight.bold,
                           size: 18,
                         ),
+                        Container(
+                          height: 30,
+                        ),
+                        // FormButton(
+                        //   onPressed: () {
+                        //     print(1234);
+                        //     Navigator.of(context).pop();
+                        //   },
+                        //   //text: 'X',
+                        //   height: 50,
+                        //   width: 50,
+                        //   isIcon: true,
+                        //   iconWidget: Icons.cancel,
+                        // ),
                         GestureDetector(
                           onTap: () {
-                            Navigator.pop(context);
+                            print(1234);
+                            Navigator.of(context).pop();
+                            //Navigator.pop(context);
                           },
-                          child: Icon(
-                            Icons.cancel,
-                            color: AppColors.lightShadowGreenColor,
+                          child: const SizedBox(
+                            height:50,
+                            //color: AppColors.red,
+                            width:50,
+                            child: Center(
+                              child: Icon(
+                                Icons.cancel,
+                                size: 40,
+                                color: AppColors.white,
+                              ),
+                            ),
                           ),
                         )
                       ],
@@ -74,36 +120,168 @@ class _DataPurchaseState extends State<DataPurchase> {
                 const SizedBox(
                   height: 10,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    networkProviderItem(AppList().networkProviders[0],
-                        AppList().networkProvidersImages[0]),
-                    networkProviderItem(AppList().networkProviders[1],
-                        AppList().networkProvidersImages[1]),
-                    networkProviderItem(AppList().networkProviders[2],
-                        AppList().networkProvidersImages[2]),
-                    networkProviderItem(AppList().networkProviders[3],
-                        AppList().networkProvidersImages[3])
-                  ],
+                BlocConsumer<ProductBloc, ProductState>(
+                  bloc: productBloc,
+                  builder: (context, state) {
+                    if (state is ServiceSuccessState) {
+                      ServiceModel serviceItem = state.serviceModel;
+                      List<Service> services = serviceItem.data.services;
+                      //Use user data here
+                      return SizedBox(
+                        height: 105,
+                        child: ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          scrollDirection: Axis.horizontal,
+                          // gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          //   crossAxisCount: 4,
+                          //   crossAxisSpacing: 8.0,
+                          //   mainAxisSpacing: 8.0,
+                          // ),
+                          itemCount: services.length,
+                          //AppList().serviceItems.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                                onTap: () {
+                                  String selectedAction = '';
+                                  setState(() {
+                                    //selectedAction=services[index].name;
+                                  });
+
+                                  //showAirtimeModal(context, AppList().serviceItems[index]);
+                                },
+                                child: networkProviderItem(services[index].name,
+                                    services[index].image, services[index].id));
+                          },
+                        ),
+                      );
+                    } else {
+                      return const CustomText(
+                        text: "There",
+                        size: 15,
+                        weight: FontWeight.bold,
+                        color: AppColors.white,
+                      ); // Show loading indicator or handle error state
+                    }
+                  },
+                  listener: (BuildContext context, ProductState state) async {
+                    if (state is AccessTokenExpireState) {
+                      String firstame = await SharedPref.getString('firstName');
+
+                      AppNavigator.pushAndRemovePreviousPages(context,
+                          page: SignInWIthAccessPinBiometrics(
+                            userName: firstame,
+                          ));
+                    }
+                  },
                 ),
+
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                //   children: [
+                //     networkProviderItem(AppList().networkProviders[0],
+                //         AppList().networkProvidersImages[0]),
+                //     networkProviderItem(AppList().networkProviders[1],
+                //         AppList().networkProvidersImages[1]),
+                //     networkProviderItem(AppList().networkProviders[2],
+                //         AppList().networkProvidersImages[2]),
+                //     networkProviderItem(AppList().networkProviders[3],
+                //         AppList().networkProvidersImages[3])
+                //   ],
+                // ),
                 const SizedBox(
                   height: 20,
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: DropDown(
-                    //controller: _genderController,
-                    label: 'Select Data Plan',
-                    hint: "Choose Plan",
-                    width: AppUtils.deviceScreenSize(context).width,
-                    items: AppList().dataPlanList,
-                    selectedValue: _selectedPlan,
-                    color: AppColors.white,
-                    borderRadius: 10,
-                    height: 50,
+                  padding: const EdgeInsets.all(10.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      if (selectedNetwork == '') {
+                        setState(() {
+                          MSG.warningSnackBar(
+                              context, 'Please Select a service provider');
+                        });
+                      } else {
+                        modalSheet.showMaterialModalBottomSheet(
+                          backgroundColor: Colors.transparent,
+                          isDismissible: true,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(20.0),
+                            ),
+                          ),
+                          context: context,
+                          builder: (context) => Padding(
+                            padding: const EdgeInsets.only(top: 200.0),
+                            child: DataPlan(
+                              onDataPlanSelected:
+                                  (String name, String price, String id) {
+                                setState(() {
+                                  selectedDataPlan = name;
+                                  selectedDataPlanPrice = price;
+                                  selectedDataPlanId = id;
+                                });
+                                Navigator.pop(context); // Close modal
+                              },
+                              categoryId: widget.category.id,
+                              serviceId: selectedServiceId,
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: AppColors.white,
+                        border: Border.all(
+                          color: selectedServiceId.isNotEmpty
+                              ? AppColors.green
+                              : AppColors.grey,
+                          width: 1.0,
+                        ),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 25.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: CustomText(
+                                text: selectedDataPlan,
+                                size: 14,
+                                color: selectedDataPlan != "Choose Plan"
+                                    ? Colors.black
+                                    : AppColors.lightDivider,
+                              ),
+                            ),
+                            const Icon(Icons.arrow_drop_down),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 ),
+                if (selectedDataPlanPrice.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: amount(selectedDataPlanPrice),
+                  ),
+
+                // Padding(
+                //   padding: const EdgeInsets.all(10),
+                //   child: DropDown(
+                //     //controller: _genderController,
+                //     label: 'Select Data Plan',
+                //     hint: "Choose Plan",
+                //     width: AppUtils.deviceScreenSize(context).width,
+                //     items: AppList().dataPlanList,
+                //     selectedValue: _selectedPlan,
+                //     color: AppColors.white,
+                //     borderRadius: 10,
+                //     height: 50,
+                //   ),
+                // ),
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Form(
@@ -140,19 +318,19 @@ class _DataPurchaseState extends State<DataPurchase> {
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {
                                 var transactionPin = '';
-                                transactionPin =
-                                    await modalSheet.showMaterialModalBottomSheet(
-                                    backgroundColor: Colors.transparent,
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(20.0)),
-                                    ),
-                                    context: context,
-                                    builder: (context) => ConfirmWithPin(
-                                      context: context,
-                                      title:
-                                      'Input your transaction pin to continue',
-                                    ));
+                                transactionPin = await modalSheet
+                                    .showMaterialModalBottomSheet(
+                                        backgroundColor: Colors.transparent,
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(20.0)),
+                                        ),
+                                        context: context,
+                                        builder: (context) => ConfirmWithPin(
+                                              context: context,
+                                              title:
+                                                  'Input your transaction pin to continue',
+                                            ));
                                 print(transactionPin);
                                 if (transactionPin != '') {
                                   //AppNavigator.pushAndStackPage(context, page: SetTransactionPin());
@@ -168,8 +346,8 @@ class _DataPurchaseState extends State<DataPurchase> {
                                 }
                               }
                             },
-                            disableButton: AppValidator.validateTextfield(
-                                        _selectedPlan) !=
+                            disableButton:
+                                AppValidator.validateTextfield(_selectedPlan) !=
                                     null,
                             text: 'Purchase Airtime',
                             borderColor: AppColors.darkGreen,
@@ -188,10 +366,98 @@ class _DataPurchaseState extends State<DataPurchase> {
     );
   }
 
+  Widget amount(String amt) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: GestureDetector(
+        onTap: () {
+          print(amt);
+          setState(() {
+            _selectedAmtController.text = amt;
+          });
+        },
+        child: Container(
+          decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: AppColors.lightGreen)),
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: CustomText(
+              text: "₦ $amt",
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _loadingBeneficiaries() {
+    return SizedBox(
+      height: AppUtils.deviceScreenSize(context).width / 5,
+      width: AppUtils.deviceScreenSize(context).width / 5,
+      child: ListView.builder(
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        //physics: const NeverScrollableScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 0),
+        itemCount: 4,
+        itemBuilder: (BuildContext context, int index) {
+          return Padding(
+              padding: const EdgeInsets.only(right: 10.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.2),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(50)))),
+                  const SizedBox(height: 10),
+                  Shimmer(
+                    duration: const Duration(seconds: 1),
+                    interval: const Duration(milliseconds: 50),
+                    color: Colors.grey.withOpacity(0.5),
+                    colorOpacity: 0.5,
+                    enabled: true,
+                    direction: const ShimmerDirection.fromLTRB(),
+                    child: Container(
+                      height: 10,
+                      width: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Shimmer(
+                    duration: const Duration(seconds: 1),
+                    interval: const Duration(milliseconds: 50),
+                    color: Colors.grey.withOpacity(0.5),
+                    colorOpacity: 0.5,
+                    enabled: true,
+                    direction: const ShimmerDirection.fromLTRB(),
+                    child: Container(
+                      height: 5,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.2),
+                      ),
+                    ),
+                  )
+                ],
+              ));
+        },
+      ),
+    );
+  }
+
   final _formKey = GlobalKey<FormState>();
   final String _selectedPlan = '';
 
-  String selectedNetwork = "mtn";
+  String selectedNetwork = "";
   final _beneficiaryController = TextEditingController();
   final _selectedAmtController = TextEditingController();
 
@@ -221,40 +487,47 @@ class _DataPurchaseState extends State<DataPurchase> {
     );
   }
 
-  Widget networkProviderItem(String name, String image) {
-    return Container(
-      height: 80,
-      width: 80,
-      decoration: BoxDecoration(
-          border: Border.all(
-              color: selectedNetwork == name.toLowerCase()
-                  ? AppColors.green
-                  : Colors.transparent),
-          color: selectedNetwork == name.toLowerCase()
-              ? AppColors.lightShadowGreenColor
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(15)),
-      child: Padding(
-        padding: const EdgeInsets.all(6.0),
-        child: GestureDetector(
-          onTap: () {
-            setState(() {
-              selectedNetwork = name.toLowerCase();
-            });
-          },
-          child: Column(
-            children: [
-              CircleAvatar(
-                //backgroundColor: service.backgroundColor,
-                radius: 20,
-                backgroundImage: AssetImage(image),
-                //child: Image.asset(image,height: 20,width: 20,),
-              ),
-              CustomText(
-                text: name,
-                color: AppColors.black,
-              )
-            ],
+  Widget networkProviderItem(String name, String image, String id) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        height: AppUtils.deviceScreenSize(context).width / 5,
+        width: AppUtils.deviceScreenSize(context).width / 5,
+        decoration: BoxDecoration(
+            border: Border.all(
+                color: selectedNetwork == name.toLowerCase()
+                    ? AppColors.green
+                    : Colors.transparent),
+            color: selectedNetwork == name.toLowerCase()
+                ? AppColors.lightShadowGreenColor
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(15)),
+        child: Padding(
+          padding: const EdgeInsets.all(6.0),
+          child: GestureDetector(
+            onTap: () {
+              setState(() {
+                selectedNetwork = name.toLowerCase();
+                selectedServiceId = id;
+                selectedDataPlanPrice = '';
+                selectedDataPlanId = '';
+                selectedDataPlan = 'Choose Plan';
+              });
+            },
+            child: Column(
+              children: [
+                CircleAvatar(
+                  //backgroundColor: service.backgroundColor,
+                  radius: 20,
+                  backgroundImage: NetworkImage(image),
+                  //child: Image.asset(image,height: 20,width: 20,),
+                ),
+                CustomText(
+                  text: name,
+                  color: AppColors.black,
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -273,4 +546,182 @@ class _DataPurchaseState extends State<DataPurchase> {
 //     ),
 //   );
 // }
+}
+
+class DataPlan extends StatelessWidget {
+  final String categoryId;
+  final String serviceId;
+  final Function(String, String, String) onDataPlanSelected;
+
+  DataPlan({
+    Key? key,
+    required this.serviceId,
+    required this.categoryId,
+    required this.onDataPlanSelected,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: BlocProvider(
+        create: (context) => ProductBloc(),
+        child: Scaffold(
+          body: Column(
+            children: [
+              Container(
+                height: 50,
+                decoration: const BoxDecoration(
+                    color: AppColors.darkGreen,
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(10),
+                        topLeft: Radius.circular(10))),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const CustomText(
+                        text: "Data Plans",
+                        color: AppColors.white,
+                        weight: FontWeight.w600,
+                        size: 18,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Container(
+                          child: const Icon(
+                            Icons.arrow_back_ios,
+                            size: 40,
+                            color: AppColors.lightShadowGreenColor,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                child: DataPlanList(
+                  onDataPlanSelected: onDataPlanSelected,
+                  serviceId: serviceId,
+                  categoryId: categoryId,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class DataPlanList extends StatefulWidget {
+  final String categoryId;
+  final String serviceId;
+  final Function(String, String, String) onDataPlanSelected;
+
+  DataPlanList({
+    Key? key,
+    required this.serviceId,
+    required this.categoryId,
+    required this.onDataPlanSelected,
+  }) : super(key: key);
+
+  @override
+  _DataPlanListState createState() => _DataPlanListState();
+}
+
+class _DataPlanListState extends State<DataPlanList> {
+  final TextEditingController _searchController = TextEditingController();
+  int page = 1;
+  ProductBloc productListBloc = ProductBloc();
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(_onSearchChanged);
+    _fetchDataPlan('', page, widget.categoryId, widget.serviceId);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+      child: Column(
+        children: [
+          CustomTextFormField(
+            hint: 'Search Data plan',
+            label: '',
+            controller: _searchController,
+            validator: AppValidator.validateAccountNumberfield,
+            icon: Icons.search,
+          ),
+          Expanded(
+            child: BlocBuilder<ProductBloc, ProductState>(
+              bloc: productListBloc,
+              builder: (context, state) {
+                if (state is ProductLoadingState) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is ProductSuccessState) {
+                  final product = state as ProductSuccessState;
+                  return ListView.builder(
+                    itemCount: product.productModel.data.items.length,
+                    itemBuilder: (context, index) {
+                      final singleProduct =
+                          product.productModel.data.items[index];
+                      return ListTile(
+                        onTap: () {
+                          widget.onDataPlanSelected(
+                            singleProduct.name,
+                            singleProduct.buyerPrice.toString(),
+                            singleProduct.id,
+                          );
+                        },
+                        title: CustomText(
+                          text: singleProduct.name,
+                          size: 14,
+                          weight: FontWeight.w700,
+                        ),
+                        subtitle: CustomText(
+                          text: singleProduct.buyerPrice.toString(),
+                          size: 14,
+                          weight: FontWeight.w400,
+                        ),
+                      );
+                    },
+                  );
+                } else if (state is ProductErrorState) {
+                  final error = state as ProductErrorState;
+                  return Center(
+                    child: Text(error.error),
+                  );
+                }
+                return Container(); // Placeholder, should never be reached
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _onSearchChanged() {
+    page = 1; // Reset page number to 1 when search query changes
+    _fetchDataPlan(
+        _searchController.text, page, widget.categoryId, widget.serviceId);
+  }
+
+  void _fetchDataPlan(String query, int pageNo, categoryId, serviceId) {
+    productListBloc
+        .add(FetchProduct(query, pageNo.toString(), 20, categoryId, serviceId));
+    page++; // Increment page number after making the request
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 }

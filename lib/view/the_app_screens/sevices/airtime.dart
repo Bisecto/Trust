@@ -363,7 +363,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
-        height: 80,
+        height: AppUtils.deviceScreenSize(context).width / 5,
         width: AppUtils.deviceScreenSize(context).width / 5,
         decoration: BoxDecoration(
             border: Border.all(

@@ -35,16 +35,26 @@ class CustomText extends StatelessWidget {
       maxLines: maxLines,
       softWrap: true,
       overflow: TextOverflow.ellipsis,
-      style: TextStyle(
-        fontFamily: "CeraPro",
-        decoration:
-            (underline) ? TextDecoration.underline : TextDecoration.none,
-        decorationColor: AppColors.green,
-        letterSpacing: spacing!,
-        fontSize: size ?? 16,
-        color: color ?? Colors.black,
-        fontWeight: weight ?? FontWeight.normal,
-      ),
+      style:GoogleFonts.poppins(
+          //fontFamily: "CeraPro",
+          decoration:
+              (underline) ? TextDecoration.underline : TextDecoration.none,
+          decorationColor: AppColors.green,
+          letterSpacing: spacing!,
+          fontSize: size ?? 16,
+          color: color ?? Colors.black,
+        //   fontWeight: weight ?? FontWeight.normal,
+      )
+      // TextStyle(
+      //   fontFamily: "CeraPro",
+      //   decoration:
+      //       (underline) ? TextDecoration.underline : TextDecoration.none,
+      //   decorationColor: AppColors.green,
+      //   letterSpacing: spacing!,
+      //   fontSize: size ?? 16,
+      //   color: color ?? Colors.black,
+      //   fontWeight: weight ?? FontWeight.normal,
+      // ),
     );
   }
 }
