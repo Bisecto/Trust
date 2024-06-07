@@ -20,5 +20,6 @@ class AppImages {
   static const physicalCardStraight = '${_imageBaseUrl}physical_card_straight.png';
   static const virtualCardStraight = '${_imageBaseUrl}virtual_card_straight.png';
   static const splashLogo = '${_imageBaseUrl}splash_logo.png';
+  static const kycBackgroundImage = '${_imageBaseUrl}kyc_bacground_image.png';
 
 }

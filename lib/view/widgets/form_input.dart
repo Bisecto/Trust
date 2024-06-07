@@ -91,7 +91,9 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                       fontSize: 15,
                     ),
                   ),
-                const SizedBox(width: 10),
+                if (widget.isMobileNumber)
+
+                  const SizedBox(width: 10),
                 Expanded(
                   child: TextFormField(
                     controller: widget.controller,
@@ -106,6 +108,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                           },
                           child: Icon(
                             widget.icon,
+                            color: AppColors.lightgrey,
                           ),
                         ),
                         suffixIcon: GestureDetector(
@@ -124,7 +127,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                         ),
                         hintText: widget.hint,
                         hintStyle: TextStyle(                  fontFamily: "CeraPro",
-                            fontSize: 14,color: AppColors.lightDivider),
+                            fontSize: 12,color: AppColors.lightDivider),
                         border: InputBorder.none),
                     keyboardType: widget.textInputType,
                     validator: widget.validator,

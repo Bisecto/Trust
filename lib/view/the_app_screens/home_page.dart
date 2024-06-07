@@ -19,6 +19,7 @@ import 'package:teller_trust/view/the_app_screens/sevices/add_fundz.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/airtime.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/data.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/internet.dart';
+import 'package:teller_trust/view/the_app_screens/sevices/make_bank_transfer/bank_transfer.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/send_funds.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
@@ -28,6 +29,7 @@ import '../../model/category_model.dart';
 import '../../model/user.dart';
 import '../../res/app_images.dart';
 import '../important_pages/dialog_box.dart';
+import 'kyc_verification/kyc_intro_page.dart';
 import 'more_pages/withdrawal_account.dart';
 
 class HomePage extends StatefulWidget {
@@ -55,7 +57,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> getName() async {
     firstname = await SharedPref.getString('firstName');
     lastname = await SharedPref.getString('lastName');
-    isMoneyBlocked = await SharedPref.getBool('isMoneyBlocked')??false;
+    isMoneyBlocked = await SharedPref.getBool('isMoneyBlocked') ?? false;
     print(isMoneyBlocked);
     print(isMoneyBlocked);
     print(isMoneyBlocked);
@@ -274,7 +276,7 @@ class _HomePageState extends State<HomePage> {
                 AppNavigator.pushAndStackPage(context,
                     page: BlocProvider.value(
                         value: context.read<AppBloc>(),
-                        child: WithdrawalAccount()));
+                        child: KYCIntro()));
               },
               child: Padding(
                 padding: EdgeInsets.all(10.0),
@@ -518,7 +520,7 @@ class _HomePageState extends State<HomePage> {
           List<Category> items = categoryModel.data.categories;
           //Use user data here
           return SizedBox(
-            height:  105 ,
+            height: 105,
             child: GridView.builder(
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -530,23 +532,22 @@ class _HomePageState extends State<HomePage> {
               itemBuilder: (context, index) {
                 return GestureDetector(
                     onTap: () {
-                      String selectedAction='';
+                      String selectedAction = '';
                       setState(() {
-                        selectedAction=items[index].name;
+                        selectedAction = items[index].name;
                       });
                       switch (selectedAction) {
                         case "Airtime":
                           modalSheet.showMaterialModalBottomSheet(
                             backgroundColor: Colors.transparent,
                             shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.vertical(top: Radius.circular(20.0)),
+                              borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(20.0)),
                             ),
                             context: context,
                             builder: (context) => Padding(
                               padding: const EdgeInsets.only(top: 100.0),
-                              child: AirtimePurchase(
-                                  category: items[index]),
+                              child: AirtimePurchase(category: items[index]),
                             ),
                           );
                           // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
@@ -556,14 +557,13 @@ class _HomePageState extends State<HomePage> {
                           modalSheet.showMaterialModalBottomSheet(
                             backgroundColor: Colors.transparent,
                             shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.vertical(top: Radius.circular(20.0)),
+                              borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(20.0)),
                             ),
                             context: context,
                             builder: (context) => Padding(
                               padding: const EdgeInsets.only(top: 100.0),
-                              child: DataPurchase(
-                                  category: items[index]),
+                              child: DataPurchase(category: items[index]),
                             ),
                           );
                           // AppNavigator.pushAndStackPage(context, page: DataPurchase(
@@ -573,14 +573,13 @@ class _HomePageState extends State<HomePage> {
                           modalSheet.showMaterialModalBottomSheet(
                             backgroundColor: Colors.transparent,
                             shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.vertical(top: Radius.circular(20.0)),
+                              borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(20.0)),
                             ),
                             context: context,
                             builder: (context) => Padding(
                               padding: const EdgeInsets.only(top: 100.0),
-                              child: InternetPurchase(
-                                  category: items[index]),
+                              child: InternetPurchase(category: items[index]),
                             ),
                           );
                           // AppNavigator.pushAndStackPage(context, page: InternetPurchase(

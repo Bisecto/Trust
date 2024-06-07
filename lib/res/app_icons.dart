@@ -61,6 +61,7 @@ class AppIcons {
   static const change4DigitPassword = '${_iconBaseUrl}change_4_digit_password.svg';
   static const changePassword = '${_iconBaseUrl}change_password.svg';
   static const kycVerification = '${_iconBaseUrl}kyc_verification.svg';
+  static const kycBackground = '${_iconBaseUrl}kyc_bg.svg';
   static const transactionPin = '${_iconBaseUrl}transaction_pin.svg';
   static const getHelpAppBar = '${_iconBaseUrl}get_help_app_bar.svg';
   static const legalAppBar = '${_iconBaseUrl}legal_app_bar.svg';
