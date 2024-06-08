@@ -165,13 +165,13 @@ class _HomePageState extends State<HomePage> {
                           width: 25,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          CustomText(
+                          const CustomText(
                             text: "Hello",
                           ),
                           CustomText(
@@ -216,13 +216,13 @@ class _HomePageState extends State<HomePage> {
                         width: 25,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CustomText(
+                        const CustomText(
                           text: "Hello",
                         ),
                         CustomText(
@@ -275,22 +275,21 @@ class _HomePageState extends State<HomePage> {
               onTap: () {
                 AppNavigator.pushAndStackPage(context,
                     page: BlocProvider.value(
-                        value: context.read<AppBloc>(),
-                        child: KYCIntro()));
+                        value: context.read<AppBloc>(), child: const KYCIntro()));
               },
               child: Padding(
-                padding: EdgeInsets.all(10.0),
+                padding: const EdgeInsets.all(10.0),
                 child: Container(
                     height: 70,
                     decoration: BoxDecoration(
                         color: AppColors.lightPrimary,
                         borderRadius: BorderRadius.circular(20)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
+                    child: const Padding(
+                      padding: EdgeInsets.all(10.0),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const CircleAvatar(
+                          CircleAvatar(
                             //backgroundImage: AssetImage(AppImages.airtel),
                             child: Icon(
                               Icons.notification_important_rounded,
@@ -340,8 +339,8 @@ class _HomePageState extends State<HomePage> {
                     color: AppColors.white,
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: AppColors.grey)),
-                child: Padding(
-                  padding: const EdgeInsets.all(5.0),
+                child: const Padding(
+                  padding: EdgeInsets.all(5.0),
                   child: CustomText(
                     text: "See All",
                   ),
@@ -381,7 +380,7 @@ class _HomePageState extends State<HomePage> {
           // Positioned(child: SvgPicture.asset(AppIcons.looper2)),
           Positioned(
               child: SizedBox(
-            height: 220,
+            //height: 220,
             // color: AppColors.red,
             child: Padding(
               padding: const EdgeInsets.all(10.0),
@@ -462,8 +461,8 @@ class _HomePageState extends State<HomePage> {
                                     top: Radius.circular(30.0)),
                               ),
                               context: context,
-                              builder: (context) => Padding(
-                                padding: const EdgeInsets.only(top: 100.0),
+                              builder: (context) => const Padding(
+                                padding: EdgeInsets.only(top: 100.0),
                                 child: AddFunds(),
                               ),
                             );
@@ -473,7 +472,7 @@ class _HomePageState extends State<HomePage> {
                       GestureDetector(
                           onTap: () {
                             AppNavigator.pushAndStackPage(context,
-                                page: SendFunds());
+                                page: const SendFunds());
                             // Navigator.push(
                             //   context,
                             //   MaterialPageRoute(
@@ -501,8 +500,19 @@ class _HomePageState extends State<HomePage> {
                           AppIcons.switch1, "Switch Account"),
                     ],
                   ),
-                  SizedBox(height: 10),
-                  accountNumberContainer("8765564367")
+                  const SizedBox(height: 10),
+                  BlocBuilder<AppBloc, AppState>(
+                    builder: (context, state) {
+                      if (state is SuccessState) {
+                        var customerAccount =
+                            state.customerProfile.customerAccount;
+                        // Use user data here
+                        return customerAccount==null?const SizedBox(): accountNumberContainer("8765564367");
+                      } else {
+                        return const SizedBox(); // Show loading indicator or handle error state
+                      }
+                    },
+                  ),
                 ],
               ),
             ),
@@ -651,7 +661,7 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     const CustomText(
@@ -673,8 +683,8 @@ class _HomePageState extends State<HomePage> {
                                     color: AppColors.lightShadowGreenColor,
                                     borderRadius: BorderRadius.circular(10),
                                     border: Border.all(color: AppColors.green)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5.0),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(5.0),
                                   child: CustomText(
                                     text: "08123457146",
                                   ),
@@ -688,8 +698,8 @@ class _HomePageState extends State<HomePage> {
                                     color: AppColors.white,
                                     borderRadius: BorderRadius.circular(10),
                                     border: Border.all(color: AppColors.grey)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5.0),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(5.0),
                                   child: CustomText(
                                     text: "N 1,500.00",
                                   ),
@@ -701,7 +711,7 @@ class _HomePageState extends State<HomePage> {
                         SvgPicture.asset(AppIcons.reload)
                       ],
                     ),
-                    Divider()
+                    const Divider()
                   ],
                 ),
               ),
@@ -709,7 +719,7 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     const CustomText(
@@ -731,8 +741,8 @@ class _HomePageState extends State<HomePage> {
                                     color: AppColors.lightShadowGreenColor,
                                     borderRadius: BorderRadius.circular(10),
                                     border: Border.all(color: AppColors.green)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5.0),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(5.0),
                                   child: CustomText(
                                     text: "08123457146",
                                   ),
@@ -746,8 +756,8 @@ class _HomePageState extends State<HomePage> {
                                     color: AppColors.white,
                                     borderRadius: BorderRadius.circular(10),
                                     border: Border.all(color: AppColors.grey)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5.0),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(5.0),
                                   child: CustomText(
                                     text: "N 1,500.00",
                                   ),
@@ -759,7 +769,7 @@ class _HomePageState extends State<HomePage> {
                         SvgPicture.asset(AppIcons.reload)
                       ],
                     ),
-                    Divider()
+                    const Divider()
                   ],
                 ),
               ),
@@ -767,7 +777,7 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     const CustomText(
@@ -789,8 +799,8 @@ class _HomePageState extends State<HomePage> {
                                     color: AppColors.lightShadowGreenColor,
                                     borderRadius: BorderRadius.circular(10),
                                     border: Border.all(color: AppColors.green)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5.0),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(5.0),
                                   child: CustomText(
                                     text: "08123457146",
                                   ),
@@ -804,8 +814,8 @@ class _HomePageState extends State<HomePage> {
                                     color: AppColors.white,
                                     borderRadius: BorderRadius.circular(10),
                                     border: Border.all(color: AppColors.grey)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5.0),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(5.0),
                                   child: CustomText(
                                     text: "N 1,500.00",
                                   ),
@@ -817,7 +827,7 @@ class _HomePageState extends State<HomePage> {
                         SvgPicture.asset(AppIcons.reload)
                       ],
                     ),
-                    Divider()
+                    const Divider()
                   ],
                 ),
               ),
@@ -825,7 +835,7 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     const CustomText(
@@ -847,8 +857,8 @@ class _HomePageState extends State<HomePage> {
                                     color: AppColors.lightShadowGreenColor,
                                     borderRadius: BorderRadius.circular(10),
                                     border: Border.all(color: AppColors.green)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5.0),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(5.0),
                                   child: CustomText(
                                     text: "08123457146",
                                   ),
@@ -862,8 +872,8 @@ class _HomePageState extends State<HomePage> {
                                     color: AppColors.white,
                                     borderRadius: BorderRadius.circular(10),
                                     border: Border.all(color: AppColors.grey)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5.0),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(5.0),
                                   child: CustomText(
                                     text: "N 1,500.00",
                                   ),
@@ -875,7 +885,7 @@ class _HomePageState extends State<HomePage> {
                         SvgPicture.asset(AppIcons.reload)
                       ],
                     ),
-                    Divider()
+                    const Divider()
                   ],
                 ),
               ),
@@ -937,12 +947,12 @@ class _HomePageState extends State<HomePage> {
                 const CustomText(
                   text: " Tella Trust Account Number ",
                   color: AppColors.darkGreen,
-                  size: 13,
+                  size: 12,
                 ),
                 CustomText(
                   text: accNumber,
                   color: AppColors.black,
-                  size: 14,
+                  size: 12,
                 ),
               ],
             ),
@@ -956,7 +966,10 @@ class _HomePageState extends State<HomePage> {
                   AppUtils().copyToClipboard(accNumber, context);
                   // MSG.infoSnackBar(context, "copied");
                 },
-                child: const Icon(Icons.copy))
+                child: const Icon(
+                  Icons.copy_all_rounded,
+                  color: AppColors.lightgrey,
+                ))
           ],
         ),
       ),

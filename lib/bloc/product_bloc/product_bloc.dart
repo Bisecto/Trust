@@ -56,7 +56,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       //updateData(customerProfile);
       print(categoryModel);
       emit(CategorySuccessState(categoryModel)); // Emit success state with data
-    } else if (listProductResponse.statusCode == 401) {
+    } else if (json.decode(listProductResponse.body)['errorCode'] == "N404") {
       emit(AccessTokenExpireState());
     } else {
       emit(CategoryErrorState(AppUtils.convertString(
@@ -97,7 +97,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         //updateData(customerProfile);
         print(serviceModel);
         emit(ServiceSuccessState(serviceModel)); // Emit success state with data
-      } else if (listServiceResponse.statusCode == 401) {
+      } else if (json.decode(listServiceResponse.body)['errorCode'] == "N404") {
         emit(AccessTokenExpireState());
       } else {
         emit(ServiceErrorState(AppUtils.convertString(
@@ -148,7 +148,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         // //updateData(customerProfile);
         // print(serviceModel);
         emit(PurchaseSuccess()); // Emit success state with data
-      } else if (purchaseResponse.statusCode == 401) {
+      } else if (json.decode(purchaseResponse.body)['errorCode'] == "N404") {
         emit(AccessTokenExpireState());
       } else {
         emit(PurchaseErrorState(AppUtils.convertString(
@@ -188,7 +188,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       //updateData(customerProfile);
       print(productModel);
       emit(ProductSuccessState(productModel)); // Emit success state with data
-    } else if (listServiceResponse.statusCode == 401) {
+    } else if (json.decode(listServiceResponse.body)['errorCode'] == "N404") {
       emit(AccessTokenExpireState());
     } else {
       emit(ProductErrorState(AppUtils.convertString(

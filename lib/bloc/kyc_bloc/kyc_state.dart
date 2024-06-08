@@ -11,16 +11,17 @@ class ErrorState extends KycState {
   ErrorState(this.error);
 }
 
-class LoadingState extends KycState {
-  LoadingState();
-}
+// class LoadingState extends KycState {
+//   LoadingState();
+// }
+class AccessTokenExpireState extends KycState {}
 
 class SuccessState extends KycState {
   //final String msg;
 
   SuccessState();
 }class RequestOtpState extends KycState {
-  //final String msg;
+  final String identityId;
 
-  RequestOtpState();
+  RequestOtpState(this.identityId);
 }

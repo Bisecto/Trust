@@ -54,189 +54,193 @@ class _BVN_NIN_KYC_1State extends State<BVN_NIN_KYC_1> {
               ),
             ),
           ),
-          Align (
+          Align(
             alignment: Alignment.bottomCenter,
-            child: Material(
-              elevation: 2,
-              borderRadius: BorderRadius.circular(20),
-              child: Container(
-                width: AppUtils.deviceScreenSize(context).width,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const CustomText(
-                        text: 'Level 1',
-                        size: 20,
-                        weight: FontWeight.bold,
-                        textAlign: TextAlign.center,
-                        color: AppColors.black,
-                        maxLines: 2,
-                      ),
-                      const CustomText(
-                        text: 'Requirements for Level 1',
-                        size: 12,
-                        textAlign: TextAlign.center,
-                        color: AppColors.textColor,
-                        weight: FontWeight.bold,
-                      ),
-                      const SizedBox(height: 20),
-                      const Row(
-                        children: [
-                          Icon(Icons.person_2_outlined),
-                          SizedBox(width: 10),
-                          CustomText(
-                            text: "BVN or NIN",
-                            color: AppColors.black,
-                            weight: FontWeight.bold,
-                            size: 12,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      const Row(
-                        children: [
-                          Icon(Icons.check),
-                          SizedBox(width: 10),
-                          CustomText(
-                            text: "Attestation",
-                            color: AppColors.black,
-                            weight: FontWeight.bold,
-                            size: 12,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 15),
-                      const CustomText(
-                        text: 'Level 1 Benefits',
-                        size: 12,
-                        textAlign: TextAlign.center,
-                        color: AppColors.textColor,
-                        weight: FontWeight.bold,
-                      ),
-                      const SizedBox(height: 10),
-                      DottedBorder(
-                        borderType: BorderType.RRect,
-                        radius: const Radius.circular(10),
-                        dashPattern: [10, 10],
-                        color: AppColors.lightgrey,
-                        strokeWidth: 2,
-                        child: const Padding(
-                          padding: EdgeInsets.all(10.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  CustomText(
-                                    text: 'Single Credit Limit:',
-                                    size: 10,
-                                    textAlign: TextAlign.center,
-                                    color: AppColors.lightgrey,
-                                    weight: FontWeight.bold,
-                                  ),
-                                  CustomText(
-                                    text: 'N 50,000.00',
-                                    size: 12,
-                                    textAlign: TextAlign.center,
-                                    color: AppColors.black,
-                                    weight: FontWeight.bold,
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  CustomText(
-                                    text: 'Daily Credit Limit:',
-                                    size: 10,
-                                    textAlign: TextAlign.center,
-                                    color: AppColors.lightgrey,
-                                    weight: FontWeight.bold,
-                                  ),
-                                  CustomText(
-                                    text: 'N 300,000.00',
-                                    size: 12,
-                                    textAlign: TextAlign.center,
-                                    color: AppColors.black,
-                                    weight: FontWeight.bold,
-                                  ),
-                                ],
-                              ),
-                            ],
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Material(
+                elevation: 2,
+                borderRadius: BorderRadius.circular(20),
+                color: AppColors.white,
+                child: Container(
+                  width: AppUtils.deviceScreenSize(context).width,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const CustomText(
+                          text: 'Level 1',
+                          size: 20,
+                          weight: FontWeight.bold,
+                          textAlign: TextAlign.center,
+                          color: AppColors.black,
+                          maxLines: 2,
+                        ),
+                        const CustomText(
+                          text: 'Requirements for Level 1',
+                          size: 12,
+                          textAlign: TextAlign.center,
+                          color: AppColors.textColor,
+                          weight: FontWeight.bold,
+                        ),
+                        const SizedBox(height: 20),
+                        const Row(
+                          children: [
+                            Icon(Icons.person_2_outlined),
+                            SizedBox(width: 10),
+                            CustomText(
+                              text: "BVN or NIN",
+                              color: AppColors.black,
+                              weight: FontWeight.bold,
+                              size: 12,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        const Row(
+                          children: [
+                            Icon(Icons.check),
+                            SizedBox(width: 10),
+                            CustomText(
+                              text: "Attestation",
+                              color: AppColors.black,
+                              weight: FontWeight.bold,
+                              size: 12,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 15),
+                        const CustomText(
+                          text: 'Level 1 Benefits',
+                          size: 12,
+                          textAlign: TextAlign.center,
+                          color: AppColors.textColor,
+                          weight: FontWeight.bold,
+                        ),
+                        const SizedBox(height: 10),
+                        DottedBorder(
+                          borderType: BorderType.RRect,
+                          radius: const Radius.circular(10),
+                          dashPattern: [10, 10],
+                          color: AppColors.lightgrey,
+                          strokeWidth: 2,
+                          child: const Padding(
+                            padding: EdgeInsets.all(10.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    CustomText(
+                                      text: 'Single Credit Limit:',
+                                      size: 10,
+                                      textAlign: TextAlign.center,
+                                      color: AppColors.lightgrey,
+                                      weight: FontWeight.bold,
+                                    ),
+                                    CustomText(
+                                      text: 'N 50,000.00',
+                                      size: 12,
+                                      textAlign: TextAlign.center,
+                                      color: AppColors.black,
+                                      weight: FontWeight.bold,
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    CustomText(
+                                      text: 'Daily Credit Limit:',
+                                      size: 10,
+                                      textAlign: TextAlign.center,
+                                      color: AppColors.lightgrey,
+                                      weight: FontWeight.bold,
+                                    ),
+                                    CustomText(
+                                      text: 'N 300,000.00',
+                                      size: 12,
+                                      textAlign: TextAlign.center,
+                                      color: AppColors.black,
+                                      weight: FontWeight.bold,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 10),
-                      DottedBorder(
-                        borderType: BorderType.RRect,
-                        radius: const Radius.circular(10),
-                        dashPattern: [10, 10],
-                        color: AppColors.lightgrey,
-                        strokeWidth: 2,
-                        child: const Padding(
-                          padding: EdgeInsets.all(10.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  CustomText(
-                                    text: 'Single Debit Limit:',
-                                    size: 10,
-                                    textAlign: TextAlign.center,
-                                    color: AppColors.lightgrey,
-                                    weight: FontWeight.bold,
-                                  ),
-                                  CustomText(
-                                    text: 'N 50,000.00',
-                                    size: 12,
-                                    textAlign: TextAlign.center,
-                                    color: AppColors.black,
-                                    weight: FontWeight.bold,
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  CustomText(
-                                    text: 'Daily Debit Limit:',
-                                    size: 10,
-                                    textAlign: TextAlign.center,
-                                    color: AppColors.lightgrey,
-                                    weight: FontWeight.bold,
-                                  ),
-                                  CustomText(
-                                    text: 'N 300,000.00',
-                                    size: 12,
-                                    textAlign: TextAlign.center,
-                                    color: AppColors.black,
-                                    weight: FontWeight.bold,
-                                  ),
-                                ],
-                              ),
-                            ],
+                        const SizedBox(height: 10),
+                        DottedBorder(
+                          borderType: BorderType.RRect,
+                          radius: const Radius.circular(10),
+                          dashPattern: [10, 10],
+                          color: AppColors.lightgrey,
+                          strokeWidth: 2,
+                          child: const Padding(
+                            padding: EdgeInsets.all(10.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    CustomText(
+                                      text: 'Single Debit Limit:',
+                                      size: 10,
+                                      textAlign: TextAlign.center,
+                                      color: AppColors.lightgrey,
+                                      weight: FontWeight.bold,
+                                    ),
+                                    CustomText(
+                                      text: 'N 50,000.00',
+                                      size: 12,
+                                      textAlign: TextAlign.center,
+                                      color: AppColors.black,
+                                      weight: FontWeight.bold,
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    CustomText(
+                                      text: 'Daily Debit Limit:',
+                                      size: 10,
+                                      textAlign: TextAlign.center,
+                                      color: AppColors.lightgrey,
+                                      weight: FontWeight.bold,
+                                    ),
+                                    CustomText(
+                                      text: 'N 300,000.00',
+                                      size: 12,
+                                      textAlign: TextAlign.center,
+                                      color: AppColors.black,
+                                      weight: FontWeight.bold,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                      FormButton(
-                        onPressed: () {
-                          AppNavigator.pushAndStackPage(context,
-                              page: const BvnNinKyc2());
-                        },
-                        text: 'Continue',
-                        borderRadius: 10,
-                      ),
-                    ],
+                        const SizedBox(height: 20),
+                        FormButton(
+                          onPressed: () {
+                            AppNavigator.pushAndStackPage(context,
+                                page: const BvnNinKyc2());
+                          },
+                          text: 'Continue',
+                          borderRadius: 10,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
