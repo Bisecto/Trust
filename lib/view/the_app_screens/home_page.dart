@@ -265,63 +265,122 @@ class _HomePageState extends State<HomePage> {
         const SizedBox(
           height: 20,
         ),
+        GestureDetector(
+          onTap: () {
+            AppNavigator.pushAndStackPage(context,
+                page: BlocProvider.value(
+                    value: context.read<AppBloc>(), child: const KYCIntro()));
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Container(
+                //height: 70,
+                decoration: BoxDecoration(
+                    color: AppColors.lightOrange,
+                    borderRadius: BorderRadius.circular(10)),
+                child: const Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.info,
+                            color: AppColors.orange,
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          CustomText(
+                            text: "Incomplete KYC",
+                            weight: FontWeight.bold,
+                            maxLines: 3,
+                            size: 12,
+
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+
+                          CustomText(
+                            text: "Learn more",
+                            weight: FontWeight.bold,
+                            maxLines: 3,
+                            size: 12,
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Icon(
+                            Icons.arrow_upward,
+                            color: AppColors.orange,
+                          ),
+
+                        ],
+                      )
+
+                    ],
+                  ),
+                )),
+          ),
+        ),
+
         balanceCardContainer(),
         const SizedBox(
           height: 10,
         ),
-        Column(
-          children: [
-            GestureDetector(
-              onTap: () {
-                AppNavigator.pushAndStackPage(context,
-                    page: BlocProvider.value(
-                        value: context.read<AppBloc>(), child: const KYCIntro()));
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Container(
-                    height: 70,
-                    decoration: BoxDecoration(
-                        color: AppColors.lightPrimary,
-                        borderRadius: BorderRadius.circular(20)),
-                    child: const Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          CircleAvatar(
-                            //backgroundImage: AssetImage(AppImages.airtel),
-                            child: Icon(
-                              Icons.notification_important_rounded,
-                              color: AppColors.green,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              CustomText(
-                                text: "Add a withdrawal account",
-                                weight: FontWeight.bold,
-                                maxLines: 3,
-                              ),
-                              // CustomText(
-                              //   text: "description",
-                              //   maxLines: 3,
-                              //   size: 14,
-                              // )
-                            ],
-                          )
-                        ],
-                      ),
-                    )),
-              ),
-            ),
-          ],
-        ),
+        // GestureDetector(
+        //   onTap: () {
+        //     AppNavigator.pushAndStackPage(context,
+        //         page: BlocProvider.value(
+        //             value: context.read<AppBloc>(), child: const KYCIntro()));
+        //   },
+        //   child: Padding(
+        //     padding: const EdgeInsets.all(10.0),
+        //     child: Container(
+        //         height: 70,
+        //         decoration: BoxDecoration(
+        //             color: AppColors.lightPrimary,
+        //             borderRadius: BorderRadius.circular(20)),
+        //         child: const Padding(
+        //           padding: EdgeInsets.all(10.0),
+        //           child: Row(
+        //             crossAxisAlignment: CrossAxisAlignment.center,
+        //             children: [
+        //               CircleAvatar(
+        //                 //backgroundImage: AssetImage(AppImages.airtel),
+        //                 child: Icon(
+        //                   Icons.notification_important_rounded,
+        //                   color: AppColors.green,
+        //                 ),
+        //               ),
+        //               SizedBox(
+        //                 width: 10,
+        //               ),
+        //               Column(
+        //                 crossAxisAlignment: CrossAxisAlignment.start,
+        //                 mainAxisAlignment: MainAxisAlignment.center,
+        //                 children: [
+        //                   CustomText(
+        //                     text: "Add a withdrawal account",
+        //                     weight: FontWeight.bold,
+        //                     maxLines: 3,
+        //                   ),
+        //                   // CustomText(
+        //                   //   text: "description",
+        //                   //   maxLines: 3,
+        //                   //   size: 14,
+        //                   // )
+        //                 ],
+        //               )
+        //             ],
+        //           ),
+        //         )),
+        //   ),
+        // ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
