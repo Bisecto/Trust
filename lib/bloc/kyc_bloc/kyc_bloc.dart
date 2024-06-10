@@ -42,7 +42,8 @@ class KycBloc extends Bloc<KycEvent, KycState> {
       String accessToken = await SharedPref.getString("access-token");
 
       var verificationResponse = await appRepository.appPostRequest(
-          data, AppApis.initiateVerification,accessToken: accessToken);
+          data, AppApis.initiateVerification,
+          accessToken: accessToken);
       print(verificationResponse.statusCode);
       print(verificationResponse.body);
       Navigator.pop(event.context);
@@ -50,10 +51,12 @@ class KycBloc extends Bloc<KycEvent, KycState> {
           verificationResponse.statusCode == 201) {
         // BankModel bankModel =
         // BankModel.fromJson(json.decode(bankResponse.body)['data']);
-        emit(RequestOtpState(json.decode(verificationResponse.body)['data']['identityId']));
-      } else if (json.decode(verificationResponse.body)['errorCode'] == "N404") {
+        emit(RequestOtpState(
+            json.decode(verificationResponse.body)['data']['identityId']));
+      } else if (json.decode(verificationResponse.body)['errorCode'] ==
+          "N404") {
         emit(AccessTokenExpireState());
-      }  else {
+      } else {
         emit(ErrorState(json.decode(verificationResponse.body)['message']));
       }
     } catch (e) {
@@ -61,7 +64,8 @@ class KycBloc extends Bloc<KycEvent, KycState> {
     }
   }
 
-  FutureOr<void> validateVerification(ValidateVerification event, Emitter<KycState> emit)async {
+  FutureOr<void> validateVerification(
+      ValidateVerification event, Emitter<KycState> emit) async {
     //emit(LoadingState());
     showDialog(
         barrierDismissible: false,
@@ -80,21 +84,35 @@ class KycBloc extends Bloc<KycEvent, KycState> {
       String accessToken = await SharedPref.getString("access-token");
 
       var validateVerificationResponse = await appRepository.appPostRequest(
-          data, AppApis.initiateVerification,accessToken: accessToken);
+          data, AppApis.initiateVerification,
+          accessToken: accessToken);
       print(validateVerificationResponse.statusCode);
       print(validateVerificationResponse.body);
-      Navigator.pop(event.context);
       if (validateVerificationResponse.statusCode == 200 ||
           validateVerificationResponse.statusCode == 201) {
         // BankModel bankModel =
         // BankModel.fromJson(json.decode(bankResponse.body)['data']);
-        emit(SuccessState());
-      } else if (json.decode(validateVerificationResponse.body)['errorCode'] == "N404") {
+        Navigator.pop(event.context);
+        emit(SuccessState(
+            json.decode(validateVerificationResponse.body)['message'],
+            json.decode(validateVerificationResponse.body)['data']
+                ['accountName'],
+            json.decode(validateVerificationResponse.body)['data']['bankName'],
+            json.decode(validateVerificationResponse.body)['data']['nuban']));
+      } else if (json.decode(validateVerificationResponse.body)['errorCode'] ==
+          "N404") {
+        Navigator.pop(event.context);
+
         emit(AccessTokenExpireState());
-      }  else {
-        emit(ErrorState(json.decode(validateVerificationResponse.body)['message']));
+      } else {
+        Navigator.pop(event.context);
+
+        emit(ErrorState(
+            json.decode(validateVerificationResponse.body)['message']));
       }
     } catch (e) {
+      Navigator.pop(event.context);
+
       emit(ErrorState('Failed to: $e'));
     }
   }

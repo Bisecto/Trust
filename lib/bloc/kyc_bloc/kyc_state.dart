@@ -17,9 +17,12 @@ class ErrorState extends KycState {
 class AccessTokenExpireState extends KycState {}
 
 class SuccessState extends KycState {
-  //final String msg;
+  final String msg;
+  final String nuban;
+  final String accountName;
+  final String bankName;
 
-  SuccessState();
+  SuccessState(this.msg,this.accountName,this.bankName,this.nuban);
 }class RequestOtpState extends KycState {
   final String identityId;
 

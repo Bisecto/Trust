@@ -14,6 +14,7 @@ import 'package:teller_trust/view/widgets/app_custom_text.dart';
 import 'package:teller_trust/view/widgets/form_button.dart';
 
 import '../../../../res/app_colors.dart';
+import '../../../../res/app_router.dart';
 import '../../../../utills/app_navigator.dart';
 import '../../../../utills/app_validator.dart';
 import '../../../../utills/enums/toast_mesage.dart';
@@ -106,15 +107,17 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
                                 page: SignInWIthAccessPinBiometrics(
                                   userName: firstame,
                                 ));
+                          } else if (state is SuccessState) {
+                            showToast(
+                                context: context,
+                                title: 'KYC Verification',
+                                subtitle: state.msg,
+                                type: ToastMessageType.success);
                           }
                         },
                         builder: (context, state) {
                           print(state);
                           switch (state.runtimeType) {
-                            // case PostsFetchingState:
-                            //   return const Center(
-                            //     child: CircularProgressIndicator(),
-                            //   );
                             case KycInitial || ErrorState:
                               return Padding(
                                 padding: const EdgeInsets.all(20.0),
@@ -358,7 +361,96 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
                                   ],
                                 ),
                               );
-
+                            case SuccessState:
+                              final successData = state as SuccessState;
+                              return Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const CustomText(
+                                      text: 'KYC LEVEL 1 DONE!!!',
+                                      size: 20,
+                                      weight: FontWeight.bold,
+                                      textAlign: TextAlign.center,
+                                      color: AppColors.black,
+                                      maxLines: 2,
+                                    ),
+                                    const CustomText(
+                                      text: 'You can now transact more',
+                                      size: 12,
+                                      textAlign: TextAlign.start,
+                                      maxLines: 3,
+                                      color: AppColors.textColor,
+                                      weight: FontWeight.bold,
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Container(
+                                      //height: 100,
+                                      width: AppUtils.deviceScreenSize(context)
+                                          .width,
+                                      decoration: BoxDecoration(
+                                          color: AppColors.lightgreen2,
+                                          border: Border.all(
+                                              color: AppColors.lightGreen),
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child:  Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            CustomText(
+                                              text: 'Bank Name: ${successData.bankName}',
+                                              size: 12,
+                                              textAlign: TextAlign.start,
+                                              maxLines: 3,
+                                              color: AppColors.lightGreen,
+                                              weight: FontWeight.bold,
+                                            ),
+                                            CustomText(
+                                              text: 'Account Number: ${successData.nuban}',
+                                              size: 12,
+                                              textAlign: TextAlign.start,
+                                              maxLines: 3,
+                                              color: AppColors.lightGreen,
+                                              weight: FontWeight.bold,
+                                            ),
+                                            CustomText(
+                                              text: 'Account Name: ${successData.accountName}',
+                                              size: 12,
+                                              textAlign: TextAlign.start,
+                                              maxLines: 3,
+                                              color: AppColors.lightGreen,
+                                              weight: FontWeight.bold,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    const CustomText(
+                                      text:
+                                          'Now you can start sending and receiving funds',
+                                      size: 10,
+                                      textAlign: TextAlign.start,
+                                      maxLines: 3,
+                                      color: AppColors.textColor,
+                                      weight: FontWeight.bold,
+                                    ),
+                                    FormButton(
+                                      onPressed: () {AppNavigator.pushNamedAndRemoveUntil(context, name: AppRouter.landingPage);},
+                                      text: "Done",
+                                      borderColor: AppColors.lightgrey,
+                                      bgColor: AppColors.white,
+                                      textColor: AppColors.black,
+                                    )
+                                  ],
+                                ),
+                              );
                             default:
                               return const Center(
                                 child: NotFoundPage(),
