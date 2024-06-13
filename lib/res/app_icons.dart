@@ -2,6 +2,7 @@ class AppIcons {
   static const String _iconBaseUrl = 'assets/icons/';
 
   static const home = '${_iconBaseUrl}home.svg';
+  static const darkMode = '${_iconBaseUrl}dark_mode.svg';
   static const withdrawalAccountAppbar = '${_iconBaseUrl}withdrawal_accoun_appbar.svg';
   static const card = '${_iconBaseUrl}card.svg';
   static const profileDetails = '${_iconBaseUrl}profile_details.svg';

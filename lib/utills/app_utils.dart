@@ -16,6 +16,9 @@ import '../res/app_router.dart';
 import 'app_navigator.dart';
 
 class AppUtils {
+  static Color hexToColor(String code) {
+    return Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
+  }
   openApp(context) async {
     bool isFirstOpen = (await SharedPref.getBool('isFirstOpen')) ?? true;
     String userData = await SharedPref.getString('userData');
@@ -25,7 +28,7 @@ class AppUtils {
     print(password);
     print(8);
 
-    if (!isFirstOpen) {
+    if (isFirstOpen) {
       print(1);
       if (userData.isNotEmpty && password.isNotEmpty) {
         print(3);
