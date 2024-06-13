@@ -1,7 +1,9 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
+import 'package:provider/provider.dart';
 import 'package:teller_trust/res/app_colors.dart';
 import 'package:teller_trust/res/app_images.dart';
 import 'package:teller_trust/utills/app_navigator.dart';
@@ -12,6 +14,7 @@ import 'package:teller_trust/view/widgets/app_custom_text.dart';
 import '../../bloc/auth_bloc/auth_bloc.dart';
 import '../../res/app_strings.dart';
 import '../../utills/app_validator.dart';
+import '../../utills/custom_theme.dart';
 import '../../utills/enums/toast_mesage.dart';
 import '../important_pages/dialog_box.dart';
 import '../important_pages/not_found_page.dart';
@@ -48,9 +51,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: AppColors.lightShadowGreenColor,
+      backgroundColor: theme.isDark
+          ? AppColors.darkModeBackgroundColor
+          : AppColors.lightShadowGreenColor,
       body: BlocConsumer<AuthBloc, AuthState>(
           bloc: authBloc,
           listenWhen: (previous, current) => current is! AuthInitial,
@@ -58,7 +65,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           listener: (context, state) {
             if (state is AuthOtpRequestState) {
               // MSG.snackBar(context, state.msg);
-              verifyAlertDialog(context,state.msg);
+              verifyAlertDialog(context, state.msg, theme);
               // showToast(
               //     context: context,
               //     title: 'Info',
@@ -159,7 +166,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               //height: AppUtils.deviceScreenSize(context).height * 0.7,
                               width: AppUtils.deviceScreenSize(context).width,
                               decoration: BoxDecoration(
-                                  color: AppColors.white,
+                                  color: theme.isDark
+                                      ? AppColors
+                                          .darkModeBackgroundContainerColor
+                                      : AppColors.white,
                                   borderRadius: BorderRadius.circular(15)),
                               child: Padding(
                                 padding: const EdgeInsets.all(20.0),
@@ -179,17 +189,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            const CustomText(
+                                            CustomText(
                                               text: "Sign Up",
                                               weight: FontWeight.w600,
                                               size: 20,
+                                              color: theme.isDark
+                                                  ? AppColors
+                                                      .darkModeBackgroundMainTextColor
+                                                  : AppColors.textColor,
                                             ),
-                                            const CustomText(
+                                            CustomText(
                                               text:
                                                   "Create an account to enable you pay bills",
                                               //weight: FontWeight.bold,
                                               size: 14,
-                                              color: AppColors.textColor,
+                                              maxLines: 2,
+                                              color: theme.isDark
+                                                  ? AppColors
+                                                      .darkModeBackgroundSubTextColor
+                                                  : AppColors.textColor,
                                             ),
 
                                             // ),
@@ -258,6 +276,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                                   .isNotEmpty
                                                               ? AppColors.green
                                                               : AppColors.grey,
+                                                      // backgroundColor: ,
                                                     ),
                                                     CustomTextFormField(
                                                       hint: 'Middle Name',
@@ -380,6 +399,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       left: 0,
                                       child: FormButton(
                                         onPressed: () {
+                                          //verifyAlertDialog(context, "state.msg", theme);
+
                                           if (_formKey.currentState!
                                               .validate()) {
                                             //User user=
@@ -409,7 +430,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         text: 'Continue',
                                         borderColor: AppColors.green,
                                         bgColor: AppColors.green,
-                                        textColor: AppColors.white,
+                                        textColor: theme.isDark
+                                            ? AppColors.darkModeBackgroundColor
+                                            : AppColors.white,
                                         borderRadius: 10,
                                         //disableButton: !_formKey.currentState!.validate(),
                                       ),
@@ -455,21 +478,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   verifyAlertDialog(
     BuildContext context,
-      String msg
+    String msg,
+    AdaptiveThemeMode theme,
   ) {
     showDialog(
         context: context,
-        barrierDismissible:false,
+        barrierDismissible: false,
         builder: (BuildContext context) {
           return AlertDialog(
-            backgroundColor: Colors.white,
+            backgroundColor: theme.isDark
+                ? AppColors.darkModeBackgroundColor
+                : AppColors.white,
             contentPadding: EdgeInsets.zero,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20.0)),
             ),
             content: Container(
               decoration: BoxDecoration(
-                  color: AppColors.white,
+                  color: theme.isDark
+                      ? AppColors.darkModeBackgroundContainerColor
+                      : AppColors.white,
                   borderRadius: BorderRadius.circular(20)),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -477,11 +505,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   Container(
                     width: AppUtils.deviceScreenSize(context).width,
                     height: 150,
-                    decoration: const BoxDecoration(
-                        color: AppColors.white,
+                    decoration:  BoxDecoration(
+                        color: theme.isDark
+                            ? AppColors.darkModeBackgroundContainerColor
+                            : AppColors.white,
                         image: DecorationImage(
                           image: AssetImage(
-                            AppImages.verifyAlertDialogImage,
+                            theme.isDark? AppImages.verifyAlertDialogDarkImage:AppImages.verifyAlertDialogImage,
                           ),
                           fit: BoxFit.fill,
                         ),
@@ -493,19 +523,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   const SizedBox(
                     height: 10,
                   ),
-                  const CustomText(
+                   CustomText(
                     text: AppStrings.verifySomething,
                     weight: FontWeight.bold,
+                    color: theme.isDark
+                        ? AppColors.darkModeBackgroundMainTextColor
+                        : AppColors.textColor,
                     size: 18,
                   ),
                   const SizedBox(
                     height: 10,
                   ),
-                   CustomText(
-                    text: msg,//AppStrings.verifySomethingDescription,
+                  CustomText(
+                    text: msg,
+                    //AppStrings.verifySomethingDescription,
                     // weight: FontWeight.bold,
                     size: 16,
-                    color: AppColors.textColor,
+                    color: theme.isDark
+                        ? AppColors.darkModeBackgroundSubTextColor
+                        : AppColors.textColor,
                     textAlign: TextAlign.center,
                     maxLines: 5,
                   ),
@@ -520,7 +556,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       text: 'Continue',
                       borderColor: AppColors.green,
                       bgColor: AppColors.green,
-                      textColor: AppColors.white,
+                      textColor:theme.isDark
+                          ? AppColors.darkModeBackgroundContainerColor: AppColors.white,
                       borderRadius: 10,
                     ),
                   ),

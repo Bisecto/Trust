@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/otp_field_style.dart';
 import 'package:otp_text_field/style.dart';
+import 'package:provider/provider.dart';
 import 'package:teller_trust/utills/shared_preferences.dart';
 import 'package:teller_trust/view/auth/otp_pin_pages/create_pin.dart';
 
@@ -14,6 +15,7 @@ import '../../../res/app_images.dart';
 import '../../../res/app_router.dart';
 import '../../../utills/app_navigator.dart';
 import '../../../utills/app_utils.dart';
+import '../../../utills/custom_theme.dart';
 import '../../../utills/enums/toast_mesage.dart';
 import '../../important_pages/dialog_box.dart';
 import '../../important_pages/not_found_page.dart';
@@ -49,9 +51,13 @@ class _VerifyOtpState extends State<VerifyOtp> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: AppColors.lightShadowGreenColor,
+      backgroundColor: theme.isDark
+          ? AppColors.darkModeBackgroundColor
+          : AppColors.lightShadowGreenColor,
       body: BlocConsumer<AuthBloc, AuthState>(
           bloc: authBloc,
           listenWhen: (previous, current) => current is! AuthInitial,
@@ -94,7 +100,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
               // ));
               // }
             } else if (state is AuthChangeDeviceOtpRequestState) {
-             // MSG.warningSnackBar(context, state.msg);
+              // MSG.warningSnackBar(context, state.msg);
               AppNavigator.pushAndStackPage(context,
                   page: VerifyOtp(
                     email: state.email,
@@ -109,7 +115,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
 
               // MSG.snackBar(context, state.msg);
               //verifyAlertDialog(context);
-            }else if(state is OTPRequestSuccessState){
+            } else if (state is OTPRequestSuccessState) {
               showToast(
                   context: context,
                   title: 'Info',
@@ -188,7 +194,10 @@ class _VerifyOtpState extends State<VerifyOtp> {
                                       0.5,
                               width: AppUtils.deviceScreenSize(context).width,
                               decoration: BoxDecoration(
-                                  color: AppColors.white,
+                                  color: theme.isDark
+                                      ? AppColors
+                                          .darkModeBackgroundContainerColor
+                                      : AppColors.white,
                                   borderRadius: BorderRadius.circular(15)),
                               child: Padding(
                                 padding: const EdgeInsets.all(20.0),
@@ -198,15 +207,23 @@ class _VerifyOtpState extends State<VerifyOtp> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      const CustomText(
+                                      CustomText(
                                         text: "OTP Verification",
                                         weight: FontWeight.w600,
                                         size: 20,
+                                        color: theme.isDark
+                                            ? AppColors
+                                                .darkModeBackgroundMainTextColor
+                                            : AppColors.textColor,
                                       ),
                                       CustomText(
                                         text:
                                             "Input 5 digit code sent to ${widget.email}",
                                         //weight: FontWeight.bold,
+                                        color: theme.isDark
+                                            ? AppColors
+                                                .darkModeBackgroundSubTextColor
+                                            : AppColors.textColor,
                                         size: 16,
                                       ),
                                       const SizedBox(
@@ -223,16 +240,33 @@ class _VerifyOtpState extends State<VerifyOtp> {
                                             MainAxisAlignment.spaceAround,
                                         fieldStyle: FieldStyle.box,
                                         otpFieldStyle: OtpFieldStyle(
-                                          backgroundColor: AppColors.white,
+                                          backgroundColor: theme.isDark
+                                              ? AppColors
+                                                  .darkModeBackgroundContainerColor
+                                              : AppColors.white,
                                           focusBorderColor: AppColors.green,
+                                          //borderColor: AppColors.red
                                         ),
-                                        onCompleted: (pin) async {
-                                          //authBloc.add(VerifyOTPEventCLick(addedPin));
-                                          setState(() {
-                                            isCompleted = true;
-                                            addedPin = pin;
-                                          });
+                                        onChanged: (pin) {
+                                          if (pin.length > 4) {
+                                            setState(() {
+                                              isCompleted = true;
+                                              addedPin = pin;
+                                            });
+                                          } else {
+                                            setState(() {
+                                              isCompleted = false;
+                                              addedPin = pin;
+                                            });
+                                          }
                                         },
+                                        // onCompleted: (pin) async {
+                                        //   //authBloc.add(VerifyOTPEventCLick(addedPin));
+                                        //   setState(() {
+                                        //     isCompleted = true;
+                                        //     addedPin = pin;
+                                        //   });
+                                        // },
                                       ),
 
                                       // DividerWithTextWidget(text: "or login with"),
@@ -243,6 +277,8 @@ class _VerifyOtpState extends State<VerifyOtp> {
                                         onPressed: () {
                                           if (isCompleted) {
                                             print(addedPin);
+                                            //AppNavigator.pushAndStackPage(context, page: const CreatePin());
+
                                             authBloc.add(VerifyOTPEventCLick(
                                                 addedPin,
                                                 widget.isRegister,
@@ -268,7 +304,9 @@ class _VerifyOtpState extends State<VerifyOtp> {
                                         text: 'Continue',
                                         borderColor: AppColors.green,
                                         bgColor: AppColors.green,
-                                        textColor: AppColors.white,
+                                        textColor: !isCompleted
+                                            ? AppColors.textColor
+                                            : AppColors.white,
                                         borderRadius: 10,
                                         disableButton: !isCompleted,
                                       ),
@@ -289,28 +327,30 @@ class _VerifyOtpState extends State<VerifyOtp> {
                                                     _start = 59;
                                                     startTimer();
                                                   });
-                                                } else
-                                                {
+                                                } else {
                                                   setState(() {
                                                     MSG.warningSnackBar(context,
-                                                        'Resend Code after 59s');                                                  });
+                                                        'Resend Code after 59s');
+                                                  });
                                                 }
                                               },
-                                              onPress2: () {   if (_start == 0) {
-                                                // authBloc.add(RequestResetPasswordEventClick(
-                                                //     widget.email,false));
-                                                authBloc.add(
-                                                    PasswordResetRequestOtpEventCLick(
-                                                        widget.email,
-                                                        context));
-                                                setState(() {
-                                                  _start = 59;
-                                                  startTimer();
-                                                });
-                                              } else
-                                              {
-                                                MSG.warningSnackBar(context,
-                                                    'Resend Code after 59s');                                              }},
+                                              onPress2: () {
+                                                if (_start == 0) {
+                                                  // authBloc.add(RequestResetPasswordEventClick(
+                                                  //     widget.email,false));
+                                                  authBloc.add(
+                                                      PasswordResetRequestOtpEventCLick(
+                                                          widget.email,
+                                                          context));
+                                                  setState(() {
+                                                    _start = 59;
+                                                    startTimer();
+                                                  });
+                                                } else {
+                                                  MSG.warningSnackBar(context,
+                                                      'Resend Code after 59s');
+                                                }
+                                              },
                                               size: 14,
                                               weight: FontWeight.w600,
                                               //color: const Color.fromARGB(255, 19, 48, 63),

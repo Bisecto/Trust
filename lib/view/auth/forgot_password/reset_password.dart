@@ -4,6 +4,7 @@ import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/otp_field_style.dart';
 import 'package:otp_text_field/style.dart';
+import 'package:provider/provider.dart';
 import 'package:teller_trust/view/auth/otp_pin_pages/create_pin.dart';
 import 'package:teller_trust/view/auth/sign_in_screen.dart';
 
@@ -14,6 +15,7 @@ import '../../../res/app_router.dart';
 import '../../../utills/app_navigator.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/app_validator.dart';
+import '../../../utills/custom_theme.dart';
 import '../../../utills/enums/toast_mesage.dart';
 import '../../important_pages/dialog_box.dart';
 import '../../important_pages/not_found_page.dart';
@@ -51,16 +53,20 @@ class _ResetPasswordState extends State<ResetPassword> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: AppColors.lightShadowGreenColor,
+      backgroundColor: theme.isDark
+          ? AppColors.darkModeBackgroundColor
+          : AppColors.lightShadowGreenColor,
       body: BlocConsumer<AuthBloc, AuthState>(
           bloc: authBloc,
           listenWhen: (previous, current) => current is! AuthInitial,
           buildWhen: (previous, current) => current is AuthInitial,
           listener: (context, state) {
             if (state is PasswordResetSuccessState) {
-             // MSG.snackBar(context, state.msg);
+              // MSG.snackBar(context, state.msg);
 
               AppNavigator.pushAndStackPage(context, page: SignInScreen());
               showToast(
@@ -68,7 +74,6 @@ class _ResetPasswordState extends State<ResetPassword> {
                   title: 'Successful',
                   subtitle: state.msg,
                   type: ToastMessageType.success);
-
             } else if (state is ErrorState) {
               showToast(
                   context: context,
@@ -148,7 +153,10 @@ class _ResetPasswordState extends State<ResetPassword> {
                                       0.5,
                               width: AppUtils.deviceScreenSize(context).width,
                               decoration: BoxDecoration(
-                                  color: AppColors.white,
+                                  color: theme.isDark
+                                      ? AppColors
+                                          .darkModeBackgroundContainerColor
+                                      : AppColors.white,
                                   borderRadius: BorderRadius.circular(15)),
                               child: Padding(
                                 padding: const EdgeInsets.all(20.0),
@@ -158,10 +166,14 @@ class _ResetPasswordState extends State<ResetPassword> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      const CustomText(
+                                      CustomText(
                                         text: "Reset Password",
                                         weight: FontWeight.w600,
                                         size: 20,
+                                        color: theme.isDark
+                                            ? AppColors
+                                                .darkModeBackgroundMainTextColor
+                                            : AppColors.textColor,
                                       ),
                                       // CustomText(
                                       //   text:
@@ -175,12 +187,18 @@ class _ResetPasswordState extends State<ResetPassword> {
                                             MediaQuery.of(context).size.width,
                                         fieldWidth: 50,
                                         controller: otpFieldController,
-                                        style: const TextStyle(fontSize: 17),
+                                        style: TextStyle(
+                                            fontSize: 17,
+                                            color: theme.isDark
+                                                ? AppColors.white
+                                                : AppColors.black),
                                         textFieldAlignment:
                                             MainAxisAlignment.spaceAround,
                                         fieldStyle: FieldStyle.box,
                                         otpFieldStyle: OtpFieldStyle(
-                                          backgroundColor: AppColors.white,
+                                          backgroundColor: theme.isDark
+                                              ? AppColors.black
+                                              : AppColors.white,
                                           focusBorderColor: AppColors.green,
                                         ),
                                         onCompleted: (pin) async {
@@ -217,18 +235,22 @@ class _ResetPasswordState extends State<ResetPassword> {
                                                 isPasswordField: true,
                                                 validator: AppValidator
                                                     .validatePassword,
-                                                controller: _confirmPasswordController,
+                                                controller:
+                                                    _confirmPasswordController,
                                                 hint: 'Confirm New Password',
                                                 icon: Icons.password,
-                                                borderColor: _confirmPasswordController
-                                                        .text.isNotEmpty
-                                                    ? AppColors.green
-                                                    : AppColors.grey,
+                                                borderColor:
+                                                    _confirmPasswordController
+                                                            .text.isNotEmpty
+                                                        ? AppColors.green
+                                                        : AppColors.grey,
                                               ),
                                               Padding(
-                                                padding: const EdgeInsets.all(12.0),
+                                                padding:
+                                                    const EdgeInsets.all(12.0),
                                                 child: FlutterPwValidator(
-                                                  controller: _passwordController,
+                                                  controller:
+                                                      _passwordController,
                                                   minLength: 8,
                                                   uppercaseCharCount: 1,
                                                   numericCharCount: 1,
@@ -237,17 +259,18 @@ class _ResetPasswordState extends State<ResetPassword> {
                                                   height: 150,
                                                   onSuccess: () {
                                                     setState(() {
-                                                      onPasswordValidated = true;
+                                                      onPasswordValidated =
+                                                          true;
                                                     });
                                                   },
                                                   onFail: () {
                                                     setState(() {
-                                                      onPasswordValidated = false;
+                                                      onPasswordValidated =
+                                                          false;
                                                     });
                                                   },
                                                 ),
                                               ),
-
                                               FormButton(
                                                 onPressed: () {
                                                   if (_formKey.currentState!
@@ -257,7 +280,9 @@ class _ResetPasswordState extends State<ResetPassword> {
                                                         addedPin,
                                                         _passwordController
                                                             .text,
-                                                        _confirmPasswordController.text,context));
+                                                        _confirmPasswordController
+                                                            .text,
+                                                        context));
                                                     // await Future.delayed(const Duration(seconds: 3));
                                                     //AppNavigator.pushNamedAndRemoveUntil(context, name: AppRouter.landingPage);
                                                   }
@@ -282,7 +307,9 @@ class _ResetPasswordState extends State<ResetPassword> {
                                                 text: 'Continue',
                                                 borderColor: AppColors.green,
                                                 bgColor: AppColors.green,
-                                                textColor: AppColors.white,
+                                                textColor: !isCompleted
+                                                    ? AppColors.textColor
+                                                    : AppColors.white,
                                                 borderRadius: 10,
                                                 disableButton: !isCompleted,
                                               ),

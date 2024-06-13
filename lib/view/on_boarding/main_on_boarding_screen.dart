@@ -1,6 +1,8 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_carousel_slider/carousel_slider.dart';
+import 'package:provider/provider.dart';
 
 import '../../res/app_colors.dart';
 import '../../res/app_images.dart';
@@ -8,6 +10,7 @@ import '../../res/app_router.dart';
 import '../../res/app_strings.dart';
 import '../../utills/app_navigator.dart';
 import '../../utills/app_utils.dart';
+import '../../utills/custom_theme.dart';
 import '../widgets/app_custom_text.dart';
 import '../widgets/form_button.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
@@ -54,9 +57,12 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return Scaffold(
       extendBodyBehindAppBar: true,
-      //backgroundColor:currentIndex==0||currentIndex==2? AppColors.lightShadowGreenColor:AppColors.white,
+      backgroundColor:
+          theme.isDark ? AppColors.darkModeBackgroundColor : AppColors.white,
       body: SafeArea(
         child: Column(
           children: <Widget>[
@@ -66,9 +72,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                carouselIndicator(0, currentIndex),
-                carouselIndicator(1, currentIndex),
-                carouselIndicator(2, currentIndex),
+                carouselIndicator(0, currentIndex,theme),
+                carouselIndicator(1, currentIndex,theme),
+                carouselIndicator(2, currentIndex,theme),
               ],
             ),
             SizedBox(
@@ -107,8 +113,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                             // CrossAxisAlignment.center,
                             children: [
                               Container(
-                                width: AppUtils.deviceScreenSize(context).width /
-                                    1.5,
+                                width:
+                                    AppUtils.deviceScreenSize(context).width /
+                                        1.5,
                                 // Set the desired width of the container
                                 height:
                                     AppUtils.deviceScreenSize(context).height *
@@ -127,18 +134,21 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                               const SizedBox(height: 20),
                               CustomText(
                                 text: onBoardingText[index],
-                                color: AppColors.textColor,
+                                color: theme.isDark
+                                    ? AppColors.darkModeBackgroundMainTextColor
+                                    : AppColors.textColor,
                                 maxLines: 2,
                                 size: 28,
                                 weight: FontWeight.bold,
                                 textAlign: TextAlign.center,
-
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(20.0),
                                 child: CustomText(
                                   text: onBoardingSubText[index],
-                                  color: AppColors.textColor,
+                                  color: theme.isDark
+                                      ? AppColors.darkModeBackgroundSubTextColor
+                                      : AppColors.textColor,
                                   size: 16,
                                   maxLines: 4,
                                   textAlign: TextAlign.center,
@@ -183,8 +193,10 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   width: AppUtils.deviceScreenSize(context).width / 2.5,
                   text: 'Login',
                   borderRadius: 10,
-                  textColor: AppColors.textColor,
-                  bgColor: AppColors.white,
+                  textColor:theme.isDark
+                      ? AppColors.darkModeBackgroundMainTextColor: AppColors.textColor,
+                  bgColor: theme.isDark
+                      ? AppColors.darkModeBackgroundColor:AppColors.white,
                   borderColor: AppColors.green,
                   borderWidth: 1,
                   weight: FontWeight.w400,
@@ -199,7 +211,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   text: 'Sign Up',
                   borderColor: AppColors.green,
                   bgColor: AppColors.green,
-                  textColor: AppColors.white,
+                  textColor:theme.isDark
+                      ? AppColors.darkModeBackgroundContainerColor: AppColors.white,
                   borderRadius: 10,
                   weight: FontWeight.w400,
                 )
@@ -322,12 +335,13 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   //       });
   // }
 
-  Widget carouselIndicator(index, currentIndex) {
+  Widget carouselIndicator(index, currentIndex,AdaptiveThemeMode theme) {
     return Container(
       height: 10,
       width: AppUtils.deviceScreenSize(context).width / 4,
       decoration: BoxDecoration(
-          color: index == currentIndex ? AppColors.green : AppColors.grey,
+          color: index == currentIndex ? AppColors.green :theme.isDark
+              ? AppColors.darkModeBackgroundDisableColor: AppColors.grey,
           borderRadius: BorderRadius.circular(10)),
       //child: ,
     );

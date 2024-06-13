@@ -1,8 +1,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 import '../../res/app_colors.dart';
+import '../../utills/custom_theme.dart';
 import 'app_custom_text.dart';
 
 class CustomTextFormField extends StatefulWidget {
@@ -57,13 +59,17 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CustomText(
           text: widget.label,
           weight: FontWeight.bold,
-          color: AppColors.textColor,
+          color: theme.isDark
+              ? AppColors.darkModeBackgroundMainTextColor
+              : AppColors.textColor,
           size: 15,
         ),
         const SizedBox(
@@ -71,7 +77,9 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         ),
         Container(
           decoration: BoxDecoration(
-            color: widget.backgroundColor,
+            color: theme.isDark
+                ? AppColors.darkModeBackgroundColor
+                : AppColors.white,
             border: Border.all(
               color: widget.borderColor, // Choose the color you want for the border
               width:1.0, // Choose the width you want for the border
@@ -98,7 +106,9 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                   child: TextFormField(
                     controller: widget.controller,
 
-                    style: TextStyle(fontSize: 14,color: AppColors.black),
+                    style: TextStyle(fontSize: 14,color:theme.isDark
+                        ? AppColors.white
+                        :  AppColors.black),
                     decoration: InputDecoration(
                         prefixIcon: GestureDetector(
                           onTap: () {
@@ -127,7 +137,9 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                         ),
                         hintText: widget.hint,
                         hintStyle: TextStyle(                  fontFamily: "CeraPro",
-                            fontSize: 12,color: AppColors.lightDivider),
+                            fontSize: 12,color:theme.isDark
+                                ? AppColors.darkModeBackgroundDisableColor
+                                :  AppColors.lightDivider),
                         border: InputBorder.none),
                     keyboardType: widget.textInputType,
                     validator: widget.validator,

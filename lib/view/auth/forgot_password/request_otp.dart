@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/otp_field_style.dart';
 import 'package:otp_text_field/style.dart';
+import 'package:provider/provider.dart';
 import 'package:teller_trust/view/auth/forgot_password/reset_password.dart';
 import 'package:teller_trust/view/auth/otp_pin_pages/create_pin.dart';
 
@@ -13,6 +14,7 @@ import '../../../res/app_router.dart';
 import '../../../utills/app_navigator.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/app_validator.dart';
+import '../../../utills/custom_theme.dart';
 import '../../../utills/enums/toast_mesage.dart';
 import '../../important_pages/dialog_box.dart';
 import '../../important_pages/not_found_page.dart';
@@ -22,8 +24,9 @@ import '../../widgets/form_input.dart';
 import '../../widgets/show_toast.dart';
 
 class RequestOtp extends StatefulWidget {
-
-  RequestOtp({super.key, });
+  RequestOtp({
+    super.key,
+  });
 
   @override
   State<RequestOtp> createState() => _RequestOtpState();
@@ -46,9 +49,13 @@ class _RequestOtpState extends State<RequestOtp> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: AppColors.lightShadowGreenColor,
+      backgroundColor: theme.isDark
+          ? AppColors.darkModeBackgroundColor
+          : AppColors.lightShadowGreenColor,
       body: BlocConsumer<AuthBloc, AuthState>(
           bloc: authBloc,
           listenWhen: (previous, current) => current is! AuthInitial,
@@ -56,13 +63,15 @@ class _RequestOtpState extends State<RequestOtp> {
           listener: (context, state) {
             if (state is OTPRequestSuccessState) {
               //MSG.snackBar(context, state.msg);
-              AppNavigator.pushAndStackPage(context, page: ResetPassword(email: _emailController.text,));
+              AppNavigator.pushAndStackPage(context,
+                  page: ResetPassword(
+                    email: _emailController.text,
+                  ));
               showToast(
                   context: context,
                   title: 'Success',
                   subtitle: state.msg,
                   type: ToastMessageType.success);
-
             } else if (state is ErrorState) {
               //MSG.warningSnackBar(context, state.error);
               showToast(
@@ -70,7 +79,6 @@ class _RequestOtpState extends State<RequestOtp> {
                   title: 'Error',
                   subtitle: state.error,
                   type: ToastMessageType.error);
-
             }
           },
           builder: (context, state) {
@@ -144,7 +152,10 @@ class _RequestOtpState extends State<RequestOtp> {
                                       0.5,
                               width: AppUtils.deviceScreenSize(context).width,
                               decoration: BoxDecoration(
-                                  color: AppColors.white,
+                                  color: theme.isDark
+                                      ? AppColors
+                                          .darkModeBackgroundContainerColor
+                                      : AppColors.white,
                                   borderRadius: BorderRadius.circular(15)),
                               child: Padding(
                                 padding: const EdgeInsets.all(20.0),
@@ -154,16 +165,24 @@ class _RequestOtpState extends State<RequestOtp> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      const CustomText(
-                                        text: "Forgo Password",
+                                       CustomText(
+                                        text: "Forgot Password",
                                         weight: FontWeight.w600,
                                         size: 20,
+                                        color: theme.isDark
+                                            ? AppColors
+                                            .darkModeBackgroundMainTextColor
+                                            : AppColors.textColor,
                                       ),
                                       CustomText(
                                         text:
                                             "Enter your email or phone number to enable you rest your password",
                                         //weight: FontWeight.bold,
                                         size: 16,
+                                        color: theme.isDark
+                                            ? AppColors
+                                            .darkModeBackgroundSubTextColor
+                                            : AppColors.textColor,
                                       ),
                                       const SizedBox(
                                         height: 10,
@@ -191,7 +210,8 @@ class _RequestOtpState extends State<RequestOtp> {
                                                     authBloc.add(
                                                         PasswordResetRequestOtpEventCLick(
                                                             _emailController
-                                                                .text,context));
+                                                                .text,
+                                                            context));
                                                     // await Future.delayed(const Duration(seconds: 3));
                                                     //AppNavigator.pushNamedAndRemoveUntil(context, name: AppRouter.landingPage);
                                                   }
