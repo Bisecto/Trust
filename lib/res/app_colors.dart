@@ -41,7 +41,7 @@ class AppColors{
   static  Color darkModeBackgroundMainTextColor = const Color(0xffFFFFFF).withOpacity(0.8);
   static  Color darkModeBackgroundSubTextColor = const Color(0xffFFFFFF).withOpacity(0.6);
   static const Color darkModeBackgroundContainerColor = Color(0xff1F1F1F);
-  // static const Color textColor = Color(0xff484848);
+  static const Color darkModeBackgroundDisableColor = Color(0xff303646);
   // static const Color textColor = Color(0xff484848);
 
 
