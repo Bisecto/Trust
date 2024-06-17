@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:custom_pin_screen/custom_pin_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_carousel_slider/carousel_slider.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:teller_trust/bloc/product_bloc/product_bloc.dart';
 import 'package:teller_trust/model/personal_profile.dart';
 import 'package:teller_trust/model/quick_access_model.dart';
@@ -28,6 +31,7 @@ import '../../bloc/app_bloc/app_bloc.dart';
 import '../../model/category_model.dart';
 import '../../model/user.dart';
 import '../../res/app_images.dart';
+import '../../utills/custom_theme.dart';
 import '../important_pages/dialog_box.dart';
 import 'kyc_verification/kyc_intro_page.dart';
 import 'more_pages/withdrawal_account.dart';
@@ -73,19 +77,70 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor:
+          theme.isDark ? AppColors.darkModeBackgroundColor : AppColors.white,
       body: SafeArea(
           child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              homeProfileContainer(),
+              homeProfileContainer(theme),
               const SizedBox(
                 height: 20,
               ),
-              balanceBeneficiarySelector(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                      //height: 40,
+                      //width: AppUtils.deviceScreenSize(context).width / 2,
+                      decoration: BoxDecoration(
+                          color: AppColors.darkGreen,
+                          // border:
+                          //     Border.all(color: AppColors.lightPrimaryGreen),
+                          borderRadius: BorderRadius.circular(10.0)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: CustomText(
+                          text: "Balance",
+                          weight: FontWeight.bold,
+                          size: 12,
+                          color: theme.isDark
+                              ? AppColors.darkModeBackgroundMainTextColor
+                              : AppColors.white,
+                        ),
+                      )),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Container(
+                      //height: 40,
+                      //width: AppUtils.deviceScreenSize(context).width / 2,
+                      decoration: BoxDecoration(
+
+                          ///color: AppColors.darkGreen,
+                          border:
+                              Border.all(color: AppColors.textColor2),
+                          borderRadius: BorderRadius.circular(10.0)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: CustomText(
+                          text: "Beneficiaries",
+                          weight: FontWeight.bold,
+                          size: 12,
+                          color: theme.isDark
+                              ? AppColors.darkModeBackgroundMainTextColor
+                              : AppColors.textColor,
+                        ),
+                      )),
+                ],
+              ),
+              homeBalance(theme),
             ],
           ),
         ),
@@ -93,52 +148,52 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget balanceBeneficiarySelector() {
-    return DefaultTabController(
-      length: 2,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: 30,
-            width: AppUtils.deviceScreenSize(context).width / 2,
-            decoration: BoxDecoration(
-                //color: Colors.grey[300],
-                border: Border.all(color: AppColors.lightPrimaryGreen),
-                borderRadius: BorderRadius.circular(20.0)),
-            child: TabBar(
-              indicator: BoxDecoration(
-                  color: AppColors.darkGreen,
-                  borderRadius: BorderRadius.circular(25.0)),
-              indicatorSize: TabBarIndicatorSize.tab,
-              indicatorWeight: 0,
-              labelColor: Colors.white,
-              unselectedLabelColor: Colors.black,
-              tabs: const [
-                Tab(
-                  text: 'Balance',
-                ),
-                Tab(
-                  text: 'Beneficiary',
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: AppUtils.deviceScreenSize(context).height +
-                400, // Set an appropriate height
-            child: TabBarView(
-              children: [homeBalance(), const Text("Beneficiaries")],
-            ),
-          ),
-          //quickActionsWidget(),
-        ],
-      ),
-    );
-  }
+  // Widget balanceBeneficiarySelector() {
+  //   return DefaultTabController(
+  //     length: 2,
+  //     child: Column(
+  //       mainAxisSize: MainAxisSize.min,
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         Container(
+  //           height: 30,
+  //           width: AppUtils.deviceScreenSize(context).width / 2,
+  //           decoration: BoxDecoration(
+  //               //color: Colors.grey[300],
+  //               border: Border.all(color: AppColors.lightPrimaryGreen),
+  //               borderRadius: BorderRadius.circular(20.0)),
+  //           child: TabBar(
+  //             indicator: BoxDecoration(
+  //                 color: AppColors.darkGreen,
+  //                 borderRadius: BorderRadius.circular(25.0)),
+  //             indicatorSize: TabBarIndicatorSize.tab,
+  //             indicatorWeight: 0,
+  //             labelColor: Colors.white,
+  //             unselectedLabelColor: Colors.black,
+  //             tabs: const [
+  //               Tab(
+  //                 text: 'Balance',
+  //               ),
+  //               Tab(
+  //                 text: 'Beneficiary',
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //         SizedBox(
+  //           height: AppUtils.deviceScreenSize(context).height +
+  //               400, // Set an appropriate height
+  //           child: TabBarView(
+  //             children: [homeBalance(), const Text("Beneficiaries")],
+  //           ),
+  //         ),
+  //         //quickActionsWidget(),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  Widget homeProfileContainer() {
+  Widget homeProfileContainer(AdaptiveThemeMode theme) {
     return BlocBuilder<AppBloc, AppState>(
       builder: (context, state) {
         if (state is SuccessState) {
@@ -150,7 +205,7 @@ class _HomePageState extends State<HomePage> {
               print(json.encode(state.customerProfile));
             },
             child: SizedBox(
-              height: 50,
+              height: 40,
               width: AppUtils.deviceScreenSize(context).width,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -161,8 +216,8 @@ class _HomePageState extends State<HomePage> {
                         //backgroundImage: NetworkImage(),
                         child: SvgPicture.network(
                           personalInfo.imageUrl,
-                          height: 25,
-                          width: 25,
+                          height: 32,
+                          width: 32,
                         ),
                       ),
                       const SizedBox(
@@ -170,14 +225,24 @@ class _HomePageState extends State<HomePage> {
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const CustomText(
+                          CustomText(
                             text: "Hello",
+                            color: theme.isDark
+                                ? AppColors.darkModeBackgroundSubTextColor
+                                : AppColors.textColor2,
+                            size: 12,
                           ),
                           CustomText(
                             text:
                                 "${personalInfo.lastName} ${personalInfo.firstName}",
-                            weight: FontWeight.w600,
+                            weight: FontWeight.bold,
+                            color: theme.isDark
+                                ? AppColors.darkModeBackgroundMainTextColor
+                                : AppColors.textColor,
+                            size: 14,
+
                           ),
                         ],
                       )
@@ -190,7 +255,7 @@ class _HomePageState extends State<HomePage> {
                         width: 10,
                       ),
                       CircleAvatar(
-                        backgroundColor: AppColors.lightPrimary,
+                        backgroundColor: AppColors.lightgreen2,
                         child: SvgPicture.asset(AppIcons.notification),
                       )
                     ],
@@ -201,7 +266,7 @@ class _HomePageState extends State<HomePage> {
           );
         } else {
           return SizedBox(
-            height: 50,
+            height: 40,
             width: AppUtils.deviceScreenSize(context).width,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -212,8 +277,8 @@ class _HomePageState extends State<HomePage> {
                       //backgroundImage: NetworkImage(),
                       child: SvgPicture.network(
                         AppIcons.person,
-                        height: 25,
-                        width: 25,
+                        height: 32,
+                        width: 32,
                       ),
                     ),
                     const SizedBox(
@@ -222,12 +287,22 @@ class _HomePageState extends State<HomePage> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const CustomText(
+                        CustomText(
                           text: "Hello",
+                          color: theme.isDark
+                              ? AppColors.darkModeBackgroundSubTextColor
+                              : AppColors.textColor2,
+                          size: 12,
+
                         ),
                         CustomText(
                           text: "$lastname $firstname",
-                          weight: FontWeight.w600,
+                          weight: FontWeight.bold,
+                          color: theme.isDark
+                              ? AppColors.darkModeBackgroundMainTextColor
+                              : AppColors.textColor,
+                          size: 14,
+
                         ),
                       ],
                     )
@@ -240,7 +315,7 @@ class _HomePageState extends State<HomePage> {
                       width: 10,
                     ),
                     CircleAvatar(
-                      backgroundColor: AppColors.lightPrimary,
+                      backgroundColor: AppColors.lightgreen2,
                       child: SvgPicture.asset(AppIcons.notification),
                     )
                   ],
@@ -258,7 +333,7 @@ class _HomePageState extends State<HomePage> {
     // }
   }
 
-  Widget homeBalance() {
+  Widget homeBalance(AdaptiveThemeMode theme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -277,9 +352,10 @@ class _HomePageState extends State<HomePage> {
                 //height: 70,
                 decoration: BoxDecoration(
                     color: AppColors.lightOrange,
+                    border: Border.all(color: AppColors.orange),
                     borderRadius: BorderRadius.circular(10)),
                 child: const Padding(
-                  padding: EdgeInsets.all(10.0),
+                  padding: EdgeInsets.all(5.0),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -298,13 +374,11 @@ class _HomePageState extends State<HomePage> {
                             weight: FontWeight.bold,
                             maxLines: 3,
                             size: 12,
-
                           ),
                         ],
                       ),
                       Row(
                         children: [
-
                           CustomText(
                             text: "Learn more",
                             weight: FontWeight.bold,
@@ -318,17 +392,15 @@ class _HomePageState extends State<HomePage> {
                             Icons.arrow_upward,
                             color: AppColors.orange,
                           ),
-
                         ],
                       )
-
                     ],
                   ),
                 )),
           ),
         ),
 
-        balanceCardContainer(),
+        balanceCardContainer(theme),
         const SizedBox(
           height: 10,
         ),
@@ -384,24 +456,32 @@ class _HomePageState extends State<HomePage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Padding(
-              padding: EdgeInsets.all(10.0),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
               child: CustomText(
                 text: "Quick Actions",
                 weight: FontWeight.bold,
+                color: theme.isDark
+                    ? AppColors.darkModeBackgroundSubTextColor
+                    : AppColors.textColor2,
+                size: 12,
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
                 decoration: BoxDecoration(
-                    color: AppColors.white,
+                    //color: AppColors.white,
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: AppColors.grey)),
-                child: const Padding(
-                  padding: EdgeInsets.all(5.0),
+                    border: Border.all(color: AppColors.textColor2)),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8.0, 5, 8, 5),
                   child: CustomText(
                     text: "See All",
+                    size: 12,
+                    color: theme.isDark
+                        ? AppColors.darkModeBackgroundSubTextColor
+                        : AppColors.textColor2,
                   ),
                 ),
               ),
@@ -411,21 +491,115 @@ class _HomePageState extends State<HomePage> {
         const SizedBox(
           height: 10,
         ),
-        quickActionsWidget(),
+        quickActionsWidget(theme),
+        const SizedBox(
+          height: 10,
+        ),
+        advertWidget(theme),
         const SizedBox(
           height: 20,
         ),
-        popularPurchases()
+        popularPurchases(theme)
       ],
     );
   }
+  CarouselSliderController carouselSliderController =
+  CarouselSliderController();
+  final GlobalKey _sliderKey = GlobalKey();
+  final List<String> advertImages = [
+    AppImages.advertCard1,
+    AppImages.advertCard2,
+    AppImages.advertCard3,
+    AppImages.advertCard4,
+  ];
+Widget advertWidget (AdaptiveThemeMode theme){
+  return  SizedBox(
+    height: 155,
+    child: CarouselSlider.builder(
+      key: _sliderKey,
+      unlimitedMode: true,
+      autoSliderDelay: const Duration(seconds: 3),
+      enableAutoSlider:true,
+      controller: carouselSliderController,
+      // onSlideChanged: (index) {
+      //   setState(() {
+      //     print(index);
+      //     currentIndex = index;
+      //   });
+      // },
+      slideBuilder: (index) {
+        return Center(
+          child: SizedBox(
+            // Set the desired width of the container
+            height: 150,
 
-  Widget balanceCardContainer() {
+            child: Align(
+              alignment: Alignment.center,
+              child:                     Container(
+                width:
+                AppUtils.deviceScreenSize(context).width,
+                // Set the desired width of the container
+                height:
+                125,
+                // Set the desired height of the container
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  image: DecorationImage(
+                    image: AssetImage(advertImages[index]),
+                    // Replace with your actual image file path
+                    fit: BoxFit
+                        .cover, // You can adjust the fit property to cover, contain, or others
+                  ),
+                ),
+              ),
+
+            ),
+          ),
+        );
+      },
+      slideTransform: CubeTransform(),
+      slideIndicator: SequentialFillIndicator(
+        indicatorRadius: 5,
+       itemSpacing: 20,
+
+       // alignment: Alignment.topCenter,
+        indicatorBackgroundColor: AppColors.grey,
+        currentIndicatorColor: AppColors.green,
+        padding: const EdgeInsets.only(bottom: 0),
+      ),
+      itemCount: advertImages.length,
+      onSlideEnd: () {
+        print("ended");
+      },
+    ),
+  );
+}
+  Widget balanceCardContainer(theme) {
     return Container(
-      height: 220,
+      height: 200,
       decoration: BoxDecoration(
-        color: AppColors.darkGreen,
+        //color: AppColors.darkGreen,
         borderRadius: BorderRadius.circular(20),
+        gradient: LinearGradient(
+          colors: theme.isDark
+              ? [
+            const Color(0x0C311A).withOpacity(1),
+            const Color(0x0C311A).withOpacity(0.4),
+            Colors.blue.shade900.withOpacity(0.1), //Color(0x122E5A),
+            Colors.blue.shade900.withOpacity(0.3)
+          ]
+              : [
+
+            const Color(0x0B321A).withOpacity(1),
+            const Color(0x0B321A).withOpacity(1),
+            const Color(0x0C662F).withOpacity(1),
+            const Color(0x0C662F).withOpacity(1),
+
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.topRight,
+        ),
+
         //image: DecorationImage(image: AssetImage())
       ),
       child: Stack(
@@ -439,10 +613,10 @@ class _HomePageState extends State<HomePage> {
           // Positioned(child: SvgPicture.asset(AppIcons.looper2)),
           Positioned(
               child: SizedBox(
-            //height: 220,
+            height: 210,
             // color: AppColors.red,
             child: Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding: const EdgeInsets.all(5.0),
               child: Column(
                 children: [
                   GestureDetector(
@@ -473,26 +647,29 @@ class _HomePageState extends State<HomePage> {
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SvgPicture.asset(AppIcons.naira),
-                              CustomText(
-                                text: walletInfo.balance.toString(),
-                                size: 22,
-                                weight: FontWeight.bold,
-                                color: AppColors.white,
-                              )
+                              SvgPicture.asset(AppIcons.naira,height: 20,width: 20,),
+                              TextStyles.textHeadings(textValue: '192,600.00',textSize: 28,textColor: AppColors.white)
+
+                              // CustomText(
+                              //   text: walletInfo.balance.toString(),
+                              //   size: 22,
+                              //   weight: FontWeight.bold,
+                              //   color: AppColors.white,
+                              // )
                             ],
                           );
                         } else {
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SvgPicture.asset(AppIcons.naira),
-                              const CustomText(
-                                text: "0.00",
-                                size: 22,
-                                weight: FontWeight.bold,
-                                color: AppColors.white,
-                              )
+                              SvgPicture.asset(AppIcons.naira,height: 20,width: 20,),
+                              TextStyles.textHeadings(textValue: '0.00',textSize: 28,textColor: AppColors.white)
+                              // const CustomText(
+                              //   text: "0.00",
+                              //   size: 25,
+                              //   weight: FontWeight.bold,
+                              //   color: AppColors.white,
+                              // )
                             ],
                           ); // Show loading indicator or handle error state
                         }
@@ -506,7 +683,7 @@ class _HomePageState extends State<HomePage> {
                       color: AppColors.white,
                     ),
                   const SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -555,8 +732,7 @@ class _HomePageState extends State<HomePage> {
                           },
                           child:
                               childBalanceCardContainer(AppIcons.send, "Send")),
-                      childBalanceCardContainer(
-                          AppIcons.switch1, "Switch Account"),
+                      childBalanceCardContainer(AppIcons.switch1, "Withdraw"),
                     ],
                   ),
                   const SizedBox(height: 10),
@@ -566,7 +742,9 @@ class _HomePageState extends State<HomePage> {
                         var customerAccount =
                             state.customerProfile.customerAccount;
                         // Use user data here
-                        return customerAccount==null?const SizedBox(): accountNumberContainer("8765564367");
+                        return customerAccount == null
+                            ? accountNumberContainer(" ********")
+                            : accountNumberContainer(" 8765564367");
                       } else {
                         return const SizedBox(); // Show loading indicator or handle error state
                       }
@@ -581,7 +759,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget quickActionsWidget() {
+  Widget quickActionsWidget(AdaptiveThemeMode theme) {
     return BlocBuilder<ProductBloc, ProductState>(
       builder: (context, state) {
         if (state is CategorySuccessState) {
@@ -589,15 +767,15 @@ class _HomePageState extends State<HomePage> {
           List<Category> items = categoryModel.data.categories;
           //Use user data here
           return SizedBox(
-            height: 105,
+            height:items.length>4? 150:80,
             child: GridView.builder(
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
-                crossAxisSpacing: 8.0,
-                mainAxisSpacing: 8.0,
+                crossAxisSpacing: 5.0,
+                mainAxisSpacing: 5.0,
               ),
-              itemCount: 4, //AppList().serviceItems.length,
+              itemCount: items.length, //AppList().serviceItems.length,
               itemBuilder: (context, index) {
                 return GestureDetector(
                     onTap: () {
@@ -675,35 +853,45 @@ class _HomePageState extends State<HomePage> {
 
                       //showAirtimeModal(context, AppList().serviceItems[index]);
                     },
-                    child: quickActionsItem(items[index]));
+                    child: quickActionsItem(items[index], theme));
               },
             ),
           );
         } else {
-          return const CustomText(
+          return CustomText(
             text: "There",
             size: 15,
             weight: FontWeight.bold,
-            color: AppColors.white,
+            color: theme.isDark
+                ? AppColors.darkModeBackgroundSubTextColor
+                : AppColors.textColor,
           ); // Show loading indicator or handle error state
         }
       },
     );
   }
 
-  Widget popularPurchases() {
+  Widget popularPurchases(AdaptiveThemeMode theme) {
     return SingleChildScrollView(
       child: Container(
-        height: 500,
+        //height: 500,
         width: AppUtils.deviceScreenSize(context).width,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           gradient: LinearGradient(
-            colors: [
-              Colors.green.shade50,
-              Colors.blue.shade50,
-              Colors.blue.shade50
-            ],
+            colors: theme.isDark
+                ? [
+                    const Color(0x0C311A).withOpacity(1),
+                    const Color(0x0C311A).withOpacity(0.4),
+                    Colors.blue.shade900.withOpacity(0.1), //Color(0x122E5A),
+                    Colors.blue.shade900.withOpacity(0.3)
+                  ]
+                : [
+                    const Color(0xE6FBEE).withOpacity(1),
+                    const Color(0xE6FBEE).withOpacity(0.4),
+                    Colors.blue.shade900.withOpacity(0.1), //Color(0x122E5A),
+                    Colors.blue.shade900.withOpacity(0.3)
+                  ],
             begin: Alignment.topLeft,
             end: Alignment.topRight,
           ),
@@ -713,8 +901,13 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const CustomText(
+              CustomText(
                 text: "Top 5 Popular Purchases",
+                color: theme.isDark
+                    ? AppColors.darkModeBackgroundMainTextColor
+                    : AppColors.textColor2,
+                size: 12,
+                weight: FontWeight.bold,
               ),
               Container(
                 child: Column(
@@ -723,8 +916,12 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(
                       height: 15,
                     ),
-                    const CustomText(
+                    CustomText(
                       text: "Airtime Purchase",
+                      size: 12,
+                      color: theme.isDark
+                          ? AppColors.darkModeBackgroundSubTextColor
+                          : AppColors.textColor,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -739,13 +936,20 @@ class _HomePageState extends State<HomePage> {
                               padding: const EdgeInsets.all(8.0),
                               child: Container(
                                 decoration: BoxDecoration(
-                                    color: AppColors.lightShadowGreenColor,
+                                    color: theme.isDark
+                                        ? AppColors.darkGreen
+                                        : AppColors.lightShadowGreenColor,
                                     borderRadius: BorderRadius.circular(10),
                                     border: Border.all(color: AppColors.green)),
-                                child: const Padding(
-                                  padding: EdgeInsets.all(5.0),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5.0),
                                   child: CustomText(
                                     text: "08123457146",
+                                    size: 12,
+                                    color: theme.isDark
+                                        ? AppColors
+                                            .darkModeBackgroundMainTextColor
+                                        : AppColors.textColor,
                                   ),
                                 ),
                               ),
@@ -754,13 +958,21 @@ class _HomePageState extends State<HomePage> {
                               padding: const EdgeInsets.all(8.0),
                               child: Container(
                                 decoration: BoxDecoration(
-                                    color: AppColors.white,
+                                    color: theme.isDark
+                                        ? AppColors
+                                            .darkModeBackgroundContainerColor
+                                        : AppColors.white,
                                     borderRadius: BorderRadius.circular(10),
                                     border: Border.all(color: AppColors.grey)),
-                                child: const Padding(
-                                  padding: EdgeInsets.all(5.0),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5.0),
                                   child: CustomText(
                                     text: "N 1,500.00",
+                                    size: 12,
+                                    color: theme.isDark
+                                        ? AppColors
+                                            .darkModeBackgroundMainTextColor
+                                        : AppColors.textColor,
                                   ),
                                 ),
                               ),
@@ -781,8 +993,12 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(
                       height: 15,
                     ),
-                    const CustomText(
+                    CustomText(
                       text: "Data Purchase",
+                      size: 12,
+                      color: theme.isDark
+                          ? AppColors.darkModeBackgroundSubTextColor
+                          : AppColors.textColor,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -797,13 +1013,20 @@ class _HomePageState extends State<HomePage> {
                               padding: const EdgeInsets.all(8.0),
                               child: Container(
                                 decoration: BoxDecoration(
-                                    color: AppColors.lightShadowGreenColor,
+                                    color: theme.isDark
+                                        ? AppColors.darkGreen
+                                        : AppColors.lightShadowGreenColor,
                                     borderRadius: BorderRadius.circular(10),
                                     border: Border.all(color: AppColors.green)),
-                                child: const Padding(
-                                  padding: EdgeInsets.all(5.0),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5.0),
                                   child: CustomText(
                                     text: "08123457146",
+                                    size: 12,
+                                    color: theme.isDark
+                                        ? AppColors
+                                            .darkModeBackgroundMainTextColor
+                                        : AppColors.textColor,
                                   ),
                                 ),
                               ),
@@ -812,13 +1035,21 @@ class _HomePageState extends State<HomePage> {
                               padding: const EdgeInsets.all(8.0),
                               child: Container(
                                 decoration: BoxDecoration(
-                                    color: AppColors.white,
+                                    color: theme.isDark
+                                        ? AppColors
+                                            .darkModeBackgroundContainerColor
+                                        : AppColors.white,
                                     borderRadius: BorderRadius.circular(10),
                                     border: Border.all(color: AppColors.grey)),
-                                child: const Padding(
-                                  padding: EdgeInsets.all(5.0),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5.0),
                                   child: CustomText(
                                     text: "N 1,500.00",
+                                    size: 12,
+                                    color: theme.isDark
+                                        ? AppColors
+                                            .darkModeBackgroundMainTextColor
+                                        : AppColors.textColor,
                                   ),
                                 ),
                               ),
@@ -839,8 +1070,12 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(
                       height: 15,
                     ),
-                    const CustomText(
+                    CustomText(
                       text: "Data Purchase",
+                      size: 12,
+                      color: theme.isDark
+                          ? AppColors.darkModeBackgroundSubTextColor
+                          : AppColors.textColor,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -855,13 +1090,20 @@ class _HomePageState extends State<HomePage> {
                               padding: const EdgeInsets.all(8.0),
                               child: Container(
                                 decoration: BoxDecoration(
-                                    color: AppColors.lightShadowGreenColor,
+                                    color: theme.isDark
+                                        ? AppColors.darkGreen
+                                        : AppColors.lightShadowGreenColor,
                                     borderRadius: BorderRadius.circular(10),
                                     border: Border.all(color: AppColors.green)),
-                                child: const Padding(
-                                  padding: EdgeInsets.all(5.0),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5.0),
                                   child: CustomText(
                                     text: "08123457146",
+                                    size: 12,
+                                    color: theme.isDark
+                                        ? AppColors
+                                            .darkModeBackgroundMainTextColor
+                                        : AppColors.textColor,
                                   ),
                                 ),
                               ),
@@ -870,13 +1112,21 @@ class _HomePageState extends State<HomePage> {
                               padding: const EdgeInsets.all(8.0),
                               child: Container(
                                 decoration: BoxDecoration(
-                                    color: AppColors.white,
+                                    color: theme.isDark
+                                        ? AppColors
+                                            .darkModeBackgroundContainerColor
+                                        : AppColors.white,
                                     borderRadius: BorderRadius.circular(10),
                                     border: Border.all(color: AppColors.grey)),
-                                child: const Padding(
-                                  padding: EdgeInsets.all(5.0),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5.0),
                                   child: CustomText(
                                     text: "N 1,500.00",
+                                    size: 12,
+                                    color: theme.isDark
+                                        ? AppColors
+                                            .darkModeBackgroundMainTextColor
+                                        : AppColors.textColor,
                                   ),
                                 ),
                               ),
@@ -897,8 +1147,12 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(
                       height: 15,
                     ),
-                    const CustomText(
+                    CustomText(
                       text: "Data Purchase",
+                      size: 12,
+                      color: theme.isDark
+                          ? AppColors.darkModeBackgroundSubTextColor
+                          : AppColors.textColor,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -913,13 +1167,20 @@ class _HomePageState extends State<HomePage> {
                               padding: const EdgeInsets.all(8.0),
                               child: Container(
                                 decoration: BoxDecoration(
-                                    color: AppColors.lightShadowGreenColor,
+                                    color: theme.isDark
+                                        ? AppColors.darkGreen
+                                        : AppColors.lightShadowGreenColor,
                                     borderRadius: BorderRadius.circular(10),
                                     border: Border.all(color: AppColors.green)),
-                                child: const Padding(
-                                  padding: EdgeInsets.all(5.0),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5.0),
                                   child: CustomText(
                                     text: "08123457146",
+                                    size: 12,
+                                    color: theme.isDark
+                                        ? AppColors
+                                            .darkModeBackgroundMainTextColor
+                                        : AppColors.textColor,
                                   ),
                                 ),
                               ),
@@ -928,13 +1189,21 @@ class _HomePageState extends State<HomePage> {
                               padding: const EdgeInsets.all(8.0),
                               child: Container(
                                 decoration: BoxDecoration(
-                                    color: AppColors.white,
+                                    color: theme.isDark
+                                        ? AppColors
+                                            .darkModeBackgroundContainerColor
+                                        : AppColors.white,
                                     borderRadius: BorderRadius.circular(10),
                                     border: Border.all(color: AppColors.grey)),
-                                child: const Padding(
-                                  padding: EdgeInsets.all(5.0),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5.0),
                                   child: CustomText(
                                     text: "N 1,500.00",
+                                    size: 12,
+                                    color: theme.isDark
+                                        ? AppColors
+                                            .darkModeBackgroundMainTextColor
+                                        : AppColors.textColor,
                                   ),
                                 ),
                               ),
@@ -944,7 +1213,7 @@ class _HomePageState extends State<HomePage> {
                         SvgPicture.asset(AppIcons.reload)
                       ],
                     ),
-                    const Divider()
+                    //const Divider()
                   ],
                 ),
               ),
@@ -962,24 +1231,32 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: AppColors.white,
           child: SvgPicture.asset(icon),
         ),
+        const SizedBox(height: 5,),
         CustomText(
           text: title,
           color: AppColors.white,
+          size: 12,
         )
       ],
     );
   }
 
-  Widget quickActionsItem(Category category) {
+  Widget quickActionsItem(Category category, AdaptiveThemeMode theme) {
     return Column(
       children: [
         CircleAvatar(
+          //radius: 24,
           //backgroundColor: service.backgroundColor,
-          child: Image.network(category.image),
+
+          child: Image.network(category.image,),
         ),
+        const SizedBox(height: 5,),
         CustomText(
           text: category.name,
-          color: AppColors.textColor,
+          color: theme.isDark
+              ? AppColors.darkModeBackgroundSubTextColor
+              : AppColors.textColor,
+          size: 12,
         )
       ],
     );
@@ -987,7 +1264,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget accountNumberContainer(String accNumber) {
     return Container(
-      height: 50,
+      height: 36,
       decoration: BoxDecoration(
           color: AppColors.lightgreen2,
           borderRadius: BorderRadius.circular(10)),
@@ -997,6 +1274,7 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Image.asset(
                   AppImages.logo,
@@ -1004,7 +1282,7 @@ class _HomePageState extends State<HomePage> {
                   width: 20,
                 ),
                 const CustomText(
-                  text: " Tella Trust Account Number ",
+                  text: " Tellatrust Account Number ",
                   color: AppColors.darkGreen,
                   size: 12,
                 ),
