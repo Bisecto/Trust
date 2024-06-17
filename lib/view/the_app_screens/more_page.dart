@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/utills/app_utils.dart';
 import 'package:teller_trust/view/auth/sign_in_screen.dart';
@@ -11,6 +12,7 @@ import 'package:teller_trust/view/the_app_screens/more_pages/security_page.dart'
 import '../../model/user.dart';
 import '../../res/app_colors.dart';
 import '../../utills/app_navigator.dart';
+import '../../utills/custom_theme.dart';
 import '../../utills/shared_preferences.dart';
 import 'more_pages/account_settings.dart';
 
@@ -25,8 +27,13 @@ class MorePage extends StatefulWidget {
 class _MorePageState extends State<MorePage> {
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return Scaffold(
-      backgroundColor: AppColors.white,
+      resizeToAvoidBottomInset: true,
+      backgroundColor: theme.isDark
+          ? AppColors.darkModeBackgroundColor
+          : AppColors.white,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -42,7 +49,7 @@ class _MorePageState extends State<MorePage> {
                     height: 175,
                     width: AppUtils.deviceScreenSize(context).width,
                     decoration: BoxDecoration(
-                        color: Color.fromRGBO(227, 255, 214, 100),
+                        color:theme.isDark?AppColors.darkModeBackgroundColor: Color.fromRGBO(227, 255, 214, 100),
                         borderRadius:
                             BorderRadius.vertical(bottom: Radius.circular(30))),
                     child: SafeArea(
@@ -92,7 +99,7 @@ class _MorePageState extends State<MorePage> {
                       AppNavigator.pushAndStackPage(context,
                           page: NotificationSetting());
                     },
-                    child: SvgPicture.asset(AppIcons.notificationSetting)),
+                    child: SvgPicture.asset(AppIcons.notificationSetting,)),
                 Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Divider(),

@@ -65,13 +65,13 @@ class TextStyles {
     return Text(
       textValue,
       textDirection: TextDirection.ltr,
-      style: GoogleFonts.redHatDisplay(
+      style: GoogleFonts.anybody(
         textStyle: TextStyle(
             fontStyle: FontStyle.normal,
 
             color: textColor,
             fontSize: textSize,
-            fontWeight: FontWeight.w600),
+            fontWeight: FontWeight.w700),
       ),
       textAlign: TextAlign.center,
     );

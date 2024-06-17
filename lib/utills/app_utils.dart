@@ -28,7 +28,7 @@ class AppUtils {
     print(password);
     print(8);
 
-    if (isFirstOpen) {
+    if (!isFirstOpen) {
       print(1);
       if (userData.isNotEmpty && password.isNotEmpty) {
         print(3);

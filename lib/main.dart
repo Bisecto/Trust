@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/bloc/product_bloc/product_bloc.dart';
@@ -15,7 +16,8 @@ import 'bloc/app_bloc/app_bloc.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  AdaptiveThemeMode? adaptiveThemeMode=await AdaptiveTheme.getThemeMode()??AdaptiveThemeMode.light;
+  AdaptiveThemeMode? adaptiveThemeMode =
+      await AdaptiveTheme.getThemeMode() ?? AdaptiveThemeMode.light;
   //final savedThemeMode = await AdaptiveTheme.getThemeMode();
 
   runApp(
@@ -33,7 +35,7 @@ void main() async {
         // Add more BlocProviders as needed
       ],
       child: MyApp(
-        adaptiveThemeMode:adaptiveThemeMode,
+        adaptiveThemeMode: adaptiveThemeMode,
       ),
     ),
   );
@@ -48,17 +50,29 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness:adaptiveThemeMode!.isDark? Brightness
+          .light:Brightness.dark, // Brightness.light for white icons, Brightness.dark for dark icons
+    ));
     return AdaptiveTheme(
       light: ThemeData(
         brightness: Brightness.light,
         primarySwatch: Colors.green,
         fontFamily: "CeraPro",
+        appBarTheme: AppBarTheme(
+            systemOverlayStyle: SystemUiOverlayStyle.dark,
+        )
       ),
       dark: ThemeData(
         brightness: Brightness.dark,
         primarySwatch: Colors.green,
         fontFamily: "CeraPro",
+          appBarTheme: AppBarTheme(
+            systemOverlayStyle: SystemUiOverlayStyle.light,
+          )
       ),
+
       initial: adaptiveThemeMode!,
       builder: (theme, darkTheme) => MaterialApp(
         title: 'Tellatrust',
@@ -67,6 +81,7 @@ class MyApp extends StatelessWidget {
         theme: theme,
         darkTheme: darkTheme,
         home: const SplashScreen(),
+
 
         //onGenerateInitialRoutes: _appRoutes.onGenerateRoute,
       ),

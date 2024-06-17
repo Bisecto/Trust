@@ -35,6 +35,7 @@ class AppColors{
   static const Color lightShadowPurple=Color(0xFFD1BDE0);
 
   static const Color textColor = Color(0xff484848);
+  static const Color textColor2 = Color(0xff828DA9);
 
 
   static const Color darkModeBackgroundColor = Color(0xff0D0D0D);

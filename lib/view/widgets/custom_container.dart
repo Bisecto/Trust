@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:teller_trust/utills/app_utils.dart';
 
 import '../../res/app_colors.dart';
+import '../../utills/custom_theme.dart';
 import 'app_custom_text.dart';
 
 class CustomContainerFirTitleDesc extends StatelessWidget {
@@ -14,6 +16,8 @@ class CustomContainerFirTitleDesc extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return Padding(
       padding: const EdgeInsets.only(top: 10.0),
       child: Container(

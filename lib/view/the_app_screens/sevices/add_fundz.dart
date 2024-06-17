@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 
 import '../../../res/app_colors.dart';
 import '../../../res/app_icons.dart';
 import '../../../utills/app_utils.dart';
+import '../../../utills/custom_theme.dart';
 import '../../widgets/app_custom_text.dart';
 
 class AddFunds extends StatefulWidget {
@@ -16,12 +19,19 @@ class AddFunds extends StatefulWidget {
 class _AddFundsState extends State<AddFunds> {
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      //resizeToAvoidBottomInset: true,
+      // backgroundColor: theme.isDark
+      //     ? AppColors.darkModeBackgroundColor
+      //     : AppColors.white,
       body: Container(
         height: AppUtils.deviceScreenSize(context).height - 100,
         decoration: BoxDecoration(
-            color: AppColors.white,
+            color: theme.isDark
+                ? AppColors.darkModeBackgroundContainerColor
+                : AppColors.white,
             borderRadius: BorderRadius.only(
                 topRight: Radius.circular(30), topLeft: Radius.circular(30))),
         child: SingleChildScrollView(
@@ -72,7 +82,9 @@ class _AddFundsState extends State<AddFunds> {
                 Container(
                   height: 50,
                   decoration: BoxDecoration(
-                      color: AppColors.white,
+                      // color: !theme.isDark
+                      //     ? AppColors.darkModeBackgroundContainerColor
+                      //     : AppColors.white,
                       borderRadius: BorderRadius.only(
                           topRight: Radius.circular(10),
                           topLeft: Radius.circular(10))),
@@ -84,6 +96,14 @@ class _AddFundsState extends State<AddFunds> {
                       children: [
                         SvgPicture.asset(
                           AppIcons.yourNgnAccount,
+                          theme: SvgTheme(
+                            // currentColor: theme.isDark
+                            //     ? AppColors.darkModeBackgroundColor
+                            //     : AppColors.white
+                          ),
+                          // color: theme.isDark
+                          //     ? AppColors.white
+                          //     : AppColors.darkModeBackgroundMainTextColor,
                           height: 25,
                         ),
                         GestureDetector(
@@ -102,13 +122,14 @@ class _AddFundsState extends State<AddFunds> {
                   child: SvgPicture.asset(
                     AppIcons.moneyTfInfo,
                     height: 50,
+
                     width: AppUtils.deviceScreenSize(context).width,
                   ),
                 ),
 
-                infoContainer("Account Name", "Tella Trust/Ayodele Ajiri"),
-                infoContainer("Account Number", "3054339045"),
-                infoContainer("Bank Name", "Wema Bank")
+                infoContainer("Account Name", "Tella Trust/Ayodele Ajiri",theme),
+                infoContainer("Account Number", "3054339045",theme),
+                infoContainer("Bank Name", "Wema Bank",theme)
               ],
             ),
           ),
@@ -117,7 +138,7 @@ class _AddFundsState extends State<AddFunds> {
     );
   }
 
-  Widget infoContainer(name, detail) {
+  Widget infoContainer(name, detail,theme) {
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: Container(
@@ -131,10 +152,17 @@ class _AddFundsState extends State<AddFunds> {
               children: [
                 CustomText(
                   text: name,
+                    color: theme.isDark
+                        ? AppColors
+                        .darkModeBackgroundMainTextColor
+                        : AppColors.textColor
                 ),
                 CustomText(
                   text: detail,
-                  color: AppColors.black,
+                  color:theme.isDark
+                ? AppColors
+                    .darkModeBackgroundMainTextColor
+                    :  AppColors.black,
                 ),
               ],
             ),

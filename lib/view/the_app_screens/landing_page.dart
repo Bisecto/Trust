@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:teller_trust/bloc/product_bloc/product_bloc.dart';
 import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/res/app_list.dart';
@@ -10,6 +11,7 @@ import '../../bloc/app_bloc/app_bloc.dart';
 import '../../model/user.dart';
 import '../../res/app_colors.dart';
 import '../../res/app_images.dart';
+import '../../utills/custom_theme.dart';
 import 'bills_page.dart';
 import 'card_page.dart';
 import 'home_page.dart';
@@ -44,8 +46,12 @@ class _LandingPageState extends State<LandingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: theme.isDark
+          ? AppColors.darkModeBackgroundColor
+          : AppColors.lightShadowGreenColor,
 
       body: IndexedStack(
         children: [
@@ -57,7 +63,8 @@ class _LandingPageState extends State<LandingPage> {
         showUnselectedLabels: true,
         currentIndex: _currentIndex,
         selectedItemColor: AppColors.green,
-        unselectedItemColor: AppColors.lightDivider,
+        unselectedItemColor:theme.isDark?AppColors.lightPrimary: AppColors.lightDivider,
+
         onTap: (index) {
           setState(() {
             _currentIndex = index;
@@ -67,34 +74,34 @@ class _LandingPageState extends State<LandingPage> {
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
               AppIcons.home,
-              color: _currentIndex == 0 ? AppColors.green : AppColors.lightgrey,
+              color: _currentIndex == 0 ? AppColors.green : theme.isDark?AppColors.lightPrimary:AppColors.lightgrey,
             ), //Icon(Icons.home),
             label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(AppIcons.send,
                 color:
-                    _currentIndex == 1 ? AppColors.green : AppColors.lightgrey),
+                    _currentIndex == 1 ? AppColors.green : theme.isDark?AppColors.lightPrimary:AppColors.lightgrey),
             label: 'Send',
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
               AppIcons.bill,
-              color: _currentIndex == 2 ? AppColors.green : AppColors.lightgrey,
+              color: _currentIndex == 2 ? AppColors.green : theme.isDark?AppColors.lightPrimary:AppColors.lightgrey,
             ), //Icon(Icons.home),
             label: 'Bills',
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
               AppIcons.card,
-              color: _currentIndex == 3 ? AppColors.green : AppColors.lightgrey,
+              color: _currentIndex == 3 ? AppColors.green : theme.isDark?AppColors.lightPrimary: AppColors.lightgrey,
             ), //Icon(Icons.home),
             label: 'Card',
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
               AppIcons.more,
-              color: _currentIndex == 4 ? AppColors.green : AppColors.lightgrey,
+              color: _currentIndex == 4 ? AppColors.green : theme.isDark?AppColors.lightPrimary:AppColors.lightgrey,
             ), //Icon(Icons.home),
             label: 'More',
           ),
