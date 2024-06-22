@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/res/app_images.dart';
 import 'package:teller_trust/utills/app_navigator.dart';
@@ -10,6 +11,7 @@ import 'package:teller_trust/view/widgets/app_custom_text.dart';
 import 'package:teller_trust/view/widgets/form_button.dart';
 
 import '../../../res/app_colors.dart';
+import '../../../utills/custom_theme.dart';
 import 'bvn_or_nin_verification/requirement_veri.dart';
 
 class KYCIntro extends StatefulWidget {
@@ -43,7 +45,11 @@ class _KYCIntroState extends State<KYCIntro> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return Scaffold(
+      backgroundColor:
+          theme.isDark ? AppColors.darkModeBackgroundColor : AppColors.white,
       appBar: AppBar(
         backgroundColor: AppColors.darkGreen,
         elevation: 1,
@@ -70,6 +76,10 @@ class _KYCIntroState extends State<KYCIntro> {
             child: Container(
               height: AppUtils.deviceScreenSize(context).height,
               width: AppUtils.deviceScreenSize(context).width,
+              color: theme.isDark
+                  ? AppColors.darkModeBackgroundColor
+                  : AppColors.white,
+
               //color: ,
               // decoration: const BoxDecoration(
               //   image: DecorationImage(
@@ -82,10 +92,13 @@ class _KYCIntroState extends State<KYCIntro> {
           ),
           Align(
             alignment: Alignment.bottomCenter,
-
             child: Container(
                 //height: AppUtils.deviceScreenSize(context).height,
                 width: AppUtils.deviceScreenSize(context).width,
+                color: theme.isDark
+                    ? AppColors.darkModeBackgroundColor
+                    : AppColors.white,
+
                 // decoration: const BoxDecoration(
                 //   image: DecorationImage(
                 //     image: AssetImage(AppImages.authAppLogoImage),
@@ -140,9 +153,9 @@ class _KYCIntroState extends State<KYCIntro> {
                                 ),
                                 Container(
                                   height: 80,
-                                  width: AppUtils.deviceScreenSize(context)
-                                          .width -
-                                      20,
+                                  width:
+                                      AppUtils.deviceScreenSize(context).width -
+                                          20,
                                   child: Stepper(
                                     currentStep: current_step,
                                     steps: steps,

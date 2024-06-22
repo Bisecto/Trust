@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:teller_trust/view/widgets/form_button.dart';
 
 import '../../../bloc/app_bloc/app_bloc.dart';
@@ -10,6 +11,8 @@ import '../../../model/personal_profile.dart';
 import '../../../model/user.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/app_icons.dart';
+import '../../../utills/constants/loading_dialog.dart';
+import '../../../utills/custom_theme.dart';
 import '../../widgets/appBar_widget.dart';
 import '../../widgets/custom_container.dart';
 
@@ -24,8 +27,19 @@ class ProfileDetails extends StatefulWidget {
 
 class _ProfileDetailsState extends State<ProfileDetails> {
   @override
+  void initState() {
+    // TODO: implement initState
+    context.read<AppBloc>().add(InitialEvent());
+
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return Scaffold(
+      backgroundColor: theme.isDark?AppColors.darkModeBackgroundColor:AppColors.lightPrimary,
+
       body: Padding(
           padding: const EdgeInsets.all(0.0),
           child: BlocBuilder<AppBloc, AppState>(
@@ -45,8 +59,8 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                   children: [
                     Column(
                       children: [
-                        CustomAppBar(
-                          title: AppIcons.profileDetails,
+                        const CustomAppBar(
+                          title: "Profile Details",
                         ),
                         Padding(
                           padding: const EdgeInsets.all(10.0),
@@ -86,7 +100,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                       ],
                     ),
                     Padding(
-                      padding: EdgeInsets.fromLTRB(10, 0, 10, 30),
+                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 30),
                       child: FormButton(
                           onPressed: () {},
                           text: "Update Profile",
@@ -99,54 +113,21 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
+                    const Column(
                       children: [
                         CustomAppBar(
-                          title: AppIcons.profileDetails,
+                          title: "Profile Details",
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: CustomContainerWithIcon(
-                            title: "",
-                            iconData: SvgPicture.asset(AppIcons.person),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: CustomContainerWithIcon(
-                            title: "",
-                            iconData: SvgPicture.asset(AppIcons.person),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: CustomContainerWithIcon(
-                            title: "",
-                            iconData: SvgPicture.asset(AppIcons.person),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: CustomContainerWithIcon(
-                            title: "",
-                            iconData: SvgPicture.asset(AppIcons.email),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: CustomContainerWithIcon(
-                            title: "",
-                            iconData: SvgPicture.asset(AppIcons.phone),
-                          ),
-                        ),
+                        SizedBox(height: 100,),
+                        LoadingDialog("Fetching profile details")
                       ],
                     ),
                     Padding(
-                      padding: EdgeInsets.fromLTRB(10, 0, 10, 30),
+                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 30),
                       child: FormButton(
                         onPressed: () {},
                         text: "Update Profile",
-                        bgColor: AppColors.green,
+                        bgColor: AppColors.grey,
                         borderRadius: 12,
                         disableButton: true,
                       ),

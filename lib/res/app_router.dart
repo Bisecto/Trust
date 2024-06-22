@@ -4,6 +4,7 @@ import 'package:teller_trust/view/auth/sign_up_screen.dart';
 import 'package:teller_trust/view/the_app_screens/bills_page.dart';
 import 'package:teller_trust/view/the_app_screens/card_page.dart';
 import 'package:teller_trust/view/the_app_screens/home_page.dart';
+import 'package:teller_trust/view/the_app_screens/more_pages/profile_details.dart';
 
 import '../bloc/app_bloc/app_bloc.dart';
 import '../model/user.dart';
@@ -37,12 +38,14 @@ class AppRouter {
 
   ///LANDING PAGE LandingPage
   static const String landingPage = "/landing-page";
- // static const String homePage = "/home-page";
+
+  // static const String homePage = "/home-page";
   static const String sendPage = "/send-page";
   static const String billsPage = "/bills-page";
   static const String cardPage = "/card-page";
   static const String morePage = "/more-page";
   static const String notificationPage = "/notification-page";
+  static const String profileDetailsPage = "/profile-detail-page";
 
   static const String chooseLocation = "/choose-location-page";
 
@@ -69,8 +72,18 @@ class AppRouter {
             child: LandingPage(),
           ),
         );
+      case profileDetailsPage:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => AppBloc(),
+            child: ProfileDetails(),
+          ),
+        );
       case signInWIthAccessPinBiometrics:
-        return MaterialPageRoute(builder: (_) =>  SignInWIthAccessPinBiometrics(userName: 'name',));
+        return MaterialPageRoute(
+            builder: (_) => SignInWIthAccessPinBiometrics(
+                  userName: 'name',
+                ));
       // case homePage:
       //   final User user =
       //   routeSettings.arguments as User;

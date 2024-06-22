@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/res/app_icons.dart';
+import 'package:teller_trust/view/the_app_screens/kyc_verification/kyc_intro_page.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/change_password.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/change_pin/old_pin.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/kyc_verification.dart';
@@ -11,6 +12,7 @@ import 'package:teller_trust/view/the_app_screens/more_pages/withdrawal_account.
 
 import '../../../model/user.dart';
 import '../../../res/app_colors.dart';
+import '../../../res/app_router.dart';
 import '../../../utills/app_navigator.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/custom_theme.dart';
@@ -52,12 +54,14 @@ class _AccountSettingState extends State<AccountSetting> {
     }
 
     return Scaffold(
+      backgroundColor:
+      theme.isDark ? AppColors.darkModeBackgroundColor : AppColors.white,
       //appBar: CustomAppBar(title: 'Account Setting',),
       body: SingleChildScrollView(
         child: Column(
           children: [
             const CustomAppBar(
-              title: AppIcons.accountSettingAppBar,
+              title: "Account Settings",
             ),
             Padding(
               padding: const EdgeInsets.all(20.0),
@@ -66,26 +70,27 @@ class _AccountSettingState extends State<AccountSetting> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        AppNavigator.pushAndStackPage(context,
-                            page: ProfileDetails());
+                        AppNavigator.pushAndStackNamed(context, name: AppRouter.profileDetailsPage);
+                        // AppNavigator.pushAndStackPage(context,
+                        //     page: ProfileDetails());
                       },
                       child: const CustomContainerFirTitleDesc(
                           title: "Profile Details",
                           description: "Account name, email, phone"),
                     ),
+                    // GestureDetector(
+                    //   onTap: () {
+                    //     AppNavigator.pushAndStackPage(context,
+                    //         page: const WithdrawalAccount());
+                    //   },
+                    //   child: const CustomContainerFirTitleDesc(
+                    //       title: "Withdrawal Account",
+                    //       description: "View/Add Withdrawal account"),
+                    // ),
                     GestureDetector(
                       onTap: () {
                         AppNavigator.pushAndStackPage(context,
-                            page: const WithdrawalAccount());
-                      },
-                      child: const CustomContainerFirTitleDesc(
-                          title: "Withdrawal Account",
-                          description: "View/Add Withdrawal account"),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        AppNavigator.pushAndStackPage(context,
-                            page: const KycVerification());
+                            page: const KYCIntro());
                       },
                       child: const CustomContainerFirTitleDesc(
                           title: "KYC", description: "Identification document"),

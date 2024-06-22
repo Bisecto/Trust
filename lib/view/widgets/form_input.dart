@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../res/app_colors.dart';
@@ -66,11 +67,11 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       children: [
         CustomText(
           text: widget.label,
-          weight: FontWeight.bold,
+          //weight: FontWeight.bold,
           color: theme.isDark
               ? AppColors.darkModeBackgroundMainTextColor
-              : AppColors.textColor,
-          size: 15,
+              : AppColors.textColor2,
+          size: 12,
         ),
         const SizedBox(
           height: 10,
@@ -136,10 +137,11 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                           ),
                         ),
                         hintText: widget.hint,
-                        hintStyle: TextStyle(                  fontFamily: "CeraPro",
+                        hintStyle: GoogleFonts.poppins(
                             fontSize: 12,color:theme.isDark
-                                ? AppColors.darkModeBackgroundDisableColor
-                                :  AppColors.lightDivider),
+                            ? AppColors.darkModeBackgroundDisableColor
+                            :  AppColors.lightDivider
+                        ),
                         border: InputBorder.none),
                     keyboardType: widget.textInputType,
                     validator: widget.validator,

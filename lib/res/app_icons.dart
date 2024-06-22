@@ -3,6 +3,7 @@ class AppIcons {
 
   static const home = '${_iconBaseUrl}home.svg';
   static const darkMode = '${_iconBaseUrl}dark_mode.svg';
+  static const billTopBackground = '${_iconBaseUrl}bill_top_background.svg';
   static const withdrawalAccountAppbar = '${_iconBaseUrl}withdrawal_accoun_appbar.svg';
   static const card = '${_iconBaseUrl}card.svg';
   static const profileDetails = '${_iconBaseUrl}profile_details.svg';
@@ -41,7 +42,6 @@ class AppIcons {
   static const yourNgnAccount = '${_iconBaseUrl}your_ngn_account.svg';
   static const copy = '${_iconBaseUrl}copy.svg';
   static const squareCancel = '${_iconBaseUrl}square_cancel.svg';
-  static const dailyLimit = '${_iconBaseUrl}daily_limit.svg';
   static const profileLabel = '${_iconBaseUrl}profile_label.svg';
   static const profiletext = '${_iconBaseUrl}profile_text.svg';
   static const purchaseReceipt = '${_iconBaseUrl}purchase_receipt.svg';

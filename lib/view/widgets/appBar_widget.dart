@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import 'package:teller_trust/view/widgets/app_custom_text.dart';
 
 import '../../res/app_colors.dart';
 import '../../res/app_icons.dart';
 import '../../utills/app_utils.dart';
+import '../../utills/custom_theme.dart';
 
 class CustomAppBar extends StatelessWidget {
   final String title;
@@ -18,33 +21,32 @@ class CustomAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return Container(
       height: 120,
       decoration: BoxDecoration(
-          color: subColor,
+          color: theme.isDark?AppColors.lightGreen:subColor,
           borderRadius:
               const BorderRadius.vertical(bottom: Radius.circular(30))),
       child: Column(
         children: [
+          //SizedBox(height: 15,),
           Container(
             height: 100,
             width: AppUtils.deviceScreenSize(context).width,
             decoration: BoxDecoration(
-                color: mainColor,
+                color:theme.isDark?AppColors.darkModeBackgroundColor: mainColor,
                 borderRadius:
                     const BorderRadius.vertical(bottom: Radius.circular(30))),
-            child: Row(
-              children: [
-                SafeArea(
-                    child: Padding(
-                  padding: const EdgeInsets.only(left: 20.0),
-                  child: GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: SvgPicture.asset(title)),
-                ))
-              ],
+            child: Padding(
+              padding: const EdgeInsets.only(left: 20.0,top: 20),
+              child: Row(
+                children: [
+                 Icon(Icons.arrow_back_ios),
+                  TextStyles.textHeadings(textValue: title,textColor: theme.isDark?AppColors.white:AppColors.black)
+                ],
+              ),
             ),
           ),
         ],

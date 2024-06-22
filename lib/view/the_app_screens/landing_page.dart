@@ -63,8 +63,8 @@ class _LandingPageState extends State<LandingPage> {
         showUnselectedLabels: true,
         currentIndex: _currentIndex,
         selectedItemColor: AppColors.green,
-        unselectedItemColor:theme.isDark?AppColors.lightPrimary: AppColors.lightDivider,
-
+        unselectedItemColor:
+            theme.isDark ? AppColors.lightPrimary : AppColors.lightDivider,
         onTap: (index) {
           setState(() {
             _currentIndex = index;
@@ -74,34 +74,53 @@ class _LandingPageState extends State<LandingPage> {
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
               AppIcons.home,
-              color: _currentIndex == 0 ? AppColors.green : theme.isDark?AppColors.lightPrimary:AppColors.lightgrey,
+              color: _currentIndex == 0
+                  ? AppColors.green
+                  : theme.isDark
+                      ? AppColors.lightPrimary
+                      : AppColors.lightgrey,
             ), //Icon(Icons.home),
             label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(AppIcons.send,
-                color:
-                    _currentIndex == 1 ? AppColors.green : theme.isDark?AppColors.lightPrimary:AppColors.lightgrey),
+                color: _currentIndex == 1
+                    ? AppColors.green
+                    : theme.isDark
+                        ? AppColors.lightPrimary
+                        : AppColors.lightgrey),
             label: 'Send',
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
               AppIcons.bill,
-              color: _currentIndex == 2 ? AppColors.green : theme.isDark?AppColors.lightPrimary:AppColors.lightgrey,
+              color: _currentIndex == 2
+                  ? AppColors.green
+                  : theme.isDark
+                      ? AppColors.lightPrimary
+                      : AppColors.lightgrey,
             ), //Icon(Icons.home),
             label: 'Bills',
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
               AppIcons.card,
-              color: _currentIndex == 3 ? AppColors.green : theme.isDark?AppColors.lightPrimary: AppColors.lightgrey,
+              color: _currentIndex == 3
+                  ? AppColors.green
+                  : theme.isDark
+                      ? AppColors.lightPrimary
+                      : AppColors.lightgrey,
             ), //Icon(Icons.home),
             label: 'Card',
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
               AppIcons.more,
-              color: _currentIndex == 4 ? AppColors.green : theme.isDark?AppColors.lightPrimary:AppColors.lightgrey,
+              color: _currentIndex == 4
+                  ? AppColors.green
+                  : theme.isDark
+                      ? AppColors.lightPrimary
+                      : AppColors.lightgrey,
             ), //Icon(Icons.home),
             label: 'More',
           ),

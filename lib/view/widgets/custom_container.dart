@@ -21,9 +21,12 @@ class CustomContainerFirTitleDesc extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 10.0),
       child: Container(
+
         decoration: BoxDecoration(
+          color: !theme.isDark?AppColors.white:AppColors.darkModeBackgroundContainerColor,
             borderRadius: BorderRadius.circular(15),
-            border: Border.all(color: AppColors.grey)),
+          border: Border.all(color: AppColors.textColor)
+            ),
         child: Padding(
           padding: const EdgeInsets.all(15.0),
           child: Row(
@@ -36,17 +39,20 @@ class CustomContainerFirTitleDesc extends StatelessWidget {
                     text: title,
                     weight: FontWeight.bold,
                     maxLines: 3,
+                    size: 14,
+                    color: theme.isDark?AppColors.white:AppColors.darkModeBackgroundContainerColor,
                   ),
                   CustomText(
                     text: description,
                     maxLines: 3,
-                    size: 14,
+                    size: 12,
+                    color: theme.isDark?AppColors.textColor:AppColors.darkModeBackgroundContainerColor,
                   )
                 ],
               ),
-              const Icon(
+               Icon(
                 Icons.arrow_forward_ios,
-                color: AppColors.grey,
+                color: theme.isDark?AppColors.white:AppColors.darkModeBackgroundContainerColor,
               )
             ],
           ),
@@ -134,11 +140,13 @@ class CustomContainerForToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return Padding(
       padding: const EdgeInsets.only(top: 10.0),
       child: Container(
         decoration: BoxDecoration(
-            color: AppColors.lightPrimary,
+            color: !theme.isDark?AppColors.white:AppColors.darkModeBackgroundContainerColor,
             borderRadius: BorderRadius.circular(15),
             border: Border.all(color: AppColors.grey)),
         child: Padding(
@@ -153,11 +161,15 @@ class CustomContainerForToggle extends StatelessWidget {
                     text: title,
                     weight: FontWeight.bold,
                     maxLines: 3,
+                    color: theme.isDark?AppColors.white:AppColors.darkModeBackgroundContainerColor,
+
                   ),
                   CustomText(
                     text: description,
                     maxLines: 3,
-                    size: 14,
+                    size: 12,
+                    color: theme.isDark?AppColors.textColor:AppColors.darkModeBackgroundContainerColor,
+
                   ),
                 ],
               ),
@@ -187,11 +199,13 @@ class CustomContainerWithIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return Padding(
       padding: const EdgeInsets.only(top: 15.0),
       child: Container(
         decoration: BoxDecoration(
-            color: AppColors.lightPrimary,
+            color: theme.isDark?AppColors.darkModeBackgroundColor:AppColors.lightPrimary,
             borderRadius: BorderRadius.circular(15),
             border: Border.all(color: AppColors.grey)),
         child: Padding(
@@ -207,6 +221,8 @@ class CustomContainerWithIcon extends StatelessWidget {
                 text: title,
                 maxLines: 3,
                 weight: FontWeight.w500,
+                color: theme.isDark?AppColors.white:AppColors.lightPrimary,
+
               ),
             ],
           ),

@@ -71,7 +71,7 @@ class TextStyles {
 
             color: textColor,
             fontSize: textSize,
-            fontWeight: FontWeight.w700),
+            fontWeight: FontWeight.w800),
       ),
       textAlign: TextAlign.center,
     );

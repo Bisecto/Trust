@@ -1,8 +1,12 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:custom_pin_screen/custom_pin_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:teller_trust/model/quick_access_model.dart';
 import 'package:teller_trust/model/service_model.dart';
+import 'package:teller_trust/res/app_icons.dart';
 
 import '../../../bloc/product_bloc/product_bloc.dart';
 import '../../../model/category_model.dart' as categoryModel;
@@ -11,6 +15,7 @@ import '../../../res/app_list.dart';
 import '../../../utills/app_navigator.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/app_validator.dart';
+import '../../../utills/custom_theme.dart';
 import '../../../utills/enums/toast_mesage.dart';
 import '../../../utills/shared_preferences.dart';
 import '../../auth/otp_pin_pages/confirm_with_otp.dart';
@@ -45,12 +50,19 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
-        height: AppUtils.deviceScreenSize(context).height - 100,
+        height: AppUtils
+            .deviceScreenSize(context)
+            .height - 100,
         decoration: BoxDecoration(
-            color: AppColors.white,
+            color: theme.isDark
+        ? AppColors.darkModeBackgroundColor
+            : AppColors.white,
             borderRadius: BorderRadius.only(
                 topRight: Radius.circular(10), topLeft: Radius.circular(10))),
         child: SingleChildScrollView(
@@ -62,7 +74,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                 BlocConsumer<ProductBloc, ProductState>(
                     bloc: purchaseProductBloc,
                     listenWhen: (previous, current) =>
-                        current is! ProductInitial,
+                    current is! ProductInitial,
                     listener: (context, state) async {
                       print(state);
                       if (state is PurchaseSuccess) {
@@ -109,36 +121,72 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                             Container(
                               height: 50,
                               decoration: BoxDecoration(
-                                  color: AppColors.darkGreen,
+                                  color: theme.isDark
+                                      ? AppColors.darkModeBackgroundColor
+                                      : AppColors.white,
                                   borderRadius: BorderRadius.only(
                                       topRight: Radius.circular(10),
                                       topLeft: Radius.circular(10))),
                               child: Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                padding: const EdgeInsets.all(0.0),
+                                child: Stack(
+                                  alignment: Alignment.center,
                                   children: [
-                                    CustomText(
-                                      text: "Airtime purchase",
-                                      color: AppColors.white,
-                                      weight: FontWeight.w600,
-                                      size: 18,
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        Navigator.pop(context);
+                                    SvgPicture.asset(
+                                      AppIcons.billTopBackground,
+                                      height: 50,
+                                      // Increase height to fit the text
+                                      width: double.infinity,
+                                      color: AppColors.darkGreen,
+                                      // Set the color if needed
+                                      placeholderBuilder: (context) {
+                                        return Container(
+                                          height: 50,
+                                          width: double.infinity,
+                                          color: Colors.grey[300],
+                                          child: Center(
+                                              child: CircularProgressIndicator()),
+                                        );
                                       },
-                                      child: Icon(
-                                        Icons.cancel,
-                                        color: AppColors.lightShadowGreenColor,
+                                    ),
+                                    Positioned(
+                                      top: 20, // Adjust position as needed
+                                      left: 20,
+                                      right: 20,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment
+                                            .spaceBetween,
+                                        children: [
+                                          TextStyles.textHeadings(
+                                            textValue: 'Airtime',
+                                            textColor: AppColors.darkGreen,
+                                           // w: FontWeight.w600,
+                                            textSize: 14,),
+                                          // Text(
+                                          //   "Airtime purchase",
+                                          //   style: TextStyle(
+                                          //     color: AppColors.darkGreen,
+                                          //     fontWeight: FontWeight.w600,
+                                          //     fontSize: 18,
+                                          //   ),
+                                          // ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Icon(
+                                              Icons.cancel,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    )
+                                    ),
                                   ],
                                 ),
-                              ),
-                            ),
-                            const SizedBox(
+
+                              ),),
+                            SizedBox(
                               height: 10,
                             ),
                             BlocConsumer<ProductBloc, ProductState>(
@@ -150,10 +198,10 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                       serviceItem.data.services;
                                   //Use user data here
                                   return SizedBox(
-                                    height: 105,
+                                    height: 90,
                                     child: ListView.builder(
                                       physics:
-                                          const NeverScrollableScrollPhysics(),
+                                      const NeverScrollableScrollPhysics(),
                                       scrollDirection: Axis.horizontal,
                                       // gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                                       //   crossAxisCount: 4,
@@ -174,7 +222,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                             },
                                             child: networkProviderItem(
                                                 services[index].name,
-                                                services[index].image));
+                                                services[index].image,theme));
                                       },
                                     ),
                                   );
@@ -191,7 +239,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                   ProductState state) async {
                                 if (state is AccessTokenExpireState) {
                                   String firstame =
-                                      await SharedPref.getString('firstName');
+                                  await SharedPref.getString('firstName');
 
                                   AppNavigator.pushAndRemovePreviousPages(
                                       context,
@@ -206,12 +254,12 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                             ),
                             Padding(
                               padding:
-                                  const EdgeInsets.fromLTRB(10.0, 0, 10, 10),
+                              const EdgeInsets.fromLTRB(10.0, 0, 10, 10),
                               child: Form(
                                   key: _formKey,
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: [
                                       CustomTextFormField(
                                         hint: '0.00',
@@ -219,10 +267,10 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                         controller: _selectedAmtController,
                                         textInputType: TextInputType.number,
                                         validator:
-                                            AppValidator.validateTextfield,
+                                        AppValidator.validateTextfield,
                                         icon: Icons.currency_exchange,
                                         borderColor: _selectedAmtController
-                                                .text.isNotEmpty
+                                            .text.isNotEmpty
                                             ? AppColors.green
                                             : AppColors.grey,
                                       ),
@@ -231,13 +279,14 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                       ),
                                       Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
+                                        MainAxisAlignment.spaceEvenly,
                                         children: [
                                           //selectAmount("2000"),
-                                          selectAmount("1500"),
-                                          selectAmount("1000"),
-                                          selectAmount("500"),
-                                          selectAmount("200"),
+                                          selectAmount("2000",theme),
+                                          selectAmount("1500",theme),
+                                          selectAmount("1000",theme),
+                                          selectAmount("500",theme),
+                                          selectAmount("200",theme),
                                         ],
                                       ),
                                       CustomTextFormField(
@@ -247,12 +296,12 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                         controller: _beneficiaryController,
                                         textInputType: TextInputType.number,
                                         validator:
-                                            AppValidator.validateTextfield,
+                                        AppValidator.validateTextfield,
                                         icon: Icons.flag,
 
                                         //isMobileNumber: true,
                                         borderColor: _beneficiaryController
-                                                .text.isNotEmpty
+                                            .text.isNotEmpty
                                             ? AppColors.green
                                             : AppColors.grey,
                                       ),
@@ -265,29 +314,29 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                             var transactionPin = '';
                                             transactionPin = await modalSheet
                                                 .showMaterialModalBottomSheet(
-                                                    backgroundColor:
-                                                        Colors.transparent,
-                                                    shape:
-                                                        const RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.vertical(
-                                                              top: Radius
-                                                                  .circular(
-                                                                      20.0)),
-                                                    ),
-                                                    context: context,
-                                                    builder: (context) =>
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .only(
-                                                                  top: 200.0),
-                                                          child: ConfirmWithPin(
-                                                            context: context,
-                                                            title:
-                                                                'Input your transaction pin to continue',
-                                                          ),
-                                                        ));
+                                                backgroundColor:
+                                                Colors.transparent,
+                                                shape:
+                                                const RoundedRectangleBorder(
+                                                  borderRadius:
+                                                  BorderRadius.vertical(
+                                                      top: Radius
+                                                          .circular(
+                                                          20.0)),
+                                                ),
+                                                context: context,
+                                                builder: (context) =>
+                                                    Padding(
+                                                      padding:
+                                                      const EdgeInsets
+                                                          .only(
+                                                          top: 200.0),
+                                                      child: ConfirmWithPin(
+                                                        context: context,
+                                                        title:
+                                                        'Input your transaction pin to continue',
+                                                      ),
+                                                    ));
                                             print(transactionPin);
                                             if (transactionPin != '') {
                                               purchaseProductBloc.add(
@@ -304,7 +353,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                           }
                                         },
                                         disableButton: _selectedAmtController
-                                                .text.isEmpty &&
+                                            .text.isEmpty &&
                                             _beneficiaryController.text.isEmpty,
                                         text: 'Purchase Airtime',
                                         borderColor: AppColors.darkGreen,
@@ -333,7 +382,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
   final _beneficiaryController = TextEditingController();
   final _selectedAmtController = TextEditingController();
 
-  Widget selectAmount(String amt) {
+  Widget selectAmount(String amt,AdaptiveThemeMode theme) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
@@ -345,34 +394,37 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
         },
         child: Container(
           decoration: BoxDecoration(
-              color: AppColors.white,
+              //color: AppColors.white,
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: AppColors.lightDivider)),
+              border: Border.all(color: AppColors.textColor)),
           child: Padding(
             padding: const EdgeInsets.all(5.0),
-            child: CustomText(
-              text: "₦ $amt",
-            ),
+            child: TextStyles.textDetails(textValue:  "₦ $amt",textColor: AppColors.textColor)
           ),
         ),
       ),
     );
   }
 
-  Widget networkProviderItem(String name, String image) {
+  Widget networkProviderItem(String name, String image,AdaptiveThemeMode theme) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
-        height: AppUtils.deviceScreenSize(context).width / 5,
-        width: AppUtils.deviceScreenSize(context).width / 5,
+        // height: AppUtils
+        //     .deviceScreenSize(context)
+        //     .width / 5,
+        width: AppUtils
+            .deviceScreenSize(context)
+            .width / 5,
         decoration: BoxDecoration(
             border: Border.all(
+              width: 1.5,
                 color: selectedNetwork == name.toLowerCase()
-                    ? AppColors.green
+                    ? AppColors.darkGreen
                     : Colors.transparent),
-            color: selectedNetwork == name.toLowerCase()
-                ? AppColors.lightShadowGreenColor
-                : Colors.transparent,
+            // color: selectedNetwork == name.toLowerCase()
+            //     ? AppColors.lightShadowGreenColor
+            //     : Colors.transparent,
             borderRadius: BorderRadius.circular(15)),
         child: Padding(
           padding: const EdgeInsets.all(6.0),
@@ -390,9 +442,19 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                   backgroundImage: NetworkImage(image),
                   //child: Image.asset(image,height: 20,width: 20,),
                 ),
-                CustomText(
+                if(selectedNetwork == name.toLowerCase())
+                TextStyles.textHeadings(textValue: name,textSize: 12,textColor: AppColors.darkGreen),
+                if(selectedNetwork != name.toLowerCase())
+
+                  CustomText(
                   text: name,
-                  color: AppColors.black,
+                  //color: AppColors.black,
+                  size: 12,
+                  weight: FontWeight.bold,
+                  color:selectedNetwork == name.toLowerCase()
+                      ? AppColors.darkGreen: theme.isDark
+                      ? AppColors.white
+                      : AppColors.black,
                 )
               ],
             ),
