@@ -67,7 +67,7 @@ class Service {
   });
 
   factory Service.fromJson(Map<String, dynamic> json) => Service(
-    image: json["image"],
+    image: json["image"]??'',
     id: json["id"],
     name: json["name"],
     slug: json["slug"],
