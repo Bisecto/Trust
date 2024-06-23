@@ -6,6 +6,7 @@ import 'package:otp_text_field/style.dart';
 
 import 'package:pin_plus_keyboard/package/controllers/pin_input_controller.dart';
 import 'package:pin_plus_keyboard/package/pin_plus_keyboard_package.dart';
+import 'package:provider/provider.dart';
 import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/utills/app_navigator.dart';
 import 'package:teller_trust/view/auth/otp_pin_pages/confirm_pin.dart';
@@ -15,6 +16,7 @@ import 'package:teller_trust/view/widgets/appBar_widget.dart';
 import '../../../../bloc/auth_bloc/auth_bloc.dart';
 import '../../../../res/app_colors.dart';
 import '../../../../utills/app_utils.dart';
+import '../../../../utills/custom_theme.dart';
 import '../../../important_pages/dialog_box.dart';
 import '../../../important_pages/not_found_page.dart';
 import '../../../widgets/app_custom_text.dart';
@@ -40,14 +42,16 @@ class _OldPinState extends State<OldPin> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: AppColors.white,
+      backgroundColor:
+      theme.isDark ? AppColors.darkModeBackgroundColor : AppColors.white,
       body: Column(
         children: [
           const CustomAppBar(
-            title: AppIcons.change4DigitPassword,
+            title: "Change 4-digit Pin",
           ),
           Padding(
               padding: const EdgeInsets.all(20.0),
@@ -60,8 +64,13 @@ class _OldPinState extends State<OldPin> {
                       text:
                           "This PIN authorises access, please enter your old PIN to change it.",
                       //weight: FontWeight.bold,
-                      size: 16,
+                      size: 14,
                       maxLines: 3,
+                      color: theme.isDark
+                          ? AppColors
+                          .darkModeBackgroundMainTextColor
+                          : AppColors.textColor,
+
 
                     ),
                     const SizedBox(
@@ -73,18 +82,22 @@ class _OldPinState extends State<OldPin> {
                       keyboardMaxWidth:
                           AppUtils.deviceScreenSize(context).width,
                       inputHasBorder: true,
-                      inputFillColor: AppColors.white,
+                      inputFillColor: theme.isDark?AppColors.black:AppColors.white,
+
                       inputHeight: 55,
                       inputWidth: 55,
                       keyboardBtnSize: 70,
-                      cancelColor: AppColors.black,
+                      cancelColor: theme.isDark?AppColors.white:AppColors.black,
+                      inputTextColor: theme.isDark?AppColors.white:AppColors.black,
                       inputBorderRadius: BorderRadius.circular(10),
 
                       keyoardBtnBorderRadius: BorderRadius.circular(10),
                       //inputElevation: 3,
-                      buttonFillColor: AppColors.white,
-                      btnTextColor: AppColors.black,
+                      doneButton: Icon(Icons.done,color: theme.isDark?AppColors.white:AppColors.black,),
+                      buttonFillColor: theme.isDark?AppColors.black:AppColors.white,
+                      btnTextColor:  theme.isDark?AppColors.white:AppColors.textColor,
                       buttonBorderColor: AppColors.grey,
+
                       spacing: AppUtils.deviceScreenSize(context).height * 0.06,
                       pinInputController: pinInputController,
 

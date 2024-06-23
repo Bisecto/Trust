@@ -6,6 +6,7 @@ import 'package:otp_text_field/style.dart';
 
 import 'package:pin_plus_keyboard/package/controllers/pin_input_controller.dart';
 import 'package:pin_plus_keyboard/package/pin_plus_keyboard_package.dart';
+import 'package:provider/provider.dart';
 import 'package:teller_trust/utills/app_navigator.dart';
 import 'package:teller_trust/view/auth/otp_pin_pages/confirm_pin.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/change_pin/confirm_pin.dart';
@@ -13,6 +14,7 @@ import 'package:teller_trust/view/the_app_screens/more_pages/change_pin/confirm_
 import '../../../../res/app_colors.dart';
 import '../../../../res/app_icons.dart';
 import '../../../../utills/app_utils.dart';
+import '../../../../utills/custom_theme.dart';
 import '../../../widgets/appBar_widget.dart';
 import '../../../widgets/app_custom_text.dart';
 
@@ -42,13 +44,18 @@ class _ChangePinNewState extends State<ChangePinNew> {
   @override
   Widget build(BuildContext context) {
 
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: AppColors.white,
+      backgroundColor:
+      theme.isDark ? AppColors.darkModeBackgroundColor : AppColors.white,
+
       body: Column(
         children: [
           const CustomAppBar(
-            title: AppIcons.change4DigitPassword,
+            title: "Change 4-digit Pin",
+
           ),
           Padding(
             padding: const EdgeInsets.all(20.0),
@@ -59,12 +66,17 @@ class _ChangePinNewState extends State<ChangePinNew> {
                 CrossAxisAlignment.start,
                 children: [
 
-                  const CustomText(
+                   CustomText(
                     text:
                     "This PIN authorises access, please enter your New PIN to change it.",
                     //weight: FontWeight.bold,
+
+                    size: 14,
                     maxLines: 3,
-                    size: 16,
+                    color: theme.isDark
+                        ? AppColors
+                        .darkModeBackgroundMainTextColor
+                        : AppColors.textColor,
                   ),
                   const SizedBox(
                     height: 20,
@@ -77,19 +89,21 @@ class _ChangePinNewState extends State<ChangePinNew> {
                     AppUtils.deviceScreenSize(context)
                         .width,
                     inputHasBorder: true,
-                    inputFillColor: AppColors.white,
+                    inputFillColor: theme.isDark?AppColors.black:AppColors.white,
                     inputHeight: 55,
                     inputWidth: 55,
                     keyboardBtnSize: 70,
-                    cancelColor: AppColors.black,
+                    cancelColor: theme.isDark?AppColors.white:AppColors.black,
+                    inputTextColor: theme.isDark?AppColors.white:AppColors.black,
                     inputBorderRadius:
                     BorderRadius.circular(10),
+                    doneButton: Icon(Icons.done,color: theme.isDark?AppColors.white:AppColors.black,),
+                    buttonFillColor: theme.isDark?AppColors.black:AppColors.white,
+                    btnTextColor:  theme.isDark?AppColors.white:AppColors.textColor,
 
                     keyoardBtnBorderRadius:
                     BorderRadius.circular(10),
                     //inputElevation: 3,
-                    buttonFillColor: AppColors.white,
-                    btnTextColor: AppColors.black,
                     buttonBorderColor: AppColors.grey,
                     spacing:
                     AppUtils.deviceScreenSize(context)
