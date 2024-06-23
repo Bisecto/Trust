@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pin_plus_keyboard/package/controllers/pin_input_controller.dart';
 import 'package:pin_plus_keyboard/package/pin_plus_keyboard_package.dart';
+import 'package:provider/provider.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
 import 'package:teller_trust/view/widgets/form_button.dart';
 
@@ -11,6 +12,7 @@ import '../../../res/app_colors.dart';
 import '../../../res/app_icons.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/app_validator.dart';
+import '../../../utills/custom_theme.dart';
 import '../../../utills/enums/toast_mesage.dart';
 import '../../important_pages/dialog_box.dart';
 import '../../important_pages/not_found_page.dart';
@@ -46,14 +48,16 @@ class _ChangePasswordState extends State<ChangePassword> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return Scaffold(
         resizeToAvoidBottomInset: true,
-        backgroundColor: AppColors.white,
+        backgroundColor: theme.isDark?AppColors.darkModeBackgroundColor:AppColors.white,
         body: SingleChildScrollView(
           child: Column(
             children: [
               CustomAppBar(
-                title: AppIcons.changePassword,
+                title: "Change Password",
               ),
               BlocConsumer<AuthBloc, AuthState>(
                   bloc: authBloc,

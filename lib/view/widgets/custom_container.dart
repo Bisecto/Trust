@@ -75,12 +75,15 @@ class CustomContainerFirTitleDescIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return Padding(
       padding: const EdgeInsets.only(top: 10.0),
       child: Container(
         decoration: BoxDecoration(
+          color: theme.isDark?AppColors.darkModeBackgroundContainerColor:AppColors.grey,
             borderRadius: BorderRadius.circular(15),
-            border: Border.all(color: AppColors.grey)),
+            border: Border.all(color:theme.isDark?AppColors.darkModeBackgroundContainerColor: AppColors.grey)),
         child: Padding(
           padding: const EdgeInsets.all(15.0),
           child: Row(
@@ -103,10 +106,15 @@ class CustomContainerFirTitleDescIcon extends StatelessWidget {
                           text: title,
                           weight: FontWeight.bold,
                           maxLines: 3,
+                          size: 12,
+                          color: theme.isDark?AppColors.darkModeBackgroundMainTextColor:AppColors.black,
                         ),
                         CustomText(
                           text: description,
+                          size: 12,
                           maxLines: 3,
+                          color: theme.isDark?AppColors.darkModeBackgroundMainTextColor:AppColors.black,
+
                         )
                       ],
                     ),
@@ -221,7 +229,7 @@ class CustomContainerWithIcon extends StatelessWidget {
                 text: title,
                 maxLines: 3,
                 weight: FontWeight.w500,
-                color: theme.isDark?AppColors.white:AppColors.lightPrimary,
+                color: theme.isDark?AppColors.white:AppColors.black,
 
               ),
             ],
@@ -241,13 +249,15 @@ class CustomContainerWithRightIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return Padding(
       padding: const EdgeInsets.only(top: 15.0),
       child: Container(
         decoration: BoxDecoration(
-            //color: AppColors.lightPrimary,
+            color: theme.isDark?AppColors.darkModeBackgroundContainerColor:AppColors.lightPrimary,
             borderRadius: BorderRadius.circular(15),
-            border: Border.all(color: AppColors.grey)),
+            border: Border.all(color:  theme.isDark?AppColors.darkModeBackgroundContainerColor:AppColors.grey)),
         child: Padding(
           padding: const EdgeInsets.all(15.0),
           child: Row(
@@ -258,6 +268,8 @@ class CustomContainerWithRightIcon extends StatelessWidget {
                 text: title,
                 maxLines: 3,
                 weight: FontWeight.w500,
+                size: 14,
+                color:theme.isDark?AppColors.white:AppColors.black
               ),
               Icon(Icons.arrow_forward_ios,color: AppColors.grey)
             ],

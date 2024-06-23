@@ -27,7 +27,7 @@ class FormButton extends StatelessWidget {
     this.text = '',
     this.textSize = 16,
     required this.onPressed,
-    this.bgColor = AppColors.green,
+    this.bgColor = AppColors.darkGreen,
     this.textColor = AppColors.white,
     this.disableButton = false,
     this.width = double.infinity,

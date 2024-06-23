@@ -2,6 +2,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/res/app_images.dart';
 import 'package:teller_trust/utills/app_utils.dart';
@@ -11,6 +12,7 @@ import 'package:teller_trust/view/widgets/form_button.dart';
 
 import '../../../../res/app_colors.dart';
 import '../../../../utills/app_navigator.dart';
+import '../../../../utills/custom_theme.dart';
 
 class BVN_NIN_KYC_1 extends StatefulWidget {
   const BVN_NIN_KYC_1({super.key});
@@ -22,7 +24,11 @@ class BVN_NIN_KYC_1 extends StatefulWidget {
 class _BVN_NIN_KYC_1State extends State<BVN_NIN_KYC_1> {
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return Scaffold(
+      backgroundColor:
+          theme.isDark ? AppColors.darkModeBackgroundColor : AppColors.white,
       appBar: AppBar(
         backgroundColor: AppColors.darkGreen,
         elevation: 1,
@@ -48,10 +54,9 @@ class _BVN_NIN_KYC_1State extends State<BVN_NIN_KYC_1> {
             child: Container(
               height: AppUtils.deviceScreenSize(context).height,
               width: AppUtils.deviceScreenSize(context).width,
-              child: SvgPicture.asset(
-                AppIcons.kycBackground,
-                fit: BoxFit.cover,
-              ),
+              child: SvgPicture.asset(theme.isDark
+                  ? AppIcons.kycDarkBackground
+                  : AppIcons.kycBackground),
             ),
           ),
           Align(
@@ -61,7 +66,7 @@ class _BVN_NIN_KYC_1State extends State<BVN_NIN_KYC_1> {
               child: Material(
                 elevation: 2,
                 borderRadius: BorderRadius.circular(20),
-                color: AppColors.white,
+                color:theme.isDark?AppColors.darkModeBackgroundContainerColor: AppColors.black,
                 child: Container(
                   width: AppUtils.deviceScreenSize(context).width,
                   decoration: BoxDecoration(
@@ -73,42 +78,42 @@ class _BVN_NIN_KYC_1State extends State<BVN_NIN_KYC_1> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const CustomText(
+                         CustomText(
                           text: 'Level 1',
                           size: 20,
                           weight: FontWeight.bold,
                           textAlign: TextAlign.center,
-                          color: AppColors.black,
+                          color:theme.isDark?AppColors.white: AppColors.black,
                           maxLines: 2,
                         ),
-                        const CustomText(
+                         CustomText(
                           text: 'Requirements for Level 1',
                           size: 12,
                           textAlign: TextAlign.center,
-                          color: AppColors.textColor,
+                          color:theme.isDark?AppColors.white: AppColors.black,
                           weight: FontWeight.bold,
                         ),
                         const SizedBox(height: 20),
-                        const Row(
+                         Row(
                           children: [
                             Icon(Icons.person_2_outlined),
                             SizedBox(width: 10),
                             CustomText(
                               text: "BVN or NIN",
-                              color: AppColors.black,
+                              color:theme.isDark?AppColors.white: AppColors.black,
                               weight: FontWeight.bold,
                               size: 12,
                             ),
                           ],
                         ),
                         const SizedBox(height: 10),
-                        const Row(
+                         Row(
                           children: [
                             Icon(Icons.check),
                             SizedBox(width: 10),
                             CustomText(
                               text: "Attestation",
-                              color: AppColors.black,
+                              color:theme.isDark?AppColors.white: AppColors.black,
                               weight: FontWeight.bold,
                               size: 12,
                             ),
@@ -129,7 +134,7 @@ class _BVN_NIN_KYC_1State extends State<BVN_NIN_KYC_1> {
                           dashPattern: [10, 10],
                           color: AppColors.lightgrey,
                           strokeWidth: 2,
-                          child: const Padding(
+                          child:  Padding(
                             padding: EdgeInsets.all(10.0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -148,7 +153,7 @@ class _BVN_NIN_KYC_1State extends State<BVN_NIN_KYC_1> {
                                       text: 'N 50,000.00',
                                       size: 12,
                                       textAlign: TextAlign.center,
-                                      color: AppColors.black,
+                                      color:theme.isDark?AppColors.lightgrey: AppColors.black,
                                       weight: FontWeight.bold,
                                     ),
                                   ],
@@ -167,7 +172,7 @@ class _BVN_NIN_KYC_1State extends State<BVN_NIN_KYC_1> {
                                       text: 'N 300,000.00',
                                       size: 12,
                                       textAlign: TextAlign.center,
-                                      color: AppColors.black,
+                                      color:theme.isDark?AppColors.lightgrey: AppColors.black,
                                       weight: FontWeight.bold,
                                     ),
                                   ],
@@ -183,7 +188,7 @@ class _BVN_NIN_KYC_1State extends State<BVN_NIN_KYC_1> {
                           dashPattern: [10, 10],
                           color: AppColors.lightgrey,
                           strokeWidth: 2,
-                          child: const Padding(
+                          child:  Padding(
                             padding: EdgeInsets.all(10.0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -202,7 +207,7 @@ class _BVN_NIN_KYC_1State extends State<BVN_NIN_KYC_1> {
                                       text: 'N 50,000.00',
                                       size: 12,
                                       textAlign: TextAlign.center,
-                                      color: AppColors.black,
+                                      color: theme.isDark?AppColors.lightgrey:AppColors.black,
                                       weight: FontWeight.bold,
                                     ),
                                   ],
@@ -221,7 +226,7 @@ class _BVN_NIN_KYC_1State extends State<BVN_NIN_KYC_1> {
                                       text: 'N 300,000.00',
                                       size: 12,
                                       textAlign: TextAlign.center,
-                                      color: AppColors.black,
+                                      color:theme.isDark?AppColors.lightgrey: AppColors.black,
                                       weight: FontWeight.bold,
                                     ),
                                   ],

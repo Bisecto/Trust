@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:provider/provider.dart';
 import 'package:teller_trust/res/app_colors.dart';
+
+import '../custom_theme.dart';
 
 
 
@@ -11,6 +14,7 @@ class LoadingDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
 
     return Center(
       child: Container(
@@ -28,15 +32,15 @@ class LoadingDialog extends StatelessWidget {
                 height: 70,
                 child: Center(
                     child: LoadingAnimationWidget.staggeredDotsWave(
-                      color: AppColors.appBarMainColor,
+                      color:!theme.isDark?Colors.black: AppColors.appBarMainColor,
                       size: 100,
                     )),
               ),
               const SizedBox(height: 10),
 
               DefaultTextStyle(
-                style: const TextStyle(
-                    color: Colors.white,
+                style:  TextStyle(
+                    color: !theme.isDark?Colors.black:Colors.white,
                     fontFamily: 'Roboto',
                     backgroundColor: Colors.transparent,
                     fontSize: 15
@@ -45,6 +49,7 @@ class LoadingDialog extends StatelessWidget {
                   title,
                   softWrap: true,
                   textAlign: TextAlign.center,
+
 
                 ),
               )

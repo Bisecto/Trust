@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/otp_field_style.dart';
 import 'package:otp_text_field/style.dart';
+import 'package:provider/provider.dart';
 import 'package:teller_trust/bloc/kyc_bloc/kyc_bloc.dart';
 import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/utills/app_utils.dart';
@@ -17,6 +18,7 @@ import '../../../../res/app_colors.dart';
 import '../../../../res/app_router.dart';
 import '../../../../utills/app_navigator.dart';
 import '../../../../utills/app_validator.dart';
+import '../../../../utills/custom_theme.dart';
 import '../../../../utills/enums/toast_mesage.dart';
 import '../../../../utills/shared_preferences.dart';
 import '../../../auth/sign_in_with_access_pin_and_biometrics.dart';
@@ -41,8 +43,11 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return Scaffold(
-      appBar: AppBar(
+      backgroundColor:
+      theme.isDark ? AppColors.darkModeBackgroundColor : AppColors.white,      appBar: AppBar(
         backgroundColor: AppColors.darkGreen,
         elevation: 1,
         title: const CustomText(
@@ -67,8 +72,8 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
             child: SizedBox(
               height: AppUtils.deviceScreenSize(context).height,
               width: AppUtils.deviceScreenSize(context).width,
-              child:
-                  SvgPicture.asset(AppIcons.kycBackground, fit: BoxFit.cover),
+              child: SvgPicture.asset(theme.isDark?AppIcons.kycDarkBackground:AppIcons.kycBackground),
+
             ),
           ),
           Align(
@@ -78,7 +83,7 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
               child: Material(
                 elevation: 2,
                 borderRadius: BorderRadius.circular(20),
-                color: AppColors.white,
+                color:theme.isDark?AppColors.darkModeBackgroundContainerColor: AppColors.black,
                 child: Container(
                     width: AppUtils.deviceScreenSize(context).width,
                     decoration: BoxDecoration(
@@ -209,26 +214,26 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
                                       size: 20,
                                       weight: FontWeight.bold,
                                       textAlign: TextAlign.center,
-                                      color: AppColors.black,
+                                      color: theme.isDark?AppColors.white:AppColors.black,
                                       maxLines: 2,
                                     ),
-                                    const CustomText(
+                                     CustomText(
                                       text:
                                           'We will use this to ensure your account belongs to you',
                                       size: 12,
                                       textAlign: TextAlign.start,
                                       maxLines: 3,
-                                      color: AppColors.textColor,
+                                      color:theme.isDark?AppColors.lightPrimary: AppColors.textColor,
                                       weight: FontWeight.bold,
                                     ),
                                     const SizedBox(
                                       height: 15,
                                     ),
-                                    const CustomText(
+                                     CustomText(
                                       text: 'Level 1 Benefits',
                                       size: 12,
                                       textAlign: TextAlign.center,
-                                      color: AppColors.textColor,
+                                       color:theme.isDark?AppColors.lightPrimary: AppColors.textColor,
                                       weight: FontWeight.bold,
                                     ),
                                     CustomTextFormField(

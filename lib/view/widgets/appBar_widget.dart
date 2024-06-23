@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:teller_trust/utills/app_navigator.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
 
 import '../../res/app_colors.dart';
@@ -43,7 +45,9 @@ class CustomAppBar extends StatelessWidget {
               padding: const EdgeInsets.only(left: 20.0,top: 20),
               child: Row(
                 children: [
-                 Icon(Icons.arrow_back_ios),
+                 GestureDetector(onTap:(){
+                  Navigator.pop(context);
+                 },child: Icon(Icons.arrow_back_ios)),
                   TextStyles.textHeadings(textValue: title,textColor: theme.isDark?AppColors.white:AppColors.black)
                 ],
               ),

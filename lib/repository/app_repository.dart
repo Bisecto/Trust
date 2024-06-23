@@ -49,6 +49,8 @@ class AppRepository {
       Uri.parse(apiUrl),
       headers: headers,
     );
+    print(apiUrl);
+    print(response);
     return response;
   }
 }

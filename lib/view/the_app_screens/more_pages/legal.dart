@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:teller_trust/res/app_colors.dart';
 
 import '../../../res/app_icons.dart';
+import '../../../utills/custom_theme.dart';
 import '../../widgets/appBar_widget.dart';
 import '../../widgets/app_custom_text.dart';
 import '../../widgets/custom_container.dart';
@@ -25,11 +27,14 @@ class _LegalState extends State<Legal> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return Scaffold(
+      backgroundColor: theme.isDark?AppColors.darkModeBackgroundColor:AppColors.white,
       body: Column(
         children: [
           CustomAppBar(
-            title: AppIcons.legalAppBar,
+            title: "Legal",
             mainColor: AppColors.lightOrange,
             subColor: AppColors.orange,
           ),

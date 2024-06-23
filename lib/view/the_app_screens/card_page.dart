@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:teller_trust/res/app_colors.dart';
 import 'package:teller_trust/utills/app_utils.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/card_request.dart';
@@ -7,6 +8,7 @@ import 'package:teller_trust/view/widgets/app_custom_text.dart';
 
 import '../../res/app_icons.dart';
 import '../../res/app_images.dart';
+import '../../utills/custom_theme.dart';
 import '../widgets/form_button.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
@@ -20,8 +22,12 @@ class CardPage extends StatefulWidget {
 class _CardPageState extends State<CardPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
+      final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
+      return Scaffold(
+        backgroundColor:
+        theme.isDark ? AppColors.darkModeBackgroundColor : AppColors.white,
+        body: Container(
         height: AppUtils.deviceScreenSize(context).height,
         width: AppUtils.deviceScreenSize(context).width,
         color: AppColors.white,

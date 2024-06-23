@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:teller_trust/res/app_colors.dart';
 
 import '../../../res/app_icons.dart';
+import '../../../utills/custom_theme.dart';
 import '../../widgets/appBar_widget.dart';
 import '../../widgets/app_custom_text.dart';
 import '../../widgets/custom_container.dart';
@@ -25,11 +27,15 @@ class _GetHelpState extends State<GetHelp> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return Scaffold(
+      backgroundColor: theme.isDark?AppColors.darkModeBackgroundColor:AppColors.white,
+
       body: Column(
         children: [
           CustomAppBar(
-            title: AppIcons.getHelpAppBar,
+            title: "Get Help",
             mainColor: AppColors.lightPurple,
             subColor: AppColors.purple,
           ),
@@ -38,7 +44,7 @@ class _GetHelpState extends State<GetHelp> {
             child: Column(
               children: [
                 CustomContainerFirTitleDescIcon(
-                  title: "Have feedback or need support?\n Send us an Email",
+                  title: "Have feedback or need support?\nSend us an Email",
                   description: "Support@tellatrust.com",
                   iconData:SvgPicture.asset(AppIcons.person,color: Colors.purple,),
                 ),

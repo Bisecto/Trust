@@ -783,7 +783,8 @@ Widget advertWidget (AdaptiveThemeMode theme){
                       setState(() {
                         selectedAction = items[index].name;
                       });
-                      switch (selectedAction) {
+                      switch (selectedAction)
+                      {
                         case "Airtime":
                           modalSheet.showMaterialModalBottomSheet(
                             backgroundColor: Colors.transparent,

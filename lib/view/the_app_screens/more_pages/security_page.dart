@@ -27,12 +27,12 @@ class _SecurityState extends State<Security> {
     return  Scaffold(
       body: Column(
         children: [
-          CustomAppBar(title: AppIcons.securityAppBar,),
+          const CustomAppBar(title: "Security",),
           Padding(
-            padding: EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(20.0),
             child: Column(
               children: [
-                CustomContainerFirTitleDesc(
+                const CustomContainerFirTitleDesc(
                     title: "Transaction PIN",
                     description: "Secure all transactions"),
                 CustomContainerForToggle(
