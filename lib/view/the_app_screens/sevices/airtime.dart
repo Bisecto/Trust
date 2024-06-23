@@ -119,7 +119,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                         child: Column(
                           children: [
                             Container(
-                              height: 50,
+                              height: 100,
                               decoration: BoxDecoration(
                                   color: theme.isDark
                                       ? AppColors.darkModeBackgroundColor
@@ -228,7 +228,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                   );
                                 } else {
                                   return const CustomText(
-                                    text: "There",
+                                    text: "     Loading.....",
                                     size: 15,
                                     weight: FontWeight.bold,
                                     color: AppColors.white,

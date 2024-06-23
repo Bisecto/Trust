@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:teller_trust/model/category_model.dart' as mainCategory;
 import 'package:teller_trust/model/quick_access_model.dart';
@@ -9,10 +11,12 @@ import 'package:teller_trust/view/widgets/drop_down.dart';
 import '../../../bloc/product_bloc/product_bloc.dart';
 import '../../../model/service_model.dart';
 import '../../../res/app_colors.dart';
+import '../../../res/app_icons.dart';
 import '../../../res/app_list.dart';
 import '../../../utills/app_navigator.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/app_validator.dart';
+import '../../../utills/custom_theme.dart';
 import '../../../utills/enums/toast_mesage.dart';
 import '../../../utills/shared_preferences.dart';
 import '../../auth/otp_pin_pages/confirm_with_otp.dart';
@@ -51,13 +55,16 @@ class _DataPurchaseState extends State<DataPurchase> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
         height: AppUtils.deviceScreenSize(context).height - 100,
-        decoration: const BoxDecoration(
-            color: AppColors.white,
-            borderRadius: BorderRadius.only(
+        decoration:  BoxDecoration(
+            color: theme.isDark
+                ? AppColors.darkModeBackgroundColor
+                : AppColors.white,            borderRadius: BorderRadius.only(
                 topRight: Radius.circular(10), topLeft: Radius.circular(10))),
         child: SingleChildScrollView(
           child: Padding(
@@ -114,63 +121,76 @@ class _DataPurchaseState extends State<DataPurchase> {
                           children: <Widget>[
                             Container(
                               height: 100,
-                              decoration: const BoxDecoration(
-                                  color: AppColors.darkGreen,
+                              decoration: BoxDecoration(
+                                  color: theme.isDark
+                                      ? AppColors.darkModeBackgroundColor
+                                      : AppColors.white,
                                   borderRadius: BorderRadius.only(
                                       topRight: Radius.circular(10),
                                       topLeft: Radius.circular(10))),
                               child: Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                padding: const EdgeInsets.all(0.0),
+                                child: Stack(
+                                  alignment: Alignment.center,
                                   children: [
-                                    const CustomText(
-                                      text: "Data purchase",
-                                      color: AppColors.white,
-                                      weight: FontWeight.bold,
-                                      size: 18,
-                                    ),
-                                    Container(
-                                      height: 30,
-                                    ),
-                                    // FormButton(
-                                    //   onPressed: () {
-                                    //     print(1234);
-                                    //     Navigator.of(context).pop();
-                                    //   },
-                                    //   //text: 'X',
-                                    //   height: 50,
-                                    //   width: 50,
-                                    //   isIcon: true,
-                                    //   iconWidget: Icons.cancel,
-                                    // ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        print(1234);
-                                        Navigator.of(context).pop();
-                                        //Navigator.pop(context);
+                                    SvgPicture.asset(
+                                      AppIcons.billTopBackground,
+                                      height: 50,
+                                      // Increase height to fit the text
+                                      width: double.infinity,
+                                      color: AppColors.darkGreen,
+                                      // Set the color if needed
+                                      placeholderBuilder: (context) {
+                                        return Container(
+                                          height: 50,
+                                          width: double.infinity,
+                                          color: Colors.grey[300],
+                                          child: Center(
+                                              child: CircularProgressIndicator()),
+                                        );
                                       },
-                                      child: const SizedBox(
-                                        height: 50,
-                                        //color: AppColors.red,
-                                        width: 50,
-                                        child: Center(
-                                          child: Icon(
-                                            Icons.cancel,
-                                            size: 40,
-                                            color: AppColors.white,
+                                    ),
+                                    Positioned(
+                                      top: 20, // Adjust position as needed
+                                      left: 20,
+                                      right: 20,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment
+                                            .spaceBetween,
+                                        children: [
+                                          TextStyles.textHeadings(
+                                            textValue: 'Data',
+                                            textColor: AppColors.darkGreen,
+                                            // w: FontWeight.w600,
+                                            textSize: 14,),
+                                          // Text(
+                                          //   "Airtime purchase",
+                                          //   style: TextStyle(
+                                          //     color: AppColors.darkGreen,
+                                          //     fontWeight: FontWeight.w600,
+                                          //     fontSize: 18,
+                                          //   ),
+                                          // ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Icon(
+                                              Icons.cancel,
+                                              color: Colors.grey,
+                                            ),
                                           ),
-                                        ),
+                                        ],
                                       ),
-                                    )
+                                    ),
                                   ],
                                 ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
+
+                              ),),
+
+                            // const SizedBox(
+                            //   height: 10,
+                            // ),
                             BlocConsumer<ProductBloc, ProductState>(
                               bloc: productBloc,
                               builder: (context, state) {
@@ -205,13 +225,13 @@ class _DataPurchaseState extends State<DataPurchase> {
                                             child: networkProviderItem(
                                                 services[index].name,
                                                 services[index].image,
-                                                services[index].id));
+                                                services[index].id,theme));
                                       },
                                     ),
                                   );
                                 } else {
                                   return const CustomText(
-                                    text: "There",
+                                    text: "     Loading.....",
                                     size: 15,
                                     weight: FontWeight.bold,
                                     color: AppColors.white,
@@ -527,7 +547,7 @@ class _DataPurchaseState extends State<DataPurchase> {
     );
   }
 
-  Widget networkProviderItem(String name, String image, String id) {
+  Widget networkProviderItem(String name, String image, String id,theme) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -535,12 +555,13 @@ class _DataPurchaseState extends State<DataPurchase> {
         width: AppUtils.deviceScreenSize(context).width / 5,
         decoration: BoxDecoration(
             border: Border.all(
+                width: 1.5,
                 color: selectedNetwork == name.toLowerCase()
-                    ? AppColors.green
+                    ? AppColors.darkGreen
                     : Colors.transparent),
-            color: selectedNetwork == name.toLowerCase()
-                ? AppColors.lightShadowGreenColor
-                : Colors.transparent,
+            // color: selectedNetwork == name.toLowerCase()
+            //     ? AppColors.lightShadowGreenColor
+            //     : Colors.transparent,
             borderRadius: BorderRadius.circular(15)),
         child: Padding(
           padding: const EdgeInsets.all(6.0),
@@ -562,10 +583,21 @@ class _DataPurchaseState extends State<DataPurchase> {
                   backgroundImage: NetworkImage(image),
                   //child: Image.asset(image,height: 20,width: 20,),
                 ),
-                CustomText(
-                  text: name,
-                  color: AppColors.black,
-                )
+                SizedBox(height: 5,),
+                if(selectedNetwork == name.toLowerCase())
+                  TextStyles.textHeadings(textValue: name,textSize: 12,textColor: AppColors.darkGreen),
+                if(selectedNetwork != name.toLowerCase())
+
+                  CustomText(
+                    text: name,
+                    //color: AppColors.black,
+                    size: 12,
+                    weight: FontWeight.bold,
+                    color:selectedNetwork == name.toLowerCase()
+                        ? AppColors.darkGreen: theme.isDark
+                        ? AppColors.white
+                        : AppColors.black,
+                  )
               ],
             ),
           ),
