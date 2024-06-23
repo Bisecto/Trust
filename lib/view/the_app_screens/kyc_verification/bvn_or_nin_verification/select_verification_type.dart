@@ -47,7 +47,8 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
 
     return Scaffold(
       backgroundColor:
-      theme.isDark ? AppColors.darkModeBackgroundColor : AppColors.white,      appBar: AppBar(
+          theme.isDark ? AppColors.darkModeBackgroundColor : AppColors.white,
+      appBar: AppBar(
         backgroundColor: AppColors.darkGreen,
         elevation: 1,
         title: const CustomText(
@@ -69,11 +70,28 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
             right: 0,
             left: 0,
             top: 0,
-            child: SizedBox(
-              height: AppUtils.deviceScreenSize(context).height,
-              width: AppUtils.deviceScreenSize(context).width,
-              child: SvgPicture.asset(theme.isDark?AppIcons.kycDarkBackground:AppIcons.kycBackground),
+            // bottom: 0,
+            child: Container(
+              height: AppUtils.deviceScreenSize(context).height+50,
+              width: double.infinity,
+              // color: theme.isDark
+              //     ? AppColors.darkModeBackgroundColor
+              //     : AppColors.white,
 
+              //color: ,
+              // decoration: const BoxDecoration(
+              //   image: DecorationImage(
+              //     image: AssetImage(AppImages.authAppLogoImage),
+              //     fit: BoxFit.fill,
+              //   ),
+              // ),
+              child: SvgPicture.asset(
+                theme.isDark
+                    ? AppIcons.kycDarkBackground
+                    : AppIcons.kycBackground,
+                height: AppUtils.deviceScreenSize(context).height+50,
+                width: double.infinity,
+              ),
             ),
           ),
           Align(
@@ -83,7 +101,9 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
               child: Material(
                 elevation: 2,
                 borderRadius: BorderRadius.circular(20),
-                color:theme.isDark?AppColors.darkModeBackgroundContainerColor: AppColors.black,
+                color: theme.isDark
+                    ? AppColors.darkModeBackgroundContainerColor
+                    : AppColors.black,
                 child: Container(
                     width: AppUtils.deviceScreenSize(context).width,
                     decoration: BoxDecoration(
@@ -214,26 +234,32 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
                                       size: 20,
                                       weight: FontWeight.bold,
                                       textAlign: TextAlign.center,
-                                      color: theme.isDark?AppColors.white:AppColors.black,
+                                      color: theme.isDark
+                                          ? AppColors.white
+                                          : AppColors.black,
                                       maxLines: 2,
                                     ),
-                                     CustomText(
+                                    CustomText(
                                       text:
                                           'We will use this to ensure your account belongs to you',
                                       size: 12,
                                       textAlign: TextAlign.start,
                                       maxLines: 3,
-                                      color:theme.isDark?AppColors.lightPrimary: AppColors.textColor,
+                                      color: theme.isDark
+                                          ? AppColors.lightPrimary
+                                          : AppColors.textColor,
                                       weight: FontWeight.bold,
                                     ),
                                     const SizedBox(
                                       height: 15,
                                     ),
-                                     CustomText(
+                                    CustomText(
                                       text: 'Level 1 Benefits',
                                       size: 12,
                                       textAlign: TextAlign.center,
-                                       color:theme.isDark?AppColors.lightPrimary: AppColors.textColor,
+                                      color: theme.isDark
+                                          ? AppColors.lightPrimary
+                                          : AppColors.textColor,
                                       weight: FontWeight.bold,
                                     ),
                                     CustomTextFormField(
@@ -403,14 +429,15 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
                                               color: AppColors.lightGreen),
                                           borderRadius:
                                               BorderRadius.circular(10)),
-                                      child:  Padding(
+                                      child: Padding(
                                         padding: EdgeInsets.all(8.0),
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
                                             CustomText(
-                                              text: 'Bank Name: ${successData.bankName}',
+                                              text:
+                                                  'Bank Name: ${successData.bankName}',
                                               size: 12,
                                               textAlign: TextAlign.start,
                                               maxLines: 3,
@@ -418,7 +445,8 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
                                               weight: FontWeight.bold,
                                             ),
                                             CustomText(
-                                              text: 'Account Number: ${successData.nuban}',
+                                              text:
+                                                  'Account Number: ${successData.nuban}',
                                               size: 12,
                                               textAlign: TextAlign.start,
                                               maxLines: 3,
@@ -426,7 +454,8 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
                                               weight: FontWeight.bold,
                                             ),
                                             CustomText(
-                                              text: 'Account Name: ${successData.accountName}',
+                                              text:
+                                                  'Account Name: ${successData.accountName}',
                                               size: 12,
                                               textAlign: TextAlign.start,
                                               maxLines: 3,
@@ -447,7 +476,11 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
                                       weight: FontWeight.bold,
                                     ),
                                     FormButton(
-                                      onPressed: () {AppNavigator.pushNamedAndRemoveUntil(context, name: AppRouter.landingPage);},
+                                      onPressed: () {
+                                        AppNavigator.pushNamedAndRemoveUntil(
+                                            context,
+                                            name: AppRouter.landingPage);
+                                      },
                                       text: "Done",
                                       borderColor: AppColors.lightgrey,
                                       bgColor: AppColors.white,

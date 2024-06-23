@@ -1,5 +1,6 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:custom_pin_screen/custom_pin_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -120,6 +121,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                           children: [
                             Container(
                               height: 100,
+                              width: double.infinity,
                               decoration: BoxDecoration(
                                   color: theme.isDark
                                       ? AppColors.darkModeBackgroundColor
@@ -132,27 +134,32 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                 child: Stack(
                                   alignment: Alignment.center,
                                   children: [
-                                    SvgPicture.asset(
-                                      AppIcons.billTopBackground,
-                                      height: 50,
-                                      // Increase height to fit the text
-                                      width: double.infinity,
-                                      color: AppColors.darkGreen,
-                                      // Set the color if needed
-                                      placeholderBuilder: (context) {
-                                        return Container(
-                                          height: 50,
-                                          width: double.infinity,
-                                          color: Colors.grey[300],
-                                          child: Center(
-                                              child: CircularProgressIndicator()),
-                                        );
-                                      },
+                                    Positioned(
+                                      top: 0, // Adjust position as needed
+                                      left: 0,
+                                      right: 0,
+                                      child: SvgPicture.asset(
+                                        AppIcons.billTopBackground,
+                                        height: 60,
+                                        // Increase height to fit the text
+                                        width: AppUtils.deviceScreenSize(context).width,
+                                        color: AppColors.darkGreen,
+                                        // Set the color if needed
+                                        placeholderBuilder: (context) {
+                                          return Container(
+                                            height: 50,
+                                            width: double.infinity,
+                                            color: Colors.grey[300],
+                                            child: Center(
+                                                child: CircularProgressIndicator()),
+                                          );
+                                        },
+                                      ),
                                     ),
                                     Positioned(
-                                      top: 20, // Adjust position as needed
-                                      left: 20,
-                                      right: 20,
+                                      top: 10, // Adjust position as needed
+                                      left: 10,
+                                      right: 10,
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment
                                             .spaceBetween,

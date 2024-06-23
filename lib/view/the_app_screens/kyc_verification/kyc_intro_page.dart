@@ -72,10 +72,10 @@ class _KYCIntroState extends State<KYCIntro> {
             right: 0,
             left: 0,
             top: 0,
-            //bottom: 20,
+           // bottom: 0,
             child: Container(
-              height: AppUtils.deviceScreenSize(context).height,
-              width: AppUtils.deviceScreenSize(context).width,
+              height: AppUtils.deviceScreenSize(context).height+50,
+              width: double.infinity,
               // color: theme.isDark
               //     ? AppColors.darkModeBackgroundColor
               //     : AppColors.white,
@@ -87,7 +87,13 @@ class _KYCIntroState extends State<KYCIntro> {
               //     fit: BoxFit.fill,
               //   ),
               // ),
-              child: SvgPicture.asset(theme.isDark?AppIcons.kycDarkBackground:AppIcons.kycBackground),
+              child: SvgPicture.asset(
+                theme.isDark
+                    ? AppIcons.kycDarkBackground
+                    : AppIcons.kycBackground,
+                height: AppUtils.deviceScreenSize(context).height+50,
+                width: double.infinity,
+              ),
             ),
           ),
           Align(
@@ -95,7 +101,6 @@ class _KYCIntroState extends State<KYCIntro> {
             child: Container(
                 //height: AppUtils.deviceScreenSize(context).height,
                 width: AppUtils.deviceScreenSize(context).width,
-
 
                 // decoration: const BoxDecoration(
                 //   image: DecorationImage(
@@ -109,12 +114,12 @@ class _KYCIntroState extends State<KYCIntro> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                       CustomText(
+                      CustomText(
                         text: 'Increase Your\nTransaction Limit',
                         size: 24,
                         weight: FontWeight.w900,
                         textAlign: TextAlign.center,
-                        color:theme.isDark?AppColors.white: AppColors.black,
+                        color: theme.isDark ? AppColors.white : AppColors.black,
                         maxLines: 2,
                       ),
                       const CustomText(
@@ -129,7 +134,9 @@ class _KYCIntroState extends State<KYCIntro> {
                       Material(
                         elevation: 2,
                         borderRadius: BorderRadius.circular(20),
-                        color:theme.isDark?AppColors.darkModeBackgroundContainerColor: AppColors.black,
+                        color: theme.isDark
+                            ? AppColors.darkModeBackgroundContainerColor
+                            : AppColors.black,
                         child: Container(
                           //height: 250,
                           width: AppUtils.deviceScreenSize(context).width,
@@ -141,12 +148,14 @@ class _KYCIntroState extends State<KYCIntro> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                 CustomText(
+                                CustomText(
                                   text: '3 Steps to go',
                                   size: 24,
                                   weight: FontWeight.w900,
                                   textAlign: TextAlign.center,
-                                  color:theme.isDark?AppColors.white: AppColors.black,
+                                  color: theme.isDark
+                                      ? AppColors.white
+                                      : AppColors.black,
                                   maxLines: 2,
                                 ),
                                 Container(
@@ -163,7 +172,7 @@ class _KYCIntroState extends State<KYCIntro> {
                                     elevation: 0,
                                   ),
                                 ),
-                                 Row(
+                                Row(
                                   children: [
                                     Icon(Icons.person_2_outlined),
                                     SizedBox(
@@ -171,7 +180,9 @@ class _KYCIntroState extends State<KYCIntro> {
                                     ),
                                     CustomText(
                                       text: "BVN or NIN",
-                                      color:theme.isDark?AppColors.white: AppColors.black,
+                                      color: theme.isDark
+                                          ? AppColors.white
+                                          : AppColors.black,
                                       weight: FontWeight.bold,
                                       size: 12,
                                     )
@@ -180,7 +191,7 @@ class _KYCIntroState extends State<KYCIntro> {
                                 SizedBox(
                                   height: 10,
                                 ),
-                                 Row(
+                                Row(
                                   children: [
                                     Icon(Icons.check),
                                     SizedBox(
@@ -188,7 +199,9 @@ class _KYCIntroState extends State<KYCIntro> {
                                     ),
                                     CustomText(
                                       text: "Attestation",
-                                      color:theme.isDark?AppColors.white: AppColors.black,
+                                      color: theme.isDark
+                                          ? AppColors.white
+                                          : AppColors.black,
                                       weight: FontWeight.bold,
                                       size: 12,
                                     )

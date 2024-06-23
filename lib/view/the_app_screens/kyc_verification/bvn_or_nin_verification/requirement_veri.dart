@@ -51,12 +51,28 @@ class _BVN_NIN_KYC_1State extends State<BVN_NIN_KYC_1> {
             right: 0,
             left: 0,
             top: 0,
+            // bottom: 0,
             child: Container(
-              height: AppUtils.deviceScreenSize(context).height,
-              width: AppUtils.deviceScreenSize(context).width,
-              child: SvgPicture.asset(theme.isDark
-                  ? AppIcons.kycDarkBackground
-                  : AppIcons.kycBackground),
+              height: AppUtils.deviceScreenSize(context).height+50,
+              width: double.infinity,
+              // color: theme.isDark
+              //     ? AppColors.darkModeBackgroundColor
+              //     : AppColors.white,
+
+              //color: ,
+              // decoration: const BoxDecoration(
+              //   image: DecorationImage(
+              //     image: AssetImage(AppImages.authAppLogoImage),
+              //     fit: BoxFit.fill,
+              //   ),
+              // ),
+              child: SvgPicture.asset(
+                theme.isDark
+                    ? AppIcons.kycDarkBackground
+                    : AppIcons.kycBackground,
+                height: AppUtils.deviceScreenSize(context).height+50,
+                width: double.infinity,
+              ),
             ),
           ),
           Align(
@@ -66,7 +82,9 @@ class _BVN_NIN_KYC_1State extends State<BVN_NIN_KYC_1> {
               child: Material(
                 elevation: 2,
                 borderRadius: BorderRadius.circular(20),
-                color:theme.isDark?AppColors.darkModeBackgroundContainerColor: AppColors.black,
+                color: theme.isDark
+                    ? AppColors.darkModeBackgroundContainerColor
+                    : AppColors.black,
                 child: Container(
                   width: AppUtils.deviceScreenSize(context).width,
                   decoration: BoxDecoration(
@@ -78,42 +96,48 @@ class _BVN_NIN_KYC_1State extends State<BVN_NIN_KYC_1> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                         CustomText(
+                        CustomText(
                           text: 'Level 1',
                           size: 20,
                           weight: FontWeight.bold,
                           textAlign: TextAlign.center,
-                          color:theme.isDark?AppColors.white: AppColors.black,
+                          color:
+                              theme.isDark ? AppColors.white : AppColors.black,
                           maxLines: 2,
                         ),
-                         CustomText(
+                        CustomText(
                           text: 'Requirements for Level 1',
                           size: 12,
                           textAlign: TextAlign.center,
-                          color:theme.isDark?AppColors.white: AppColors.black,
+                          color:
+                              theme.isDark ? AppColors.white : AppColors.black,
                           weight: FontWeight.bold,
                         ),
                         const SizedBox(height: 20),
-                         Row(
+                        Row(
                           children: [
                             Icon(Icons.person_2_outlined),
                             SizedBox(width: 10),
                             CustomText(
                               text: "BVN or NIN",
-                              color:theme.isDark?AppColors.white: AppColors.black,
+                              color: theme.isDark
+                                  ? AppColors.white
+                                  : AppColors.black,
                               weight: FontWeight.bold,
                               size: 12,
                             ),
                           ],
                         ),
                         const SizedBox(height: 10),
-                         Row(
+                        Row(
                           children: [
                             Icon(Icons.check),
                             SizedBox(width: 10),
                             CustomText(
                               text: "Attestation",
-                              color:theme.isDark?AppColors.white: AppColors.black,
+                              color: theme.isDark
+                                  ? AppColors.white
+                                  : AppColors.black,
                               weight: FontWeight.bold,
                               size: 12,
                             ),
@@ -134,7 +158,7 @@ class _BVN_NIN_KYC_1State extends State<BVN_NIN_KYC_1> {
                           dashPattern: [10, 10],
                           color: AppColors.lightgrey,
                           strokeWidth: 2,
-                          child:  Padding(
+                          child: Padding(
                             padding: EdgeInsets.all(10.0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -153,7 +177,9 @@ class _BVN_NIN_KYC_1State extends State<BVN_NIN_KYC_1> {
                                       text: 'N 50,000.00',
                                       size: 12,
                                       textAlign: TextAlign.center,
-                                      color:theme.isDark?AppColors.lightgrey: AppColors.black,
+                                      color: theme.isDark
+                                          ? AppColors.lightgrey
+                                          : AppColors.black,
                                       weight: FontWeight.bold,
                                     ),
                                   ],
@@ -172,7 +198,9 @@ class _BVN_NIN_KYC_1State extends State<BVN_NIN_KYC_1> {
                                       text: 'N 300,000.00',
                                       size: 12,
                                       textAlign: TextAlign.center,
-                                      color:theme.isDark?AppColors.lightgrey: AppColors.black,
+                                      color: theme.isDark
+                                          ? AppColors.lightgrey
+                                          : AppColors.black,
                                       weight: FontWeight.bold,
                                     ),
                                   ],
@@ -188,7 +216,7 @@ class _BVN_NIN_KYC_1State extends State<BVN_NIN_KYC_1> {
                           dashPattern: [10, 10],
                           color: AppColors.lightgrey,
                           strokeWidth: 2,
-                          child:  Padding(
+                          child: Padding(
                             padding: EdgeInsets.all(10.0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -207,7 +235,9 @@ class _BVN_NIN_KYC_1State extends State<BVN_NIN_KYC_1> {
                                       text: 'N 50,000.00',
                                       size: 12,
                                       textAlign: TextAlign.center,
-                                      color: theme.isDark?AppColors.lightgrey:AppColors.black,
+                                      color: theme.isDark
+                                          ? AppColors.lightgrey
+                                          : AppColors.black,
                                       weight: FontWeight.bold,
                                     ),
                                   ],
@@ -226,7 +256,9 @@ class _BVN_NIN_KYC_1State extends State<BVN_NIN_KYC_1> {
                                       text: 'N 300,000.00',
                                       size: 12,
                                       textAlign: TextAlign.center,
-                                      color:theme.isDark?AppColors.lightgrey: AppColors.black,
+                                      color: theme.isDark
+                                          ? AppColors.lightgrey
+                                          : AppColors.black,
                                       weight: FontWeight.bold,
                                     ),
                                   ],
