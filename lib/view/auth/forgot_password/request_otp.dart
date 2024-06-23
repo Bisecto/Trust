@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/otp_field_style.dart';
@@ -50,7 +51,11 @@ class _RequestOtpState extends State<RequestOtp> {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
-
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness:theme.isDark? Brightness
+          .light:Brightness.dark, // Brightness.light for white icons, Brightness.dark for dark icons
+    ));
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: theme.isDark
