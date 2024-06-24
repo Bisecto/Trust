@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:custom_pin_screen/custom_pin_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,6 +13,9 @@ import 'package:teller_trust/res/app_icons.dart';
 
 import '../../../bloc/product_bloc/product_bloc.dart';
 import '../../../model/category_model.dart' as categoryModel;
+import '../../../model/product_model.dart'as productMode;
+import '../../../repository/app_repository.dart';
+import '../../../res/apis.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/app_list.dart';
 import '../../../utills/app_navigator.dart';
@@ -27,6 +32,7 @@ import '../../widgets/form_input.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
 import '../../widgets/show_toast.dart';
+import 'build_payment_method.dart';
 
 class AirtimePurchase extends StatefulWidget {
   final categoryModel.Category category;
@@ -40,6 +46,8 @@ class AirtimePurchase extends StatefulWidget {
 class _AirtimePurchaseState extends State<AirtimePurchase> {
   ProductBloc productBloc = ProductBloc();
   ProductBloc purchaseProductBloc = ProductBloc();
+  String _selectedPaymentMethod = 'wallet';
+  bool isPaymentAllowed = false;
 
   @override
   void initState() {
@@ -49,21 +57,51 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
     super.initState();
   }
 
+  bool isInitial = true;
+  String selectedServiceID='';
+  void _handleNetworkSelect(String? networkName) async {
+    AppRepository appRepository = AppRepository();
+    String accessToken = await SharedPref.getString("access-token");
+    String apiUrl =
+        '${AppApis.listProduct}?page=1&pageSize=10&categoryId=${widget.category.id}&serviceId=$networkName';
+
+    try {
+      var listServiceResponse = await appRepository.appGetRequest(
+        apiUrl,
+        accessToken: accessToken,
+      );
+
+      if (listServiceResponse.statusCode == 200) {
+        print("productModel dtddhdhd: ${listServiceResponse.body}");
+        productMode.ProductModel productModel =productMode.ProductModel.fromJson(json.decode(listServiceResponse.body));
+        setState(() {
+          selectedServiceID=productModel.data.items[0].id;
+          isInitial = false;
+        });
+print(selectedServiceID);
+        // Process the data as needed
+      } else {
+        print("Error: ${listServiceResponse.statusCode}");
+        // Handle error
+      }
+    } catch (e) {
+      print("Network request failed: $e");
+      // Handle exception
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
 
-
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
-        height: AppUtils
-            .deviceScreenSize(context)
-            .height - 100,
+        height: AppUtils.deviceScreenSize(context).height,
         decoration: BoxDecoration(
             color: theme.isDark
-        ? AppColors.darkModeBackgroundColor
-            : AppColors.white,
+                ? AppColors.darkModeBackgroundColor
+                : AppColors.white,
             borderRadius: BorderRadius.only(
                 topRight: Radius.circular(10), topLeft: Radius.circular(10))),
         child: SingleChildScrollView(
@@ -75,7 +113,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                 BlocConsumer<ProductBloc, ProductState>(
                     bloc: purchaseProductBloc,
                     listenWhen: (previous, current) =>
-                    current is! ProductInitial,
+                        current is! ProductInitial,
                     listener: (context, state) async {
                       print(state);
                       if (state is PurchaseSuccess) {
@@ -120,7 +158,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                         child: Column(
                           children: [
                             Container(
-                              height: 100,
+                              height: 60,
                               width: double.infinity,
                               decoration: BoxDecoration(
                                   color: theme.isDark
@@ -142,7 +180,9 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                         AppIcons.billTopBackground,
                                         height: 60,
                                         // Increase height to fit the text
-                                        width: AppUtils.deviceScreenSize(context).width,
+                                        width:
+                                            AppUtils.deviceScreenSize(context)
+                                                .width,
                                         color: AppColors.darkGreen,
                                         // Set the color if needed
                                         placeholderBuilder: (context) {
@@ -151,7 +191,8 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                             width: double.infinity,
                                             color: Colors.grey[300],
                                             child: Center(
-                                                child: CircularProgressIndicator()),
+                                                child:
+                                                    CircularProgressIndicator()),
                                           );
                                         },
                                       ),
@@ -161,14 +202,15 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                       left: 10,
                                       right: 10,
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .spaceBetween,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           TextStyles.textHeadings(
                                             textValue: 'Airtime',
                                             textColor: AppColors.darkGreen,
-                                           // w: FontWeight.w600,
-                                            textSize: 14,),
+                                            // w: FontWeight.w600,
+                                            textSize: 14,
+                                          ),
                                           // Text(
                                           //   "Airtime purchase",
                                           //   style: TextStyle(
@@ -191,11 +233,9 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                     ),
                                   ],
                                 ),
-
-                              ),),
-                            SizedBox(
-                              height: 10,
+                              ),
                             ),
+
                             BlocConsumer<ProductBloc, ProductState>(
                               bloc: productBloc,
                               builder: (context, state) {
@@ -203,12 +243,29 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                   ServiceModel serviceItem = state.serviceModel;
                                   List<Service> services =
                                       serviceItem.data.services;
+                                  if (isInitial) {
+                                    _handleNetworkSelect(services
+                                        .firstWhere(
+                                            (service) =>
+                                                service.name.toLowerCase() ==
+                                                'mtn'.toLowerCase(),
+                                            orElse: () => Service(
+                                                image: '',
+                                                id: '',
+                                                name: '',
+                                                slug: '',
+                                                category: Category(
+                                                    id: '',
+                                                    name: '',
+                                                    slug: '')))
+                                        .id);
+                                  }
                                   //Use user data here
                                   return SizedBox(
                                     height: 90,
                                     child: ListView.builder(
                                       physics:
-                                      const NeverScrollableScrollPhysics(),
+                                          const NeverScrollableScrollPhysics(),
                                       scrollDirection: Axis.horizontal,
                                       // gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                                       //   crossAxisCount: 4,
@@ -229,7 +286,23 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                             },
                                             child: networkProviderItem(
                                                 services[index].name,
-                                                services[index].image,theme));
+                                                services[index].image,
+                                                theme,
+                                                () => _handleNetworkSelect(services
+                                                    .firstWhere(
+                                                        (service) =>
+                                                    service.name.toLowerCase() ==
+                                                        services[index].name.toLowerCase(),
+                                                    orElse: () => Service(
+                                                        image: '',
+                                                        id: '',
+                                                        name: '',
+                                                        slug: '',
+                                                        category: Category(
+                                                            id: '',
+                                                            name: '',
+                                                            slug: '')))
+                                                    .id)));
                                       },
                                     ),
                                   );
@@ -246,7 +319,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                   ProductState state) async {
                                 if (state is AccessTokenExpireState) {
                                   String firstame =
-                                  await SharedPref.getString('firstName');
+                                      await SharedPref.getString('firstName');
 
                                   AppNavigator.pushAndRemovePreviousPages(
                                       context,
@@ -261,12 +334,12 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                             ),
                             Padding(
                               padding:
-                              const EdgeInsets.fromLTRB(10.0, 0, 10, 10),
+                                  const EdgeInsets.fromLTRB(10.0, 0, 10, 10),
                               child: Form(
                                   key: _formKey,
                                   child: Column(
                                     crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                     children: [
                                       CustomTextFormField(
                                         hint: '0.00',
@@ -274,10 +347,10 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                         controller: _selectedAmtController,
                                         textInputType: TextInputType.number,
                                         validator:
-                                        AppValidator.validateTextfield,
+                                            AppValidator.validateTextfield,
                                         icon: Icons.currency_exchange,
                                         borderColor: _selectedAmtController
-                                            .text.isNotEmpty
+                                                .text.isNotEmpty
                                             ? AppColors.green
                                             : AppColors.grey,
                                       ),
@@ -286,14 +359,14 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                       ),
                                       Row(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
+                                            MainAxisAlignment.spaceEvenly,
                                         children: [
                                           //selectAmount("2000"),
-                                          selectAmount("2000",theme),
-                                          selectAmount("1500",theme),
-                                          selectAmount("1000",theme),
-                                          selectAmount("500",theme),
-                                          selectAmount("200",theme),
+                                          selectAmount("2000", theme),
+                                          selectAmount("1500", theme),
+                                          selectAmount("1000", theme),
+                                          selectAmount("500", theme),
+                                          selectAmount("200", theme),
                                         ],
                                       ),
                                       CustomTextFormField(
@@ -303,47 +376,87 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                         controller: _beneficiaryController,
                                         textInputType: TextInputType.number,
                                         validator:
-                                        AppValidator.validateTextfield,
+                                            AppValidator.validateTextfield,
                                         icon: Icons.flag,
 
                                         //isMobileNumber: true,
                                         borderColor: _beneficiaryController
-                                            .text.isNotEmpty
+                                                .text.isNotEmpty
                                             ? AppColors.green
                                             : AppColors.grey,
+                                      ),
+                                      Container(
+                                        height: 310,
+                                        child: PaymentMethodScreen(
+                                          amtToPay: _selectedAmtController
+                                                  .text.isEmpty
+                                              ? '0'
+                                              : _selectedAmtController.text,
+                                          onPaymentMethodSelected: (method) {
+                                            // No need to use setState here directly as it might be called during the build phase
+                                            Future.microtask(() {
+                                              if (mounted) {
+                                                setState(() {
+                                                  _selectedPaymentMethod =
+                                                      method;
+                                                  //print(_selectedPaymentMethod);
+                                                });
+                                              }
+                                            });
+                                          },
+                                          ispaymentAllowed: (allowed) {
+                                            // Deferred update to avoid issues during the build phase
+                                            Future.microtask(() {
+                                              if (mounted) {
+                                                setState(() {
+                                                  isPaymentAllowed = allowed;
+                                                  // print(isPaymentAllowed);
+                                                });
+                                              }
+                                            });
+                                          },
+                                        ),
                                       ),
 
                                       ///Remember to add beneficiary
                                       FormButton(
                                         onPressed: () async {
+                                          print(_selectedPaymentMethod);
+                                          print(_beneficiaryController
+                                              .text.isNotEmpty);
+                                          print(!isPaymentAllowed);
+
                                           if (_formKey.currentState!
                                               .validate()) {
+                                            if(_selectedPaymentMethod!='wallet'){
+
+                                            }else{
                                             var transactionPin = '';
                                             transactionPin = await modalSheet
                                                 .showMaterialModalBottomSheet(
-                                                backgroundColor:
-                                                Colors.transparent,
-                                                shape:
-                                                const RoundedRectangleBorder(
-                                                  borderRadius:
-                                                  BorderRadius.vertical(
-                                                      top: Radius
-                                                          .circular(
-                                                          20.0)),
-                                                ),
-                                                context: context,
-                                                builder: (context) =>
-                                                    Padding(
-                                                      padding:
-                                                      const EdgeInsets
-                                                          .only(
-                                                          top: 200.0),
-                                                      child: ConfirmWithPin(
-                                                        context: context,
-                                                        title:
-                                                        'Input your transaction pin to continue',
-                                                      ),
-                                                    ));
+                                                    backgroundColor:
+                                                        Colors.transparent,
+                                                    shape:
+                                                        const RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.vertical(
+                                                              top: Radius
+                                                                  .circular(
+                                                                      20.0)),
+                                                    ),
+                                                    context: context,
+                                                    builder: (context) =>
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .only(
+                                                                  top: 200.0),
+                                                          child: ConfirmWithPin(
+                                                            context: context,
+                                                            title:
+                                                                'Input your transaction pin to continue',
+                                                          ),
+                                                        ));
                                             print(transactionPin);
                                             if (transactionPin != '') {
                                               purchaseProductBloc.add(
@@ -354,14 +467,14 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                                               .text),
                                                       _beneficiaryController
                                                           .text,
-                                                      '',
+                                                      selectedServiceID,
                                                       transactionPin));
                                             }
                                           }
-                                        },
-                                        disableButton: _selectedAmtController
-                                            .text.isEmpty &&
-                                            _beneficiaryController.text.isEmpty,
+                                        }},
+                                        disableButton: (!isPaymentAllowed &&
+                                            _beneficiaryController
+                                                .text.isNotEmpty),
                                         text: 'Purchase Airtime',
                                         borderColor: AppColors.darkGreen,
                                         bgColor: AppColors.darkGreen,
@@ -389,7 +502,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
   final _beneficiaryController = TextEditingController();
   final _selectedAmtController = TextEditingController();
 
-  Widget selectAmount(String amt,AdaptiveThemeMode theme) {
+  Widget selectAmount(String amt, AdaptiveThemeMode theme) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
@@ -405,34 +518,33 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: AppColors.textColor)),
           child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: TextStyles.textDetails(textValue:  "₦ $amt",textColor: AppColors.textColor)
-          ),
+              padding: const EdgeInsets.all(5.0),
+              child: TextStyles.textDetails(
+                  textValue: "₦ $amt", textColor: AppColors.textColor)),
         ),
       ),
     );
   }
 
-  Widget networkProviderItem(String name, String image,AdaptiveThemeMode theme) {
+  Widget networkProviderItem(
+    String name,
+    String image,
+    AdaptiveThemeMode theme,
+    void Function() onNetworkSelect, // Callback for network request
+  ) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
-        // height: AppUtils
-        //     .deviceScreenSize(context)
-        //     .width / 5,
-        width: AppUtils
-            .deviceScreenSize(context)
-            .width / 5,
+        width: AppUtils.deviceScreenSize(context).width / 5,
         decoration: BoxDecoration(
-            border: Border.all(
-              width: 1.5,
-                color: selectedNetwork == name.toLowerCase()
-                    ? AppColors.darkGreen
-                    : Colors.transparent),
-            // color: selectedNetwork == name.toLowerCase()
-            //     ? AppColors.lightShadowGreenColor
-            //     : Colors.transparent,
-            borderRadius: BorderRadius.circular(15)),
+          border: Border.all(
+            width: 1.5,
+            color: selectedNetwork == name.toLowerCase()
+                ? AppColors.darkGreen
+                : Colors.transparent,
+          ),
+          borderRadius: BorderRadius.circular(15),
+        ),
         child: Padding(
           padding: const EdgeInsets.all(6.0),
           child: GestureDetector(
@@ -440,29 +552,31 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
               setState(() {
                 selectedNetwork = name.toLowerCase();
               });
+              onNetworkSelect(); // Trigger the network request
             },
             child: Column(
               children: [
                 CircleAvatar(
-                  //backgroundColor: service.backgroundColor,
                   radius: 20,
                   backgroundImage: NetworkImage(image),
-                  //child: Image.asset(image,height: 20,width: 20,),
                 ),
-                if(selectedNetwork == name.toLowerCase())
-                TextStyles.textHeadings(textValue: name,textSize: 12,textColor: AppColors.darkGreen),
-                if(selectedNetwork != name.toLowerCase())
-
+                if (selectedNetwork == name.toLowerCase())
+                  TextStyles.textHeadings(
+                    textValue: name,
+                    textSize: 12,
+                    textColor: AppColors.darkGreen,
+                  ),
+                if (selectedNetwork != name.toLowerCase())
                   CustomText(
-                  text: name,
-                  //color: AppColors.black,
-                  size: 12,
-                  weight: FontWeight.bold,
-                  color:selectedNetwork == name.toLowerCase()
-                      ? AppColors.darkGreen: theme.isDark
-                      ? AppColors.white
-                      : AppColors.black,
-                )
+                    text: name,
+                    size: 12,
+                    weight: FontWeight.bold,
+                    color: selectedNetwork == name.toLowerCase()
+                        ? AppColors.darkGreen
+                        : theme.isDark
+                            ? AppColors.white
+                            : AppColors.black,
+                  ),
               ],
             ),
           ),
@@ -470,6 +584,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
       ),
     );
   }
+
 // void showAirtimeModal(BuildContext context, Services services) {
 //   modalSheet.showMaterialModalBottomSheet(
 //     context: context,

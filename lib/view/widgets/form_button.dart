@@ -18,7 +18,7 @@ class FormButton extends StatelessWidget {
   final double textSize;
   final bool disableButton;
   final FontWeight weight;
-  bool isIcon;
+  final bool isIcon;
 
   FormButton({
     Key? key,
@@ -45,20 +45,26 @@ class FormButton extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(
-            Radius.circular(borderRadius),
-          ),
-          border: Border.all(
-              color: (!disableButton) ? borderColor : Colors.transparent,
-              width: borderWidth)),
+        borderRadius: BorderRadius.all(
+          Radius.circular(borderRadius),
+        ),
+        border: Border.all(
+          color: (!disableButton) ? borderColor : Colors.transparent,
+          width: borderWidth,
+        ),
+      ),
       child: ElevatedButton(
         onPressed: (disableButton) ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          //backgroundColor: bgColor,
-          backgroundColor: bgColor,
+          backgroundColor: (disableButton)
+              ? AppColors.grey // Grey color for disabled button
+              : bgColor,
           fixedSize: const Size(double.infinity, 48),
           textStyle: TextStyle(
-              fontSize: 14, fontWeight: FontWeight.w300, color: textColor),
+            fontSize: textSize,
+            fontWeight: weight,
+            color: textColor,
+          ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius),
           ),
@@ -66,18 +72,19 @@ class FormButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (isIcon) Icon(iconWidget),
+            if (isIcon) Icon(iconWidget, color: textColor),
             if (isIcon)
-            const SizedBox(
-              width: 10,
-            ),
+              const SizedBox(
+                width: 10,
+              ),
             Text(
               text,
               style: TextStyle(
-                  fontFamily: "CeraPro",
-                  fontSize: textSize,
-                  fontWeight: weight,
-                  color: textColor),
+                fontFamily: "CeraPro",
+                fontSize: textSize,
+                fontWeight: weight,
+                color: textColor,
+              ),
             ),
           ],
         ),

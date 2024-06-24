@@ -28,6 +28,7 @@ import '../../widgets/form_input.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
 import '../../widgets/show_toast.dart';
+import 'build_payment_method.dart';
 
 class DataPurchase extends StatefulWidget {
   final mainCategory.Category category;
@@ -45,6 +46,7 @@ class _DataPurchaseState extends State<DataPurchase> {
   String selectedDataPlanPrice = '';
   String selectedDataPlanId = '';
   String selectedServiceId = '';
+  bool isPaymentAllowed = false;
 
   @override
   void initState() {
@@ -54,6 +56,8 @@ class _DataPurchaseState extends State<DataPurchase> {
     super.initState();
   }
 
+  String _selectedPaymentMethod = 'wallet';
+
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
@@ -62,10 +66,11 @@ class _DataPurchaseState extends State<DataPurchase> {
       backgroundColor: Colors.transparent,
       body: Container(
         height: AppUtils.deviceScreenSize(context).height - 100,
-        decoration:  BoxDecoration(
+        decoration: BoxDecoration(
             color: theme.isDark
                 ? AppColors.darkModeBackgroundColor
-                : AppColors.white,            borderRadius: BorderRadius.only(
+                : AppColors.white,
+            borderRadius: BorderRadius.only(
                 topRight: Radius.circular(10), topLeft: Radius.circular(10))),
         child: SingleChildScrollView(
           child: Padding(
@@ -121,7 +126,7 @@ class _DataPurchaseState extends State<DataPurchase> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Container(
-                              height: 100,
+                              height: 60,
                               decoration: BoxDecoration(
                                   color: theme.isDark
                                       ? AppColors.darkModeBackgroundColor
@@ -151,7 +156,8 @@ class _DataPurchaseState extends State<DataPurchase> {
                                             width: double.infinity,
                                             color: Colors.grey[300],
                                             child: Center(
-                                                child: CircularProgressIndicator()),
+                                                child:
+                                                    CircularProgressIndicator()),
                                           );
                                         },
                                       ),
@@ -161,14 +167,15 @@ class _DataPurchaseState extends State<DataPurchase> {
                                       left: 10,
                                       right: 10,
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .spaceBetween,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           TextStyles.textHeadings(
                                             textValue: 'Data',
                                             textColor: AppColors.darkGreen,
                                             // w: FontWeight.w600,
-                                            textSize: 14,),
+                                            textSize: 14,
+                                          ),
                                           // Text(
                                           //   "Airtime purchase",
                                           //   style: TextStyle(
@@ -191,8 +198,8 @@ class _DataPurchaseState extends State<DataPurchase> {
                                     ),
                                   ],
                                 ),
-
-                              ),),
+                              ),
+                            ),
 
                             // const SizedBox(
                             //   height: 10,
@@ -231,7 +238,8 @@ class _DataPurchaseState extends State<DataPurchase> {
                                             child: networkProviderItem(
                                                 services[index].name,
                                                 services[index].image,
-                                                services[index].id,theme));
+                                                services[index].id,
+                                                theme));
                                       },
                                     ),
                                   );
@@ -304,7 +312,7 @@ class _DataPurchaseState extends State<DataPurchase> {
                                 child: Container(
                                   height: 50,
                                   decoration: BoxDecoration(
-                                    color: AppColors.white,
+                                    color:theme.isDark?AppColors.darkModeBackgroundContainerColor: AppColors.white,
                                     border: Border.all(
                                       color: selectedServiceId.isNotEmpty
                                           ? AppColors.green
@@ -325,8 +333,8 @@ class _DataPurchaseState extends State<DataPurchase> {
                                             size: 14,
                                             color: selectedDataPlan !=
                                                     "Choose Plan"
-                                                ? Colors.black
-                                                : AppColors.lightDivider,
+                                                ? (theme.isDark?Colors.white:Colors.black)
+                                                : (theme.isDark?Colors.grey:AppColors.lightDivider),
                                           ),
                                         ),
                                         const Icon(Icons.arrow_drop_down),
@@ -362,6 +370,38 @@ class _DataPurchaseState extends State<DataPurchase> {
                                             ? AppColors.green
                                             : AppColors.grey,
                                       ),
+                                      Container(
+                                        height: 310,
+                                        child: PaymentMethodScreen(
+                                          amtToPay: _selectedAmtController
+                                                  .text.isEmpty
+                                              ? '0'
+                                              : _selectedAmtController.text,
+                                          onPaymentMethodSelected: (method) {
+                                            // No need to use setState here directly as it might be called during the build phase
+                                            Future.microtask(() {
+                                              if (mounted) {
+                                                setState(() {
+                                                  _selectedPaymentMethod =
+                                                      method;
+                                                  //print(_selectedPaymentMethod);
+                                                });
+                                              }
+                                            });
+                                          },
+                                          ispaymentAllowed: (allowed) {
+                                            // Deferred update to avoid issues during the build phase
+                                            Future.microtask(() {
+                                              if (mounted) {
+                                                setState(() {
+                                                  isPaymentAllowed = allowed;
+                                                  // print(isPaymentAllowed);
+                                                });
+                                              }
+                                            });
+                                          },
+                                        ),
+                                      ),
 
                                       ///Remember to add beneficiary
                                       FormButton(
@@ -371,37 +411,36 @@ class _DataPurchaseState extends State<DataPurchase> {
                                             var transactionPin = '';
                                             transactionPin = await modalSheet
                                                 .showMaterialModalBottomSheet(
-                                                backgroundColor:
-                                                Colors.transparent,
-                                                shape:
-                                                const RoundedRectangleBorder(
-                                                  borderRadius:
-                                                  BorderRadius.vertical(
-                                                      top: Radius
-                                                          .circular(
-                                                          20.0)),
-                                                ),
-                                                context: context,
-                                                builder: (context) =>
-                                                    Padding(
-                                                      padding:
-                                                      const EdgeInsets
-                                                          .only(
-                                                          top: 200.0),
-                                                      child: ConfirmWithPin(
-                                                        context: context,
-                                                        title:
-                                                        'Input your transaction pin to continue',
-                                                      ),
-                                                    ));
+                                                    backgroundColor:
+                                                        Colors.transparent,
+                                                    shape:
+                                                        const RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.vertical(
+                                                              top: Radius
+                                                                  .circular(
+                                                                      20.0)),
+                                                    ),
+                                                    context: context,
+                                                    builder: (context) =>
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .only(
+                                                                  top: 200.0),
+                                                          child: ConfirmWithPin(
+                                                            context: context,
+                                                            title:
+                                                                'Input your transaction pin to continue',
+                                                          ),
+                                                        ));
                                             print(transactionPin);
                                             if (transactionPin != '') {
                                               purchaseProductBloc.add(
                                                   PurchaseProductEvent(
                                                       context,
                                                       double.parse(
-                                                          selectedDataPlanPrice
-                                                              ),
+                                                          selectedDataPlanPrice),
                                                       _beneficiaryController
                                                           .text,
                                                       selectedDataPlanId,
@@ -409,8 +448,11 @@ class _DataPurchaseState extends State<DataPurchase> {
                                             }
                                           }
                                         },
-                                        disableButton: selectedDataPlanId.isNotEmpty &&
-                                            _beneficiaryController.text=='',
+                                        disableButton: (!isPaymentAllowed &&
+                                            _beneficiaryController
+                                                .text.isNotEmpty),
+                                        // selectedDataPlanId.isNotEmpty &&
+                                        //     _beneficiaryController.text=='',
                                         text: 'Purchase Data',
                                         borderColor: AppColors.darkGreen,
                                         bgColor: AppColors.darkGreen,
@@ -553,7 +595,7 @@ class _DataPurchaseState extends State<DataPurchase> {
     );
   }
 
-  Widget networkProviderItem(String name, String image, String id,theme) {
+  Widget networkProviderItem(String name, String image, String id, theme) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -589,20 +631,25 @@ class _DataPurchaseState extends State<DataPurchase> {
                   backgroundImage: NetworkImage(image),
                   //child: Image.asset(image,height: 20,width: 20,),
                 ),
-                SizedBox(height: 5,),
-                if(selectedNetwork == name.toLowerCase())
-                  TextStyles.textHeadings(textValue: name,textSize: 12,textColor: AppColors.darkGreen),
-                if(selectedNetwork != name.toLowerCase())
-
+                SizedBox(
+                  height: 5,
+                ),
+                if (selectedNetwork == name.toLowerCase())
+                  TextStyles.textHeadings(
+                      textValue: name,
+                      textSize: 12,
+                      textColor: AppColors.darkGreen),
+                if (selectedNetwork != name.toLowerCase())
                   CustomText(
                     text: name,
                     //color: AppColors.black,
                     size: 12,
                     weight: FontWeight.bold,
-                    color:selectedNetwork == name.toLowerCase()
-                        ? AppColors.darkGreen: theme.isDark
-                        ? AppColors.white
-                        : AppColors.black,
+                    color: selectedNetwork == name.toLowerCase()
+                        ? AppColors.darkGreen
+                        : theme.isDark
+                            ? AppColors.white
+                            : AppColors.black,
                   )
               ],
             ),

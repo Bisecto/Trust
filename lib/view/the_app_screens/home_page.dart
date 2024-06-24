@@ -124,8 +124,7 @@ class _HomePageState extends State<HomePage> {
                       decoration: BoxDecoration(
 
                           ///color: AppColors.darkGreen,
-                          border:
-                              Border.all(color: AppColors.textColor2),
+                          border: Border.all(color: AppColors.textColor2),
                           borderRadius: BorderRadius.circular(10.0)),
                       child: Padding(
                         padding: const EdgeInsets.all(5.0),
@@ -242,7 +241,6 @@ class _HomePageState extends State<HomePage> {
                                 ? AppColors.darkModeBackgroundMainTextColor
                                 : AppColors.textColor,
                             size: 14,
-
                           ),
                         ],
                       )
@@ -293,7 +291,6 @@ class _HomePageState extends State<HomePage> {
                               ? AppColors.darkModeBackgroundSubTextColor
                               : AppColors.textColor2,
                           size: 12,
-
                         ),
                         CustomText(
                           text: "$lastname $firstname",
@@ -302,7 +299,6 @@ class _HomePageState extends State<HomePage> {
                               ? AppColors.darkModeBackgroundMainTextColor
                               : AppColors.textColor,
                           size: 14,
-
                         ),
                       ],
                     )
@@ -503,8 +499,9 @@ class _HomePageState extends State<HomePage> {
       ],
     );
   }
+
   CarouselSliderController carouselSliderController =
-  CarouselSliderController();
+      CarouselSliderController();
   final GlobalKey _sliderKey = GlobalKey();
   final List<String> advertImages = [
     AppImages.advertCard1,
@@ -512,68 +509,67 @@ class _HomePageState extends State<HomePage> {
     AppImages.advertCard3,
     AppImages.advertCard4,
   ];
-Widget advertWidget (AdaptiveThemeMode theme){
-  return  SizedBox(
-    height: 155,
-    child: CarouselSlider.builder(
-      key: _sliderKey,
-      unlimitedMode: true,
-      autoSliderDelay: const Duration(seconds: 3),
-      enableAutoSlider:true,
-      controller: carouselSliderController,
-      // onSlideChanged: (index) {
-      //   setState(() {
-      //     print(index);
-      //     currentIndex = index;
-      //   });
-      // },
-      slideBuilder: (index) {
-        return Center(
-          child: SizedBox(
-            // Set the desired width of the container
-            height: 150,
 
-            child: Align(
-              alignment: Alignment.center,
-              child:                     Container(
-                width:
-                AppUtils.deviceScreenSize(context).width,
-                // Set the desired width of the container
-                height:
-                125,
-                // Set the desired height of the container
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  image: DecorationImage(
-                    image: AssetImage(advertImages[index]),
-                    // Replace with your actual image file path
-                    fit: BoxFit
-                        .cover, // You can adjust the fit property to cover, contain, or others
+  Widget advertWidget(AdaptiveThemeMode theme) {
+    return SizedBox(
+      height: 155,
+      child: CarouselSlider.builder(
+        key: _sliderKey,
+        unlimitedMode: true,
+        autoSliderDelay: const Duration(seconds: 3),
+        enableAutoSlider: true,
+        controller: carouselSliderController,
+        // onSlideChanged: (index) {
+        //   setState(() {
+        //     print(index);
+        //     currentIndex = index;
+        //   });
+        // },
+        slideBuilder: (index) {
+          return Center(
+            child: SizedBox(
+              // Set the desired width of the container
+              height: 150,
+
+              child: Align(
+                alignment: Alignment.center,
+                child: Container(
+                  width: AppUtils.deviceScreenSize(context).width,
+                  // Set the desired width of the container
+                  height: 125,
+                  // Set the desired height of the container
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    image: DecorationImage(
+                      image: AssetImage(advertImages[index]),
+                      // Replace with your actual image file path
+                      fit: BoxFit
+                          .cover, // You can adjust the fit property to cover, contain, or others
+                    ),
                   ),
                 ),
               ),
-
             ),
-          ),
-        );
-      },
-      slideTransform: CubeTransform(),
-      slideIndicator: SequentialFillIndicator(
-        indicatorRadius: 5,
-       itemSpacing: 20,
+          );
+        },
+        slideTransform: CubeTransform(),
+        slideIndicator: SequentialFillIndicator(
+          indicatorRadius: 5,
+          itemSpacing: 20,
 
-       // alignment: Alignment.topCenter,
-        indicatorBackgroundColor: AppColors.grey,
-        currentIndicatorColor: AppColors.green,
-        padding: const EdgeInsets.only(bottom: 0),
+          // alignment: Alignment.topCenter,
+          indicatorBackgroundColor: AppColors.grey,
+          currentIndicatorColor: AppColors.green,
+          padding: const EdgeInsets.only(bottom: 0),
+        ),
+        itemCount: advertImages.length,
+        onSlideEnd: () {
+          print("ended");
+        },
       ),
-      itemCount: advertImages.length,
-      onSlideEnd: () {
-        print("ended");
-      },
-    ),
-  );
-}
+    );
+  }
+
   Widget balanceCardContainer(theme) {
     return Container(
       height: 200,
@@ -583,19 +579,17 @@ Widget advertWidget (AdaptiveThemeMode theme){
         gradient: LinearGradient(
           colors: theme.isDark
               ? [
-            const Color(0x0C311A).withOpacity(1),
-            const Color(0x0C311A).withOpacity(0.4),
-            Colors.blue.shade900.withOpacity(0.1), //Color(0x122E5A),
-            Colors.blue.shade900.withOpacity(0.3)
-          ]
+                  const Color(0x0C311A).withOpacity(1),
+                  const Color(0x0C311A).withOpacity(0.4),
+                  Colors.blue.shade900.withOpacity(0.1), //Color(0x122E5A),
+                  Colors.blue.shade900.withOpacity(0.3)
+                ]
               : [
-
-            const Color(0x0B321A).withOpacity(1),
-            const Color(0x0B321A).withOpacity(1),
-            const Color(0x0C662F).withOpacity(1),
-            const Color(0x0C662F).withOpacity(1),
-
-          ],
+                  const Color(0x0B321A).withOpacity(1),
+                  const Color(0x0B321A).withOpacity(1),
+                  const Color(0x0C662F).withOpacity(1),
+                  const Color(0x0C662F).withOpacity(1),
+                ],
           begin: Alignment.topLeft,
           end: Alignment.topRight,
         ),
@@ -647,8 +641,15 @@ Widget advertWidget (AdaptiveThemeMode theme){
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SvgPicture.asset(AppIcons.naira,height: 20,width: 20,),
-                              TextStyles.textHeadings(textValue: '192,600.00',textSize: 28,textColor: AppColors.white)
+                              SvgPicture.asset(
+                                AppIcons.naira,
+                                height: 20,
+                                width: 20,
+                              ),
+                              TextStyles.textHeadings(
+                                  textValue: walletInfo.balance.toString(),
+                                  textSize: 28,
+                                  textColor: AppColors.white)
 
                               // CustomText(
                               //   text: walletInfo.balance.toString(),
@@ -662,8 +663,15 @@ Widget advertWidget (AdaptiveThemeMode theme){
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SvgPicture.asset(AppIcons.naira,height: 20,width: 20,),
-                              TextStyles.textHeadings(textValue: '0.00',textSize: 28,textColor: AppColors.white)
+                              SvgPicture.asset(
+                                AppIcons.naira,
+                                height: 20,
+                                width: 20,
+                              ),
+                              TextStyles.textHeadings(
+                                  textValue: '0.00',
+                                  textSize: 28,
+                                  textColor: AppColors.white)
                               // const CustomText(
                               //   text: "0.00",
                               //   size: 25,
@@ -767,7 +775,7 @@ Widget advertWidget (AdaptiveThemeMode theme){
           List<Category> items = categoryModel.data.categories;
           //Use user data here
           return SizedBox(
-            height:items.length>4? 150:80,
+            height: items.length > 4 ? 150 : 80,
             child: GridView.builder(
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -783,8 +791,7 @@ Widget advertWidget (AdaptiveThemeMode theme){
                       setState(() {
                         selectedAction = items[index].name;
                       });
-                      switch (selectedAction)
-                      {
+                      switch (selectedAction) {
                         case "Airtime":
                           modalSheet.showMaterialModalBottomSheet(
                             backgroundColor: Colors.transparent,
@@ -1232,7 +1239,9 @@ Widget advertWidget (AdaptiveThemeMode theme){
           backgroundColor: AppColors.white,
           child: SvgPicture.asset(icon),
         ),
-        const SizedBox(height: 5,),
+        const SizedBox(
+          height: 5,
+        ),
         CustomText(
           text: title,
           color: AppColors.white,
@@ -1249,9 +1258,13 @@ Widget advertWidget (AdaptiveThemeMode theme){
           //radius: 24,
           //backgroundColor: service.backgroundColor,
 
-          child: Image.network(category.image,),
+          child: Image.network(
+            category.image,
+          ),
         ),
-        const SizedBox(height: 5,),
+        const SizedBox(
+          height: 5,
+        ),
         CustomText(
           text: category.name,
           color: theme.isDark
