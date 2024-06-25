@@ -322,7 +322,7 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
                                       height: 15,
                                     ),
                                     OTPTextField(
-                                      length: 5,
+                                      length: 6,
                                       width: MediaQuery.of(context).size.width,
                                       fieldWidth: 50,
                                       controller: otpFieldController,
