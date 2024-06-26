@@ -1,103 +1,113 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 import '../../../../../res/app_colors.dart';
+import '../../../../model/quickpay_model.dart';
+import '../../../../utills/shared_preferences.dart';
 import '../../../widgets/app_custom_text.dart';
+import '../purchase_receipt.dart';
 
 class MakePayment extends StatefulWidget {
-  MakePayment({super.key});
+  final QuickPayModel quickPayModel;
+  final String accessToken;
+
+  MakePayment({
+    Key? key,
+    required this.quickPayModel,
+    required this.accessToken,
+  }) : super(key: key);
 
   @override
   State<MakePayment> createState() => _MakePaymentState();
 }
 
 class _MakePaymentState extends State<MakePayment> {
-  late final WebViewController _webViewController;
+  late WebViewController _webViewController;
   var loadingPercentage = 0;
 
-  String htmlString = """
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title>SafeHaven Checkout Demo</title>
-  </head>
-  <body>
-    <h1>Checkout Demo</h1>
-    <button onclick="payWithSafeHaven()">Click Me!</button>
-    
-    <script src="https://checkout.safehavenmfb.com/assets/checkout.min.js"></script>
-    <script type="text/javascript">
-    	let payWithSafeHaven = () => {
-            console.log("payWithSafeHaven called");
-            let checkOut = SafeHavenCheckout({
-                environment: "production", //sandbox || production
-                clientId: "YOUR_OAUTH2_CLIENT_ID",
-                referenceCode: ''+Math.floor((Math.random() * 1000000000) + 1),
-                customer: {
-                    firstName: "John",
-                    lastName: "Doe",
-                    emailAddress: "johndoe@example.com",
-                    phoneNumber: "+2348032273616"
-                },
-                currency: "NGN", // Must be NGN
-                amount: 100,
-  	            //feeBearer: "account", // account = We charge you, customer = We charge the customer
-                settlementAccount: {
-                    bankCode: "090286", // 999240 = Sandbox || 090286 = Production
-                    accountNumber: "YOUR_10_DIGITS_ACCOUNT_NUMBER"
-                },
-	              //webhookUrl: "",
-                //customIconUrl: "https://safehavenmfb.com/assets/images/logo1.svg",
-              	//metadata: { "foo": "bar" },
-              	onClose: () => { console.log("Checkout Closed") },
-              	callback: (response) => { console.log(response) }
-            });
-        }
-    </script>
-  </body>
-</html>
-  """;
+  late String htmlString;
 
   @override
   void initState() {
     super.initState();
-    _webViewController = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..loadHtmlString(htmlString)
-      ..setBackgroundColor(const Color(0x00000000))
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onPageStarted: (url) {
-            setState(() {
-              loadingPercentage = 0;
-            });
-          },
-          onProgress: (progress) {
-            setState(() {
-              loadingPercentage = progress;
-            });
-          },
-          onPageFinished: (url) {
-            setState(() {
-              loadingPercentage = 100;
-            });
-            _webViewController.runJavaScript('console.log("Page finished loading");');
-          },
-          onUrlChange: (url) {
-            print('URL changed: $url');
-          },
-          onWebResourceError: (WebResourceError error) {
-            print('Error: ${error.description}');
-          },
-          onNavigationRequest: (NavigationRequest request) async {
-            print('Navigating to: ${request.url}');
-            if (request.url.toLowerCase().contains('callback')) {
-              Navigator.of(context).pop(); // Close webview on specific URL
-            }
-            return NavigationDecision.navigate;
-          },
-        ),
-      );
+
+    // Generate the HTML string with data from quickPayModel
+    htmlString = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SafeHaven Checkout</title>
+</head>
+<body>
+  <div class="container">
+    <!-- Your content here -->
+  </div>
+
+  <script src="https://checkout.safehavenmfb.com/assets/checkout.min.js"></script>
+  <script type="text/javascript">
+    let payWithSafeHaven = () => {
+      console.log("payWithSafeHaven called");
+      let checkOut = SafeHavenCheckout({
+        environment: "${widget.quickPayModel.environment}",
+        clientId: "${widget.quickPayModel.clientId}",
+        referenceCode: "${widget.quickPayModel.referenceCode}",
+        customer: {
+          firstName: "${widget.quickPayModel.customer.firstName}",
+          lastName: "${widget.quickPayModel.customer.lastName}",
+          emailAddress: "${widget.quickPayModel.customer.emailAddress}",
+          phoneNumber: "${widget.quickPayModel.customer.phoneNumber}"
+        },
+        currency: "${widget.quickPayModel.currency}",
+        amount: ${widget.quickPayModel.amount},
+        settlementAccount: {
+          bankCode: "090286",
+          accountNumber: "${widget.quickPayModel.settlementAccount.accountNumber}"
+        },
+        customIconUrl: "https://tellatrust-assets.s3.eu-west-2.amazonaws.com/tellalogo.png",
+        webhookUrl: "${widget.quickPayModel.webhookUrl}",
+        onClose: () => { 
+          console.log("Checkout Closed");
+        },
+        callback: (response) => { 
+          console.log(response);
+          // Call your API directly when payment is confirmed
+          fetchPaymentCompletion();
+        }
+      });
+    };
+
+    function fetchPaymentCompletion() {
+      fetch("https://api.tellatrust.com/c/pay/conclude-checkout/${widget.quickPayModel.referenceCode}", {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-access-token': '${widget.accessToken}', // Pass accessToken here
+        },
+      })
+      .then(response => {
+        if (response.ok) {
+          return response.json(); // Parse response as JSON
+        } else {
+          throw new Error('Network response was not ok.');
+        }
+      })
+      .then(data => {
+        // Handle the response data as needed
+        console.log('API Response:', data);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+    }
+
+    payWithSafeHaven(); // Automatically trigger the payment on page load
+  </script>
+</body>
+</html>
+    """;
   }
 
   @override
@@ -107,26 +117,34 @@ class _MakePaymentState extends State<MakePayment> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         centerTitle: true,
+        backgroundColor: AppColors.darkGreen,
         title: const CustomText(
-          text: 'Make payment',
+          text: 'Quick pay',
           color: AppColors.white,
           size: 16,
         ),
-        backgroundColor: AppColors.appBarMainColor,
         leading: GestureDetector(
           onTap: () {
             Navigator.of(context).pop();
           },
           child: const Icon(
             Icons.arrow_back,
-            color: AppColors.black,
+            color: AppColors.white,
           ),
         ),
       ),
       body: Stack(
         children: [
-          WebViewWidget(
-            controller: _webViewController,
+          WebView(
+            initialUrl: '',
+            onWebViewCreated: (WebViewController webViewController) {
+              _webViewController = webViewController;
+              _loadHtmlFromAssets();
+            },
+            javascriptMode: JavascriptMode.unrestricted,
+            onPageFinished: (String url) {
+              print('Page finished loading: $url');
+            },
           ),
           if (loadingPercentage < 100)
             LinearProgressIndicator(
@@ -135,5 +153,11 @@ class _MakePaymentState extends State<MakePayment> {
         ],
       ),
     );
+  }
+
+  void _loadHtmlFromAssets() {
+    _webViewController.loadUrl(Uri.dataFromString(htmlString,
+        mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
+        .toString());
   }
 }

@@ -27,7 +27,12 @@ class CategorySuccessState extends ProductState {
   ServiceSuccessState(this.serviceModel);
 }
 class AccessTokenExpireState extends ProductState {}
-class PurchaseSuccess extends ProductState {}
+class PurchaseSuccess extends ProductState {
+
+}class QuickPayInitiated extends ProductState {
+  final  QuickPayModel quickPayModel;
+  QuickPayInitiated(this.quickPayModel);
+}
 class PurchaseErrorState extends ProductState {
   final String error;
   PurchaseErrorState(this.error);

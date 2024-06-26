@@ -7,6 +7,7 @@ import 'package:meta/meta.dart';
 import 'package:teller_trust/model/product_model.dart';
 
 import '../../model/category_model.dart';
+import '../../model/quickpay_model.dart';
 import '../../model/service_model.dart';
 import '../../repository/app_repository.dart';
 import '../../res/apis.dart';
@@ -36,7 +37,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
     AppRepository appRepository = AppRepository();
     String accessToken = await SharedPref.getString("access-token");
-    //try {
+    try {
     var listProductResponse = await appRepository.appGetRequest(
       '${AppApis.listCategory}?page=${event.page}&pageSize=${event.pageSize}',
       accessToken: accessToken,
@@ -63,10 +64,10 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           json.decode(listProductResponse.body)['message'])));
       print(json.decode(listProductResponse.body));
     }
-    // } catch (e) {
-    //   emit(CategoryErrorState("An error occurred while fetching categories."));
-    //   print(e);
-    // }
+    } catch (e) {
+      emit(CategoryErrorState("An error occurred while fetching categories."));
+      print(e);
+    }
   }
 
   FutureOr<void> listServiceEvent(
@@ -124,12 +125,9 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     try {
       Map<String,dynamic> data={
         "productId":event.productId, //"660bbd40-35c5-42c7-83b6-63f55e179e7d",//event.productId,
-        "requiredFields": {
-          "phone": event.phone,
-          "amount": event.amount
-        }
+        "requiredFields": event.requiredFields.toJson()
       };
-      var purchaseResponse = await appRepository.appPostRequest(data,
+      var purchaseResponse = await appRepository.appPostRequest(data,event.isQuickPay?AppApis.quickPay:
         '${AppApis.purchaseProduct}',
         accessToken: accessToken,
         accessPIN: event.accessPIN,
@@ -147,7 +145,11 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         // ServiceModel.fromJson(json.decode(listServiceResponse.body));
         // //updateData(customerProfile);
         // print(serviceModel);
-        emit(PurchaseSuccess()); // Emit success state with data
+        if(event.isQuickPay){
+          QuickPayModel quickPayModel= QuickPayModel.fromJson(json.decode(purchaseResponse.body)['data']);
+          emit(QuickPayInitiated(quickPayModel));
+        }else{
+        emit(PurchaseSuccess());} // Emit success state with data
       } else if (json.decode(purchaseResponse.body)['errorCode'] == "N404") {
         emit(AccessTokenExpireState());
       } else {

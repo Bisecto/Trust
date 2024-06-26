@@ -8,12 +8,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/model/quick_access_model.dart';
-import 'package:teller_trust/model/service_model.dart';
+import 'package:teller_trust/model/service_model.dart' as serviceModel;
 import 'package:teller_trust/res/app_icons.dart';
+import 'package:teller_trust/view/the_app_screens/sevices/make_bank_transfer/bank_transfer.dart';
 
 import '../../../bloc/product_bloc/product_bloc.dart';
 import '../../../model/category_model.dart' as categoryModel;
-import '../../../model/product_model.dart'as productMode;
+import '../../../model/category_model.dart';
+import '../../../model/product_model.dart' as productMode;
 import '../../../repository/app_repository.dart';
 import '../../../res/apis.dart';
 import '../../../res/app_colors.dart';
@@ -58,7 +60,8 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
   }
 
   bool isInitial = true;
-  String selectedServiceID='';
+  String selectedServiceID = '';
+
   void _handleNetworkSelect(String? networkName) async {
     AppRepository appRepository = AppRepository();
     String accessToken = await SharedPref.getString("access-token");
@@ -73,12 +76,14 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
 
       if (listServiceResponse.statusCode == 200) {
         print("productModel dtddhdhd: ${listServiceResponse.body}");
-        productMode.ProductModel productModel =productMode.ProductModel.fromJson(json.decode(listServiceResponse.body));
+        productMode.ProductModel productModel =
+            productMode.ProductModel.fromJson(
+                json.decode(listServiceResponse.body));
         setState(() {
-          selectedServiceID=productModel.data.items[0].id;
+          selectedServiceID = productModel.data.items[0].id;
           isInitial = false;
         });
-print(selectedServiceID);
+        print(selectedServiceID);
         // Process the data as needed
       } else {
         print("Error: ${listServiceResponse.statusCode}");
@@ -127,6 +132,12 @@ print(selectedServiceID);
 
                         // AppNavigator.pushAndRemovePreviousPages(context,
                         //     page: LandingPage(studentProfile: state.studentProfile));
+                      } else if (state is QuickPayInitiated) {
+                        String accessToken = await SharedPref.getString("access-token");
+
+                        AppNavigator.pushAndStackPage(context,
+                            page: MakePayment(
+                                quickPayModel: state.quickPayModel, accessToken: accessToken,));
                       } else if (state is AccessTokenExpireState) {
                         showToast(
                             context: context,
@@ -235,13 +246,13 @@ print(selectedServiceID);
                                 ),
                               ),
                             ),
-
                             BlocConsumer<ProductBloc, ProductState>(
                               bloc: productBloc,
                               builder: (context, state) {
                                 if (state is ServiceSuccessState) {
-                                  ServiceModel serviceItem = state.serviceModel;
-                                  List<Service> services =
+                                  serviceModel.ServiceModel serviceItem =
+                                      state.serviceModel;
+                                  List<serviceModel.Service> services =
                                       serviceItem.data.services;
                                   if (isInitial) {
                                     _handleNetworkSelect(services
@@ -249,12 +260,12 @@ print(selectedServiceID);
                                             (service) =>
                                                 service.name.toLowerCase() ==
                                                 'mtn'.toLowerCase(),
-                                            orElse: () => Service(
+                                            orElse: () => serviceModel.Service(
                                                 image: '',
                                                 id: '',
                                                 name: '',
                                                 slug: '',
-                                                category: Category(
+                                                category: serviceModel.Category(
                                                     id: '',
                                                     name: '',
                                                     slug: '')))
@@ -291,17 +302,24 @@ print(selectedServiceID);
                                                 () => _handleNetworkSelect(services
                                                     .firstWhere(
                                                         (service) =>
-                                                    service.name.toLowerCase() ==
-                                                        services[index].name.toLowerCase(),
-                                                    orElse: () => Service(
-                                                        image: '',
-                                                        id: '',
-                                                        name: '',
-                                                        slug: '',
-                                                        category: Category(
-                                                            id: '',
-                                                            name: '',
-                                                            slug: '')))
+                                                            service.name
+                                                                .toLowerCase() ==
+                                                            services[index]
+                                                                .name
+                                                                .toLowerCase(),
+                                                        orElse: () =>
+                                                            serviceModel.Service(
+                                                                image: '',
+                                                                id: '',
+                                                                name: '',
+                                                                slug: '',
+                                                                category: serviceModel
+                                                                    .Category(
+                                                                        id: '',
+                                                                        name:
+                                                                            '',
+                                                                        slug:
+                                                                            '')))
                                                     .id)));
                                       },
                                     ),
@@ -428,50 +446,109 @@ print(selectedServiceID);
 
                                           if (_formKey.currentState!
                                               .validate()) {
-                                            if(_selectedPaymentMethod!='wallet'){
-
-                                            }else{
-                                            var transactionPin = '';
-                                            transactionPin = await modalSheet
-                                                .showMaterialModalBottomSheet(
-                                                    backgroundColor:
-                                                        Colors.transparent,
-                                                    shape:
-                                                        const RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.vertical(
-                                                              top: Radius
-                                                                  .circular(
-                                                                      20.0)),
-                                                    ),
-                                                    context: context,
-                                                    builder: (context) =>
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .only(
-                                                                  top: 200.0),
-                                                          child: ConfirmWithPin(
-                                                            context: context,
-                                                            title:
-                                                                'Input your transaction pin to continue',
-                                                          ),
-                                                        ));
-                                            print(transactionPin);
-                                            if (transactionPin != '') {
-                                              purchaseProductBloc.add(
-                                                  PurchaseProductEvent(
-                                                      context,
-                                                      double.parse(
-                                                          _selectedAmtController
-                                                              .text),
+                                            if (_selectedPaymentMethod !=
+                                                'wallet') {
+                                              var transactionPin = '';
+                                              transactionPin = await modalSheet
+                                                  .showMaterialModalBottomSheet(
+                                                      backgroundColor:
+                                                          Colors.transparent,
+                                                      shape:
+                                                          const RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.vertical(
+                                                                top: Radius
+                                                                    .circular(
+                                                                        20.0)),
+                                                      ),
+                                                      context: context,
+                                                      builder: (context) =>
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .only(
+                                                                    top: 200.0),
+                                                            child:
+                                                                ConfirmWithPin(
+                                                              context: context,
+                                                              title:
+                                                                  'Input your transaction pin to continue',
+                                                            ),
+                                                          ));
+                                              print(transactionPin);
+                                              if (transactionPin != '') {
+                                                widget.category.requiredFields
+                                                        .amount =
+                                                    _selectedAmtController.text;
+                                                widget.category.requiredFields
+                                                        .phoneNumber =
+                                                    _beneficiaryController.text;
+                                                // categoryModel.RequiredFields=widget.category.requiredFields(
+                                                //   phoneNumber: phone,
+                                                //   amount: amount,
+                                                // );
+                                                purchaseProductBloc.add(
+                                                    PurchaseProductEvent(
+                                                        context,
+                                                        widget.category
+                                                            .requiredFields,
+                                                        selectedServiceID,
+                                                        transactionPin,
+                                                        true));
+                                              }
+                                            } else {
+                                              var transactionPin = '';
+                                              transactionPin = await modalSheet
+                                                  .showMaterialModalBottomSheet(
+                                                      backgroundColor:
+                                                          Colors.transparent,
+                                                      shape:
+                                                          const RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.vertical(
+                                                                top: Radius
+                                                                    .circular(
+                                                                        20.0)),
+                                                      ),
+                                                      context: context,
+                                                      builder: (context) =>
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .only(
+                                                                    top: 200.0),
+                                                            child:
+                                                                ConfirmWithPin(
+                                                              context: context,
+                                                              title:
+                                                                  'Input your transaction pin to continue',
+                                                            ),
+                                                          ));
+                                              print(transactionPin);
+                                              if (transactionPin != '') {
+                                                setState(() {
+                                                  widget.category.requiredFields
+                                                          .amount =
+                                                      _selectedAmtController
+                                                          .text;
+                                                  widget.category.requiredFields
+                                                          .phoneNumber =
                                                       _beneficiaryController
-                                                          .text,
-                                                      selectedServiceID,
-                                                      transactionPin));
+                                                          .text;
+                                                });
+
+                                                purchaseProductBloc.add(
+                                                    PurchaseProductEvent(
+                                                        context,
+                                                        widget.category
+                                                            .requiredFields,
+                                                        selectedServiceID,
+                                                        transactionPin,
+                                                        false));
+                                              }
                                             }
                                           }
-                                        }},
+                                        },
                                         disableButton: (!isPaymentAllowed &&
                                             _beneficiaryController
                                                 .text.isNotEmpty),

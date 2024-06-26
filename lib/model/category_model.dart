@@ -52,14 +52,14 @@ class Category {
   String id;
   String name;
   String slug;
-  //RequiredFields requiredFields;
+  RequiredFields requiredFields;
 
   Category({
     required this.image,
     required this.id,
     required this.name,
     required this.slug,
-    //required this.requiredFields,
+    required this.requiredFields,
   });
 
   factory Category.fromJson(Map<String, dynamic> json) => Category(
@@ -67,7 +67,7 @@ class Category {
     id: json["id"],
     name: json["name"],
     slug: json["slug"]??'',
-   // requiredFields: RequiredFields.fromJson(json["requiredFields"]),
+   requiredFields: RequiredFields.fromJson(json["requiredFields"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -75,34 +75,34 @@ class Category {
     "id": id,
     "name": name,
     "slug": slug,
-    //"requiredFields": requiredFields.toJson(),
+    "requiredFields": requiredFields.toJson(),
   };
 }
 
-// class RequiredFields {
-//   String phone;
-//   String? amount;
-//   String? cardNumber;
-//   String? meterNumber;
-//
-//   RequiredFields({
-//     required this.phone,
-//     this.amount,
-//     this.cardNumber,
-//     this.meterNumber,
-//   });
-//
-//   factory RequiredFields.fromJson(Map<String, dynamic> json) => RequiredFields(
-//     phone: json["phone"],
-//     amount: json["amount"],
-//     cardNumber: json["cardNumber"],
-//     meterNumber: json["meterNumber"],
-//   );
-//
-//   Map<String, dynamic> toJson() => {
-//     "phone": phone,
-//     "amount": amount,
-//     "cardNumber": cardNumber,
-//     "meterNumber": meterNumber,
-//   };
-// }
+class RequiredFields {
+  String? phoneNumber;
+  String? amount;
+  String? cardNumber;
+  String? meterNumber;
+
+  RequiredFields({
+    required this.phoneNumber,
+    this.amount,
+    this.cardNumber,
+    this.meterNumber,
+  });
+
+  factory RequiredFields.fromJson(Map<String, dynamic> json) => RequiredFields(
+    phoneNumber: json["phoneNumber"],
+    amount: json["amount"],
+    cardNumber: json["cardNumber"],
+    meterNumber: json["meterNumber"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "phoneNumber": phoneNumber,
+    "amount": amount,
+    "cardNumber": cardNumber,
+    "meterNumber": meterNumber,
+  };
+}

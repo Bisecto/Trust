@@ -29,12 +29,12 @@ class ListServiceEvent extends ProductEvent {
 
 class PurchaseProductEvent extends ProductEvent {
   final BuildContext context;
+  final RequiredFields requiredFields;
   final String productId;
-  final String phone;
   final String accessPIN;
-  final double amount;
+  final bool isQuickPay;
 
-  PurchaseProductEvent(this.context,this.amount, this.phone, this.productId,this.accessPIN);
+  PurchaseProductEvent(this.context,this.requiredFields, this.productId,this.accessPIN,this.isQuickPay);
 }
 
 

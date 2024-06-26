@@ -48,7 +48,7 @@ dependencies:
   flutter_typeahead:
   http:
   tuple: ^2.0.2
-  webview_flutter:
+  webview_flutter: ^2.0.13
   modal_bottom_sheet: ^3.0.0-pre
   pin_plus_keyboard: ^2.0.6
   flutter_svg: ^1.0.3

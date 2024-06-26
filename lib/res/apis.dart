@@ -26,8 +26,10 @@ class AppApis {
   static String listProduct = "$appBaseUrl/c/p/list-product";
   static String listService = "$appBaseUrl/c/p/list-service";
   static String purchaseProduct = "$appBaseUrl/c/pay/create-wallet-order";
+  static String quickPay = "$appBaseUrl/c/pay/initiate-checkout";
 
   static String initiateVerification = "$appBaseUrl/c/w/initiate-verification";
+  static String listTransaction = "$appBaseUrl/c/w/list-transaction";
 
   static String refreshToken =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0NmE3M2YwNy1lMWEyLTRkODUtYjFmNi0zNTM4ZTg0N2Q3MjkiLCJleHAiOjE3MTAxNTk0OTIsImlhdCI6MTcwNzU2NzQ5Mn0.QLpqzjkn9PSzI3tnyOL0rHxCPZUx9dEOw14W2EQtE_M";
