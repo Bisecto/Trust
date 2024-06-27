@@ -84,7 +84,7 @@ class KycBloc extends Bloc<KycEvent, KycState> {
       String accessToken = await SharedPref.getString("access-token");
 
       var validateVerificationResponse = await appRepository.appPostRequest(
-          data, AppApis.initiateVerification,
+          data, AppApis.validateVerification,
           accessToken: accessToken);
       print(validateVerificationResponse.statusCode);
       print(validateVerificationResponse.body);

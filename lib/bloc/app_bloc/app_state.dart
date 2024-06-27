@@ -29,7 +29,8 @@ class WirthdrawalAccountAdded extends AppState {
 
 class SuccessState extends AppState {
   final CustomerProfile customerProfile;
+  final TransactionHistoryModel transactionHistoryModel;
 
-  SuccessState(this.customerProfile);
+  SuccessState(this.customerProfile,this.transactionHistoryModel);
 }
 

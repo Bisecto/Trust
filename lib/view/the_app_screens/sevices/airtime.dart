@@ -133,11 +133,14 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                         // AppNavigator.pushAndRemovePreviousPages(context,
                         //     page: LandingPage(studentProfile: state.studentProfile));
                       } else if (state is QuickPayInitiated) {
-                        String accessToken = await SharedPref.getString("access-token");
+                        String accessToken =
+                            await SharedPref.getString("access-token");
 
                         AppNavigator.pushAndStackPage(context,
                             page: MakePayment(
-                                quickPayModel: state.quickPayModel, accessToken: accessToken,));
+                              quickPayModel: state.quickPayModel,
+                              accessToken: accessToken,
+                            ));
                       } else if (state is AccessTokenExpireState) {
                         showToast(
                             context: context,

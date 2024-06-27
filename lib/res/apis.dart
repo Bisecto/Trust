@@ -29,6 +29,7 @@ class AppApis {
   static String quickPay = "$appBaseUrl/c/pay/initiate-checkout";
 
   static String initiateVerification = "$appBaseUrl/c/w/initiate-verification";
+  static String validateVerification = "$appBaseUrl/c/w/validate-verification";
   static String listTransaction = "$appBaseUrl/c/w/list-transaction";
 
   static String refreshToken =

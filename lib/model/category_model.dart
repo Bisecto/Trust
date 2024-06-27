@@ -94,7 +94,7 @@ class RequiredFields {
 
   factory RequiredFields.fromJson(Map<String, dynamic> json) => RequiredFields(
     phoneNumber: json["phoneNumber"],
-    amount: json["amount"],
+    amount: json["amount"].toString(),
     cardNumber: json["cardNumber"],
     meterNumber: json["meterNumber"],
   );

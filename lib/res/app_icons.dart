@@ -2,6 +2,8 @@ class AppIcons {
   static const String _iconBaseUrl = 'assets/icons/';
 
   static const home = '${_iconBaseUrl}home.svg';
+  static const info = '${_iconBaseUrl}info.svg';
+  static const arrowSlant = '${_iconBaseUrl}arrow_slant.svg';
   static const darkMode = '${_iconBaseUrl}dark_mode.svg';
   static const billTopBackground = '${_iconBaseUrl}bill_top_background.svg';
   static const withdrawalAccountAppbar = '${_iconBaseUrl}withdrawal_accoun_appbar.svg';
@@ -41,6 +43,7 @@ class AppIcons {
   static const moneyTfInfo = '${_iconBaseUrl}money_tf_notification.svg';
   static const yourNgnAccount = '${_iconBaseUrl}your_ngn_account.svg';
   static const copy = '${_iconBaseUrl}copy.svg';
+  static const copy2 = '${_iconBaseUrl}copy2.svg';
   static const squareCancel = '${_iconBaseUrl}square_cancel.svg';
   static const profileLabel = '${_iconBaseUrl}profile_label.svg';
   static const profiletext = '${_iconBaseUrl}profile_text.svg';

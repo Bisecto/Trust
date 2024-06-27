@@ -25,7 +25,7 @@ class AppColors{
   static const Color appBarSubColor = Color(0xffE3FAD6);
   static const Color lightPrimary = Color(0xffF5F5F5);
   static const Color lightgrey = Color(0xff828DA9);
-  static const Color lightgreen2 = Color(0xffd1fcc1);
+  static const Color lightgreen2 = Color(0xffE6FBEE);
   static const Color lightGreen = Color(0xff279852);
   static const Color lightBackground = Color(0xffeeeeee);
   static const Color lightDivider = Colors.black38;

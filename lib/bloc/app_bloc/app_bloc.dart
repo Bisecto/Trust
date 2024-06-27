@@ -12,6 +12,7 @@ import 'package:teller_trust/repository/app_repository.dart';
 import 'package:teller_trust/res/apis.dart';
 
 import '../../model/category_model.dart';
+import '../../model/transactionHistory.dart';
 import '../../model/user.dart';
 import '../../utills/app_utils.dart';
 import '../../utills/constants/loading_dialog.dart';
@@ -23,6 +24,7 @@ part 'app_state.dart';
 
 class AppBloc extends Bloc<AppEvent, AppState> {
   CustomerProfile? customerProfile; // Variable to store user data
+  TransactionHistoryModel? transactionHistoryModel; // Variable to store user data
   AppBloc() : super(AppInitial()) {
     on<InitialEvent>(initialEvent);
     on<AddWithdrawalAccount>(addWithdrawalAccount);
@@ -44,14 +46,21 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         AppApis.userProfile,
         accessToken: accessToken,
       );
+      var userTransactionList = await appRepository.appGetRequest(
+        AppApis.listTransaction+"?page=1&pageSize=5",
+        accessToken: accessToken,
+      );
+      print(userTransactionList.body);
       print("Profile status COde ${profileResponse.statusCode}");
       print("Profile Data ${profileResponse.body}");
       if (profileResponse.statusCode == 200 ||
           profileResponse.statusCode == 201) {
         CustomerProfile customerProfile =
             CustomerProfile.fromJson(json.decode(profileResponse.body)['data']);
-        updateData(customerProfile);
-        emit(SuccessState(customerProfile)); // Emit success state with data
+        TransactionHistoryModel transactionHistoryModel = TransactionHistoryModel.fromJson(
+            json.decode(userTransactionList.body));
+        updateData(customerProfile,transactionHistoryModel);
+        emit(SuccessState(customerProfile,transactionHistoryModel)); // Emit success state with data
       } else {
         emit(ErrorState(AppUtils.convertString(
             json.decode(profileResponse.body)['message'])));
@@ -63,9 +72,10 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     }
   }
 
-  void updateData(CustomerProfile _customerProfile) {
+  void updateData(CustomerProfile _customerProfile,TransactionHistoryModel _transactionHistoryModel) {
     customerProfile = _customerProfile;
-    emit(SuccessState(customerProfile!));
+    transactionHistoryModel = _transactionHistoryModel;
+    emit(SuccessState(customerProfile!,_transactionHistoryModel));
   }
 
   Future<FutureOr<void>> addWithdrawalAccount(
@@ -95,19 +105,26 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       print(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
         var profileResponse = await appRepository.appGetRequest(
-          AppApis.userProfile,
+          AppApis.userProfile+"?page=1&pageSize=5",
           accessToken: accessToken,
         );
+        var userTransactionList = await appRepository.appGetRequest(
+          AppApis.listTransaction+"?page=1&pageSize=5",
+          accessToken: accessToken,
+        );
+        print(userTransactionList.body);
         print("Profile status COde ${profileResponse.statusCode}");
         print("Profile Data ${profileResponse.body}");
         if (profileResponse.statusCode == 200 ||
             profileResponse.statusCode == 201) {
           CustomerProfile customerProfile = CustomerProfile.fromJson(
               json.decode(profileResponse.body)['data']);
-          updateData(customerProfile);
+          TransactionHistoryModel transactionHistoryModel = TransactionHistoryModel.fromJson(
+              json.decode(userTransactionList.body));
+          updateData(customerProfile,transactionHistoryModel);
           Navigator.pop(event.context);
           //event.context.read<AppBloc>().add(updateData( updatedProfile));
-          updateData(customerProfile);
+          updateData(customerProfile,transactionHistoryModel);
 
           emit(WirthdrawalAccountAdded(customerProfile));
         } else {

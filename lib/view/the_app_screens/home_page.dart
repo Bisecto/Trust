@@ -103,7 +103,7 @@ class _HomePageState extends State<HomePage> {
                           color: AppColors.darkGreen,
                           // border:
                           //     Border.all(color: AppColors.lightPrimaryGreen),
-                          borderRadius: BorderRadius.circular(10.0)),
+                          borderRadius: BorderRadius.circular(8.0)),
                       child: Padding(
                         padding: const EdgeInsets.all(5.0),
                         child: CustomText(
@@ -125,12 +125,12 @@ class _HomePageState extends State<HomePage> {
 
                           ///color: AppColors.darkGreen,
                           border: Border.all(color: AppColors.textColor2),
-                          borderRadius: BorderRadius.circular(10.0)),
+                          borderRadius: BorderRadius.circular(8.0)),
                       child: Padding(
                         padding: const EdgeInsets.all(5.0),
                         child: CustomText(
                           text: "Beneficiaries",
-                          weight: FontWeight.bold,
+                          weight: FontWeight.normal,
                           size: 12,
                           color: theme.isDark
                               ? AppColors.darkModeBackgroundMainTextColor
@@ -233,14 +233,13 @@ class _HomePageState extends State<HomePage> {
                                 : AppColors.textColor2,
                             size: 12,
                           ),
-                          CustomText(
-                            text:
+                          TextStyles.textHeadings(
+                            textValue:
                                 "${personalInfo.lastName} ${personalInfo.firstName}",
-                            weight: FontWeight.bold,
-                            color: theme.isDark
+                            textColor: theme.isDark
                                 ? AppColors.darkModeBackgroundMainTextColor
                                 : AppColors.textColor,
-                            size: 14,
+                            textSize: 14,
                           ),
                         ],
                       )
@@ -292,14 +291,13 @@ class _HomePageState extends State<HomePage> {
                               : AppColors.textColor2,
                           size: 12,
                         ),
-                        CustomText(
-                          text: "$lastname $firstname",
-                          weight: FontWeight.bold,
-                          color: theme.isDark
+                        TextStyles.textHeadings(
+                          textValue: "$lastname $firstname",
+                          textColor: theme.isDark
                               ? AppColors.darkModeBackgroundMainTextColor
                               : AppColors.textColor,
-                          size: 14,
-                        ),
+                          textSize: 14,
+                        )
                       ],
                     )
                   ],
@@ -343,14 +341,14 @@ class _HomePageState extends State<HomePage> {
                     value: context.read<AppBloc>(), child: const KYCIntro()));
           },
           child: Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.only(bottom: 10.0),
             child: Container(
-                //height: 70,
+                height: 40,
                 decoration: BoxDecoration(
-                    color: AppColors.lightOrange,
-                    border: Border.all(color: AppColors.orange),
+                    color: Color(0xFFFFF3D5),
+                    border: Border.all(color:Color(0xFFFFBE62)),// AppColors.lightOrange),
                     borderRadius: BorderRadius.circular(10)),
-                child: const Padding(
+                child: Padding(
                   padding: EdgeInsets.all(5.0),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -358,10 +356,7 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       Row(
                         children: [
-                          Icon(
-                            Icons.info,
-                            color: AppColors.orange,
-                          ),
+                          SvgPicture.asset(AppIcons.info),
                           SizedBox(
                             width: 5,
                           ),
@@ -384,10 +379,11 @@ class _HomePageState extends State<HomePage> {
                           SizedBox(
                             width: 5,
                           ),
-                          Icon(
-                            Icons.arrow_upward,
-                            color: AppColors.orange,
-                          ),
+                          SvgPicture.asset(AppIcons.arrowSlant),
+                          // Icon(
+                          //   Icons.arrow_upward,
+                          //   color: AppColors.orange,
+                          // ),
                         ],
                       )
                     ],
@@ -572,7 +568,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget balanceCardContainer(theme) {
     return Container(
-      height: 200,
+      height: 210,
       decoration: BoxDecoration(
         //color: AppColors.darkGreen,
         borderRadius: BorderRadius.circular(20),
@@ -622,14 +618,18 @@ class _HomePageState extends State<HomePage> {
                       });
                       //await SharedPref.putBool("isMoneyblocked",!isMoneyBlocked);
                     },
-                    child: Align(
-                        alignment: Alignment.topRight,
-                        child: Icon(
-                          isMoneyBlocked
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                          color: AppColors.white,
-                        )),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Align(
+                          alignment: Alignment.topRight,
+                          child: Icon(
+                            isMoneyBlocked
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                            color: AppColors.white,
+                            size: 16,
+                          )),
+                    ),
                   ),
                   if (!isMoneyBlocked)
                     BlocBuilder<AppBloc, AppState>(
@@ -640,6 +640,7 @@ class _HomePageState extends State<HomePage> {
                           // Use user data here
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               SvgPicture.asset(
                                 AppIcons.naira,
@@ -662,6 +663,8 @@ class _HomePageState extends State<HomePage> {
                         } else {
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+
                             children: [
                               SvgPicture.asset(
                                 AppIcons.naira,
@@ -917,314 +920,454 @@ class _HomePageState extends State<HomePage> {
                 size: 12,
                 weight: FontWeight.bold,
               ),
-              Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    CustomText(
-                      text: "Airtime Purchase",
-                      size: 12,
-                      color: theme.isDark
-                          ? AppColors.darkModeBackgroundSubTextColor
-                          : AppColors.textColor,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            const CircleAvatar(
-                              backgroundImage: AssetImage(AppImages.airtel),
-                            ),
-                            //SvgPicture.asset(AppImages.mtn,color: AppColors.white,height: 50,width: 50,),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: theme.isDark
-                                        ? AppColors.darkGreen
-                                        : AppColors.lightShadowGreenColor,
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(color: AppColors.green)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: CustomText(
-                                    text: "08123457146",
-                                    size: 12,
-                                    color: theme.isDark
-                                        ? AppColors
-                                            .darkModeBackgroundMainTextColor
-                                        : AppColors.textColor,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: theme.isDark
-                                        ? AppColors
-                                            .darkModeBackgroundContainerColor
-                                        : AppColors.white,
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(color: AppColors.grey)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: CustomText(
-                                    text: "N 1,500.00",
-                                    size: 12,
-                                    color: theme.isDark
-                                        ? AppColors
-                                            .darkModeBackgroundMainTextColor
-                                        : AppColors.textColor,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SvgPicture.asset(AppIcons.reload)
-                      ],
-                    ),
-                    const Divider()
-                  ],
-                ),
+              const SizedBox(
+                height: 10,
               ),
-              Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    CustomText(
-                      text: "Data Purchase",
-                      size: 12,
-                      color: theme.isDark
-                          ? AppColors.darkModeBackgroundSubTextColor
-                          : AppColors.textColor,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            const CircleAvatar(
-                              backgroundImage: AssetImage(AppImages.mtn),
-                            ),
-                            //SvgPicture.asset(AppImages.mtn,color: AppColors.white,height: 50,width: 50,),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: theme.isDark
-                                        ? AppColors.darkGreen
-                                        : AppColors.lightShadowGreenColor,
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(color: AppColors.green)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: CustomText(
-                                    text: "08123457146",
-                                    size: 12,
-                                    color: theme.isDark
-                                        ? AppColors
-                                            .darkModeBackgroundMainTextColor
-                                        : AppColors.textColor,
+              BlocBuilder<AppBloc, AppState>(
+                builder: (context, state) {
+                  if (state is SuccessState) {
+                    var transactionHistory = state.transactionHistoryModel;
+                    // Use user data here
+                    print(transactionHistory);
+                    print("transactionHistory");
+                    print("transactionHistory");
+                    return transactionHistory.data.items.isNotEmpty
+                        ? Container(
+                            height: transactionHistory.data.items.length * 90,
+                            child: ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: transactionHistory.data.items.length,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  height: 90,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      CustomText(
+                                        text: transactionHistory.data
+                                            .items[index].order.product.name,
+                                        size: 12,
+                                        color: theme.isDark
+                                            ? AppColors
+                                                .darkModeBackgroundSubTextColor
+                                            : AppColors.textColor,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              CircleAvatar(
+                                                backgroundImage: NetworkImage(
+                                                    transactionHistory
+                                                        .data
+                                                        .items[index]
+                                                        .order
+                                                        .product
+                                                        .image),
+                                              ),
+                                              //SvgPicture.asset(AppImages.mtn,color: AppColors.white,height: 50,width: 50,),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                      color: theme.isDark
+                                                          ? AppColors.darkGreen
+                                                          : AppColors
+                                                              .lightShadowGreenColor,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                      border: Border.all(
+                                                          color:
+                                                              AppColors.green)),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            5.0),
+                                                    child: CustomText(
+                                                      text: transactionHistory
+                                                          .data
+                                                          .items[index]
+                                                          .order
+                                                          .requiredFields
+                                                          .phoneNumber,
+                                                      size: 12,
+                                                      color: theme.isDark
+                                                          ? AppColors
+                                                              .darkModeBackgroundMainTextColor
+                                                          : AppColors.textColor,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                      color: theme.isDark
+                                                          ? AppColors
+                                                              .darkModeBackgroundContainerColor
+                                                          : AppColors.white,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                      border: Border.all(
+                                                          color:
+                                                              AppColors.grey)),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            5.0),
+                                                    child: CustomText(
+                                                      text: transactionHistory
+                                                              .data
+                                                              .items[index]
+                                                              .type
+                                                              .toLowerCase()
+                                                              .contains('debit')
+                                                          ? '-N${transactionHistory.data.items[index].order.requiredFields.amount}'
+                                                          : '+N${transactionHistory.data.items[index].order.requiredFields.amount}',
+                                                      size: 12,
+                                                      color: theme.isDark
+                                                          ? AppColors
+                                                              .darkModeBackgroundMainTextColor
+                                                          : AppColors.textColor,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          SvgPicture.asset(AppIcons.reload)
+                                        ],
+                                      ),
+                                      const Divider()
+                                    ],
                                   ),
-                                ),
-                              ),
+                                );
+                              },
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: theme.isDark
-                                        ? AppColors
-                                            .darkModeBackgroundContainerColor
-                                        : AppColors.white,
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(color: AppColors.grey)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: CustomText(
-                                    text: "N 1,500.00",
-                                    size: 12,
-                                    color: theme.isDark
-                                        ? AppColors
-                                            .darkModeBackgroundMainTextColor
-                                        : AppColors.textColor,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SvgPicture.asset(AppIcons.reload)
-                      ],
-                    ),
-                    const Divider()
-                  ],
-                ),
+                          )
+                        : SizedBox();
+                  } else {
+                    return const SizedBox(); // Show loading indicator or handle error state
+                  }
+                },
               ),
-              Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    CustomText(
-                      text: "Data Purchase",
-                      size: 12,
-                      color: theme.isDark
-                          ? AppColors.darkModeBackgroundSubTextColor
-                          : AppColors.textColor,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            const CircleAvatar(
-                              backgroundImage: AssetImage(AppImages.glo),
-                            ),
-                            //SvgPicture.asset(AppImages.mtn,color: AppColors.white,height: 50,width: 50,),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: theme.isDark
-                                        ? AppColors.darkGreen
-                                        : AppColors.lightShadowGreenColor,
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(color: AppColors.green)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: CustomText(
-                                    text: "08123457146",
-                                    size: 12,
-                                    color: theme.isDark
-                                        ? AppColors
-                                            .darkModeBackgroundMainTextColor
-                                        : AppColors.textColor,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: theme.isDark
-                                        ? AppColors
-                                            .darkModeBackgroundContainerColor
-                                        : AppColors.white,
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(color: AppColors.grey)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: CustomText(
-                                    text: "N 1,500.00",
-                                    size: 12,
-                                    color: theme.isDark
-                                        ? AppColors
-                                            .darkModeBackgroundMainTextColor
-                                        : AppColors.textColor,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SvgPicture.asset(AppIcons.reload)
-                      ],
-                    ),
-                    const Divider()
-                  ],
-                ),
-              ),
-              Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    CustomText(
-                      text: "Data Purchase",
-                      size: 12,
-                      color: theme.isDark
-                          ? AppColors.darkModeBackgroundSubTextColor
-                          : AppColors.textColor,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            const CircleAvatar(
-                              backgroundImage: AssetImage(AppImages.mobile),
-                            ),
-                            //SvgPicture.asset(AppImages.mtn,color: AppColors.white,height: 50,width: 50,),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: theme.isDark
-                                        ? AppColors.darkGreen
-                                        : AppColors.lightShadowGreenColor,
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(color: AppColors.green)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: CustomText(
-                                    text: "08123457146",
-                                    size: 12,
-                                    color: theme.isDark
-                                        ? AppColors
-                                            .darkModeBackgroundMainTextColor
-                                        : AppColors.textColor,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: theme.isDark
-                                        ? AppColors
-                                            .darkModeBackgroundContainerColor
-                                        : AppColors.white,
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(color: AppColors.grey)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: CustomText(
-                                    text: "N 1,500.00",
-                                    size: 12,
-                                    color: theme.isDark
-                                        ? AppColors
-                                            .darkModeBackgroundMainTextColor
-                                        : AppColors.textColor,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SvgPicture.asset(AppIcons.reload)
-                      ],
-                    ),
-                    //const Divider()
-                  ],
-                ),
-              ),
+
+              // Container(
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: [
+              //       const SizedBox(
+              //         height: 15,
+              //       ),
+              //       CustomText(
+              //         text: "Airtime Purchase",
+              //         size: 12,
+              //         color: theme.isDark
+              //             ? AppColors.darkModeBackgroundSubTextColor
+              //             : AppColors.textColor,
+              //       ),
+              //       Row(
+              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //         children: [
+              //           Row(
+              //             children: [
+              //               const CircleAvatar(
+              //                 backgroundImage: AssetImage(AppImages.airtel),
+              //               ),
+              //               //SvgPicture.asset(AppImages.mtn,color: AppColors.white,height: 50,width: 50,),
+              //               Padding(
+              //                 padding: const EdgeInsets.all(8.0),
+              //                 child: Container(
+              //                   decoration: BoxDecoration(
+              //                       color: theme.isDark
+              //                           ? AppColors.darkGreen
+              //                           : AppColors.lightShadowGreenColor,
+              //                       borderRadius: BorderRadius.circular(10),
+              //                       border: Border.all(color: AppColors.green)),
+              //                   child: Padding(
+              //                     padding: const EdgeInsets.all(5.0),
+              //                     child: CustomText(
+              //                       text: "08123457146",
+              //                       size: 12,
+              //                       color: theme.isDark
+              //                           ? AppColors
+              //                               .darkModeBackgroundMainTextColor
+              //                           : AppColors.textColor,
+              //                     ),
+              //                   ),
+              //                 ),
+              //               ),
+              //               Padding(
+              //                 padding: const EdgeInsets.all(8.0),
+              //                 child: Container(
+              //                   decoration: BoxDecoration(
+              //                       color: theme.isDark
+              //                           ? AppColors
+              //                               .darkModeBackgroundContainerColor
+              //                           : AppColors.white,
+              //                       borderRadius: BorderRadius.circular(10),
+              //                       border: Border.all(color: AppColors.grey)),
+              //                   child: Padding(
+              //                     padding: const EdgeInsets.all(5.0),
+              //                     child: CustomText(
+              //                       text: "N 1,500.00",
+              //                       size: 12,
+              //                       color: theme.isDark
+              //                           ? AppColors
+              //                               .darkModeBackgroundMainTextColor
+              //                           : AppColors.textColor,
+              //                     ),
+              //                   ),
+              //                 ),
+              //               ),
+              //             ],
+              //           ),
+              //           SvgPicture.asset(AppIcons.reload)
+              //         ],
+              //       ),
+              //       const Divider()
+              //     ],
+              //   ),
+              // ),
+              // Container(
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: [
+              //       const SizedBox(
+              //         height: 15,
+              //       ),
+              //       CustomText(
+              //         text: "Data Purchase",
+              //         size: 12,
+              //         color: theme.isDark
+              //             ? AppColors.darkModeBackgroundSubTextColor
+              //             : AppColors.textColor,
+              //       ),
+              //       Row(
+              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //         children: [
+              //           Row(
+              //             children: [
+              //               const CircleAvatar(
+              //                 backgroundImage: AssetImage(AppImages.mtn),
+              //               ),
+              //               //SvgPicture.asset(AppImages.mtn,color: AppColors.white,height: 50,width: 50,),
+              //               Padding(
+              //                 padding: const EdgeInsets.all(8.0),
+              //                 child: Container(
+              //                   decoration: BoxDecoration(
+              //                       color: theme.isDark
+              //                           ? AppColors.darkGreen
+              //                           : AppColors.lightShadowGreenColor,
+              //                       borderRadius: BorderRadius.circular(10),
+              //                       border: Border.all(color: AppColors.green)),
+              //                   child: Padding(
+              //                     padding: const EdgeInsets.all(5.0),
+              //                     child: CustomText(
+              //                       text: "08123457146",
+              //                       size: 12,
+              //                       color: theme.isDark
+              //                           ? AppColors
+              //                               .darkModeBackgroundMainTextColor
+              //                           : AppColors.textColor,
+              //                     ),
+              //                   ),
+              //                 ),
+              //               ),
+              //               Padding(
+              //                 padding: const EdgeInsets.all(8.0),
+              //                 child: Container(
+              //                   decoration: BoxDecoration(
+              //                       color: theme.isDark
+              //                           ? AppColors
+              //                               .darkModeBackgroundContainerColor
+              //                           : AppColors.white,
+              //                       borderRadius: BorderRadius.circular(10),
+              //                       border: Border.all(color: AppColors.grey)),
+              //                   child: Padding(
+              //                     padding: const EdgeInsets.all(5.0),
+              //                     child: CustomText(
+              //                       text: "N 1,500.00",
+              //                       size: 12,
+              //                       color: theme.isDark
+              //                           ? AppColors
+              //                               .darkModeBackgroundMainTextColor
+              //                           : AppColors.textColor,
+              //                     ),
+              //                   ),
+              //                 ),
+              //               ),
+              //             ],
+              //           ),
+              //           SvgPicture.asset(AppIcons.reload)
+              //         ],
+              //       ),
+              //       const Divider()
+              //     ],
+              //   ),
+              // ),
+              // Container(
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: [
+              //       const SizedBox(
+              //         height: 15,
+              //       ),
+              //       CustomText(
+              //         text: "Data Purchase",
+              //         size: 12,
+              //         color: theme.isDark
+              //             ? AppColors.darkModeBackgroundSubTextColor
+              //             : AppColors.textColor,
+              //       ),
+              //       Row(
+              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //         children: [
+              //           Row(
+              //             children: [
+              //               const CircleAvatar(
+              //                 backgroundImage: AssetImage(AppImages.glo),
+              //               ),
+              //               //SvgPicture.asset(AppImages.mtn,color: AppColors.white,height: 50,width: 50,),
+              //               Padding(
+              //                 padding: const EdgeInsets.all(8.0),
+              //                 child: Container(
+              //                   decoration: BoxDecoration(
+              //                       color: theme.isDark
+              //                           ? AppColors.darkGreen
+              //                           : AppColors.lightShadowGreenColor,
+              //                       borderRadius: BorderRadius.circular(10),
+              //                       border: Border.all(color: AppColors.green)),
+              //                   child: Padding(
+              //                     padding: const EdgeInsets.all(5.0),
+              //                     child: CustomText(
+              //                       text: "08123457146",
+              //                       size: 12,
+              //                       color: theme.isDark
+              //                           ? AppColors
+              //                               .darkModeBackgroundMainTextColor
+              //                           : AppColors.textColor,
+              //                     ),
+              //                   ),
+              //                 ),
+              //               ),
+              //               Padding(
+              //                 padding: const EdgeInsets.all(8.0),
+              //                 child: Container(
+              //                   decoration: BoxDecoration(
+              //                       color: theme.isDark
+              //                           ? AppColors
+              //                               .darkModeBackgroundContainerColor
+              //                           : AppColors.white,
+              //                       borderRadius: BorderRadius.circular(10),
+              //                       border: Border.all(color: AppColors.grey)),
+              //                   child: Padding(
+              //                     padding: const EdgeInsets.all(5.0),
+              //                     child: CustomText(
+              //                       text: "N 1,500.00",
+              //                       size: 12,
+              //                       color: theme.isDark
+              //                           ? AppColors
+              //                               .darkModeBackgroundMainTextColor
+              //                           : AppColors.textColor,
+              //                     ),
+              //                   ),
+              //                 ),
+              //               ),
+              //             ],
+              //           ),
+              //           SvgPicture.asset(AppIcons.reload)
+              //         ],
+              //       ),
+              //       const Divider()
+              //     ],
+              //   ),
+              // ),
+              // Container(
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: [
+              //       const SizedBox(
+              //         height: 15,
+              //       ),
+              //       CustomText(
+              //         text: "Data Purchase",
+              //         size: 12,
+              //         color: theme.isDark
+              //             ? AppColors.darkModeBackgroundSubTextColor
+              //             : AppColors.textColor,
+              //       ),
+              //       Row(
+              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //         children: [
+              //           Row(
+              //             children: [
+              //               const CircleAvatar(
+              //                 backgroundImage: AssetImage(AppImages.mobile),
+              //               ),
+              //               //SvgPicture.asset(AppImages.mtn,color: AppColors.white,height: 50,width: 50,),
+              //               Padding(
+              //                 padding: const EdgeInsets.all(8.0),
+              //                 child: Container(
+              //                   decoration: BoxDecoration(
+              //                       color: theme.isDark
+              //                           ? AppColors.darkGreen
+              //                           : AppColors.lightShadowGreenColor,
+              //                       borderRadius: BorderRadius.circular(10),
+              //                       border: Border.all(color: AppColors.green)),
+              //                   child: Padding(
+              //                     padding: const EdgeInsets.all(5.0),
+              //                     child: CustomText(
+              //                       text: "08123457146",
+              //                       size: 12,
+              //                       color: theme.isDark
+              //                           ? AppColors
+              //                               .darkModeBackgroundMainTextColor
+              //                           : AppColors.textColor,
+              //                     ),
+              //                   ),
+              //                 ),
+              //               ),
+              //               Padding(
+              //                 padding: const EdgeInsets.all(8.0),
+              //                 child: Container(
+              //                   decoration: BoxDecoration(
+              //                       color: theme.isDark
+              //                           ? AppColors
+              //                               .darkModeBackgroundContainerColor
+              //                           : AppColors.white,
+              //                       borderRadius: BorderRadius.circular(10),
+              //                       border: Border.all(color: AppColors.grey)),
+              //                   child: Padding(
+              //                     padding: const EdgeInsets.all(5.0),
+              //                     child: CustomText(
+              //                       text: "N 1,500.00",
+              //                       size: 12,
+              //                       color: theme.isDark
+              //                           ? AppColors
+              //                               .darkModeBackgroundMainTextColor
+              //                           : AppColors.textColor,
+              //                     ),
+              //                   ),
+              //                 ),
+              //               ),
+              //             ],
+              //           ),
+              //           SvgPicture.asset(AppIcons.reload)
+              //         ],
+              //       ),
+              //       //const Divider()
+              //     ],
+              //   ),
+              // ),
             ],
           ),
         ),
@@ -1280,7 +1423,7 @@ class _HomePageState extends State<HomePage> {
     return Container(
       height: 36,
       decoration: BoxDecoration(
-          color: AppColors.lightgreen2,
+          color: Color(0xFFC2F6AE),
           borderRadius: BorderRadius.circular(10)),
       child: Padding(
         padding: const EdgeInsets.all(5.0),
@@ -1317,10 +1460,7 @@ class _HomePageState extends State<HomePage> {
                   AppUtils().copyToClipboard(accNumber, context);
                   // MSG.infoSnackBar(context, "copied");
                 },
-                child: const Icon(
-                  Icons.copy_all_rounded,
-                  color: AppColors.lightgrey,
-                ))
+                child: SvgPicture.asset(AppIcons.copy2,))
           ],
         ),
       ),
