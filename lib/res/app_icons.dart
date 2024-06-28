@@ -70,4 +70,5 @@ class AppIcons {
   static const transactionPin = '${_iconBaseUrl}transaction_pin.svg';
   static const getHelpAppBar = '${_iconBaseUrl}get_help_app_bar.svg';
   static const legalAppBar = '${_iconBaseUrl}legal_app_bar.svg';
+  static const refresh = '${_iconBaseUrl}refresh.svg';
 }

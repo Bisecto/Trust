@@ -1,58 +1,48 @@
-//import 'package:cross_connectivity/cross_connectivity.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:teller_trust/res/app_icons.dart';
+import 'package:teller_trust/res/app_images.dart';
+import 'package:teller_trust/view/widgets/app_custom_text.dart';
 
 import '../../res/app_colors.dart';
 import '../widgets/form_button.dart';
-import 'dialog_box.dart';
 
-class NoInternet extends StatelessWidget {
-  const NoInternet({Key? key, required this.callBack, this.reInitApp = false})
-      : super(key: key);
-  final Function() callBack;
-  final bool reInitApp;
+class No_internet_Page extends StatelessWidget {
+  const No_internet_Page({
+    Key? key,
+    required this.onRetry,
+  }) : super(key: key);
+  final Function() onRetry;
 
+  //final bool reInitApp;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.white,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
+       //crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 24),
-            child: Icon(Icons.wifi_off, size: 48, color: AppColors.green),
+          Image.asset(
+            AppImages.signa,
+            height: 150,
+            width: 150,
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 24),
-            child: Text(
-              'No Internet Connection',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-            ),
-          ),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 20),
-            child: Text(
-              'An internet connection error occurred, please try again',
+           SizedBox(height: 20,),
+
+           // padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 20),
+            CustomText(
+              text:'Trouble connecting with\nthe internet',
+              maxLines: 2,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16),
+
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24),
-            child: FormButton(
-              onPressed: () {
-                // Connectivity().checkConnection().then((connected) async {
-                //   if (connected) {
-                //     callBack();
-                //   } else {
-                //     MSG.errorSnackBar(context, 'No Internet Connection');
-                //   }
-                // });
-              },
-              text: 'TRY AGAIN',
-              textColor: AppColors.white,
-            ),
-          )
+          SizedBox(height: 20,),
+
+          GestureDetector(onTap:(){ onRetry();},child: SvgPicture.asset(AppIcons.refresh)),
+
+
         ],
       ),
     );

@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:cross_connectivity/cross_connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -5,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:teller_trust/bloc/product_bloc/product_bloc.dart';
 import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/res/app_list.dart';
+import 'package:teller_trust/view/important_pages/no_internet.dart';
 import 'package:teller_trust/view/the_app_screens/send_page.dart';
 
 import '../../bloc/app_bloc/app_bloc.dart';
@@ -27,12 +31,18 @@ class LandingPage extends StatefulWidget {
 class _LandingPageState extends State<LandingPage> {
   int _currentIndex = 0;
   List<Widget> landPageScreens = [];
+  bool _connected = true;
+
+  StreamSubscription<ConnectivityStatus>? _connectivitySubscription;
 
   @override
   void initState() {
     // TODO: implement initState
     context.read<AppBloc>().add(InitialEvent());
     context.read<ProductBloc>().add(ListCategoryEvent("1", "8"));
+    _checkConnectivity();
+    _connectivitySubscription =
+        Connectivity().onConnectivityChanged.listen(_handleConnectivity);
 
     landPageScreens = [
       HomePage(),
@@ -44,11 +54,35 @@ class _LandingPageState extends State<LandingPage> {
     super.initState();
   }
 
+  Future<void> _checkConnectivity() async {
+    var connectivityResult = await Connectivity().checkConnectivity();
+    _handleConnectivity(connectivityResult);
+  }
+  void _handleConnectivity(ConnectivityStatus result) {
+    if (result == ConnectivityStatus.none) {
+      debugPrint("No network");
+      setState(() {
+        _connected = false;
+      });
+    } else {
+      debugPrint("Network connected");
+      setState(() {
+        _connected = true;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _connectivitySubscription?.cancel();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
 
-    return Scaffold(
+    return _connected
+        ? Scaffold(
       backgroundColor: theme.isDark
           ? AppColors.darkModeBackgroundColor
           : AppColors.lightShadowGreenColor,
@@ -169,6 +203,6 @@ class _LandingPageState extends State<LandingPage> {
       //     _onItemTapped(pageyKeys[index], index);
       //   },
       // )),
-    );
+    ):No_internet_Page( onRetry: _checkConnectivity);
   }
 }

@@ -11,6 +11,7 @@ class AppImages {
   static const verifyAlertDialogImage = '${_imageBaseUrl}verify_alert_dialog_image.png';
   static const verifyAlertDialogDarkImage = '${_imageBaseUrl}verify_alert_dialog__dark_image.png';
   static const splashScreenFrame = '${_imageBaseUrl}splash_screen_frame.png';
+  static const signa = '${_imageBaseUrl}signa.png';
   static const onBoardingScreen1 = '${_imageBaseUrl}on_boarding_screen_image_1.png';
   static const onBoardingScreen2 = '${_imageBaseUrl}on_boarding_screen_image_2.png';
   static const onBoardingScreen3 = '${_imageBaseUrl}on_boarding_screen_image_3.png';
