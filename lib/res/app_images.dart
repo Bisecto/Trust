@@ -27,5 +27,6 @@ class AppImages {
   static const advertCard2 = '${_imageBaseUrl}advert_card2.png';
   static const advertCard3 = '${_imageBaseUrl}advert_card3.png';
   static const advertCard4 = '${_imageBaseUrl}advert_card4.png';
+  static const modalBackground = '${_imageBaseUrl}modal_background.png';
 
 }

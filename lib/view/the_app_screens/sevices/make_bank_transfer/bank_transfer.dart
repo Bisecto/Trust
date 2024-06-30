@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:teller_trust/repository/app_repository.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -29,10 +30,32 @@ class _MakePaymentState extends State<MakePayment> {
 
   late String htmlString;
 
+  void performGetRequest(
+    String apiUrl,
+  ) async {
+    AppRepository appRepository = AppRepository();
+    String accessToken = await SharedPref.getString("access-token");
+    var response = await appRepository.appGetRequest(
+      apiUrl,
+      accessToken: accessToken,
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      print('Request completed with status code: ${response.statusCode}');
+      print('Request completed with status code: ${response.statusCode}');
+    } else {
+      print(
+          'Request failed with status code: ${response.statusCode}. Retrying...');
+      performGetRequest(
+        apiUrl,
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-
+    performGetRequest('');
     // Generate the HTML string with data from quickPayModel
     htmlString = """
 <!DOCTYPE html>
@@ -74,33 +97,33 @@ class _MakePaymentState extends State<MakePayment> {
         callback: (response) => { 
           console.log(response);
           // Call your API directly when payment is confirmed
-          fetchPaymentCompletion();
+          //fetchPaymentCompletion();
         }
       });
     };
 
-    function fetchPaymentCompletion() {
-      fetch("https://api.tellatrust.com/c/pay/conclude-checkout/${widget.quickPayModel.referenceCode}", {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-access-token': '${widget.accessToken}', // Pass accessToken here
-        },
-      })
-      .then(response => {
-        if (response.ok) {
-          return response.json(); // Parse response as JSON
-        } else {
-          throw new Error('Network response was not ok.');
-        }
-      })
-      .then(data => {
-        // Handle the response data as needed
-        console.log('API Response:', data);
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
+    // function fetchPaymentCompletion() {
+    //   fetch("https://api.tellatrust.com/c/pay/conclude-checkout/${widget.quickPayModel.referenceCode}", {
+    //     method: 'GET',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       'x-access-token': '${widget.accessToken}', // Pass accessToken here
+    //     },
+    //   })
+    //   .then(response => {
+    //     if (response.ok) {
+    //       return response.json(); // Parse response as JSON
+    //     } else {
+    //       throw new Error('Network response was not ok.');
+    //     }
+    //   })
+    //   .then(data => {
+    //     // Handle the response data as needed
+    //     console.log('API Response:', data);
+    //   })
+    //   .catch(error => {
+    //     console.error('Error fetching data:', error);
+    //   });
     }
 
     payWithSafeHaven(); // Automatically trigger the payment on page load
@@ -157,7 +180,7 @@ class _MakePaymentState extends State<MakePayment> {
 
   void _loadHtmlFromAssets() {
     _webViewController.loadUrl(Uri.dataFromString(htmlString,
-        mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
+            mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
         .toString());
   }
 }
