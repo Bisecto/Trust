@@ -26,6 +26,7 @@ import 'package:teller_trust/view/the_app_screens/sevices/make_bank_transfer/ban
 import 'package:teller_trust/view/the_app_screens/sevices/send_funds.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
+import 'package:teller_trust/view/widgets/purchase_receipt.dart';
 
 import '../../bloc/app_bloc/app_bloc.dart';
 import '../../model/category_model.dart';
@@ -913,7 +914,7 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomText(
-                text: "Top 5 Popular Purchases",
+                text: "Recent Transactions",
                 color: theme.isDark
                     ? AppColors.darkModeBackgroundMainTextColor
                     : AppColors.textColor2,
@@ -938,116 +939,122 @@ class _HomePageState extends State<HomePage> {
                               physics: const NeverScrollableScrollPhysics(),
                               itemCount: transactionHistory.data.items.length,
                               itemBuilder: (context, index) {
-                                return Container(
-                                  height: 90,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      CustomText(
-                                        text: transactionHistory.data
-                                            .items[index].order.product.name,
-                                        size: 12,
-                                        color: theme.isDark
-                                            ? AppColors
-                                                .darkModeBackgroundSubTextColor
-                                            : AppColors.textColor,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              CircleAvatar(
-                                                backgroundImage: NetworkImage(
-                                                    transactionHistory
-                                                        .data
-                                                        .items[index]
-                                                        .order
-                                                        .product
-                                                        .image),
-                                              ),
-                                              //SvgPicture.asset(AppImages.mtn,color: AppColors.white,height: 50,width: 50,),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                      color: theme.isDark
-                                                          ? AppColors.darkGreen
-                                                          : AppColors
-                                                              .lightShadowGreenColor,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                      border: Border.all(
-                                                          color:
-                                                              AppColors.green)),
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            5.0),
-                                                    child: CustomText(
-                                                      text: transactionHistory
+                                return GestureDetector(
+                                  onTap: (){
+                                    print(transactionHistory.data.items[index]);
+                                    AppNavigator.pushAndStackPage(context, page: TransactionReceipt(item: transactionHistory.data.items[index]));
+                                  },
+                                  child: Container(
+                                    height: 90,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        CustomText(
+                                          text: transactionHistory.data
+                                              .items[index].order.product.name,
+                                          size: 12,
+                                          color: theme.isDark
+                                              ? AppColors
+                                                  .darkModeBackgroundSubTextColor
+                                              : AppColors.textColor,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                CircleAvatar(
+                                                  backgroundImage: NetworkImage(
+                                                      transactionHistory
                                                           .data
                                                           .items[index]
                                                           .order
-                                                          .requiredFields
-                                                          .phoneNumber,
-                                                      size: 12,
-                                                      color: theme.isDark
-                                                          ? AppColors
-                                                              .darkModeBackgroundMainTextColor
-                                                          : AppColors.textColor,
+                                                          .product
+                                                          .image),
+                                                ),
+                                                //SvgPicture.asset(AppImages.mtn,color: AppColors.white,height: 50,width: 50,),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                        color: theme.isDark
+                                                            ? AppColors.darkGreen
+                                                            : AppColors
+                                                                .lightShadowGreenColor,
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                                10),
+                                                        border: Border.all(
+                                                            color:
+                                                                AppColors.green)),
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              5.0),
+                                                      child: CustomText(
+                                                        text: transactionHistory
+                                                            .data
+                                                            .items[index]
+                                                            .order
+                                                            .requiredFields
+                                                            .phoneNumber,
+                                                        size: 12,
+                                                        color: theme.isDark
+                                                            ? AppColors
+                                                                .darkModeBackgroundMainTextColor
+                                                            : AppColors.textColor,
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                      color: theme.isDark
-                                                          ? AppColors
-                                                              .darkModeBackgroundContainerColor
-                                                          : AppColors.white,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                      border: Border.all(
-                                                          color:
-                                                              AppColors.grey)),
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            5.0),
-                                                    child: CustomText(
-                                                      text: transactionHistory
-                                                              .data
-                                                              .items[index]
-                                                              .type
-                                                              .toLowerCase()
-                                                              .contains('debit')
-                                                          ? '-N${transactionHistory.data.items[index].order.requiredFields.amount}'
-                                                          : '+N${transactionHistory.data.items[index].order.requiredFields.amount}',
-                                                      size: 12,
-                                                      color: theme.isDark
-                                                          ? AppColors
-                                                              .darkModeBackgroundMainTextColor
-                                                          : AppColors.textColor,
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                        color: theme.isDark
+                                                            ? AppColors
+                                                                .darkModeBackgroundContainerColor
+                                                            : AppColors.white,
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                                10),
+                                                        border: Border.all(
+                                                            color:
+                                                                AppColors.grey)),
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              5.0),
+                                                      child: CustomText(
+                                                        text: transactionHistory
+                                                                .data
+                                                                .items[index]
+                                                                .type
+                                                                .toLowerCase()
+                                                                .contains('debit')
+                                                            ? '-N${transactionHistory.data.items[index].order.requiredFields.amount}'
+                                                            : '+N${transactionHistory.data.items[index].order.requiredFields.amount}',
+                                                        size: 12,
+                                                        color: theme.isDark
+                                                            ? AppColors
+                                                                .darkModeBackgroundMainTextColor
+                                                            : AppColors.textColor,
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                          SvgPicture.asset(AppIcons.reload)
-                                        ],
-                                      ),
-                                      const Divider()
-                                    ],
+                                              ],
+                                            ),
+                                            SvgPicture.asset(AppIcons.reload)
+                                          ],
+                                        ),
+                                        const Divider()
+                                      ],
+                                    ),
                                   ),
                                 );
                               },

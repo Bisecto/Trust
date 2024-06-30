@@ -1,145 +1,221 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:teller_trust/model/transactionHistory.dart';
+import 'package:teller_trust/res/app_icons.dart';
+import 'package:teller_trust/res/app_images.dart';
 
+import '../../res/app_colors.dart';
+import 'app_custom_text.dart';
 
-class TransactionReceiptScreen extends StatelessWidget {
+class TransactionReceipt extends StatefulWidget {
+  Item item;
+   TransactionReceipt({super.key,required this.item});
+
+  @override
+  State<TransactionReceipt> createState() => _TransactionReceiptState();
+}
+
+class _TransactionReceiptState extends State<TransactionReceipt> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.close, color: Colors.black),
-            onPressed: () {
-              // Handle close action
-            },
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Container(
-              alignment: Alignment.center,
-              child: Column(
-                children: [
-                  Icon(Icons.grass, size: 50, color: Colors.green), // Custom logo
-                  Text(
-                    'Transaction Receipt',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
+      body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                const Color(0xF4FCE3).withOpacity(1),
+                const Color(0xFFE4AB).withOpacity(1),
+                const Color(0xC2F6AE).withOpacity(1),
+                const Color(0xC2F6AE).withOpacity(1),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomRight,
             ),
-            SizedBox(height: 20),
-            Container(
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 10,
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'MTN NG VTU 234703583039',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 15, right: 15),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 50,
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  child: Column(
                     children: [
-                      Text('₦1,000.00', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                      Text('To', style: TextStyle(fontSize: 16)),
+                      SvgPicture.asset(AppIcons.logoReceipt),
+                      CustomText(
+                        text: 'Transaction Receipt',
+                      ),
                     ],
                   ),
-                  SizedBox(height: 10),
-                  Text('07087865088', style: TextStyle(fontSize: 18, color: Colors.grey)),
-                  SizedBox(height: 10),
-                  Text('Payment Method', style: TextStyle(fontSize: 16)),
-                  Text('Wallet Balance', style: TextStyle(fontSize: 18, color: Colors.grey)),
-                  SizedBox(height: 10),
-                  Text('Description', style: TextStyle(fontSize: 16)),
-                  Text('Airtime Purchase to 07087865088', style: TextStyle(fontSize: 18, color: Colors.grey)),
-                  SizedBox(height: 10),
-                  Text('Date', style: TextStyle(fontSize: 16)),
-                  Text('2023-11-25 06:47:36', style: TextStyle(fontSize: 18, color: Colors.grey)),
-                  SizedBox(height: 20),
-                  Divider(),
-                  SizedBox(height: 10),
-                  Text('Transaction Reference', style: TextStyle(fontSize: 16)),
-                  Text('tella_purchase_65072539539454', style: TextStyle(fontSize: 18, color: Colors.grey)),
-                  SizedBox(height: 10),
-                  Text('Status', style: TextStyle(fontSize: 16)),
-                  Text('Purchase Successful', style: TextStyle(fontSize: 18, color: Colors.green)),
-                  SizedBox(height: 10),
-                  Text('Session ID', style: TextStyle(fontSize: 16)),
-                  Text('47240240248745340248480280', style: TextStyle(fontSize: 18, color: Colors.grey)),
-                  SizedBox(height: 20),
-                  Center(
-                    child: Text(
-                      'Tella Trust',
-                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.grey),
-                    ),
+                ),
+                SizedBox(height: 20),
+                Container(
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 10,
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-            Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.share, color: Colors.green),
-                  onPressed: () {
-                    // Handle share action
-                  },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomText(
+                        text: widget.item.order.product.name,
+                        size: 12,
+                        color: AppColors.textColor,
+                      ),
+
+                      CustomText(
+                        text: 'N${widget.item.amount}',
+                        size: 14,
+                        color: AppColors.black,
+                      ),
+                      SizedBox(height: 12,),
+                      CustomText(
+                        text: 'To',
+                        size: 12,
+                        color: AppColors.textColor,
+                      ),
+                      CustomText(
+                        text: widget.item.order.requiredFields.phoneNumber,
+                        size: 14,
+                        color: AppColors.black,
+                      ),
+                      // SizedBox(height: 12),
+                      // CustomText(
+                      //   text: 'Payment Method',
+                      //   size: 12,
+                      //   color: AppColors.textColor,
+                      // ),
+                      // CustomText(
+                      //   text: 'Wallet Balance',
+                      //   size: 14,
+                      //   color: AppColors.black,
+                      // ),
+                      SizedBox(height: 12),
+                      CustomText(
+                        text: 'Description',
+                        size: 12,
+                        color: AppColors.textColor,
+                      ),
+                      CustomText(
+                        text: widget.item.description,
+                        size: 14,
+                        color: AppColors.black,
+                      ),
+                      SizedBox(height: 12),
+                      CustomText(
+                        text: 'Date',
+                        size: 12,
+                        color: AppColors.textColor,
+                      ),
+                      CustomText(
+                        text: widget.item.createdAt.toString(),
+                        size: 14,
+                        color: AppColors.black,
+                      ),
+                      SizedBox(height: 20),
+                      Divider(),
+                      SizedBox(height: 12),
+                      CustomText(
+                        text: 'Transaction Reference',
+                        size: 12,
+                        color: AppColors.textColor,
+                      ),
+                      CustomText(
+                        text: widget.item.reference,
+                        size: 14,
+                        color: AppColors.black,
+                      ),
+                      SizedBox(height: 12),
+                      CustomText(
+                        text: 'Status',
+                        size: 12,
+                        color: AppColors.textColor,
+                      ),
+                      CustomText(
+                        text: widget.item.status.toUpperCase(),
+                        size: 14,
+                        color: AppColors.black,
+                      ),
+                      // SizedBox(height: 12),
+                      // CustomText(
+                      //   text: 'Session ID',
+                      //   size: 12,
+                      //   color: AppColors.textColor,
+                      // ),
+                      // CustomText(
+                      //   text: '47240240248745340248480280',
+                      //   size: 14,
+                      //   color: AppColors.black,
+                      // ),
+                      SizedBox(height: 20),
+                      Center(
+                          child: TextStyles.textHeadings(
+                              textValue: 'Tellatrust',
+                              textColor: AppColors.textColor)),
+                    ],
+                  ),
                 ),
-                IconButton(
-                  icon: Icon(Icons.download, color: Colors.green),
-                  onPressed: () {
-                    // Handle download action
-                  },
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.share, color: Colors.green),
+                      onPressed: () {
+                        // Handle share action
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.download, color: Colors.green),
+                      onPressed: () {
+                        // Handle download action
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.refresh, color: Colors.green),
+                      onPressed: () {
+                        // Handle repeat action
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.report, color: Colors.green),
+                      onPressed: () {
+                        // Handle report action
+                      },
+                    ),
+                  ],
                 ),
-                IconButton(
-                  icon: Icon(Icons.refresh, color: Colors.green),
-                  onPressed: () {
-                    // Handle repeat action
-                  },
+                SizedBox(height: 0),
+                CustomText(
+                  text: 'Thank You!',
+                  textAlign: TextAlign.center,
+                  size: 14,
+                  //: Text//(fontSize: 16, color: Colors.grey),
                 ),
-                IconButton(
-                  icon: Icon(Icons.report, color: Colors.green),
-                  onPressed: () {
-                    // Handle report action
-                  },
+                CustomText(
+                  text: 'For Your Purchase',
+                  textAlign: TextAlign.center,
+                  size: 12,
+                  //: Text//(fontSize: 16, color: Colors.grey),
+                ),
+                SizedBox(height: 20),
+                CustomText(
+                  text: 'Secured by Tella Trust',
+                  textAlign: TextAlign.center,
+                  size: 14,
+                  //: Text//(fontSize: 16, color: Colors.grey),
                 ),
               ],
             ),
-            SizedBox(height: 20),
-            Text(
-              'Thank You!\nFor Your Purchase',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16, color: Colors.grey),
-            ),
-            SizedBox(height: 20),
-            Text(
-              'Secured by Tella Trust',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16, color: Colors.grey),
-            ),
-          ],
-        ),
-      ),
-      backgroundColor: Colors.greenAccent.shade100,
+          )),
     );
   }
 }

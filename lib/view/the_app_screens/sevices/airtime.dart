@@ -452,53 +452,21 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                             if (_selectedPaymentMethod !=
                                                 'wallet') {
                                               var transactionPin = '';
-                                              transactionPin = await modalSheet
-                                                  .showMaterialModalBottomSheet(
-                                                      backgroundColor:
-                                                          Colors.transparent,
-                                                      shape:
-                                                          const RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.vertical(
-                                                                top: Radius
-                                                                    .circular(
-                                                                        20.0)),
-                                                      ),
-                                                      context: context,
-                                                      builder: (context) =>
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .only(
-                                                                    top: 200.0),
-                                                            child:
-                                                                ConfirmWithPin(
-                                                              context: context,
-                                                              title:
-                                                                  'Input your transaction pin to continue',
-                                                            ),
-                                                          ));
-                                              print(transactionPin);
-                                              if (transactionPin != '') {
-                                                widget.category.requiredFields
-                                                        .amount =
-                                                    _selectedAmtController.text;
-                                                widget.category.requiredFields
-                                                        .phoneNumber =
-                                                    _beneficiaryController.text;
-                                                // categoryModel.RequiredFields=widget.category.requiredFields(
-                                                //   phoneNumber: phone,
-                                                //   amount: amount,
-                                                // );
-                                                purchaseProductBloc.add(
-                                                    PurchaseProductEvent(
-                                                        context,
-                                                        widget.category
-                                                            .requiredFields,
-                                                        selectedServiceID,
-                                                        transactionPin,
-                                                        true));
-                                              }
+                                              widget.category.requiredFields
+                                                  .amount =
+                                                  _selectedAmtController.text;
+                                              widget.category.requiredFields
+                                                  .phoneNumber =
+                                                  _beneficiaryController.text;
+
+                                              purchaseProductBloc.add(
+                                                  PurchaseProductEvent(
+                                                      context,
+                                                      widget.category
+                                                          .requiredFields,
+                                                      selectedServiceID,
+                                                      transactionPin,
+                                                      true));
                                             } else {
                                               var transactionPin = '';
                                               transactionPin = await modalSheet
