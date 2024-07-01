@@ -99,11 +99,11 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
             child: Padding(
               padding: const EdgeInsets.all(20.0),
               child: Material(
-                elevation: 2,
+                elevation: 3,
                 borderRadius: BorderRadius.circular(20),
                 color: theme.isDark
                     ? AppColors.darkModeBackgroundContainerColor
-                    : AppColors.black,
+                    : AppColors.white,
                 child: Container(
                     width: AppUtils.deviceScreenSize(context).width,
                     decoration: BoxDecoration(
@@ -301,13 +301,14 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
                                   mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const CustomText(
+                                     CustomText(
                                       text: 'OTP Verification',
                                       size: 20,
                                       weight: FontWeight.bold,
                                       textAlign: TextAlign.center,
-                                      color: AppColors.black,
-                                      maxLines: 2,
+                                      color: theme.isDark
+                                          ? AppColors.white
+                                          : AppColors.black,                                      maxLines: 2,
                                     ),
                                     CustomText(
                                       text:
@@ -315,7 +316,10 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
                                       size: 12,
                                       textAlign: TextAlign.start,
                                       maxLines: 3,
-                                      color: AppColors.textColor,
+                                      color: theme.isDark
+                                          ? AppColors.lightgrey
+                                          : AppColors.textColor,
+                                      //color: AppColors.textColor,
                                       weight: FontWeight.bold,
                                     ),
                                     const SizedBox(
@@ -324,7 +328,7 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
                                     OTPTextField(
                                       length: 6,
                                       width: MediaQuery.of(context).size.width,
-                                      fieldWidth: 50,
+                                      fieldWidth: 40,
                                       controller: otpFieldController,
                                       style: const TextStyle(fontSize: 17),
                                       textFieldAlignment:

@@ -132,11 +132,11 @@ class _KYCIntroState extends State<KYCIntro> {
                         height: 20,
                       ),
                       Material(
-                        elevation: 2,
+                        elevation: 3,
                         borderRadius: BorderRadius.circular(20),
                         color: theme.isDark
                             ? AppColors.darkModeBackgroundContainerColor
-                            : AppColors.black,
+                            : AppColors.white,
                         child: Container(
                           //height: 250,
                           width: AppUtils.deviceScreenSize(context).width,

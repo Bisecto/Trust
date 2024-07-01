@@ -80,11 +80,11 @@ class _BVN_NIN_KYC_1State extends State<BVN_NIN_KYC_1> {
             child: Padding(
               padding: const EdgeInsets.all(20.0),
               child: Material(
-                elevation: 2,
+                elevation: 3,
                 borderRadius: BorderRadius.circular(20),
                 color: theme.isDark
                     ? AppColors.darkModeBackgroundContainerColor
-                    : AppColors.black,
+                    : AppColors.white,
                 child: Container(
                   width: AppUtils.deviceScreenSize(context).width,
                   decoration: BoxDecoration(
