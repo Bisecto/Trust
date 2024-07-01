@@ -3,6 +3,8 @@ class AppIcons {
 
   static const home = '${_iconBaseUrl}home.svg';
   static const info = '${_iconBaseUrl}info.svg';
+  static const download = '${_iconBaseUrl}download.svg';
+  static const infoOutlined = '${_iconBaseUrl}info_outlined.svg';
   static const arrowSlant = '${_iconBaseUrl}arrow_slant.svg';
   static const logoReceipt = '${_iconBaseUrl}logo_receipt.svg';
   static const darkMode = '${_iconBaseUrl}dark_mode.svg';

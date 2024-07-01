@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:teller_trust/model/transactionHistory.dart';
@@ -9,7 +10,8 @@ import 'app_custom_text.dart';
 
 class TransactionReceipt extends StatefulWidget {
   Item item;
-   TransactionReceipt({super.key,required this.item});
+
+  TransactionReceipt({super.key, required this.item});
 
   @override
   State<TransactionReceipt> createState() => _TransactionReceiptState();
@@ -25,7 +27,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
               colors: [
                 const Color(0xF4FCE3).withOpacity(1),
                 const Color(0xFFE4AB).withOpacity(1),
-                const Color(0xC2F6AE).withOpacity(1),
+                //const Color(0xC2F6AE).withOpacity(1),
                 const Color(0xC2F6AE).withOpacity(1),
               ],
               begin: Alignment.topCenter,
@@ -43,6 +45,30 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                   alignment: Alignment.center,
                   child: Column(
                     children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                              height: 30,
+                              width: 30,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                      color: AppColors.textColor2, width: 2)),
+                              child: Center(
+                                  child: CustomText(
+                                text: "x",
+                                weight: FontWeight.bold,
+                                color: AppColors.textColor2,
+                              )),
+                            ),
+                          )
+                        ],
+                      ),
                       SvgPicture.asset(AppIcons.logoReceipt),
                       CustomText(
                         text: 'Transaction Receipt',
@@ -69,7 +95,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                       CustomText(
                         text: widget.item.order.product.name,
                         size: 12,
-                        color: AppColors.textColor,
+                        color: AppColors.textColor2,
                       ),
 
                       CustomText(
@@ -77,11 +103,13 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                         size: 14,
                         color: AppColors.black,
                       ),
-                      SizedBox(height: 12,),
+                      SizedBox(
+                        height: 12,
+                      ),
                       CustomText(
                         text: 'To',
                         size: 12,
-                        color: AppColors.textColor,
+                        color: AppColors.textColor2,
                       ),
                       CustomText(
                         text: widget.item.order.requiredFields.phoneNumber,
@@ -92,7 +120,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                       // CustomText(
                       //   text: 'Payment Method',
                       //   size: 12,
-                      //   color: AppColors.textColor,
+                      //   color: AppColors.textColor2,
                       // ),
                       // CustomText(
                       //   text: 'Wallet Balance',
@@ -103,7 +131,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                       CustomText(
                         text: 'Description',
                         size: 12,
-                        color: AppColors.textColor,
+                        color: AppColors.textColor2,
                       ),
                       CustomText(
                         text: widget.item.description,
@@ -114,7 +142,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                       CustomText(
                         text: 'Date',
                         size: 12,
-                        color: AppColors.textColor,
+                        color: AppColors.textColor2,
                       ),
                       CustomText(
                         text: widget.item.createdAt.toString(),
@@ -127,7 +155,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                       CustomText(
                         text: 'Transaction Reference',
                         size: 12,
-                        color: AppColors.textColor,
+                        color: AppColors.textColor2,
                       ),
                       CustomText(
                         text: widget.item.reference,
@@ -138,7 +166,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                       CustomText(
                         text: 'Status',
                         size: 12,
-                        color: AppColors.textColor,
+                        color: AppColors.textColor2,
                       ),
                       CustomText(
                         text: widget.item.status.toUpperCase(),
@@ -149,7 +177,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                       // CustomText(
                       //   text: 'Session ID',
                       //   size: 12,
-                      //   color: AppColors.textColor,
+                      //   color: AppColors.textColor2,
                       // ),
                       // CustomText(
                       //   text: '47240240248745340248480280',
@@ -160,37 +188,93 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                       Center(
                           child: TextStyles.textHeadings(
                               textValue: 'Tellatrust',
-                              textColor: AppColors.textColor)),
+                              textColor: AppColors.textColor2)),
                     ],
                   ),
                 ),
+                SizedBox(height: 20),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    IconButton(
-                      icon: Icon(Icons.share, color: Colors.green),
-                      onPressed: () {
-                        // Handle share action
+                    GestureDetector(
+                      onTap: () {
                       },
+                      child: Column(
+                        children: [
+                          Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                              color:Color(0xffF3FFEB),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: Center(
+                                child: SvgPicture.asset(AppIcons.send,color: AppColors.darkGreen,)),
+                          ),
+                          SizedBox(height: 5,),
+                          CustomText(text: "Share",size: 12,color: AppColors.darkGreen,weight: FontWeight.bold,)
+                        ],
+                      ),
                     ),
-                    IconButton(
-                      icon: Icon(Icons.download, color: Colors.green),
-                      onPressed: () {
-                        // Handle download action
+
+                    GestureDetector(
+                      onTap: () {
                       },
+                      child: Column(
+                        children: [
+                          Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                                color:Color(0xffF3FFEB),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: Center(
+                                child: SvgPicture.asset(AppIcons.download,color: AppColors.darkGreen,)),
+                          ),
+                          SizedBox(height: 5,),
+                          CustomText(text: "Download",size: 12,color: AppColors.darkGreen,weight: FontWeight.bold,)
+                        ],
+                      ),
                     ),
-                    IconButton(
-                      icon: Icon(Icons.refresh, color: Colors.green),
-                      onPressed: () {
-                        // Handle repeat action
+                    GestureDetector(
+                      onTap: () {
                       },
+                      child: Column(
+                        children: [
+                          Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                                color:Color(0xffF3FFEB),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: Center(
+                                child: SvgPicture.asset(AppIcons.reload,color: AppColors.darkGreen,)),
+                          ),
+                          SizedBox(height: 5,),
+                          CustomText(text: "Repeat",size: 12,color: AppColors.darkGreen,weight: FontWeight.bold,)
+                        ],
+                      ),
                     ),
-                    IconButton(
-                      icon: Icon(Icons.report, color: Colors.green),
-                      onPressed: () {
-                        // Handle report action
+                    GestureDetector(
+                      onTap: () {
                       },
+                      child: Column(
+                        children: [
+                          Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                                color:Color(0xffF3FFEB),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: Center(
+                                child: SvgPicture.asset(AppIcons.infoOutlined,color: AppColors.darkGreen,)),
+                          ),
+                          SizedBox(height: 5,),
+                          CustomText(text: "Report",size: 12,color: AppColors.darkGreen,weight: FontWeight.bold,)
+                        ],
+                      ),
                     ),
+
                   ],
                 ),
                 SizedBox(height: 0),
