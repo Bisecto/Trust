@@ -512,9 +512,9 @@ class _HomePageState extends State<HomePage> {
       height: 155,
       child: CarouselSlider.builder(
         key: _sliderKey,
-        //unlimitedMode: true,
-        //autoSliderDelay: const Duration(seconds: 3),
-        //enableAutoSlider: true,
+        unlimitedMode: true,
+        autoSliderDelay: const Duration(seconds: 3),
+        enableAutoSlider: true,
         controller: carouselSliderController,
         // onSlideChanged: (index) {
         //   setState(() {
