@@ -29,6 +29,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
 import '../../widgets/show_toast.dart';
 import 'build_payment_method.dart';
+import 'make_bank_transfer/bank_transfer.dart';
 
 class DataPurchase extends StatefulWidget {
   final mainCategory.Category category;
@@ -94,7 +95,16 @@ class _DataPurchaseState extends State<DataPurchase> {
 
                         // AppNavigator.pushAndRemovePreviousPages(context,
                         //     page: LandingPage(studentProfile: state.studentProfile));
-                      } else if (state is AccessTokenExpireState) {
+                      } else if (state is QuickPayInitiated) {
+                        String accessToken =
+                        await SharedPref.getString("access-token");
+
+                        AppNavigator.pushAndStackPage(context,
+                            page: MakePayment(
+                              quickPayModel: state.quickPayModel,
+                              accessToken: accessToken,
+                            ));
+                      }  else if (state is AccessTokenExpireState) {
                         showToast(
                             context: context,
                             title: 'Info',
@@ -312,7 +322,10 @@ class _DataPurchaseState extends State<DataPurchase> {
                                 child: Container(
                                   height: 50,
                                   decoration: BoxDecoration(
-                                    color:theme.isDark?AppColors.darkModeBackgroundContainerColor: AppColors.white,
+                                    color: theme.isDark
+                                        ? AppColors
+                                            .darkModeBackgroundContainerColor
+                                        : AppColors.white,
                                     border: Border.all(
                                       color: selectedServiceId.isNotEmpty
                                           ? AppColors.green
@@ -333,8 +346,12 @@ class _DataPurchaseState extends State<DataPurchase> {
                                             size: 14,
                                             color: selectedDataPlan !=
                                                     "Choose Plan"
-                                                ? (theme.isDark?Colors.white:Colors.black)
-                                                : (theme.isDark?Colors.grey:AppColors.lightDivider),
+                                                ? (theme.isDark
+                                                    ? Colors.white
+                                                    : Colors.black)
+                                                : (theme.isDark
+                                                    ? Colors.grey
+                                                    : AppColors.lightDivider),
                                           ),
                                         ),
                                         const Icon(Icons.arrow_drop_down),
@@ -373,10 +390,10 @@ class _DataPurchaseState extends State<DataPurchase> {
                                       Container(
                                         height: 310,
                                         child: PaymentMethodScreen(
-                                          amtToPay: _selectedAmtController
-                                                  .text.isEmpty
-                                              ? '0'
-                                              : _selectedAmtController.text,
+                                          amtToPay:
+                                              selectedDataPlanPrice.isEmpty
+                                                  ? '0'
+                                                  : selectedDataPlanPrice,
                                           onPaymentMethodSelected: (method) {
                                             // No need to use setState here directly as it might be called during the build phase
                                             Future.microtask(() {
@@ -384,7 +401,7 @@ class _DataPurchaseState extends State<DataPurchase> {
                                                 setState(() {
                                                   _selectedPaymentMethod =
                                                       method;
-                                                  //print(_selectedPaymentMethod);
+                                                 // print(_selectedPaymentMethod);
                                                 });
                                               }
                                             });
@@ -402,63 +419,152 @@ class _DataPurchaseState extends State<DataPurchase> {
                                           },
                                         ),
                                       ),
-
-                                      ///Remember to add beneficiary
                                       FormButton(
                                         onPressed: () async {
+                                          print(_selectedPaymentMethod);
+                                          print(selectedDataPlanPrice);
+                                          print(_beneficiaryController
+                                              .text.isNotEmpty);
+                                          print(!isPaymentAllowed);
+
                                           if (_formKey.currentState!
                                               .validate()) {
-                                            var transactionPin = '';
-                                            // transactionPin = await modalSheet
-                                            //     .showMaterialModalBottomSheet(
-                                            //         backgroundColor:
-                                            //             Colors.transparent,
-                                            //         shape:
-                                            //             const RoundedRectangleBorder(
-                                            //           borderRadius:
-                                            //               BorderRadius.vertical(
-                                            //                   top: Radius
-                                            //                       .circular(
-                                            //                           20.0)),
-                                            //         ),
-                                            //         context: context,
-                                            //         builder: (context) =>
-                                            //             Padding(
-                                            //               padding:
-                                            //                   const EdgeInsets
-                                            //                       .only(
-                                            //                       top: 200.0),
-                                            //               child: ConfirmWithPin(
-                                            //                 context: context,
-                                            //                 title:
-                                            //                     'Input your transaction pin to continue',
-                                            //               ),
-                                            //             ));
-                                            print(transactionPin);
-                                            // if (transactionPin != '') {
-                                            //   purchaseProductBloc.add(
-                                            //       PurchaseProductEvent(
-                                            //           context,
-                                            //           double.parse(
-                                            //               selectedDataPlanPrice),
-                                            //           _beneficiaryController
-                                            //               .text,
-                                            //           selectedDataPlanId,
-                                            //           transactionPin,false));
-                                            // }
+                                            if (_selectedPaymentMethod !=
+                                                'wallet') {
+                                              var transactionPin = '';
+                                              widget.category.requiredFields
+                                                      .amount =
+                                                  selectedDataPlanPrice;
+                                              widget.category.requiredFields
+                                                      .phoneNumber =
+                                                  _beneficiaryController.text;
+
+                                              purchaseProductBloc.add(
+                                                  PurchaseProductEvent(
+                                                      context,
+                                                      widget.category
+                                                          .requiredFields,
+                                                      selectedDataPlanId,
+                                                      transactionPin,
+                                                      true));
+                                            } else {
+                                              var transactionPin = '';
+                                              transactionPin = await modalSheet
+                                                  .showMaterialModalBottomSheet(
+                                                      backgroundColor:
+                                                          Colors.transparent,
+                                                      shape:
+                                                          const RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.vertical(
+                                                                top: Radius
+                                                                    .circular(
+                                                                        20.0)),
+                                                      ),
+                                                      context: context,
+                                                      builder: (context) =>
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .only(
+                                                                    top: 200.0),
+                                                            child:
+                                                                ConfirmWithPin(
+                                                              context: context,
+                                                              title:
+                                                                  'Input your transaction pin to continue',
+                                                            ),
+                                                          ));
+                                              print(transactionPin);
+                                              if (transactionPin != '') {
+                                                setState(() {
+                                                  widget.category.requiredFields
+                                                          .amount =
+                                                      selectedDataPlanPrice;
+                                                  widget.category.requiredFields
+                                                          .phoneNumber =
+                                                      _beneficiaryController
+                                                          .text;
+                                                });
+
+                                                purchaseProductBloc.add(
+                                                    PurchaseProductEvent(
+                                                        context,
+                                                        widget.category
+                                                            .requiredFields,
+                                                        selectedDataPlanId,
+                                                        transactionPin,
+                                                        false));
+                                              }
+                                            }
                                           }
                                         },
-                                        disableButton: (!isPaymentAllowed &&
+                                        disableButton: (!isPaymentAllowed ||
                                             _beneficiaryController
-                                                .text.isNotEmpty),
-                                        // selectedDataPlanId.isNotEmpty &&
-                                        //     _beneficiaryController.text=='',
-                                        text: 'Purchase Data',
+                                                .text.length<10 ),
+                                        text: 'Purchase Airtime',
                                         borderColor: AppColors.darkGreen,
                                         bgColor: AppColors.darkGreen,
                                         textColor: AppColors.white,
                                         borderRadius: 10,
-                                      )
+                                      ),
+                                      SizedBox(height: 20,)
+                                      ///Remember to add beneficiary
+                                      // FormButton(
+                                      //   onPressed: () async {
+                                      //     if (_formKey.currentState!
+                                      //         .validate()) {
+                                      //       var transactionPin = '';
+                                      //       // transactionPin = await modalSheet
+                                      //       //     .showMaterialModalBottomSheet(
+                                      //       //         backgroundColor:
+                                      //       //             Colors.transparent,
+                                      //       //         shape:
+                                      //       //             const RoundedRectangleBorder(
+                                      //       //           borderRadius:
+                                      //       //               BorderRadius.vertical(
+                                      //       //                   top: Radius
+                                      //       //                       .circular(
+                                      //       //                           20.0)),
+                                      //       //         ),
+                                      //       //         context: context,
+                                      //       //         builder: (context) =>
+                                      //       //             Padding(
+                                      //       //               padding:
+                                      //       //                   const EdgeInsets
+                                      //       //                       .only(
+                                      //       //                       top: 200.0),
+                                      //       //               child: ConfirmWithPin(
+                                      //       //                 context: context,
+                                      //       //                 title:
+                                      //       //                     'Input your transaction pin to continue',
+                                      //       //               ),
+                                      //       //             ));
+                                      //       print(transactionPin);
+                                      //       // if (transactionPin != '') {
+                                      //       //   purchaseProductBloc.add(
+                                      //       //       PurchaseProductEvent(
+                                      //       //           context,
+                                      //       //           double.parse(
+                                      //       //               selectedDataPlanPrice),
+                                      //       //           _beneficiaryController
+                                      //       //               .text,
+                                      //       //           selectedDataPlanId,
+                                      //       //           transactionPin,false));
+                                      //       // }
+                                      //     }
+                                      //   },
+                                      //   disableButton: (!isPaymentAllowed &&
+                                      //       _beneficiaryController
+                                      //           .text.isNotEmpty),
+                                      //   // selectedDataPlanId.isNotEmpty &&
+                                      //   //     _beneficiaryController.text=='',
+                                      //   text: 'Purchase Data',
+                                      //   borderColor: AppColors.darkGreen,
+                                      //   bgColor: AppColors.darkGreen,
+                                      //   textColor: AppColors.white,
+                                      //   borderRadius: 10,
+                                      // )
                                     ],
                                   )),
                             ),
@@ -478,12 +584,7 @@ class _DataPurchaseState extends State<DataPurchase> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
-        onTap: () {
-          print(amt);
-          setState(() {
-            _selectedAmtController.text = amt;
-          });
-        },
+
         child: Container(
           decoration: BoxDecoration(
               color: AppColors.white,
@@ -492,7 +593,7 @@ class _DataPurchaseState extends State<DataPurchase> {
           child: Padding(
             padding: const EdgeInsets.all(5.0),
             child: CustomText(
-              text: "₦ $amt",
+              text: "N $amt",
             ),
           ),
         ),
@@ -567,33 +668,8 @@ class _DataPurchaseState extends State<DataPurchase> {
 
   String selectedNetwork = "";
   final _beneficiaryController = TextEditingController();
-  final _selectedAmtController = TextEditingController();
 
-  Widget selectAmount(String amt) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: GestureDetector(
-        onTap: () {
-          print(amt);
-          setState(() {
-            _selectedAmtController.text = amt;
-          });
-        },
-        child: Container(
-          decoration: BoxDecoration(
-              color: AppColors.greyAccent,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: AppColors.grey)),
-          child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: CustomText(
-              text: "N $amt",
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+
 
   Widget networkProviderItem(String name, String image, String id, theme) {
     return Padding(
