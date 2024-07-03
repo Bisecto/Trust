@@ -1,27 +1,21 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:adaptive_theme/adaptive_theme.dart';
-import 'package:cross_connectivity/cross_connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/bloc/product_bloc/product_bloc.dart';
-import 'package:teller_trust/res/app_colors.dart';
 import 'package:teller_trust/res/app_router.dart';
-import 'package:teller_trust/res/app_strings.dart';
 import 'package:teller_trust/utills/custom_theme.dart';
 import 'package:teller_trust/view/important_pages/no_internet.dart';
 import 'package:teller_trust/view/splash_screen.dart';
-
 import 'bloc/app_bloc/app_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  AdaptiveThemeMode? adaptiveThemeMode =
-      await AdaptiveTheme.getThemeMode() ?? AdaptiveThemeMode.light;
-  //final savedThemeMode = await AdaptiveTheme.getThemeMode();
+  AdaptiveThemeMode? adaptiveThemeMode = await AdaptiveTheme.getThemeMode() ?? AdaptiveThemeMode.light;
 
   runApp(
     MultiBlocProvider(
@@ -35,7 +29,6 @@ void main() async {
         ChangeNotifierProvider<CustomThemeState>(
           create: (_) => CustomThemeState(adaptiveThemeMode!),
         ),
-        // Add more BlocProviders as needed
       ],
       child: MyApp(
         adaptiveThemeMode: adaptiveThemeMode,
@@ -44,10 +37,13 @@ void main() async {
   );
 }
 
-class MyApp extends StatefulWidget {
-  AdaptiveThemeMode? adaptiveThemeMode;
 
-  MyApp({super.key, required this.adaptiveThemeMode});
+
+
+class MyApp extends StatefulWidget {
+  final AdaptiveThemeMode? adaptiveThemeMode;
+
+  MyApp({Key? key, required this.adaptiveThemeMode}) : super(key: key);
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -56,65 +52,61 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final AppRouter _appRoutes = AppRouter();
   bool _connected = true;
+  StreamSubscription<ConnectivityResult>? _connectivitySubscription;
 
-  StreamSubscription<ConnectivityStatus>? _connectivitySubscription;
+  final double defaultTextScaleFactor = 1.0;
 
   @override
   void initState() {
-    // TODO: implement initState
-  _checkConnectivity();
-  _connectivitySubscription =
-      Connectivity().onConnectivityChanged.listen(_handleConnectivity);
-
-  super.initState();
+    super.initState();
+    _checkConnectivity();
+    _connectivitySubscription =
+        Connectivity().onConnectivityChanged.listen(_handleConnectivity);
   }
+
   Future<void> _checkConnectivity() async {
     var connectivityResult = await Connectivity().checkConnectivity();
     _handleConnectivity(connectivityResult);
   }
-  void _handleConnectivity(ConnectivityStatus result) {
-    if (result == ConnectivityStatus.none) {
-      debugPrint("No network");
-      setState(() {
-        _connected = false;
-      });
-    } else {
-      debugPrint("Network connected");
-      setState(() {
-        _connected = true;
-      });
-    }
+
+  void _handleConnectivity(ConnectivityResult result) {
+    setState(() {
+      _connected = result != ConnectivityResult.none;
+    });
   }
+
   @override
   void dispose() {
     _connectivitySubscription?.cancel();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      statusBarIconBrightness:widget.adaptiveThemeMode!.isDark? Brightness
-          .light:Brightness.dark, // Brightness.light for white icons, Brightness.dark for dark icons
+      statusBarIconBrightness: widget.adaptiveThemeMode!.isDark
+          ? Brightness.light
+          : Brightness.dark,
     ));
+
     return AdaptiveTheme(
       light: ThemeData(
         brightness: Brightness.light,
         primarySwatch: Colors.green,
         fontFamily: "CeraPro",
         appBarTheme: AppBarTheme(
-            systemOverlayStyle: SystemUiOverlayStyle.dark,
-        )
+          systemOverlayStyle: SystemUiOverlayStyle.dark,
+        ),
       ),
       dark: ThemeData(
         brightness: Brightness.dark,
         primarySwatch: Colors.green,
         fontFamily: "CeraPro",
-          appBarTheme: AppBarTheme(
-            systemOverlayStyle: SystemUiOverlayStyle.light,
-          )
+        appBarTheme: AppBarTheme(
+          systemOverlayStyle: SystemUiOverlayStyle.light,
+        ),
       ),
-
       initial: widget.adaptiveThemeMode!,
       builder: (theme, darkTheme) => MaterialApp(
         title: 'Tellatrust',
@@ -123,21 +115,9 @@ class _MyAppState extends State<MyApp> {
         theme: theme,
         darkTheme: darkTheme,
         home: _connected
-            ? SplashScreen():No_internet_Page(onRetry: _checkConnectivity),
-
-
-        //onGenerateInitialRoutes: _appRoutes.onGenerateRoute,
+            ? SplashScreen()
+            : No_internet_Page(onRetry: _checkConnectivity),
       ),
     );
-    //   MaterialApp(
-    //   debugShowCheckedModeBanner: false,
-    //   title: AppStrings.appName,
-    //   themeMode: ThemeMode.light,
-    //   theme: ThemeData(
-    //     colorScheme: ColorScheme.fromSeed(seedColor: AppColors.green),
-    //     useMaterial3: true,
-    //   ),
-    //   onGenerateRoute: _appRoutes.onGenerateRoute,
-    // );
   }
 }
