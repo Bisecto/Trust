@@ -1,5 +1,3 @@
-import 'package:adaptive_theme/adaptive_theme.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -29,36 +27,35 @@ import '../../widgets/form_input.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
 import '../../widgets/show_toast.dart';
-import 'build_payment_method.dart';
-import 'make_bank_transfer/bank_transfer.dart';
 
-class DataPurchase extends StatefulWidget {
+class ElectricityPurchase extends StatefulWidget {
   final mainCategory.Category category;
 
-  const DataPurchase({super.key, required this.category});
+  const ElectricityPurchase({super.key, required this.category});
 
   @override
-  State<DataPurchase> createState() => _DataPurchaseState();
+  State<ElectricityPurchase> createState() => _ElectricityPurchaseState();
 }
 
-class _DataPurchaseState extends State<DataPurchase> {
+class _ElectricityPurchaseState extends State<ElectricityPurchase> {
   ProductBloc productBloc = ProductBloc();
   ProductBloc purchaseProductBloc = ProductBloc();
-  String selectedDataPlan = 'Choose Plan';
-  String selectedDataPlanPrice = '';
-  String selectedDataPlanId = '';
+  String selectedElectricityPlan = 'Choose Plan';
+  String selectedElectricityPlanPrice = '';
+  String selectedElectricityPlanId = '';
   String selectedServiceId = '';
-  bool isPaymentAllowed = false;
 
   @override
   void initState() {
     // TODO: implement initState
+    print(widget.category.name);
+    print(widget.category.name);
+    print(widget.category.name);
+    print(widget.category.name);
     productBloc.add(ListServiceEvent("1", "4", widget.category.id));
 
     super.initState();
   }
-
-  String _selectedPaymentMethod = 'wallet';
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +64,7 @@ class _DataPurchaseState extends State<DataPurchase> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
-        height: AppUtils.deviceScreenSize(context).height - 100,
+        height: AppUtils.deviceScreenSize(context).height,
         decoration: BoxDecoration(
             color: theme.isDark
                 ? AppColors.darkModeBackgroundColor
@@ -82,7 +79,7 @@ class _DataPurchaseState extends State<DataPurchase> {
                 BlocConsumer<ProductBloc, ProductState>(
                     bloc: purchaseProductBloc,
                     listenWhen: (previous, current) =>
-                        current is! ProductInitial,
+                    current is! ProductInitial,
                     listener: (context, state) async {
                       print(state);
                       if (state is PurchaseSuccess) {
@@ -96,16 +93,7 @@ class _DataPurchaseState extends State<DataPurchase> {
 
                         // AppNavigator.pushAndRemovePreviousPages(context,
                         //     page: LandingPage(studentProfile: state.studentProfile));
-                      } else if (state is QuickPayInitiated) {
-                        String accessToken =
-                        await SharedPref.getString("access-token");
-
-                        AppNavigator.pushAndStackPage(context,
-                            page: MakePayment(
-                              quickPayModel: state.quickPayModel,
-                              accessToken: accessToken,
-                            ));
-                      }  else if (state is AccessTokenExpireState) {
+                      } else if (state is AccessTokenExpireState) {
                         showToast(
                             context: context,
                             title: 'Info',
@@ -138,6 +126,8 @@ class _DataPurchaseState extends State<DataPurchase> {
                           children: <Widget>[
                             Container(
                               height: 60,
+                              width: double.infinity,
+
                               decoration: BoxDecoration(
                                   color: theme.isDark
                                       ? AppColors.darkModeBackgroundColor
@@ -145,7 +135,7 @@ class _DataPurchaseState extends State<DataPurchase> {
                                   borderRadius: BorderRadius.only(
                                       topRight: Radius.circular(10),
                                       topLeft: Radius.circular(10))),
-                              child: Padding(
+                              child:  Padding(
                                 padding: const EdgeInsets.all(0.0),
                                 child: Stack(
                                   alignment: Alignment.center,
@@ -158,7 +148,9 @@ class _DataPurchaseState extends State<DataPurchase> {
                                         AppIcons.billTopBackground,
                                         height: 60,
                                         // Increase height to fit the text
-                                        width: double.infinity,
+                                        width:
+                                        AppUtils.deviceScreenSize(context)
+                                            .width,
                                         color: AppColors.darkGreen,
                                         // Set the color if needed
                                         placeholderBuilder: (context) {
@@ -168,7 +160,7 @@ class _DataPurchaseState extends State<DataPurchase> {
                                             color: Colors.grey[300],
                                             child: Center(
                                                 child:
-                                                    CircularProgressIndicator()),
+                                                CircularProgressIndicator()),
                                           );
                                         },
                                       ),
@@ -179,16 +171,16 @@ class _DataPurchaseState extends State<DataPurchase> {
                                       right: 10,
                                       child: Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                        MainAxisAlignment.spaceBetween,
                                         children: [
                                           TextStyles.textHeadings(
-                                            textValue: 'Data',
+                                            textValue: 'Electricity Purchase',
                                             textColor: AppColors.darkGreen,
                                             // w: FontWeight.w600,
                                             textSize: 14,
                                           ),
                                           // Text(
-                                          //   "Airtime purchase",
+                                          //   "Electricity purchase",
                                           //   style: TextStyle(
                                           //     color: AppColors.darkGreen,
                                           //     fontWeight: FontWeight.w600,
@@ -212,9 +204,6 @@ class _DataPurchaseState extends State<DataPurchase> {
                               ),
                             ),
 
-                            // const SizedBox(
-                            //   height: 10,
-                            // ),
                             BlocConsumer<ProductBloc, ProductState>(
                               bloc: productBloc,
                               builder: (context, state) {
@@ -222,12 +211,12 @@ class _DataPurchaseState extends State<DataPurchase> {
                                   ServiceModel serviceItem = state.serviceModel;
                                   List<Service> services =
                                       serviceItem.data.services;
-                                  //Use user data here
+                                  //Use user Electricity here
                                   return SizedBox(
                                     height: 105,
                                     child: ListView.builder(
                                       physics:
-                                          const NeverScrollableScrollPhysics(),
+                                      const NeverScrollableScrollPhysics(),
                                       scrollDirection: Axis.horizontal,
                                       // gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                                       //   crossAxisCount: 4,
@@ -244,19 +233,18 @@ class _DataPurchaseState extends State<DataPurchase> {
                                                 //selectedAction=services[index].name;
                                               });
 
-                                              //showAirtimeModal(context, AppList().serviceItems[index]);
+                                              //showElectricityModal(context, AppList().serviceItems[index]);
                                             },
                                             child: networkProviderItem(
                                                 services[index].name,
                                                 services[index].image,
-                                                services[index].id,
-                                                theme));
+                                                services[index].id));
                                       },
                                     ),
                                   );
                                 } else {
                                   return const CustomText(
-                                    text: "     Loading.....",
+                                    text: "There",
                                     size: 15,
                                     weight: FontWeight.bold,
                                     color: AppColors.white,
@@ -267,7 +255,7 @@ class _DataPurchaseState extends State<DataPurchase> {
                                   ProductState state) async {
                                 if (state is AccessTokenExpireState) {
                                   String firstame =
-                                      await SharedPref.getString('firstName');
+                                  await SharedPref.getString('firstName');
 
                                   AppNavigator.pushAndRemovePreviousPages(
                                       context,
@@ -301,20 +289,20 @@ class _DataPurchaseState extends State<DataPurchase> {
                                       context: context,
                                       builder: (context) => Padding(
                                         padding:
-                                            const EdgeInsets.only(top: 200.0),
-                                        child: DataPlan(
-                                          onDataPlanSelected: (String name,
+                                        const EdgeInsets.only(top: 200.0),
+                                        child: ElectricityPlan(
+                                          onElectricityPlanSelected: (String name,
                                               String price, String id) {
                                             setState(() {
-                                              selectedDataPlan = name;
-                                              selectedDataPlanPrice = price;
-                                              selectedDataPlanId = id;
+                                              selectedElectricityPlan = name;
+                                              selectedElectricityPlanPrice = price;
+                                              selectedElectricityPlanId = id;
                                             });
                                             Navigator.pop(
                                                 context); // Close modal
                                           },
                                           categoryId: widget.category.id,
-                                          serviceId: selectedServiceId, theme: theme,
+                                          serviceId: selectedServiceId,
                                         ),
                                       ),
                                     );
@@ -323,10 +311,7 @@ class _DataPurchaseState extends State<DataPurchase> {
                                 child: Container(
                                   height: 50,
                                   decoration: BoxDecoration(
-                                    color: theme.isDark
-                                        ? AppColors
-                                            .darkModeBackgroundContainerColor
-                                        : AppColors.white,
+                                    color: AppColors.white,
                                     border: Border.all(
                                       color: selectedServiceId.isNotEmpty
                                           ? AppColors.green
@@ -339,20 +324,16 @@ class _DataPurchaseState extends State<DataPurchase> {
                                     padding: const EdgeInsets.only(left: 25.0),
                                     child: Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.spaceBetween,
                                       children: [
                                         Expanded(
                                           child: CustomText(
-                                            text: selectedDataPlan,
+                                            text: selectedElectricityPlan,
                                             size: 14,
-                                            color: selectedDataPlan !=
-                                                    "Choose Plan"
-                                                ? (theme.isDark
-                                                    ? Colors.white
-                                                    : Colors.black)
-                                                : (theme.isDark
-                                                    ? Colors.grey
-                                                    : AppColors.lightDivider),
+                                            color: selectedElectricityPlan !=
+                                                "Choose Plan"
+                                                ? Colors.black
+                                                : AppColors.lightDivider,
                                           ),
                                         ),
                                         const Icon(Icons.arrow_drop_down),
@@ -362,10 +343,10 @@ class _DataPurchaseState extends State<DataPurchase> {
                                 ),
                               ),
                             ),
-                            if (selectedDataPlanPrice.isNotEmpty)
+                            if (selectedElectricityPlanPrice.isNotEmpty)
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: amount(selectedDataPlanPrice),
+                                child: amount(selectedElectricityPlanPrice),
                               ),
                             Padding(
                               padding: const EdgeInsets.all(10.0),
@@ -379,192 +360,70 @@ class _DataPurchaseState extends State<DataPurchase> {
                                         controller: _beneficiaryController,
                                         textInputType: TextInputType.number,
                                         validator:
-                                            AppValidator.validateTextfield,
+                                        AppValidator.validateTextfield,
+                                        //icon: Icons.flag,
                                         widget: SvgPicture.asset(AppIcons.nigeriaLogo),
                                         //isMobileNumber: true,
                                         borderColor: _beneficiaryController
-                                                .text.isNotEmpty
+                                            .text.isNotEmpty
                                             ? AppColors.green
                                             : AppColors.grey,
                                       ),
-                                      Container(
-                                        height: 310,
-                                        child: PaymentMethodScreen(
-                                          amtToPay:
-                                              selectedDataPlanPrice.isEmpty
-                                                  ? '0'
-                                                  : selectedDataPlanPrice,
-                                          onPaymentMethodSelected: (method) {
-                                            // No need to use setState here directly as it might be called during the build phase
-                                            Future.microtask(() {
-                                              if (mounted) {
-                                                setState(() {
-                                                  _selectedPaymentMethod =
-                                                      method;
-                                                 // print(_selectedPaymentMethod);
-                                                });
-                                              }
-                                            });
-                                          },
-                                          ispaymentAllowed: (allowed) {
-                                            // Deferred update to avoid issues during the build phase
-                                            Future.microtask(() {
-                                              if (mounted) {
-                                                setState(() {
-                                                  isPaymentAllowed = allowed;
-                                                  // print(isPaymentAllowed);
-                                                });
-                                              }
-                                            });
-                                          },
-                                        ),
-                                      ),
+
+                                      ///Remember to add beneficiary
                                       FormButton(
                                         onPressed: () async {
-                                          print(_selectedPaymentMethod);
-                                          print(selectedDataPlanPrice);
-                                          print(_beneficiaryController
-                                              .text.isNotEmpty);
-                                          print(!isPaymentAllowed);
-
                                           if (_formKey.currentState!
                                               .validate()) {
-                                            if (_selectedPaymentMethod !=
-                                                'wallet') {
-                                              var transactionPin = '';
-                                              widget.category.requiredFields
-                                                      .amount =
-                                                  selectedDataPlanPrice;
-                                              widget.category.requiredFields
-                                                      .phoneNumber =
-                                                  _beneficiaryController.text;
-
-                                              purchaseProductBloc.add(
-                                                  PurchaseProductEvent(
-                                                      context,
-                                                      widget.category
-                                                          .requiredFields,
-                                                      selectedDataPlanId,
-                                                      transactionPin,
-                                                      true));
-                                            } else {
-                                              var transactionPin = '';
-                                              transactionPin = await modalSheet
-                                                  .showMaterialModalBottomSheet(
-                                                      backgroundColor:
-                                                          Colors.transparent,
-                                                      shape:
-                                                          const RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.vertical(
-                                                                top: Radius
-                                                                    .circular(
-                                                                        20.0)),
-                                                      ),
-                                                      context: context,
-                                                      builder: (context) =>
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .only(
-                                                                    top: 200.0),
-                                                            child:
-                                                                ConfirmWithPin(
-                                                              context: context,
-                                                              title:
-                                                                  'Input your transaction pin to continue',
-                                                            ),
-                                                          ));
-                                              print(transactionPin);
-                                              if (transactionPin != '') {
-                                                setState(() {
-                                                  widget.category.requiredFields
-                                                          .amount =
-                                                      selectedDataPlanPrice;
-                                                  widget.category.requiredFields
-                                                          .phoneNumber =
-                                                      _beneficiaryController
-                                                          .text;
-                                                });
-
-                                                purchaseProductBloc.add(
-                                                    PurchaseProductEvent(
-                                                        context,
-                                                        widget.category
-                                                            .requiredFields,
-                                                        selectedDataPlanId,
-                                                        transactionPin,
-                                                        false));
-                                              }
-                                            }
+                                            var transactionPin = '';
+                                            // transactionPin = await modalSheet
+                                            //     .showMaterialModalBottomSheet(
+                                            //         backgroundColor:
+                                            //             Colors.transparent,
+                                            //         shape:
+                                            //             const RoundedRectangleBorder(
+                                            //           borderRadius:
+                                            //               BorderRadius.vertical(
+                                            //                   top: Radius
+                                            //                       .circular(
+                                            //                           20.0)),
+                                            //         ),
+                                            //         context: context,
+                                            //         builder: (context) =>
+                                            //             Padding(
+                                            //               padding:
+                                            //                   const EdgeInsets
+                                            //                       .only(
+                                            //                       top: 200.0),
+                                            //               child: ConfirmWithPin(
+                                            //                 context: context,
+                                            //                 title:
+                                            //                     'Input your transaction pin to continue',
+                                            //               ),
+                                            //             ));
+                                            print(transactionPin);
+                                            // if (transactionPin != '') {
+                                            //   purchaseProductBloc.add(
+                                            //       PurchaseProductEvent(
+                                            //           context,
+                                            //           double.parse(
+                                            //               selectedElectricityPlanPrice),
+                                            //           _beneficiaryController
+                                            //               .text,
+                                            //           selectedElectricityPlanId,
+                                            //           transactionPin));
+                                            // }
                                           }
                                         },
-                                        disableButton: (!isPaymentAllowed ||
-                                            _beneficiaryController
-                                                .text.length<10 ),
-                                        text: 'Purchase Data',
+                                        disableButton: selectedElectricityPlanId
+                                            .isNotEmpty &&
+                                            _beneficiaryController.text == '',
+                                        text: 'Purchase Electricity',
                                         borderColor: AppColors.darkGreen,
                                         bgColor: AppColors.darkGreen,
                                         textColor: AppColors.white,
                                         borderRadius: 10,
-                                      ),
-                                      SizedBox(height: 20,)
-                                      ///Remember to add beneficiary
-                                      // FormButton(
-                                      //   onPressed: () async {
-                                      //     if (_formKey.currentState!
-                                      //         .validate()) {
-                                      //       var transactionPin = '';
-                                      //       // transactionPin = await modalSheet
-                                      //       //     .showMaterialModalBottomSheet(
-                                      //       //         backgroundColor:
-                                      //       //             Colors.transparent,
-                                      //       //         shape:
-                                      //       //             const RoundedRectangleBorder(
-                                      //       //           borderRadius:
-                                      //       //               BorderRadius.vertical(
-                                      //       //                   top: Radius
-                                      //       //                       .circular(
-                                      //       //                           20.0)),
-                                      //       //         ),
-                                      //       //         context: context,
-                                      //       //         builder: (context) =>
-                                      //       //             Padding(
-                                      //       //               padding:
-                                      //       //                   const EdgeInsets
-                                      //       //                       .only(
-                                      //       //                       top: 200.0),
-                                      //       //               child: ConfirmWithPin(
-                                      //       //                 context: context,
-                                      //       //                 title:
-                                      //       //                     'Input your transaction pin to continue',
-                                      //       //               ),
-                                      //       //             ));
-                                      //       print(transactionPin);
-                                      //       // if (transactionPin != '') {
-                                      //       //   purchaseProductBloc.add(
-                                      //       //       PurchaseProductEvent(
-                                      //       //           context,
-                                      //       //           double.parse(
-                                      //       //               selectedDataPlanPrice),
-                                      //       //           _beneficiaryController
-                                      //       //               .text,
-                                      //       //           selectedDataPlanId,
-                                      //       //           transactionPin,false));
-                                      //       // }
-                                      //     }
-                                      //   },
-                                      //   disableButton: (!isPaymentAllowed &&
-                                      //       _beneficiaryController
-                                      //           .text.isNotEmpty),
-                                      //   // selectedDataPlanId.isNotEmpty &&
-                                      //   //     _beneficiaryController.text=='',
-                                      //   text: 'Purchase Data',
-                                      //   borderColor: AppColors.darkGreen,
-                                      //   bgColor: AppColors.darkGreen,
-                                      //   textColor: AppColors.white,
-                                      //   borderRadius: 10,
-                                      // )
+                                      )
                                     ],
                                   )),
                             ),
@@ -584,7 +443,12 @@ class _DataPurchaseState extends State<DataPurchase> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
-
+        onTap: () {
+          print(amt);
+          setState(() {
+            _selectedAmtController.text = amt;
+          });
+        },
         child: Container(
           decoration: BoxDecoration(
               color: AppColors.white,
@@ -593,7 +457,7 @@ class _DataPurchaseState extends State<DataPurchase> {
           child: Padding(
             padding: const EdgeInsets.all(5.0),
             child: CustomText(
-              text: "N $amt",
+              text: "₦ $amt",
             ),
           ),
         ),
@@ -623,7 +487,7 @@ class _DataPurchaseState extends State<DataPurchase> {
                       decoration: BoxDecoration(
                           color: Colors.grey.withOpacity(0.2),
                           borderRadius:
-                              const BorderRadius.all(Radius.circular(50)))),
+                          const BorderRadius.all(Radius.circular(50)))),
                   const SizedBox(height: 10),
                   Shimmer(
                     duration: const Duration(seconds: 1),
@@ -668,10 +532,35 @@ class _DataPurchaseState extends State<DataPurchase> {
 
   String selectedNetwork = "";
   final _beneficiaryController = TextEditingController();
+  final _selectedAmtController = TextEditingController();
 
+  Widget selectAmount(String amt) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: GestureDetector(
+        onTap: () {
+          print(amt);
+          setState(() {
+            _selectedAmtController.text = amt;
+          });
+        },
+        child: Container(
+          decoration: BoxDecoration(
+              color: AppColors.greyAccent,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: AppColors.grey)),
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: CustomText(
+              text: "N $amt",
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
-
-  Widget networkProviderItem(String name, String image, String id, theme) {
+  Widget networkProviderItem(String name, String image, String id) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -679,13 +568,12 @@ class _DataPurchaseState extends State<DataPurchase> {
         width: AppUtils.deviceScreenSize(context).width / 5,
         decoration: BoxDecoration(
             border: Border.all(
-                width: 1.5,
                 color: selectedNetwork == name.toLowerCase()
-                    ? AppColors.darkGreen
+                    ? AppColors.green
                     : Colors.transparent),
-            // color: selectedNetwork == name.toLowerCase()
-            //     ? AppColors.lightShadowGreenColor
-            //     : Colors.transparent,
+            color: selectedNetwork == name.toLowerCase()
+                ? AppColors.lightShadowGreenColor
+                : Colors.transparent,
             borderRadius: BorderRadius.circular(15)),
         child: Padding(
           padding: const EdgeInsets.all(6.0),
@@ -694,9 +582,9 @@ class _DataPurchaseState extends State<DataPurchase> {
               setState(() {
                 selectedNetwork = name.toLowerCase();
                 selectedServiceId = id;
-                selectedDataPlanPrice = '';
-                selectedDataPlanId = '';
-                selectedDataPlan = 'Choose Plan';
+                selectedElectricityPlanPrice = '';
+                selectedElectricityPlanId = '';
+                selectedElectricityPlan = 'Choose Plan';
               });
             },
             child: Column(
@@ -707,26 +595,10 @@ class _DataPurchaseState extends State<DataPurchase> {
                   backgroundImage: NetworkImage(image),
                   //child: Image.asset(image,height: 20,width: 20,),
                 ),
-                SizedBox(
-                  height: 5,
-                ),
-                if (selectedNetwork == name.toLowerCase())
-                  TextStyles.textHeadings(
-                      textValue: name,
-                      textSize: 12,
-                      textColor: AppColors.darkGreen),
-                if (selectedNetwork != name.toLowerCase())
-                  CustomText(
-                    text: name,
-                    //color: AppColors.black,
-                    size: 12,
-                    weight: FontWeight.bold,
-                    color: selectedNetwork == name.toLowerCase()
-                        ? AppColors.darkGreen
-                        : theme.isDark
-                            ? AppColors.white
-                            : AppColors.black,
-                  )
+                CustomText(
+                  text: name,
+                  color: AppColors.black,
+                )
               ],
             ),
           ),
@@ -734,7 +606,7 @@ class _DataPurchaseState extends State<DataPurchase> {
       ),
     );
   }
-// void showAirtimeModal(BuildContext context, Services services) {
+// void showElectricityModal(BuildContext context, Services services) {
 //   modalSheet.showMaterialModalBottomSheet(
 //     context: context,
 //     enableDrag: true,
@@ -749,18 +621,16 @@ class _DataPurchaseState extends State<DataPurchase> {
 // }
 }
 
-class DataPlan extends StatelessWidget {
+class ElectricityPlan extends StatelessWidget {
   final String categoryId;
   final String serviceId;
-  final AdaptiveThemeMode theme;
-  final Function(String, String, String) onDataPlanSelected;
+  final Function(String, String, String) onElectricityPlanSelected;
 
-  DataPlan({
+  ElectricityPlan({
     Key? key,
     required this.serviceId,
     required this.categoryId,
-    required this.onDataPlanSelected,
-    required this.theme
+    required this.onElectricityPlanSelected,
   }) : super(key: key);
 
   @override
@@ -772,75 +642,33 @@ class DataPlan extends StatelessWidget {
           body: Column(
             children: [
               Container(
-                height: 60,
-                decoration: BoxDecoration(
-                    color: theme.isDark
-                        ? AppColors.darkModeBackgroundColor
-                        : AppColors.white,
+                height: 50,
+                decoration: const BoxDecoration(
+                    color: AppColors.darkGreen,
                     borderRadius: BorderRadius.only(
                         topRight: Radius.circular(10),
                         topLeft: Radius.circular(10))),
                 child: Padding(
-                  padding: const EdgeInsets.all(0.0),
-                  child: Stack(
-                    alignment: Alignment.center,
+                  padding: const EdgeInsets.all(10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Positioned(
-                        top: 0, // Adjust position as needed
-                        left: 0,
-                        right: 0,
-                        child: SvgPicture.asset(
-                          AppIcons.billTopBackground,
-                          height: 60,
-                          // Increase height to fit the text
-                          width: double.infinity,
-                          color: AppColors.darkGreen,
-                          // Set the color if needed
-                          placeholderBuilder: (context) {
-                            return Container(
-                              height: 50,
-                              width: double.infinity,
-                              color: Colors.grey[300],
-                              child: Center(
-                                  child:
-                                  CircularProgressIndicator()),
-                            );
-                          },
-                        ),
+                      const CustomText(
+                        text: "Electricity Plans",
+                        color: AppColors.white,
+                        weight: FontWeight.w600,
+                        size: 18,
                       ),
-                      Positioned(
-                        top: 10, // Adjust position as needed
-                        left: 10,
-                        right: 10,
-                        child: Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
-                          children: [
-                            TextStyles.textHeadings(
-                              textValue: 'Data Plans',
-                              textColor: AppColors.darkGreen,
-                              // w: FontWeight.w600,
-                              textSize: 14,
-                            ),
-                            // Text(
-                            //   "Airtime purchase",
-                            //   style: TextStyle(
-                            //     color: AppColors.darkGreen,
-                            //     fontWeight: FontWeight.w600,
-                            //     fontSize: 18,
-                            //   ),
-                            // ),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.pop(context);
-                              },
-                              child: Icon(
-                                Icons.cancel,
-                                color: Colors.grey,
-                                size: 30,
-                              ),
-                            ),
-                          ],
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Container(
+                          child: const Icon(
+                            Icons.arrow_back_ios,
+                            size: 40,
+                            color: AppColors.lightShadowGreenColor,
+                          ),
                         ),
                       ),
                     ],
@@ -848,8 +676,8 @@ class DataPlan extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: DataPlanList(
-                  onDataPlanSelected: onDataPlanSelected,
+                child: ElectricityPlanList(
+                  onElectricityPlanSelected: onElectricityPlanSelected,
                   serviceId: serviceId,
                   categoryId: categoryId,
                 ),
@@ -862,23 +690,23 @@ class DataPlan extends StatelessWidget {
   }
 }
 
-class DataPlanList extends StatefulWidget {
+class ElectricityPlanList extends StatefulWidget {
   final String categoryId;
   final String serviceId;
-  final Function(String, String, String) onDataPlanSelected;
+  final Function(String, String, String) onElectricityPlanSelected;
 
-  DataPlanList({
+  ElectricityPlanList({
     Key? key,
     required this.serviceId,
     required this.categoryId,
-    required this.onDataPlanSelected,
+    required this.onElectricityPlanSelected,
   }) : super(key: key);
 
   @override
-  _DataPlanListState createState() => _DataPlanListState();
+  _ElectricityPlanListState createState() => _ElectricityPlanListState();
 }
 
-class _DataPlanListState extends State<DataPlanList> {
+class _ElectricityPlanListState extends State<ElectricityPlanList> {
   final TextEditingController _searchController = TextEditingController();
   int page = 1;
   ProductBloc productListBloc = ProductBloc();
@@ -887,7 +715,7 @@ class _DataPlanListState extends State<DataPlanList> {
   void initState() {
     super.initState();
     _searchController.addListener(_onSearchChanged);
-    _fetchDataPlan('', page, widget.categoryId, widget.serviceId);
+    _fetchElectricityPlan('', page, widget.categoryId, widget.serviceId);
   }
 
   @override
@@ -897,11 +725,11 @@ class _DataPlanListState extends State<DataPlanList> {
       child: Column(
         children: [
           CustomTextFormField(
-            hint: 'Search Data plan',
+            hint: 'Search Electricity plan',
             label: '',
             controller: _searchController,
             validator: AppValidator.validateAccountNumberfield,
-            widget:Icon( Icons.search),
+            widget: Icon(Icons.search)
           ),
           Expanded(
             child: BlocBuilder<ProductBloc, ProductState>(
@@ -915,35 +743,24 @@ class _DataPlanListState extends State<DataPlanList> {
                     itemCount: product.productModel.data.items.length,
                     itemBuilder: (context, index) {
                       final singleProduct =
-                          product.productModel.data.items[index];
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ListTile(
-
-                          onTap: () {
-                            widget.onDataPlanSelected(
-                              singleProduct.name,
-                              singleProduct.buyerPrice.toString(),
-                              singleProduct.id,
-                            );
-                          },
-                          title: CustomText(
-                            text: singleProduct.name,
-                            size: 14,
-                            weight: FontWeight.w700,
-                          ),
-                          subtitle: Row(
-                            children: [
-                              SvgPicture.asset(AppIcons.naira,color: AppColors.green,),
-                              CustomText(
-                                text: singleProduct.buyerPrice.toString(),
-                                size: 14,
-                                weight: FontWeight.w400,
-                              ),
-                            ],
-                          ),
-                          shape:  RoundedRectangleBorder( side: BorderSide(color: Colors.grey),borderRadius: BorderRadius.circular(5),)
-                          //shape: ShapeBorder(),
+                      product.productModel.data.items[index];
+                      return ListTile(
+                        onTap: () {
+                          widget.onElectricityPlanSelected(
+                            singleProduct.name,
+                            singleProduct.buyerPrice.toString(),
+                            singleProduct.id,
+                          );
+                        },
+                        title: CustomText(
+                          text: singleProduct.name,
+                          size: 14,
+                          weight: FontWeight.w700,
+                        ),
+                        subtitle: CustomText(
+                          text: singleProduct.buyerPrice.toString(),
+                          size: 14,
+                          weight: FontWeight.w400,
                         ),
                       );
                     },
@@ -965,11 +782,11 @@ class _DataPlanListState extends State<DataPlanList> {
 
   void _onSearchChanged() {
     page = 1; // Reset page number to 1 when search query changes
-    _fetchDataPlan(
+    _fetchElectricityPlan(
         _searchController.text, page, widget.categoryId, widget.serviceId);
   }
 
-  void _fetchDataPlan(String query, int pageNo, categoryId, serviceId) {
+  void _fetchElectricityPlan(String query, int pageNo, categoryId, serviceId) {
     productListBloc
         .add(FetchProduct(query, pageNo.toString(), 20, categoryId, serviceId));
     page++; // Increment page number after making the request

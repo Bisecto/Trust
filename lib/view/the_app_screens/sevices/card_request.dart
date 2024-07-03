@@ -85,7 +85,7 @@ class _TellaCardRequestState extends State<TellaCardRequest> {
                         controller: _houseDetailsController,
                         validator:
                         AppValidator.validateTextfield,
-                        icon: Icons.house,
+                        widget: Icon(Icons.house),
                         borderColor: _houseDetailsController.text.isNotEmpty?AppColors.green:AppColors.grey,
 
                       ),
@@ -96,7 +96,7 @@ class _TellaCardRequestState extends State<TellaCardRequest> {
                         AppValidator.validatePassword,
                         controller: _streetDetailsController,
                         hint: 'Add Street details Here',
-                        icon: Icons.streetview,
+                        widget: Icon(Icons.streetview),
                         borderColor: _streetDetailsController.text.isNotEmpty?AppColors.green:AppColors.grey,
 
                       ), CustomTextFormField(
@@ -105,7 +105,7 @@ class _TellaCardRequestState extends State<TellaCardRequest> {
                         AppValidator.validatePassword,
                         controller: _landmarkDetailsController,
                         hint: 'Any Landmark?',
-                        icon: Icons.location_on,
+                        widget: Icon(Icons.location_on),
                         borderColor: _landmarkDetailsController.text.isNotEmpty?AppColors.green:AppColors.grey,
 
                       ),
@@ -115,7 +115,7 @@ class _TellaCardRequestState extends State<TellaCardRequest> {
                         AppValidator.validatePassword,
                         controller: _landmarkDetailsController,
                         hint: 'Phone Number',
-                        icon: Icons.phone_in_talk,
+                        widget: Icon(Icons.phone_in_talk),
                         borderColor: _landmarkDetailsController.text.isNotEmpty?AppColors.green:AppColors.grey,
 
                       ),

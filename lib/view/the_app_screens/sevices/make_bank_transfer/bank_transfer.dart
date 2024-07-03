@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 
 import '../../../../../res/app_colors.dart';
 import '../../../../model/quickpay_model.dart';
+import '../../../../model/transactionHistory.dart';
 import '../../../../utills/shared_preferences.dart';
 import '../../../widgets/app_custom_text.dart';
 import '../../../widgets/purchase_receipt.dart';
@@ -50,7 +51,7 @@ class _MakePaymentState extends State<MakePayment> {
       Map<String, dynamic> responseData = jsonDecode(response.body);
       String status = responseData['data']['status'];
 
-      if (status.toLowerCase() == 'pending') {
+      if (status.toLowerCase() == 'pending'||status.toLowerCase() == 'failed') {
         print('Transaction status is pending. Retrying...');
         // Recursive call to retry the request
         performGetRequest(
@@ -58,9 +59,11 @@ class _MakePaymentState extends State<MakePayment> {
         );
       } else {
         print('Request completed with status: $status');
+        Item item =Item.fromJson(responseData['data']);
+        AppNavigator.pushAndStackPage(context, page: TransactionReceipt(item: item,));
+
       }
 
-      //AppNavigator.pushAndStackPage(context, page: TransactionReceiptScreen());
     } else {
       print(
           'Request failed with status code: ${response.statusCode}. Retrying...');

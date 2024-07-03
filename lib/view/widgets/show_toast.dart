@@ -53,7 +53,7 @@ Future<bool?> alert({
     //desc: subtitle,
     content: Container(
       width: double.infinity,
-      height: 310,
+      height: 350,
       decoration: BoxDecoration(
           color: theme.isDark
               ? AppColors.darkModeBackgroundContainerColor
@@ -105,10 +105,16 @@ Future<bool?> alert({
               const SizedBox(
                 height: 5,
               ),
-              CustomText(
-                text: subtitle,
-                color: theme.isDark ? AppColors.white : AppColors.black,
-                maxLines: 5,
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CustomText(
+                    text: subtitle,
+                    color: theme.isDark ? AppColors.white : AppColors.black,
+                    maxLines: 5,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               ),
               SizedBox(
                 height: 50,

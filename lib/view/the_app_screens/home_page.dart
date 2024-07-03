@@ -21,6 +21,7 @@ import 'package:teller_trust/utills/shared_preferences.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/add_fundz.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/airtime.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/data.dart';
+import 'package:teller_trust/view/the_app_screens/sevices/electricity_purchase.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/internet.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/make_bank_transfer/bank_transfer.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/send_funds.dart';
@@ -347,7 +348,8 @@ class _HomePageState extends State<HomePage> {
                 height: 40,
                 decoration: BoxDecoration(
                     color: Color(0xFFFFF3D5),
-                    border: Border.all(color:Color(0xFFFFBE62)),// AppColors.lightOrange),
+                    border: Border.all(color: Color(0xFFFFBE62)),
+                    // AppColors.lightOrange),
                     borderRadius: BorderRadius.circular(10)),
                 child: Padding(
                   padding: EdgeInsets.all(5.0),
@@ -512,9 +514,9 @@ class _HomePageState extends State<HomePage> {
       height: 155,
       child: CarouselSlider.builder(
         key: _sliderKey,
-        unlimitedMode: true,
-        autoSliderDelay: const Duration(seconds: 3),
-        enableAutoSlider: true,
+        // unlimitedMode: true,
+        // autoSliderDelay: const Duration(seconds: 3),
+        // enableAutoSlider: true,
         controller: carouselSliderController,
         // onSlideChanged: (index) {
         //   setState(() {
@@ -639,33 +641,54 @@ class _HomePageState extends State<HomePage> {
                           WalletInfo walletInfo =
                               state.customerProfile.walletInfo;
                           // Use user data here
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                AppIcons.naira,
-                                height: 20,
-                                width: 20,
-                              ),
-                              TextStyles.textHeadings(
-                                  textValue: walletInfo.balance.toString(),
-                                  textSize: 28,
-                                  textColor: AppColors.white)
-
-                              // CustomText(
-                              //   text: walletInfo.balance.toString(),
-                              //   size: 22,
-                              //   weight: FontWeight.bold,
-                              //   color: AppColors.white,
-                              // )
-                            ],
+                          return Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Column(
+                                  children: [
+                                    SvgPicture.asset(
+                                      AppIcons.naira,
+                                      height: 22,
+                                      width: 22,
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    )
+                                  ],
+                                ),
+                                TextStyles.textHeadings(
+                                    textValue: // "196,000.",
+                                        walletInfo.balance
+                                                .toString()
+                                                .split('.')[0] +
+                                            ".",
+                                    textSize: 28,
+                                    textColor: AppColors.white),
+                                Column(
+                                  //mainAxisAlignment: MainAxisAlignment.,
+                                  children: [
+                                    TextStyles.textHeadings(
+                                        textValue: " " +
+                                            walletInfo.balance
+                                                .toString()
+                                                .split('.')[1]
+                                                .toString(),
+                                        textSize: 18,
+                                        textColor: AppColors.white),
+                                    SizedBox(
+                                      height: 5,
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
                           );
                         } else {
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
-
                             children: [
                               SvgPicture.asset(
                                 AppIcons.naira,
@@ -673,8 +696,13 @@ class _HomePageState extends State<HomePage> {
                                 width: 20,
                               ),
                               TextStyles.textHeadings(
-                                  textValue: '0.00',
+                                  textValue: '0',
                                   textSize: 28,
+                                  textColor: AppColors.white),
+                              TextStyles.textHeadings(
+                                  textValue: ". 00",
+                                  //+walletInfo.balance.toString().split('.')[1],
+                                  textSize: 20,
                                   textColor: AppColors.white)
                               // const CustomText(
                               //   text: "0.00",
@@ -777,6 +805,7 @@ class _HomePageState extends State<HomePage> {
         if (state is CategorySuccessState) {
           CategoryModel categoryModel = state.categoryModel;
           List<Category> items = categoryModel.data.categories;
+          items.sort((a, b) => a.name.compareTo(b.name));
           //Use user data here
           return SizedBox(
             height: items.length > 4 ? 150 : 80,
@@ -793,10 +822,10 @@ class _HomePageState extends State<HomePage> {
                     onTap: () {
                       String selectedAction = '';
                       setState(() {
-                        selectedAction = items[index].name;
+                        selectedAction = items[index].name.toLowerCase();
                       });
                       switch (selectedAction) {
-                        case "Airtime":
+                        case "airtime":
                           modalSheet.showMaterialModalBottomSheet(
                             backgroundColor: Colors.transparent,
                             shape: const RoundedRectangleBorder(
@@ -812,7 +841,7 @@ class _HomePageState extends State<HomePage> {
                           // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
                           //     services: AppList().serviceItems[index]));
                           return;
-                        case "Data":
+                        case "data":
                           modalSheet.showMaterialModalBottomSheet(
                             backgroundColor: Colors.transparent,
                             shape: const RoundedRectangleBorder(
@@ -826,6 +855,23 @@ class _HomePageState extends State<HomePage> {
                             ),
                           );
                           // AppNavigator.pushAndStackPage(context, page: DataPurchase(
+                          //     services: AppList().serviceItems[index]));
+                          return;
+                        case "electricity":
+                          modalSheet.showMaterialModalBottomSheet(
+                            backgroundColor: Colors.transparent,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(20.0)),
+                            ),
+                            context: context,
+                            builder: (context) => Padding(
+                              padding: const EdgeInsets.only(top: 100.0),
+                              child:
+                                  ElectricityPurchase(category: items[index]),
+                            ),
+                          );
+                          // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
                           //     services: AppList().serviceItems[index]));
                           return;
                         case 'Cable TV':
@@ -870,13 +916,15 @@ class _HomePageState extends State<HomePage> {
             ),
           );
         } else {
-          return CustomText(
-            text: "There",
-            size: 15,
-            weight: FontWeight.bold,
-            color: theme.isDark
-                ? AppColors.darkModeBackgroundSubTextColor
-                : AppColors.textColor,
+          return Center(
+            child: CustomText(
+              text: "loading.....",
+              size: 15,
+              weight: FontWeight.bold,
+              color: theme.isDark
+                  ? AppColors.darkModeBackgroundSubTextColor
+                  : AppColors.textColor,
+            ),
           ); // Show loading indicator or handle error state
         }
       },
@@ -940,9 +988,12 @@ class _HomePageState extends State<HomePage> {
                               itemCount: transactionHistory.data.items.length,
                               itemBuilder: (context, index) {
                                 return GestureDetector(
-                                  onTap: (){
+                                  onTap: () {
                                     print(transactionHistory.data.items[index]);
-                                    AppNavigator.pushAndStackPage(context, page: TransactionReceipt(item: transactionHistory.data.items[index]));
+                                    AppNavigator.pushAndStackPage(context,
+                                        page: TransactionReceipt(
+                                            item: transactionHistory
+                                                .data.items[index]));
                                   },
                                   child: Container(
                                     height: 90,
@@ -981,15 +1032,16 @@ class _HomePageState extends State<HomePage> {
                                                   child: Container(
                                                     decoration: BoxDecoration(
                                                         color: theme.isDark
-                                                            ? AppColors.darkGreen
+                                                            ? AppColors
+                                                                .darkGreen
                                                             : AppColors
                                                                 .lightShadowGreenColor,
                                                         borderRadius:
-                                                            BorderRadius.circular(
-                                                                10),
+                                                            BorderRadius
+                                                                .circular(10),
                                                         border: Border.all(
-                                                            color:
-                                                                AppColors.green)),
+                                                            color: AppColors
+                                                                .green)),
                                                     child: Padding(
                                                       padding:
                                                           const EdgeInsets.all(
@@ -1005,7 +1057,8 @@ class _HomePageState extends State<HomePage> {
                                                         color: theme.isDark
                                                             ? AppColors
                                                                 .darkModeBackgroundMainTextColor
-                                                            : AppColors.textColor,
+                                                            : AppColors
+                                                                .textColor,
                                                       ),
                                                     ),
                                                   ),
@@ -1020,11 +1073,11 @@ class _HomePageState extends State<HomePage> {
                                                                 .darkModeBackgroundContainerColor
                                                             : AppColors.white,
                                                         borderRadius:
-                                                            BorderRadius.circular(
-                                                                10),
+                                                            BorderRadius
+                                                                .circular(10),
                                                         border: Border.all(
-                                                            color:
-                                                                AppColors.grey)),
+                                                            color: AppColors
+                                                                .grey)),
                                                     child: Padding(
                                                       padding:
                                                           const EdgeInsets.all(
@@ -1035,21 +1088,40 @@ class _HomePageState extends State<HomePage> {
                                                                 .items[index]
                                                                 .type
                                                                 .toLowerCase()
-                                                                .contains('debit')
+                                                                .contains(
+                                                                    'debit')
                                                             ? '-N${transactionHistory.data.items[index].order.requiredFields.amount}'
                                                             : '+N${transactionHistory.data.items[index].order.requiredFields.amount}',
                                                         size: 12,
                                                         color: theme.isDark
                                                             ? AppColors
                                                                 .darkModeBackgroundMainTextColor
-                                                            : AppColors.textColor,
+                                                            : AppColors
+                                                                .textColor,
                                                       ),
                                                     ),
                                                   ),
                                                 ),
                                               ],
                                             ),
-                                            SvgPicture.asset(AppIcons.reload)
+                                            CustomText(
+                                                text: transactionHistory
+                                                    .data.items[index].status
+                                                    .toUpperCase(),
+                                                color: transactionHistory.data
+                                                            .items[index].status
+                                                            .toLowerCase() ==
+                                                        'successful'
+                                                    ? AppColors.green
+                                                    : transactionHistory
+                                                                .data
+                                                                .items[index]
+                                                                .status
+                                                                .toLowerCase() ==
+                                                            'pending'
+                                                        ? Colors.yellow.shade800
+                                                        : AppColors.red)
+                                            // SvgPicture.asset(AppIcons.reload)
                                           ],
                                         ),
                                         const Divider()
@@ -1430,8 +1502,7 @@ class _HomePageState extends State<HomePage> {
     return Container(
       height: 36,
       decoration: BoxDecoration(
-          color: Color(0xFFC2F6AE),
-          borderRadius: BorderRadius.circular(10)),
+          color: Color(0xFFC2F6AE), borderRadius: BorderRadius.circular(10)),
       child: Padding(
         padding: const EdgeInsets.all(5.0),
         child: Row(
@@ -1467,7 +1538,9 @@ class _HomePageState extends State<HomePage> {
                   AppUtils().copyToClipboard(accNumber, context);
                   // MSG.infoSnackBar(context, "copied");
                 },
-                child: SvgPicture.asset(AppIcons.copy2,))
+                child: SvgPicture.asset(
+                  AppIcons.copy2,
+                ))
           ],
         ),
       ),

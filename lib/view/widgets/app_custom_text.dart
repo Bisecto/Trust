@@ -28,34 +28,33 @@ class CustomText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      text ?? '',
-      textDirection: TextDirection.ltr,
-      textAlign: textAlign,
-      maxLines: maxLines,
-      softWrap: true,
-      overflow: TextOverflow.ellipsis,
-      style:GoogleFonts.poppins(
+    return Text(text ?? '',
+        textDirection: TextDirection.ltr,
+        textAlign: textAlign,
+        maxLines: maxLines,
+        softWrap: true,
+        overflow: TextOverflow.ellipsis,
+        style: GoogleFonts.poppins(
           //fontFamily: "CeraPro",
           decoration:
               (underline) ? TextDecoration.underline : TextDecoration.none,
           decorationColor: AppColors.green,
           letterSpacing: spacing!,
-          fontSize: size ?? 16,
+          fontSize: size != null ? (size! + 2.0) : 16,
           color: color ?? Colors.black,
+          //   fontWeight: weight ?? FontWeight.normal,
+        )
+        // TextStyle(
+        //   fontFamily: "CeraPro",
+        //   decoration:
+        //       (underline) ? TextDecoration.underline : TextDecoration.none,
+        //   decorationColor: AppColors.green,
+        //   letterSpacing: spacing!,
+        //   fontSize: size ?? 16,
+        //   color: color ?? Colors.black,
         //   fontWeight: weight ?? FontWeight.normal,
-      )
-      // TextStyle(
-      //   fontFamily: "CeraPro",
-      //   decoration:
-      //       (underline) ? TextDecoration.underline : TextDecoration.none,
-      //   decorationColor: AppColors.green,
-      //   letterSpacing: spacing!,
-      //   fontSize: size ?? 16,
-      //   color: color ?? Colors.black,
-      //   fontWeight: weight ?? FontWeight.normal,
-      // ),
-    );
+        // ),
+        );
   }
 }
 
@@ -68,12 +67,12 @@ class TextStyles {
       style: GoogleFonts.anybody(
         textStyle: TextStyle(
             fontStyle: FontStyle.normal,
-
             color: textColor,
             fontSize: textSize,
+
             fontWeight: FontWeight.w800),
       ),
-      textAlign: TextAlign.center,
+      textAlign: TextAlign.end,
     );
   }
 

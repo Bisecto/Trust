@@ -44,6 +44,7 @@ class AppRepository {
       'x-refresh-token': refreshToken,
       'Content-Type': 'application/json'
     };
+    print(headers);
     print(apiUrl);
     final response = await http.get(
       Uri.parse(apiUrl),

@@ -37,7 +37,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
     AppRepository appRepository = AppRepository();
     String accessToken = await SharedPref.getString("access-token");
-    try {
+    //try {
     var listProductResponse = await appRepository.appGetRequest(
       '${AppApis.listCategory}?page=${event.page}&pageSize=${event.pageSize}',
       accessToken: accessToken,
@@ -64,10 +64,10 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           json.decode(listProductResponse.body)['message'])));
       print(json.decode(listProductResponse.body));
     }
-    } catch (e) {
-      emit(CategoryErrorState("An error occurred while fetching categories."));
-      print(e);
-    }
+    // } catch (e) {
+    //   emit(CategoryErrorState("An error occurred while fetching categories."));
+    //   print(e);
+    // }
   }
 
   FutureOr<void> listServiceEvent(

@@ -62,7 +62,7 @@ class _MorePageState extends State<MorePage> {
         child: Column(
           children: [
             Container(
-              height: 205,
+              height: 215,
               decoration: BoxDecoration(
                   color: theme.isDark
                       ? AppColors.darkGreen
@@ -301,7 +301,7 @@ class _MorePageState extends State<MorePage> {
               print(json.encode(state.customerProfile));
             },
             child: SizedBox(
-              height: 40,
+              height: 50,
               width: AppUtils.deviceScreenSize(context).width,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -361,7 +361,7 @@ class _MorePageState extends State<MorePage> {
           );
         } else {
           return SizedBox(
-            height: 40,
+            height: 50,
             width: AppUtils.deviceScreenSize(context).width,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

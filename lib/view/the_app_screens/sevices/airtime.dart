@@ -371,7 +371,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                             AppValidator.validateTextfield,
                                         widget: SvgPicture.asset(AppIcons.naira,color:  _selectedAmtController
                                             .text.isNotEmpty
-                                            ? AppColors.darkGreen: AppColors.grey,height: 5,width: 5,),
+                                            ? AppColors.darkGreen: AppColors.grey,),
                                         borderColor: _selectedAmtController
                                                 .text.isNotEmpty
                                             ? AppColors.green
@@ -521,8 +521,8 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                             }
                                           }
                                         },
-                                        disableButton: (!isPaymentAllowed &&
-                                            _beneficiaryController
+                                        disableButton: (!isPaymentAllowed ||
+                                            !_beneficiaryController
                                                 .text.isNotEmpty),
                                         text: 'Purchase Airtime',
                                         borderColor: AppColors.darkGreen,

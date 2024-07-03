@@ -202,7 +202,7 @@ class _RequestOtpState extends State<RequestOtp> {
                                                 controller: _emailController,
                                                 validator: AppValidator
                                                     .validateTextfield,
-                                                icon: Icons.email,
+                                                widget: Icon(Icons.email),
                                                 borderColor: _emailController
                                                         .text.isNotEmpty
                                                     ? AppColors.green

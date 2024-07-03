@@ -43,7 +43,7 @@ class _LandingPageState extends State<LandingPage> {
   void initState() {
     // TODO: implement initState
     context.read<AppBloc>().add(InitialEvent());
-    context.read<ProductBloc>().add(ListCategoryEvent("1", "8"));
+    context.read<ProductBloc>().add(ListCategoryEvent("1", "3"));
     _checkConnectivity();
     _connectivitySubscription =
         Connectivity().onConnectivityChanged.listen(_handleConnectivity);
@@ -89,7 +89,7 @@ class _LandingPageState extends State<LandingPage> {
 
     return _connected
         ? IdleDetector(
-            idleTime: const Duration(minutes: 5),
+            idleTime: const Duration(minutes: 20),
             onIdle: () async {
               String firstame = await SharedPref.getString('firstName');
 
