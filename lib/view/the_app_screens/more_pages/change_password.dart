@@ -127,7 +127,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                                 AppValidator.validatePassword,
                                             controller: _oldPasswordController,
                                             hint: 'Old Password',
-                                            icon: Icons.password,
+                                            widget: Icon(Icons.password),
                                             borderColor: _oldPasswordController
                                                     .text.isNotEmpty
                                                 ? AppColors.green
@@ -140,7 +140,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                                 AppValidator.validatePassword,
                                             controller: _newPasswordController,
                                             hint: 'New Password',
-                                            icon: Icons.password,
+                                            widget:Icon (Icons.password),
                                             borderColor: _newPasswordController
                                                     .text.isNotEmpty
                                                 ? AppColors.green
@@ -154,7 +154,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                             controller:
                                                 _confirmPasswordController,
                                             hint: 'Confirm Password',
-                                            icon: Icons.password,
+                                            widget: Icon(Icons.password),
                                             borderColor:
                                                 _confirmPasswordController
                                                         .text.isNotEmpty

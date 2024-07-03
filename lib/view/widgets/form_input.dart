@@ -1,4 +1,5 @@
 
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -19,7 +20,8 @@ class CustomTextFormField extends StatefulWidget {
   final int? maxLines;
   final bool isPasswordField;
   final int? maxLength;
-  final IconData icon;
+  //final IconData icon;
+  final Widget widget;
   final Color borderColor;
   final TextInputType textInputType;
   final TextEditingController? controller;
@@ -31,7 +33,8 @@ class CustomTextFormField extends StatefulWidget {
       this.maxLength,
       this.maxLines = 1,
         this.textInputType=TextInputType.text,
-      required this.icon,
+      //required this.icon,
+      required this.widget,
         this.backgroundColor=AppColors.white,
         this.borderColor=AppColors.grey,
       this.isPasswordField = false,
@@ -117,10 +120,8 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                               _togglePasswordVisibility();
                             }
                           },
-                          child: Icon(
-                            widget.icon,
-                            color: AppColors.lightgrey,
-                          ),
+                          child:widget.widget
+
                         ),
                         suffixIcon: GestureDetector(
                           onTap: () {

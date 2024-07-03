@@ -56,7 +56,7 @@ class _WithdrawalAccountState extends State<WithdrawalAccount> {
                           label: '',
                           controller: _bvmController,
                           validator: AppValidator.validateTextfield,
-                          icon: Icons.numbers,
+                          widget: Icon(Icons.numbers),
                           textInputType: TextInputType.number,
                           borderColor: _bvmController.text.isNotEmpty
                               ? AppColors.green
@@ -68,7 +68,7 @@ class _WithdrawalAccountState extends State<WithdrawalAccount> {
                           textInputType: TextInputType.number,
                           controller: _accNumberController,
                           validator: AppValidator.validateAccountNumberfield,
-                          icon: Icons.numbers,
+                          widget: Icon(Icons.numbers),
                           borderColor: _accNumberController.text.length == 10
                               ? AppColors.green
                               : AppColors.grey,
@@ -217,7 +217,7 @@ class _BankListState extends State<BankList> {
             label: '',
             controller: _searchController,
             validator: AppValidator.validateAccountNumberfield,
-            icon: Icons.search,
+            widget: Icon(Icons.search),
           ),
           BlocBuilder<bankBloc.BankBloc, bankBloc.BankState>(
             builder: (context, state) {

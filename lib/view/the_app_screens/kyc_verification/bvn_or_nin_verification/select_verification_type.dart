@@ -269,7 +269,7 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
                                       hint: selectedString == 'NIN'
                                           ? 'Enter your NIN (11 digits)'
                                           : 'Enter your BVN (11 digits)',
-                                      icon: Icons.verified_outlined,
+                                      widget: Icon(Icons.verified_outlined),
                                       textInputType: TextInputType.number,
                                       borderColor:
                                           _numberController.text.isNotEmpty

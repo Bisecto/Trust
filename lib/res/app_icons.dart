@@ -42,6 +42,7 @@ class AppIcons {
   static const qrCode = '${_iconBaseUrl}qr_code.svg';
   static const looper1 = '${_iconBaseUrl}looper_1.svg';
   static const naira = '${_iconBaseUrl}naira.svg';
+  static const nigeriaLogo = '${_iconBaseUrl}nigeria_logo.svg';
   static const reload = '${_iconBaseUrl}reload.svg';
   static const moneyTfInfo = '${_iconBaseUrl}money_tf_notification.svg';
   static const yourNgnAccount = '${_iconBaseUrl}your_ngn_account.svg';

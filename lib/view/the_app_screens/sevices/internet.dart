@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:teller_trust/model/category_model.dart' as mainCategory;
 import 'package:teller_trust/model/quick_access_model.dart';
@@ -9,6 +10,7 @@ import 'package:teller_trust/view/widgets/drop_down.dart';
 import '../../../bloc/product_bloc/product_bloc.dart';
 import '../../../model/service_model.dart';
 import '../../../res/app_colors.dart';
+import '../../../res/app_icons.dart';
 import '../../../res/app_list.dart';
 import '../../../utills/app_navigator.dart';
 import '../../../utills/app_utils.dart';
@@ -332,8 +334,7 @@ class _InternetPurchaseState extends State<InternetPurchase> {
                                         textInputType: TextInputType.number,
                                         validator:
                                             AppValidator.validateTextfield,
-                                        icon: Icons.flag,
-
+                                        widget: SvgPicture.asset(AppIcons.naira),
                                         //isMobileNumber: true,
                                         borderColor: _beneficiaryController
                                                 .text.isNotEmpty
@@ -700,7 +701,7 @@ class _InternetPlanListState extends State<InternetPlanList> {
             label: '',
             controller: _searchController,
             validator: AppValidator.validateAccountNumberfield,
-            icon: Icons.search,
+            widget: Icon(Icons.search),
           ),
           Expanded(
             child: BlocBuilder<ProductBloc, ProductState>(

@@ -1,8 +1,10 @@
 import 'package:custom_pin_screen/custom_pin_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:teller_trust/model/quick_access_model.dart';
 import 'package:teller_trust/model/service_model.dart';
+import 'package:teller_trust/res/app_icons.dart';
 
 import '../../../model/category_model.dart';
 import '../../../res/app_colors.dart';
@@ -161,10 +163,10 @@ class _ServicePurchaseState extends State<ServicePurchase> {
                             controller: _selectedAmtController,
                             textInputType: TextInputType.number,
                             validator: AppValidator.validateTextfield,
-                            icon: Icons.currency_exchange,
+                            //icon: Icons.currency_exchange,
                             borderColor: _selectedAmtController.text.isNotEmpty
                                 ? AppColors.green
-                                : AppColors.grey,
+                                : AppColors.grey, widget: SvgPicture.asset(AppIcons.naira),
                           ),
                           CustomTextFormField(
                             hint: 'Input number here',
@@ -172,7 +174,7 @@ class _ServicePurchaseState extends State<ServicePurchase> {
                             controller: _beneficiaryController,
                             textInputType: TextInputType.number,
                             validator: AppValidator.validateTextfield,
-                            icon: Icons.flag,
+                            widget: SvgPicture.asset(AppIcons.nigeriaLogo),
 
                             //isMobileNumber: true,
                             borderColor: _beneficiaryController.text.isNotEmpty

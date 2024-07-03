@@ -1,6 +1,6 @@
 class WalletInfo {
   String id;
-  int balance;
+  double balance;
   int points;
   DateTime createdAt;
   String customerId;
@@ -15,7 +15,7 @@ class WalletInfo {
 
   factory WalletInfo.fromJson(Map<String, dynamic> json) => WalletInfo(
     id: json["id"],
-    balance: json["balance"],
+    balance: double.parse(json["balance"].toString()),
     points: json["points"],
     createdAt: DateTime.parse(json["createdAt"]),
     customerId: json["customerId"],

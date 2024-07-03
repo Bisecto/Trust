@@ -268,8 +268,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                           _firstNameController,
                                                       validator: AppValidator
                                                           .validateTextfield,
-                                                      icon: Icons
-                                                          .person_2_outlined,
+                                                      widget: Icon(Icons
+                                                          .person_2_outlined),
                                                       borderColor:
                                                           _firstNameController
                                                                   .text
@@ -285,8 +285,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                           _middleNameController,
                                                       // validator: AppValidator
                                                       //     .validateTextfield,
-                                                      icon: Icons
-                                                          .person_2_outlined,
+                                                      widget: Icon(Icons
+                                                          .person_2_outlined),
                                                       borderColor:
                                                           _middleNameController
                                                                   .text
@@ -301,8 +301,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                           _surNameController,
                                                       validator: AppValidator
                                                           .validateTextfield,
-                                                      icon: Icons
-                                                          .person_2_outlined,
+                                                      widget: Icon(Icons
+                                                          .person_2_outlined),
                                                       borderColor:
                                                           _surNameController
                                                                   .text
@@ -317,8 +317,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                           _emailController,
                                                       validator: AppValidator
                                                           .validateEmail,
-                                                      icon:
-                                                          Icons.email_outlined,
+                                                      widget:
+                                                          Icon(Icons.email_outlined),
                                                       borderColor:
                                                           _emailController.text
                                                                   .isNotEmpty
@@ -332,8 +332,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                           _phoneController,
                                                       validator: AppValidator
                                                           .validateTextfield,
-                                                      icon: Icons
-                                                          .local_phone_outlined,
+                                                      widget: Icon(Icons
+                                                          .local_phone_outlined),
                                                       borderColor:
                                                           _phoneController.text
                                                                   .isNotEmpty
@@ -348,7 +348,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                       controller:
                                                           _passwordController,
                                                       hint: 'Password',
-                                                      icon: Icons.lock_outline,
+                                                      widget: Icon(Icons.lock_outline),
                                                       borderColor:
                                                           _passwordController
                                                                   .text

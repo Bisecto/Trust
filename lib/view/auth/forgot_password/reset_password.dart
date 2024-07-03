@@ -224,7 +224,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                                                     .validatePassword,
                                                 controller: _passwordController,
                                                 hint: 'New Password',
-                                                icon: Icons.password,
+                                                widget: Icon(Icons.password),
                                                 borderColor: _passwordController
                                                         .text.isNotEmpty
                                                     ? AppColors.green
@@ -238,7 +238,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                                                 controller:
                                                     _confirmPasswordController,
                                                 hint: 'Confirm New Password',
-                                                icon: Icons.password,
+                                                widget: Icon(Icons.password),
                                                 borderColor:
                                                     _confirmPasswordController
                                                             .text.isNotEmpty

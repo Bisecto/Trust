@@ -369,7 +369,9 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                         textInputType: TextInputType.number,
                                         validator:
                                             AppValidator.validateTextfield,
-                                        icon: Icons.currency_exchange,
+                                        widget: SvgPicture.asset(AppIcons.naira,color:  _selectedAmtController
+                                            .text.isNotEmpty
+                                            ? AppColors.darkGreen: AppColors.grey,height: 5,width: 5,),
                                         borderColor: _selectedAmtController
                                                 .text.isNotEmpty
                                             ? AppColors.green
@@ -398,8 +400,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                         textInputType: TextInputType.number,
                                         validator:
                                             AppValidator.validateTextfield,
-                                        icon: Icons.flag,
-
+                                        widget: SvgPicture.asset(AppIcons.nigeriaLogo),
                                         //isMobileNumber: true,
                                         borderColor: _beneficiaryController
                                                 .text.isNotEmpty
@@ -617,7 +618,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                 if (selectedNetwork != name.toLowerCase())
                   CustomText(
                     text: name,
-                    size: 12,
+                    size: 10,
                     weight: FontWeight.bold,
                     color: selectedNetwork == name.toLowerCase()
                         ? AppColors.darkGreen

@@ -87,7 +87,6 @@ class _SignInScreenState extends State<SignInScreen> {
                     title: 'Successful',
                     subtitle: state.msg,
                     type: ToastMessageType.success);
-
               } else {
                 // MSG.snackBar(context, "Logged in. You have not created an access PIN");
 
@@ -98,8 +97,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     subtitle: "Logged in. You have not created an access PIN",
                     type: ToastMessageType.info);
               }
-            }
-            else if (state is AuthOtpRequestState) {
+            } else if (state is AuthOtpRequestState) {
               //MSG.warningSnackBar(context, state.msg);
               // showToast(
               //     context: context,
@@ -107,9 +105,8 @@ class _SignInScreenState extends State<SignInScreen> {
               //     subtitle: state.msg,
               //     type: ToastMessageType.info);
               // MSG.snackBar(context, state.msg);
-              verifyAlertDialog(context,state.msg,theme);
-            }else if (state is AuthChangeDeviceOtpRequestState) {
-
+              verifyAlertDialog(context, state.msg, theme);
+            } else if (state is AuthChangeDeviceOtpRequestState) {
               //MSG.warningSnackBar(context, state.error);
               AppNavigator.pushAndStackPage(context,
                   page: VerifyOtp(
@@ -221,7 +218,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               decoration: BoxDecoration(
                                   color: theme.isDark
                                       ? AppColors
-                                      .darkModeBackgroundContainerColor
+                                          .darkModeBackgroundContainerColor
                                       : AppColors.white,
                                   borderRadius: BorderRadius.circular(15)),
                               child: Padding(
@@ -232,22 +229,22 @@ class _SignInScreenState extends State<SignInScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                       CustomText(
+                                      CustomText(
                                         text: "Log In",
                                         weight: FontWeight.w600,
                                         size: 20,
                                         color: theme.isDark
                                             ? AppColors
-                                            .darkModeBackgroundMainTextColor
+                                                .darkModeBackgroundMainTextColor
                                             : AppColors.textColor,
                                       ),
-                                       CustomText(
+                                      CustomText(
                                         text: "See who is back",
                                         //weight: FontWeight.bold,
                                         size: 16,
                                         color: theme.isDark
                                             ? AppColors
-                                            .darkModeBackgroundSubTextColor
+                                                .darkModeBackgroundSubTextColor
                                             : AppColors.textColor,
                                       ),
                                       Form(
@@ -260,7 +257,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                                 controller: _emailController,
                                                 validator: AppValidator
                                                     .validateTextfield,
-                                                icon: Icons.email,
+                                                widget: Icon(Icons.email),
                                                 borderColor: _emailController
                                                         .text.isNotEmpty
                                                     ? AppColors.green
@@ -273,7 +270,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                                     .validatePassword,
                                                 controller: _passwordController,
                                                 hint: 'Password',
-                                                icon: Icons.password,
+                                                widget: Icon(Icons.password),
                                                 borderColor: _passwordController
                                                         .text.isNotEmpty
                                                     ? AppColors.green
@@ -288,7 +285,8 @@ class _SignInScreenState extends State<SignInScreen> {
                                                             _emailController
                                                                 .text,
                                                             _passwordController
-                                                                .text,context));
+                                                                .text,
+                                                            context));
                                                     // await Future.delayed(const Duration(seconds: 3));
                                                     //AppNavigator.pushNamedAndRemoveUntil(context, name: AppRouter.landingPage);
                                                   }
@@ -330,7 +328,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                               text: "New to TellaTrust?",
                                               color: theme.isDark
                                                   ? AppColors
-                                                  .darkModeBackgroundSubTextColor
+                                                      .darkModeBackgroundSubTextColor
                                                   : AppColors.textColor,
                                               size: 16,
                                             ),
@@ -346,8 +344,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                               child: CustomText(
                                                 text: "Sign up?",
                                                 color: theme.isDark
-                                                    ? AppColors
-                                                    .white
+                                                    ? AppColors.white
                                                     : AppColors.blue,
                                                 weight: FontWeight.w700,
                                                 size: 16,
@@ -440,13 +437,12 @@ class _SignInScreenState extends State<SignInScreen> {
 
   verifyAlertDialog(
     BuildContext context,
-      String msg,    AdaptiveThemeMode theme,
-
-      ) {
+    String msg,
+    AdaptiveThemeMode theme,
+  ) {
     showDialog(
         context: context,
-        barrierDismissible:false,
-
+        barrierDismissible: false,
         builder: (BuildContext context) {
           return AlertDialog(
             backgroundColor: theme.isDark
@@ -468,13 +464,15 @@ class _SignInScreenState extends State<SignInScreen> {
                   Container(
                     width: AppUtils.deviceScreenSize(context).width,
                     height: 150,
-                    decoration:  BoxDecoration(
+                    decoration: BoxDecoration(
                         color: theme.isDark
                             ? AppColors.darkModeBackgroundContainerColor
                             : AppColors.white,
                         image: DecorationImage(
                           image: AssetImage(
-                            theme.isDark? AppImages.verifyAlertDialogDarkImage:AppImages.verifyAlertDialogImage,
+                            theme.isDark
+                                ? AppImages.verifyAlertDialogDarkImage
+                                : AppImages.verifyAlertDialogImage,
                           ),
                           fit: BoxFit.fill,
                         ),
@@ -486,25 +484,24 @@ class _SignInScreenState extends State<SignInScreen> {
                   SizedBox(
                     height: 10,
                   ),
-                   CustomText(
+                  CustomText(
                     text: AppStrings.verifySomething,
                     weight: FontWeight.bold,
                     size: 18,
                     color: theme.isDark
                         ? AppColors.darkModeBackgroundMainTextColor
                         : AppColors.textColor,
-
                   ),
                   SizedBox(
                     height: 10,
                   ),
-                   CustomText(
+                  CustomText(
                     text: msg,
                     // weight: FontWeight.bold,
                     size: 16,
-                     color: theme.isDark
-                         ? AppColors.darkModeBackgroundSubTextColor
-                         : AppColors.textColor,
+                    color: theme.isDark
+                        ? AppColors.darkModeBackgroundSubTextColor
+                        : AppColors.textColor,
                     textAlign: TextAlign.center,
                     maxLines: 5,
                   ),
@@ -519,8 +516,9 @@ class _SignInScreenState extends State<SignInScreen> {
                       text: 'Continue',
                       borderColor: AppColors.green,
                       bgColor: AppColors.green,
-                      textColor:theme.isDark
-                          ? AppColors.darkModeBackgroundContainerColor: AppColors.white,
+                      textColor: theme.isDark
+                          ? AppColors.darkModeBackgroundContainerColor
+                          : AppColors.white,
                       borderRadius: 10,
                     ),
                   ),
