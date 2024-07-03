@@ -76,7 +76,9 @@ class _HomePageState extends State<HomePage> {
     print(isMoneyBlocked);
     print(isMoneyBlocked);
   }
-
+  Future<void> _handleRefresh() async {
+    context.read<AppBloc>().add(InitialEvent());
+    context.read<ProductBloc>().add(ListCategoryEvent("1", "8"));}
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
@@ -84,68 +86,71 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor:
           theme.isDark ? AppColors.darkModeBackgroundColor : AppColors.white,
-      body: SafeArea(
-          child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              homeProfileContainer(theme),
-              const SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Container(
-                      //height: 40,
-                      //width: AppUtils.deviceScreenSize(context).width / 2,
-                      decoration: BoxDecoration(
-                          color: AppColors.darkGreen,
-                          // border:
-                          //     Border.all(color: AppColors.lightPrimaryGreen),
-                          borderRadius: BorderRadius.circular(8.0)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: CustomText(
-                          text: "Balance",
-                          weight: FontWeight.bold,
-                          size: 12,
-                          color: theme.isDark
-                              ? AppColors.darkModeBackgroundMainTextColor
-                              : AppColors.white,
-                        ),
-                      )),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Container(
-                      //height: 40,
-                      //width: AppUtils.deviceScreenSize(context).width / 2,
-                      decoration: BoxDecoration(
+      body: RefreshIndicator(
+        onRefresh: _handleRefresh,
+        child: SafeArea(
+            child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                homeProfileContainer(theme),
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Container(
+                        //height: 40,
+                        //width: AppUtils.deviceScreenSize(context).width / 2,
+                        decoration: BoxDecoration(
+                            color: AppColors.darkGreen,
+                            // border:
+                            //     Border.all(color: AppColors.lightPrimaryGreen),
+                            borderRadius: BorderRadius.circular(8.0)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: CustomText(
+                            text: "Balance",
+                            weight: FontWeight.bold,
+                            size: 12,
+                            color: theme.isDark
+                                ? AppColors.darkModeBackgroundMainTextColor
+                                : AppColors.white,
+                          ),
+                        )),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Container(
+                        //height: 40,
+                        //width: AppUtils.deviceScreenSize(context).width / 2,
+                        decoration: BoxDecoration(
 
-                          ///color: AppColors.darkGreen,
-                          border: Border.all(color: AppColors.textColor2),
-                          borderRadius: BorderRadius.circular(8.0)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: CustomText(
-                          text: "Beneficiaries",
-                          weight: FontWeight.normal,
-                          size: 12,
-                          color: theme.isDark
-                              ? AppColors.darkModeBackgroundMainTextColor
-                              : AppColors.textColor,
-                        ),
-                      )),
-                ],
-              ),
-              homeBalance(theme),
-            ],
+                            ///color: AppColors.darkGreen,
+                            border: Border.all(color: AppColors.textColor2),
+                            borderRadius: BorderRadius.circular(8.0)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: CustomText(
+                            text: "Beneficiaries",
+                            weight: FontWeight.normal,
+                            size: 12,
+                            color: theme.isDark
+                                ? AppColors.darkModeBackgroundMainTextColor
+                                : AppColors.textColor,
+                          ),
+                        )),
+                  ],
+                ),
+                homeBalance(theme),
+              ],
+            ),
           ),
-        ),
-      )),
+        )),
+      ),
     );
   }
 
@@ -660,9 +665,9 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 TextStyles.textHeadings(
                                     textValue: // "196,000.",
-                                        walletInfo.balance
+                                AppUtils.convertPrice(walletInfo.balance
                                                 .toString()
-                                                .split('.')[0] +
+                                                ).split('.')[0] +
                                             ".",
                                     textSize: 28,
                                     textColor: AppColors.white),
@@ -670,11 +675,9 @@ class _HomePageState extends State<HomePage> {
                                   //mainAxisAlignment: MainAxisAlignment.,
                                   children: [
                                     TextStyles.textHeadings(
-                                        textValue: " " +
-                                            walletInfo.balance
-                                                .toString()
-                                                .split('.')[1]
-                                                .toString(),
+                                       textValue: AppUtils.convertPrice(walletInfo.balance
+                                            .toString()
+                                        ).split('.')[1],
                                         textSize: 18,
                                         textColor: AppColors.white),
                                     SizedBox(

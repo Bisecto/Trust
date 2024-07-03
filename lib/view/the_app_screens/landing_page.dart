@@ -43,7 +43,7 @@ class _LandingPageState extends State<LandingPage> {
   void initState() {
     // TODO: implement initState
     context.read<AppBloc>().add(InitialEvent());
-    context.read<ProductBloc>().add(ListCategoryEvent("1", "3"));
+    context.read<ProductBloc>().add(ListCategoryEvent("1", "8"));
     _checkConnectivity();
     _connectivitySubscription =
         Connectivity().onConnectivityChanged.listen(_handleConnectivity);
