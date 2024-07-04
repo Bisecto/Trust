@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:teller_trust/model/wallet_info.dart';
+import 'package:teller_trust/res/app_colors.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
 import '../../../bloc/app_bloc/app_bloc.dart';
 import '../../../model/personal_profile.dart';
@@ -43,13 +44,13 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Choose Payment Method',
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[700],
-            ),
+          CustomText(
+            text: 'Choose Payment Method',
+            // style: TextStyle(
+            //   fontSize: 12,
+            //   fontWeight: FontWeight.bold,
+            //   color: Colors.grey[700],
+            // ),
           ),
           SizedBox(height: 16),
           BlocBuilder<AppBloc, AppState>(
@@ -65,9 +66,10 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                       child: _buildPaymentOption(
                         title: 'Wallet Balance',
                         subtitle: 'Acct. Number *********',
-                        trailing: Text(
-                          'NGN${walletInfo.balance}',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                        trailing: CustomText(
+                          text: 'NGN${walletInfo.balance}',
+                          weight: FontWeight.bold,
+                          // style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         selected: _selectedPaymentMethod == 'wallet',
                         onChanged: () =>
@@ -86,12 +88,12 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                                       size: 10,
                                     ),
                                     SizedBox(width: 4),
-                                    Text(
-                                      'Insufficient Funds. Fund your wallet to enjoy benefits',
-                                      style: TextStyle(
-                                        color: Colors.orange,
-                                        fontSize: 10,
-                                      ),
+                                    CustomText(
+                                      text:
+                                          'Insufficient Funds. Fund your wallet to enjoy benefits',
+                                      weight: FontWeight.bold,
+                                      size: 10,
+                                      color: AppColors.orange,
                                     ),
                                   ],
                                 ),
@@ -110,12 +112,10 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          'Save as Beneficiary',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        CustomText(
+                          text: 'Save as Beneficiary',
+                          size: 14,
+                          weight: FontWeight.bold,
                         ),
                         Switch(
                           value: _saveAsBeneficiary,
