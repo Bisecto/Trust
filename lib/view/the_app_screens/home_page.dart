@@ -20,6 +20,7 @@ import 'package:teller_trust/utills/app_utils.dart';
 import 'package:teller_trust/utills/shared_preferences.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/add_fundz.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/airtime.dart';
+import 'package:teller_trust/view/the_app_screens/sevices/cable_purchase.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/data.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/electricity_purchase.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/internet.dart';
@@ -34,7 +35,9 @@ import '../../model/category_model.dart';
 import '../../model/user.dart';
 import '../../res/app_images.dart';
 import '../../utills/custom_theme.dart';
+import '../../utills/enums/toast_mesage.dart';
 import '../important_pages/dialog_box.dart';
+import '../widgets/show_toast.dart';
 import 'kyc_verification/kyc_intro_page.dart';
 import 'more_pages/withdrawal_account.dart';
 
@@ -76,9 +79,12 @@ class _HomePageState extends State<HomePage> {
     print(isMoneyBlocked);
     print(isMoneyBlocked);
   }
+
   Future<void> _handleRefresh() async {
     context.read<AppBloc>().add(InitialEvent());
-    context.read<ProductBloc>().add(ListCategoryEvent("1", "8"));}
+    context.read<ProductBloc>().add(ListCategoryEvent("1", "8"));
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
@@ -242,7 +248,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                           TextStyles.textHeadings(
                             textValue:
-                                "${personalInfo.lastName} ${personalInfo.firstName}",
+                                "${AppUtils.formatString(data:personalInfo.lastName)} ${AppUtils.formatString(data:personalInfo.firstName)}",
                             textColor: theme.isDark
                                 ? AppColors.darkModeBackgroundMainTextColor
                                 : AppColors.textColor,
@@ -299,7 +305,7 @@ class _HomePageState extends State<HomePage> {
                           size: 12,
                         ),
                         TextStyles.textHeadings(
-                          textValue: "$lastname $firstname",
+                          textValue: "${AppUtils.formatString(data:lastname)} ${AppUtils.formatString(data:firstname)}",
                           textColor: theme.isDark
                               ? AppColors.darkModeBackgroundMainTextColor
                               : AppColors.textColor,
@@ -352,12 +358,12 @@ class _HomePageState extends State<HomePage> {
             child: Container(
                 height: 40,
                 decoration: BoxDecoration(
-                    color: Color(0xFFFFF3D5),
-                    border: Border.all(color: Color(0xFFFFBE62)),
+                    color: const Color(0xFFFFF3D5),
+                    border: Border.all(color: const Color(0xFFFFBE62)),
                     // AppColors.lightOrange),
                     borderRadius: BorderRadius.circular(10)),
                 child: Padding(
-                  padding: EdgeInsets.all(5.0),
+                  padding: const EdgeInsets.all(5.0),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -365,10 +371,10 @@ class _HomePageState extends State<HomePage> {
                       Row(
                         children: [
                           SvgPicture.asset(AppIcons.info),
-                          SizedBox(
+                          const SizedBox(
                             width: 5,
                           ),
-                          CustomText(
+                          const CustomText(
                             text: "Incomplete KYC",
                             weight: FontWeight.bold,
                             maxLines: 3,
@@ -378,13 +384,13 @@ class _HomePageState extends State<HomePage> {
                       ),
                       Row(
                         children: [
-                          CustomText(
+                          const CustomText(
                             text: "Learn more",
                             weight: FontWeight.bold,
                             maxLines: 3,
                             size: 12,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 5,
                           ),
                           SvgPicture.asset(AppIcons.arrowSlant),
@@ -519,9 +525,9 @@ class _HomePageState extends State<HomePage> {
       height: 155,
       child: CarouselSlider.builder(
         key: _sliderKey,
-        // unlimitedMode: true,
-        // autoSliderDelay: const Duration(seconds: 3),
-        // enableAutoSlider: true,
+        unlimitedMode: true,
+        autoSliderDelay: const Duration(seconds: 3),
+        enableAutoSlider: true,
         controller: carouselSliderController,
         // onSlideChanged: (index) {
         //   setState(() {
@@ -556,7 +562,7 @@ class _HomePageState extends State<HomePage> {
             ),
           );
         },
-        slideTransform: CubeTransform(),
+        slideTransform: const CubeTransform(),
         slideIndicator: SequentialFillIndicator(
           indicatorRadius: 5,
           itemSpacing: 20,
@@ -658,16 +664,16 @@ class _HomePageState extends State<HomePage> {
                                       height: 22,
                                       width: 22,
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 10,
                                     )
                                   ],
                                 ),
                                 TextStyles.textHeadings(
                                     textValue: // "196,000.",
-                                AppUtils.convertPrice(walletInfo.balance
-                                                .toString()
-                                                ).split('.')[0] +
+                                        AppUtils.convertPrice(walletInfo.balance
+                                                    .toString())
+                                                .split('.')[0] +
                                             ".",
                                     textSize: 28,
                                     textColor: AppColors.white),
@@ -675,12 +681,12 @@ class _HomePageState extends State<HomePage> {
                                   //mainAxisAlignment: MainAxisAlignment.,
                                   children: [
                                     TextStyles.textHeadings(
-                                       textValue: AppUtils.convertPrice(walletInfo.balance
-                                            .toString()
-                                        ).split('.')[1],
+                                        textValue: AppUtils.convertPrice(
+                                                walletInfo.balance.toString())
+                                            .split('.')[1],
                                         textSize: 18,
                                         textColor: AppColors.white),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 5,
                                     )
                                   ],
@@ -808,10 +814,10 @@ class _HomePageState extends State<HomePage> {
         if (state is CategorySuccessState) {
           CategoryModel categoryModel = state.categoryModel;
           List<Category> items = categoryModel.data.categories;
-          items.sort((a, b) => a.name.compareTo(b.name));
+          // items.sort((a, b) => a.name.compareTo(b.name));
           //Use user data here
           return SizedBox(
-            height: items.length > 4 ? 150 : 80,
+            height: items.length > 4 ? 160 : 80,
             child: GridView.builder(
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -877,44 +883,50 @@ class _HomePageState extends State<HomePage> {
                           // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
                           //     services: AppList().serviceItems[index]));
                           return;
-                        case 'Cable TV':
-                          modalSheet.showMaterialModalBottomSheet(
-                            backgroundColor: Colors.transparent,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(20.0)),
-                            ),
-                            context: context,
-                            builder: (context) => Padding(
-                              padding: const EdgeInsets.only(top: 100.0),
-                              child: InternetPurchase(category: items[index]),
-                            ),
-                          );
-                          // AppNavigator.pushAndStackPage(context, page: InternetPurchase(
-                          //     services: AppList().serviceItems[index]));
-                          return;
-                        // case 'Electricity':
+                        // case 'cable tv':
                         //   modalSheet.showMaterialModalBottomSheet(
                         //     backgroundColor: Colors.transparent,
                         //     shape: const RoundedRectangleBorder(
-                        //       borderRadius:
-                        //           BorderRadius.vertical(top: Radius.circular(20.0)),
+                        //       borderRadius: BorderRadius.vertical(
+                        //           top: Radius.circular(20.0)),
                         //     ),
                         //     context: context,
                         //     builder: (context) => Padding(
                         //       padding: const EdgeInsets.only(top: 100.0),
-                        //       child: Electricity(
-                        //           services: AppList().serviceItems[index]),
+                        //       child: CablePurchase(category: items[index]),
                         //     ),
                         //   );
                         //   // AppNavigator.pushAndStackPage(context, page: InternetPurchase(
                         //   //     services: AppList().serviceItems[index]));
                         //   return;
+                        // // case 'Electricity':
+                        // //   modalSheet.showMaterialModalBottomSheet(
+                        // //     backgroundColor: Colors.transparent,
+                        // //     shape: const RoundedRectangleBorder(
+                        // //       borderRadius:
+                        // //           BorderRadius.vertical(top: Radius.circular(20.0)),
+                        // //     ),
+                        // //     context: context,
+                        // //     builder: (context) => Padding(
+                        // //       padding: const EdgeInsets.only(top: 100.0),
+                        // //       child: Electricity(
+                        // //           services: AppList().serviceItems[index]),
+                        // //     ),
+                        // //   );
+                        // //   // AppNavigator.pushAndStackPage(context, page: InternetPurchase(
+                        // //   //     services: AppList().serviceItems[index]));
+                        // //   return;
+                        default :
+                          showToast(
+                              context: context,
+                              title: 'Info',
+                              subtitle: 'Oops! It looks like this service is still in the oven. We\'re baking up something great, so stay tuned! 🍰',
+                              type: ToastMessageType.info);
                       }
 
                       //showAirtimeModal(context, AppList().serviceItems[index]);
                     },
-                    child: quickActionsItem(items[index], theme));
+                    child: quickActionsItem(items[index], theme,['airtime','data','electricity'].contains(items[index].name.toLowerCase())));
               },
             ),
           );
@@ -1033,6 +1045,7 @@ class _HomePageState extends State<HomePage> {
                                                   padding:
                                                       const EdgeInsets.all(8.0),
                                                   child: Container(
+                                                    width: 100,
                                                     decoration: BoxDecoration(
                                                         color: theme.isDark
                                                             ? AppColors
@@ -1070,6 +1083,7 @@ class _HomePageState extends State<HomePage> {
                                                   padding:
                                                       const EdgeInsets.all(8.0),
                                                   child: Container(
+                                                    width: 50,
                                                     decoration: BoxDecoration(
                                                         color: theme.isDark
                                                             ? AppColors
@@ -1114,7 +1128,7 @@ class _HomePageState extends State<HomePage> {
                                                 color: transactionHistory.data
                                                             .items[index].status
                                                             .toLowerCase() ==
-                                                        'successful'
+                                                        'success'
                                                     ? AppColors.green
                                                     : transactionHistory
                                                                 .data
@@ -1135,7 +1149,7 @@ class _HomePageState extends State<HomePage> {
                               },
                             ),
                           )
-                        : SizedBox();
+                        : const SizedBox();
                   } else {
                     return const SizedBox(); // Show loading indicator or handle error state
                   }
@@ -1476,16 +1490,14 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget quickActionsItem(Category category, AdaptiveThemeMode theme) {
+  Widget quickActionsItem(Category category, AdaptiveThemeMode theme,bool isPending) {
     return Column(
       children: [
         CircleAvatar(
           //radius: 24,
           //backgroundColor: service.backgroundColor,
-
-          child: Image.network(
-            category.image,
-          ),
+          backgroundImage: NetworkImage(category.image),
+          child: Align(alignment:Alignment.bottomRight,child: !isPending?const Icon(Icons.access_time_outlined,size: 10,color: AppColors.yellow,):const SizedBox()),
         ),
         const SizedBox(
           height: 5,
@@ -1505,7 +1517,7 @@ class _HomePageState extends State<HomePage> {
     return Container(
       height: 36,
       decoration: BoxDecoration(
-          color: Color(0xFFC2F6AE), borderRadius: BorderRadius.circular(10)),
+          color: const Color(0xFFC2F6AE), borderRadius: BorderRadius.circular(10)),
       child: Padding(
         padding: const EdgeInsets.all(5.0),
         child: Row(
