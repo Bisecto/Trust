@@ -48,22 +48,22 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
     return Scaffold(
       backgroundColor:
           theme.isDark ? AppColors.darkModeBackgroundColor : AppColors.white,
-      appBar: AppBar(
-        backgroundColor: AppColors.darkGreen,
-        elevation: 1,
-        title: const CustomText(
-          text: "KYC verification",
-          color: AppColors.white,
-        ),
-        leading: Navigator.canPop(context)
-            ? IconButton(
-                icon: const Icon(Icons.arrow_back, color: AppColors.white),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              )
-            : null,
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: AppColors.darkGreen,
+      //   elevation: 1,
+      //   title: const CustomText(
+      //     text: "KYC verification",
+      //     color: AppColors.white,
+      //   ),
+      //   leading: Navigator.canPop(context)
+      //       ? IconButton(
+      //           icon: const Icon(Icons.arrow_back, color: AppColors.white),
+      //           onPressed: () {
+      //             Navigator.pop(context);
+      //           },
+      //         )
+      //       : null,
+      // ),
       body: Stack(
         children: [
           Positioned(
@@ -91,6 +91,31 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
                     : AppIcons.kycBackground,
                 height: AppUtils.deviceScreenSize(context).height+50,
                 width: double.infinity,
+              ),
+            ),
+          ),
+          SafeArea(
+            left: true,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 15.0),
+                  child: Container(
+                    height: 40,
+                    width: 40,
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                            color: theme.isDark
+                                ? AppColors.white
+                                : AppColors.black),
+                        borderRadius: BorderRadius.circular(10)),
+                    child: const Center(child: Icon(Icons.arrow_back)),
+                  ),
+                ),
               ),
             ),
           ),

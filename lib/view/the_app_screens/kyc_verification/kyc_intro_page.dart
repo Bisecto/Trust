@@ -50,31 +50,31 @@ class _KYCIntroState extends State<KYCIntro> {
     return Scaffold(
       backgroundColor:
           theme.isDark ? AppColors.darkModeBackgroundColor : AppColors.white,
-      appBar: AppBar(
-        backgroundColor: AppColors.darkGreen,
-        elevation: 1,
-        title: const CustomText(
-          text: "KYC verification",
-          color: AppColors.white,
-        ),
-        leading: Navigator.canPop(context)
-            ? IconButton(
-                icon: const Icon(Icons.arrow_back, color: AppColors.white),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              )
-            : null,
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: AppColors.darkGreen,
+      //   elevation: 1,
+      //   title: const CustomText(
+      //     text: "KYC verification",
+      //     color: AppColors.white,
+      //   ),
+      //   leading: Navigator.canPop(context)
+      //       ? IconButton(
+      //           icon: const Icon(Icons.arrow_back, color: AppColors.white),
+      //           onPressed: () {
+      //             Navigator.pop(context);
+      //           },
+      //         )
+      //       : null,
+      // ),
       body: Stack(
         children: [
           Positioned(
             right: 0,
             left: 0,
             top: 0,
-           // bottom: 0,
+            // bottom: 0,
             child: Container(
-              height: AppUtils.deviceScreenSize(context).height+50,
+              height: AppUtils.deviceScreenSize(context).height + 50,
               width: double.infinity,
               // color: theme.isDark
               //     ? AppColors.darkModeBackgroundColor
@@ -91,8 +91,33 @@ class _KYCIntroState extends State<KYCIntro> {
                 theme.isDark
                     ? AppIcons.kycDarkBackground
                     : AppIcons.kycBackground,
-                height: AppUtils.deviceScreenSize(context).height+50,
+                height: AppUtils.deviceScreenSize(context).height + 50,
                 width: double.infinity,
+              ),
+            ),
+          ),
+          SafeArea(
+            left: true,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 15.0),
+                  child: Container(
+                    height: 40,
+                    width: 40,
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                            color: theme.isDark
+                                ? AppColors.white
+                                : AppColors.black),
+                        borderRadius: BorderRadius.circular(10)),
+                    child: const Center(child: Icon(Icons.arrow_back)),
+                  ),
+                ),
               ),
             ),
           ),
@@ -174,8 +199,8 @@ class _KYCIntroState extends State<KYCIntro> {
                                 ),
                                 Row(
                                   children: [
-                                    Icon(Icons.person_2_outlined),
-                                    SizedBox(
+                                    const Icon(Icons.person_2_outlined),
+                                    const SizedBox(
                                       width: 10,
                                     ),
                                     CustomText(
@@ -188,13 +213,13 @@ class _KYCIntroState extends State<KYCIntro> {
                                     )
                                   ],
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 10,
                                 ),
                                 Row(
                                   children: [
-                                    Icon(Icons.check),
-                                    SizedBox(
+                                    const Icon(Icons.check),
+                                    const SizedBox(
                                       width: 10,
                                     ),
                                     CustomText(
@@ -210,7 +235,7 @@ class _KYCIntroState extends State<KYCIntro> {
                                 FormButton(
                                   onPressed: () {
                                     AppNavigator.pushAndStackPage(context,
-                                        page: BVN_NIN_KYC_1());
+                                        page: const BVN_NIN_KYC_1());
                                   },
                                   text: 'Get Started',
                                   borderRadius: 10,
