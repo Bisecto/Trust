@@ -180,7 +180,7 @@ class _SignInWIthAccessPinBiometricsState
                                           CrossAxisAlignment.start,
                                       children: [
                                         CustomText(
-                                          text: "${widget.userName},",
+                                          text: "${AppUtils.formatString(data:widget.userName)},",
                                           weight: FontWeight.w600,
                                           size: 16,
                                           color: theme.isDark

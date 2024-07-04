@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ import '../../res/apis.dart';
 import '../../utills/app_utils.dart';
 import '../../utills/constants/loading_dialog.dart';
 import '../../utills/shared_preferences.dart';
+import '../app_bloc/app_bloc.dart';
 
 part 'product_event.dart';
 
@@ -25,6 +27,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     on<ListServiceEvent>(listServiceEvent);
     on<FetchProduct>(fetchProduct);
     on<PurchaseProductEvent>(purchaseProductEvent);
+    on<VerifyEntityNumberEvent>(verifyEntityNumberEvent);
     // on<ProductEvent>((event, emit) {
     //   // TODO: implement event handler
     // });
@@ -169,7 +172,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
     AppRepository appRepository = AppRepository();
     String accessToken = await SharedPref.getString("access-token");
-    // try {
+     try {
     var listServiceResponse = await appRepository.appGetRequest(
       '${AppApis.listProduct}?page=${event.page}&pageSize=${event.pageSize}&categoryId=${event.categoryId}&serviceId=${event.serviceId}',
       accessToken: accessToken,
@@ -197,9 +200,55 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           json.decode(listServiceResponse.body)['message'])));
       print(json.decode(listServiceResponse.body));
     }
-    // } catch (e) {
-    //   emit(ProductErrorState("An error occurred while fetching categories."));
-    //   print(e);
-    // }
+    } catch (e) {
+      emit(ProductErrorState("An error occurred while fetching categories."));
+      print(e);
+    }
+  }
+
+  FutureOr<void> verifyEntityNumberEvent(VerifyEntityNumberEvent event, Emitter<ProductState> emit)async  {
+    emit(EntityNumberLoadingState());
+    AppRepository appRepository = AppRepository();
+
+    try {
+      // Map<dynamic, String> data = {
+      //   "phone": event.phone,
+      //   "network_id": event.networkId,
+      //   "amount": event.amount,
+      //   "transactionPin": event.transactionPin,
+      // };
+      AppRepository appRepository = AppRepository();
+      String accessToken = await SharedPref.getString("access-token");
+      // try {
+      Map<String,dynamic> data={
+        "productId": event.producId,
+        "entityNumber": event.entityNumber
+      };
+      print(data);
+      var entityNumberResponse = await appRepository.appPostRequest(data,
+        AppApis.verifyEntityNumber,
+        accessToken: accessToken,
+      );
+      print(entityNumberResponse.body);
+      if (entityNumberResponse.statusCode == 200 || entityNumberResponse.statusCode == 201) {
+        // DataBillModel dataBillModel =
+        //     DataBillModel.fromJson(jsonDecode(response.body)['data']['rows']);
+        // BillPaymentModel billPaymentModel = BillPaymentModel.fromJson(
+        //     jsonDecode(response.body)['data']['data']);
+
+        // String customerName = json.decode(response.body)['data']['data']
+        // ['customer_name'] ??
+        //     "No user found";
+
+
+        emit(EntityNumberSuccessState(json.decode(entityNumberResponse.body)['data']['name']));
+      } else {
+        emit(EntityNumberErrorState(
+            AppUtils.convertString(json.decode(entityNumberResponse.body)['message'])));
+      }
+    }  catch (e) {
+
+      emit(EntityNumberErrorState(AppUtils.convertString(e.toString())));
+    }
   }
 }

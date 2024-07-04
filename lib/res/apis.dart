@@ -26,6 +26,7 @@ class AppApis {
   static String listProduct = "$appBaseUrl/c/p/list-product";
   static String listService = "$appBaseUrl/c/p/list-service";
   static String purchaseProduct = "$appBaseUrl/c/pay/create-wallet-order";
+  static String verifyEntityNumber = "$appBaseUrl/c/pay/verify-entity-number";
   static String quickPay = "$appBaseUrl/c/pay/initiate-checkout";
 
   static String initiateVerification = "$appBaseUrl/c/w/initiate-verification";

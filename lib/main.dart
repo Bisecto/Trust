@@ -15,7 +15,8 @@ import 'bloc/app_bloc/app_bloc.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  AdaptiveThemeMode? adaptiveThemeMode = await AdaptiveTheme.getThemeMode() ?? AdaptiveThemeMode.light;
+  AdaptiveThemeMode? adaptiveThemeMode =
+      await AdaptiveTheme.getThemeMode() ?? AdaptiveThemeMode.light;
 
   runApp(
     MultiBlocProvider(
@@ -36,9 +37,6 @@ void main() async {
     ),
   );
 }
-
-
-
 
 class MyApp extends StatefulWidget {
   final AdaptiveThemeMode? adaptiveThemeMode;
@@ -85,38 +83,40 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      statusBarIconBrightness: widget.adaptiveThemeMode!.isDark
-          ? Brightness.light
-          : Brightness.dark,
+      statusBarIconBrightness:
+          widget.adaptiveThemeMode!.isDark ? Brightness.light : Brightness.dark,
     ));
 
-    return AdaptiveTheme(
-      light: ThemeData(
-        brightness: Brightness.light,
-        primarySwatch: Colors.green,
-        fontFamily: "CeraPro",
-        appBarTheme: AppBarTheme(
-          systemOverlayStyle: SystemUiOverlayStyle.dark,
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.0)),
+      child: AdaptiveTheme(
+        light: ThemeData(
+          brightness: Brightness.light,
+          primarySwatch: Colors.green,
+          fontFamily: "CeraPro",
+          appBarTheme: AppBarTheme(
+            systemOverlayStyle: SystemUiOverlayStyle.dark,
+          ),
         ),
-      ),
-      dark: ThemeData(
-        brightness: Brightness.dark,
-        primarySwatch: Colors.green,
-        fontFamily: "CeraPro",
-        appBarTheme: AppBarTheme(
-          systemOverlayStyle: SystemUiOverlayStyle.light,
+        dark: ThemeData(
+          brightness: Brightness.dark,
+          primarySwatch: Colors.green,
+          fontFamily: "CeraPro",
+          appBarTheme: AppBarTheme(
+            systemOverlayStyle: SystemUiOverlayStyle.light,
+          ),
         ),
-      ),
-      initial: widget.adaptiveThemeMode!,
-      builder: (theme, darkTheme) => MaterialApp(
-        title: 'Tellatrust',
-        debugShowCheckedModeBanner: false,
-        onGenerateRoute: _appRoutes.onGenerateRoute,
-        theme: theme,
-        darkTheme: darkTheme,
-        home: _connected
-            ? SplashScreen()
-            : No_internet_Page(onRetry: _checkConnectivity),
+        initial: widget.adaptiveThemeMode!,
+        builder: (theme, darkTheme) => MaterialApp(
+          title: 'Tellatrust',
+          debugShowCheckedModeBanner: false,
+          onGenerateRoute: _appRoutes.onGenerateRoute,
+          theme: theme,
+          darkTheme: darkTheme,
+          home: _connected
+              ? SplashScreen()
+              : No_internet_Page(onRetry: _checkConnectivity),
+        ),
       ),
     );
   }

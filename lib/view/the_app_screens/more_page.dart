@@ -62,7 +62,7 @@ class _MorePageState extends State<MorePage> {
         child: Column(
           children: [
             Container(
-              height: 230,
+              height: 220,
               decoration: BoxDecoration(
                   color: theme.isDark
                       ? AppColors.darkGreen
@@ -72,7 +72,7 @@ class _MorePageState extends State<MorePage> {
               child: Column(
                 children: [
                   Container(
-                    height: 160,
+                    height: 150,
                     width: AppUtils.deviceScreenSize(context).width,
                     decoration: BoxDecoration(
                         color: theme.isDark
@@ -301,7 +301,7 @@ class _MorePageState extends State<MorePage> {
               print(json.encode(state.customerProfile));
             },
             child: SizedBox(
-              height: 50,
+              height: 40,
               width: AppUtils.deviceScreenSize(context).width,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -325,7 +325,7 @@ class _MorePageState extends State<MorePage> {
                         children: [
                           CustomText(
                             text:
-                                "${personalInfo.lastName} ${personalInfo.firstName}",
+                                "${AppUtils.formatString(data:personalInfo.lastName)} ${AppUtils.formatString(data:personalInfo.firstName)}",
                             weight: FontWeight.bold,
                             color: theme.isDark
                                 ? AppColors.darkModeBackgroundMainTextColor
@@ -382,13 +382,6 @@ class _MorePageState extends State<MorePage> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CustomText(
-                          text: "Hello",
-                          color: theme.isDark
-                              ? AppColors.darkModeBackgroundSubTextColor
-                              : AppColors.textColor2,
-                          size: 12,
-                        ),
                         CustomText(
                           text: "$lastname $firstname",
                           weight: FontWeight.bold,

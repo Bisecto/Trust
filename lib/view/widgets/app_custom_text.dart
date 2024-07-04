@@ -41,7 +41,7 @@ class CustomText extends StatelessWidget {
               (underline) ? TextDecoration.underline : TextDecoration.none,
           decorationColor: AppColors.green,
           letterSpacing: spacing!,
-          fontSize: size != null ? (size! + 2.0) : 16,
+          fontSize: size != null ? (size! + 0.0) : 12,
           color: color ?? Colors.black,
           //   fontWeight: weight ?? FontWeight.normal,
         )

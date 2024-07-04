@@ -108,6 +108,14 @@ class AppUtils {
     return DateTime(
         newDate.year, newDate.month, newDate.day, time.hour, time.minute);
   }
+  static String formatString({required String data}) {
+    if (data.isEmpty) return data;
+
+    String firstLetter = data[0].toUpperCase();
+    String remainingString = data.substring(1);
+
+    return firstLetter + remainingString;
+  }
 
   static String formatComplexDate({required String dateTime}) {
     DateTime parseDate = DateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(dateTime);

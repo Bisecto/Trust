@@ -17,14 +17,24 @@ class ListServiceEvent extends ProductEvent {
   final String categoryId;
 
   ListServiceEvent(this.page, this.pageSize, this.categoryId);
-}class FetchProduct extends ProductEvent {
+}
+
+class FetchProduct extends ProductEvent {
   final String query;
   final String page;
   final int pageSize;
   final String categoryId;
   final String serviceId;
 
-  FetchProduct(this.query,this.page, this.pageSize, this.categoryId,this.serviceId);
+  FetchProduct(
+      this.query, this.page, this.pageSize, this.categoryId, this.serviceId);
+}class VerifyEntityNumberEvent extends ProductEvent {
+
+  final String producId;
+  final String entityNumber;
+
+  VerifyEntityNumberEvent(
+      this.producId, this.entityNumber);
 }
 
 class PurchaseProductEvent extends ProductEvent {
@@ -34,7 +44,6 @@ class PurchaseProductEvent extends ProductEvent {
   final String accessPIN;
   final bool isQuickPay;
 
-  PurchaseProductEvent(this.context,this.requiredFields, this.productId,this.accessPIN,this.isQuickPay);
+  PurchaseProductEvent(this.context, this.requiredFields, this.productId,
+      this.accessPIN, this.isQuickPay);
 }
-
-

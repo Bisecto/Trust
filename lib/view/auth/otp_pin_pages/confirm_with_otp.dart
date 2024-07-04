@@ -12,7 +12,6 @@ import '../../../res/app_images.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/custom_theme.dart';
 import '../../important_pages/dialog_box.dart';
-import '../../the_app_screens/sevices/purchase_receipt.dart';
 import '../../widgets/app_custom_text.dart';
 
 class ConfirmWithPin extends StatefulWidget {

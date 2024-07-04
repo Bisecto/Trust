@@ -41,7 +41,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     AppRepository appRepository = AppRepository();
     String accessToken = await SharedPref.getString("access-token");
 
-    try {
+   // try {
       var profileResponse = await appRepository.appGetRequest(
         AppApis.userProfile,
         accessToken: accessToken,
@@ -66,10 +66,10 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             json.decode(profileResponse.body)['message'])));
         print(json.decode(profileResponse.body));
       }
-    } catch (e) {
-      emit(ErrorState("An error occurred while fetching user profile."));
-      print(e);
-    }
+    // } catch (e) {
+    //   emit(ErrorState("An error occurred while fetching user profile."));
+    //   print(e);
+    // }
   }
 
   void updateData(CustomerProfile _customerProfile,TransactionHistoryModel _transactionHistoryModel) {

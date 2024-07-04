@@ -116,7 +116,7 @@ class Order {
 
   factory Order.fromJson(Map<String, dynamic> json) => Order(
     id: json["id"],
-    status: json["status"],
+    status: json["status"]??'',
     providerOrderId: json["providerOrderId"],
     requiredFields: RequiredFields.fromJson(json["requiredFields"]),
     product: Product.fromJson(json["product"]),

@@ -111,13 +111,14 @@ Future<bool?> alert({
                   child: CustomText(
                     text: subtitle,
                     color: theme.isDark ? AppColors.white : AppColors.black,
+                    size: 14,
                     maxLines: 5,
                     textAlign: TextAlign.center,
                   ),
                 ),
               ),
               SizedBox(
-                height: 50,
+                height: 20,
               )
             ],
           )

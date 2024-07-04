@@ -21,7 +21,7 @@ class CustomTextFormField extends StatefulWidget {
   final bool isPasswordField;
   final int? maxLength;
   //final IconData icon;
-  final Widget widget;
+  final Widget? widget;
   final Color borderColor;
   final TextInputType textInputType;
   final TextEditingController? controller;
@@ -34,7 +34,7 @@ class CustomTextFormField extends StatefulWidget {
       this.maxLines = 1,
         this.textInputType=TextInputType.text,
       //required this.icon,
-      required this.widget,
+       this.widget,
         this.backgroundColor=AppColors.white,
         this.borderColor=AppColors.grey,
       this.isPasswordField = false,
@@ -70,7 +70,6 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       children: [
         CustomText(
           text: widget.label,
-          //weight: FontWeight.bold,
           color: theme.isDark
               ? AppColors.darkModeBackgroundMainTextColor
               : AppColors.textColor2,
@@ -85,11 +84,10 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                 ? AppColors.darkModeBackgroundColor
                 : AppColors.white,
             border: Border.all(
-              color: widget.borderColor, // Choose the color you want for the border
-              width:1.0, // Choose the width you want for the border
+              color: widget.borderColor,
+              width: 1.0,
             ),
-            borderRadius:
-                BorderRadius.circular(10.0), // Choose the border radius you want
+            borderRadius: BorderRadius.circular(10.0),
           ),
           child: Padding(
             padding: const EdgeInsets.only(left: 5.0),
@@ -97,65 +95,63 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
               children: [
                 if (widget.isMobileNumber)
                   const Text(
-                    '+234', // Replace with your label text
+                    '+234',
                     style: TextStyle(
-                      //fontWeight: FontWeight.bold,
                       fontSize: 15,
                     ),
                   ),
-                if (widget.isMobileNumber)
-
-                  const SizedBox(width: 10),
+                if (widget.isMobileNumber) const SizedBox(width: 10),
                 Expanded(
                   child: TextFormField(
                     controller: widget.controller,
-
-                    style: TextStyle(fontSize: 14,color:theme.isDark
-                        ? AppColors.white
-                        :  AppColors.black),
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: theme.isDark ? AppColors.white : AppColors.black,
+                    ),
                     decoration: InputDecoration(
-                        prefixIcon: GestureDetector(
-                          onTap: () {
-                            if (widget.isPasswordField) {
-                              _togglePasswordVisibility();
-                            }
-                          },
-                          child:widget.widget
-
+                      prefixIcon: GestureDetector(
+                        onTap: () {
+                          if (widget.isPasswordField) {
+                            _togglePasswordVisibility();
+                          }
+                        },
+                        child: widget.widget ?? SizedBox(),
+                      ),
+                      suffixIcon: GestureDetector(
+                        onTap: () {
+                          if (widget.isPasswordField) {
+                            _togglePasswordVisibility();
+                          }
+                        },
+                        child: Icon(
+                          widget.isPasswordField
+                              ? (!_obscureText
+                              ? Icons.visibility_off
+                              : Icons.visibility)
+                              : null,
                         ),
-                        suffixIcon: GestureDetector(
-                          onTap: () {
-                            if (widget.isPasswordField) {
-                              _togglePasswordVisibility();
-                            }
-                          },
-                          child: Icon(
-                            widget.isPasswordField
-                                ? (!_obscureText
-                                    ? Icons.visibility_off
-                                    : Icons.visibility)
-                                : null,
-                          ),
-                        ),
-                        hintText: widget.hint,
-                        hintStyle: GoogleFonts.poppins(
-                            fontSize: 12,color:theme.isDark
+                      ),
+                      hintText: widget.hint,
+                      hintStyle: GoogleFonts.poppins(
+                        fontSize: 12,
+                        color: theme.isDark
                             ? AppColors.darkModeBackgroundDisableColor
-                            :  AppColors.lightDivider
-                        ),
-                        border: InputBorder.none),
+                            : AppColors.lightDivider,
+                      ),
+                      border: InputBorder.none,
+                    ),
                     keyboardType: widget.textInputType,
                     validator: widget.validator,
-                    //obscureText: widget.isobscure,
                     maxLines: widget.maxLines,
                     maxLength: widget.maxLength,
                     obscureText: _obscureText,
                     onFieldSubmitted: (val) {
-                      widget.onFieldSubmitted!();
+                      widget.onFieldSubmitted?.call(val);
                     },
-                    onChanged: (String val) {
-                      widget.onChanged;
-                      //_name = val;
+                    onChanged: (val) {
+                      if (widget.onChanged != null) {
+                        widget.onChanged!(val);
+                      }
                     },
                   ),
                 ),

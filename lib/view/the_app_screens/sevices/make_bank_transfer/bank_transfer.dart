@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:teller_trust/repository/app_repository.dart';
 import 'package:teller_trust/res/apis.dart';
 import 'package:teller_trust/utills/app_navigator.dart';
+import 'package:teller_trust/view/the_app_screens/sevices/payment_receipt.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../../../../../res/app_colors.dart';
+import '../../../../model/quick_pay_transaction_history.dart';
 import '../../../../model/quickpay_model.dart';
 import '../../../../model/transactionHistory.dart';
 import '../../../../utills/shared_preferences.dart';
 import '../../../widgets/app_custom_text.dart';
 import '../../../widgets/purchase_receipt.dart';
-import '../purchase_receipt.dart';
 
 class MakePayment extends StatefulWidget {
   final QuickPayModel quickPayModel;
@@ -34,11 +35,8 @@ class _MakePaymentState extends State<MakePayment> {
 
   late String htmlString;
 
-  void performGetRequest(
-    String apiUrl,
-  ) async {
+  void performGetRequest(String apiUrl) async {
     AppRepository appRepository = AppRepository();
-    // String accessToken = await SharedPref.getString("access-token");
     var response = await appRepository.appGetRequest(
       apiUrl,
       accessToken: widget.accessToken,
@@ -46,38 +44,27 @@ class _MakePaymentState extends State<MakePayment> {
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       print('Request completed with status code: ${response.statusCode}');
-      print(
-          'Request completed with status code: ${json.decode(response.body)}');
+      print('Request completed with status code: ${json.decode(response.body)}');
       Map<String, dynamic> responseData = jsonDecode(response.body);
       String status = responseData['data']['status'];
 
-      if (status.toLowerCase() == 'pending'||status.toLowerCase() == 'failed') {
+      if (status.toLowerCase() == 'pending' || status.toLowerCase() == 'failed') {
         print('Transaction status is pending. Retrying...');
-        // Recursive call to retry the request
-        performGetRequest(
-          apiUrl,
-        );
+        performGetRequest(apiUrl);
       } else {
         print('Request completed with status: $status');
-        Item item =Item.fromJson(responseData['data']);
-        AppNavigator.pushAndStackPage(context, page: TransactionReceipt(item: item,));
-
+        PaymentReceipt paymentReceipt = PaymentReceipt.fromJson(jsonDecode(response.body));
+        AppNavigator.pushAndStackPage(context, page: Receipt(paymentReceipt: paymentReceipt));
       }
-
     } else {
-      print(
-          'Request failed with status code: ${response.statusCode}. Retrying...');
-      performGetRequest(
-        apiUrl,
-      );
+      print('Request failed with status code: ${response.statusCode}. Retrying...');
+      performGetRequest(apiUrl);
     }
   }
 
   @override
   void initState() {
     super.initState();
-    performGetRequest(
-        '${AppApis.appBaseUrl}/c/pay/conclude-checkout/${widget.quickPayModel.referenceCode}');
     // Generate the HTML string with data from quickPayModel
     htmlString = """
 <!DOCTYPE html>
@@ -118,35 +105,10 @@ class _MakePaymentState extends State<MakePayment> {
         },
         callback: (response) => { 
           console.log(response);
-          // Call your API directly when payment is confirmed
-          fetchPaymentCompletion();
+          window.flutter_inappwebview.callHandler('paymentCompleted', response);
         }
       });
     };
-
-    function fetchPaymentCompletion() {
-      fetch("https://api.tellatrust.com/c/pay/conclude-checkout/${widget.quickPayModel.referenceCode}", {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-access-token': '${widget.accessToken}', // Pass accessToken here
-        },
-      })
-      .then(response => {
-        if (response.ok) {
-          return response.json(); // Parse response as JSON
-        } else {
-          throw new Error('Network response was not ok.');
-        }
-      })
-      .then(data => {
-        // Handle the response data as needed
-        console.log('API Response:', data);
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
-    }
 
     payWithSafeHaven(); // Automatically trigger the payment on page load
   </script>
@@ -190,6 +152,9 @@ class _MakePaymentState extends State<MakePayment> {
             onPageFinished: (String url) {
               print('Page finished loading: $url');
             },
+            javascriptChannels: <JavascriptChannel>{
+              _createJavascriptChannel(context),
+            },
           ),
           if (loadingPercentage < 100)
             LinearProgressIndicator(
@@ -200,9 +165,19 @@ class _MakePaymentState extends State<MakePayment> {
     );
   }
 
+  JavascriptChannel _createJavascriptChannel(BuildContext context) {
+    return JavascriptChannel(
+      name: 'Flutter',
+      onMessageReceived: (JavascriptMessage message) {
+        String apiUrl = "${AppApis.appBaseUrl}/c/pay/conclude-checkout/${widget.quickPayModel.referenceCode}";
+        performGetRequest(apiUrl);
+      },
+    );
+  }
+
   void _loadHtmlFromAssets() {
-    _webViewController.loadUrl(Uri.dataFromString(htmlString,
-            mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
-        .toString());
+    _webViewController.loadUrl(
+      Uri.dataFromString(htmlString, mimeType: 'text/html', encoding: Encoding.getByName('utf-8')).toString(),
+    );
   }
 }

@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -10,6 +14,8 @@ import 'package:teller_trust/view/widgets/drop_down.dart';
 
 import '../../../bloc/product_bloc/product_bloc.dart';
 import '../../../model/service_model.dart';
+import '../../../repository/app_repository.dart';
+import '../../../res/apis.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/app_icons.dart';
 import '../../../res/app_list.dart';
@@ -27,6 +33,9 @@ import '../../widgets/form_input.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
 import '../../widgets/show_toast.dart';
+import 'build_payment_method.dart';
+import 'make_bank_transfer/bank_transfer.dart';
+import '../../../model/product_model.dart' as productMode;
 
 class ElectricityPurchase extends StatefulWidget {
   final mainCategory.Category category;
@@ -40,22 +49,62 @@ class ElectricityPurchase extends StatefulWidget {
 class _ElectricityPurchaseState extends State<ElectricityPurchase> {
   ProductBloc productBloc = ProductBloc();
   ProductBloc purchaseProductBloc = ProductBloc();
-  String selectedElectricityPlan = 'Choose Plan';
-  String selectedElectricityPlanPrice = '';
-  String selectedElectricityPlanId = '';
+  ProductBloc verifyEntityNumberProductBloc = ProductBloc();
+  String selectedElectricityProvider = 'Choose Provider';
+  String selectedElectricityProviderImage = '';
+  String selectedElectricityProviderId = '';
   String selectedServiceId = '';
+  String serviceID = '';
+  bool isPaymentAllowed = false;
+  final _selectedAmtController = TextEditingController();
+
+  Future<String> handleNetworkSelect(String? selectedServiceId) async {
+    AppRepository appRepository = AppRepository();
+    String accessToken = await SharedPref.getString("access-token");
+    String apiUrl =
+        '${AppApis.listProduct}?page=1&pageSize=10&categoryId=${widget.category.id}&serviceId=$selectedServiceId';
+
+    try {
+      var listServiceResponse = await appRepository.appGetRequest(
+        apiUrl,
+        accessToken: accessToken,
+      );
+
+      if (listServiceResponse.statusCode == 200) {
+        print("productModel dtddhdhd: ${listServiceResponse.body}");
+        productMode.ProductModel productModel =
+            productMode.ProductModel.fromJson(
+                json.decode(listServiceResponse.body));
+        setState(() {
+          serviceID = productModel.data.items[0].id;
+        });
+        print(productModel);
+        print(serviceID);
+
+        return serviceID;
+        // Process the data as needed
+      } else {
+        print("Error: ${listServiceResponse.statusCode}");
+        return '';
+
+        // Handle error
+      }
+    } catch (e) {
+      return '';
+
+      print("Network request failed: $e");
+      // Handle exception
+    }
+  }
 
   @override
   void initState() {
     // TODO: implement initState
-    print(widget.category.name);
-    print(widget.category.name);
-    print(widget.category.name);
-    print(widget.category.name);
-    productBloc.add(ListServiceEvent("1", "4", widget.category.id));
 
     super.initState();
   }
+
+  String _selectedPaymentMethod = 'wallet';
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +113,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
-        height: AppUtils.deviceScreenSize(context).height,
+        height: AppUtils.deviceScreenSize(context).height - 100,
         decoration: BoxDecoration(
             color: theme.isDark
                 ? AppColors.darkModeBackgroundColor
@@ -79,7 +128,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                 BlocConsumer<ProductBloc, ProductState>(
                     bloc: purchaseProductBloc,
                     listenWhen: (previous, current) =>
-                    current is! ProductInitial,
+                        current is! ProductInitial,
                     listener: (context, state) async {
                       print(state);
                       if (state is PurchaseSuccess) {
@@ -93,6 +142,15 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
 
                         // AppNavigator.pushAndRemovePreviousPages(context,
                         //     page: LandingPage(studentProfile: state.studentProfile));
+                      } else if (state is QuickPayInitiated) {
+                        String accessToken =
+                            await SharedPref.getString("access-token");
+
+                        AppNavigator.pushAndStackPage(context,
+                            page: MakePayment(
+                              quickPayModel: state.quickPayModel,
+                              accessToken: accessToken,
+                            ));
                       } else if (state is AccessTokenExpireState) {
                         showToast(
                             context: context,
@@ -126,8 +184,6 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                           children: <Widget>[
                             Container(
                               height: 60,
-                              width: double.infinity,
-
                               decoration: BoxDecoration(
                                   color: theme.isDark
                                       ? AppColors.darkModeBackgroundColor
@@ -135,7 +191,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                   borderRadius: BorderRadius.only(
                                       topRight: Radius.circular(10),
                                       topLeft: Radius.circular(10))),
-                              child:  Padding(
+                              child: Padding(
                                 padding: const EdgeInsets.all(0.0),
                                 child: Stack(
                                   alignment: Alignment.center,
@@ -148,9 +204,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                         AppIcons.billTopBackground,
                                         height: 60,
                                         // Increase height to fit the text
-                                        width:
-                                        AppUtils.deviceScreenSize(context)
-                                            .width,
+                                        width: double.infinity,
                                         color: AppColors.darkGreen,
                                         // Set the color if needed
                                         placeholderBuilder: (context) {
@@ -160,7 +214,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                             color: Colors.grey[300],
                                             child: Center(
                                                 child:
-                                                CircularProgressIndicator()),
+                                                    CircularProgressIndicator()),
                                           );
                                         },
                                       ),
@@ -171,16 +225,16 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                       right: 10,
                                       child: Row(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           TextStyles.textHeadings(
-                                            textValue: 'Electricity Purchase',
+                                            textValue: 'Electricity',
                                             textColor: AppColors.darkGreen,
                                             // w: FontWeight.w600,
                                             textSize: 14,
                                           ),
                                           // Text(
-                                          //   "Electricity purchase",
+                                          //   "Airtime purchase",
                                           //   style: TextStyle(
                                           //     color: AppColors.darkGreen,
                                           //     fontWeight: FontWeight.w600,
@@ -204,114 +258,130 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                               ),
                             ),
 
-                            BlocConsumer<ProductBloc, ProductState>(
-                              bloc: productBloc,
-                              builder: (context, state) {
-                                if (state is ServiceSuccessState) {
-                                  ServiceModel serviceItem = state.serviceModel;
-                                  List<Service> services =
-                                      serviceItem.data.services;
-                                  //Use user Electricity here
-                                  return SizedBox(
-                                    height: 105,
-                                    child: ListView.builder(
-                                      physics:
-                                      const NeverScrollableScrollPhysics(),
-                                      scrollDirection: Axis.horizontal,
-                                      // gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                      //   crossAxisCount: 4,
-                                      //   crossAxisSpacing: 8.0,
-                                      //   mainAxisSpacing: 8.0,
-                                      // ),
-                                      itemCount: services.length,
-                                      //AppList().serviceItems.length,
-                                      itemBuilder: (context, index) {
-                                        return GestureDetector(
-                                            onTap: () {
-                                              String selectedAction = '';
-                                              setState(() {
-                                                //selectedAction=services[index].name;
-                                              });
-
-                                              //showElectricityModal(context, AppList().serviceItems[index]);
-                                            },
-                                            child: networkProviderItem(
-                                                services[index].name,
-                                                services[index].image,
-                                                services[index].id));
-                                      },
-                                    ),
-                                  );
-                                } else {
-                                  return const CustomText(
-                                    text: "There",
-                                    size: 15,
-                                    weight: FontWeight.bold,
-                                    color: AppColors.white,
-                                  ); // Show loading indicator or handle error state
-                                }
-                              },
-                              listener: (BuildContext context,
-                                  ProductState state) async {
-                                if (state is AccessTokenExpireState) {
-                                  String firstame =
-                                  await SharedPref.getString('firstName');
-
-                                  AppNavigator.pushAndRemovePreviousPages(
-                                      context,
-                                      page: SignInWIthAccessPinBiometrics(
-                                        userName: firstame,
-                                      ));
-                                }
-                              },
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
+                            // const SizedBox(
+                            //   height: 10,
+                            // ),
+                            // BlocConsumer<ProductBloc, ProductState>(
+                            //   bloc: productBloc,
+                            //   builder: (context, state) {
+                            //     if (state is ServiceSuccessState) {
+                            //       ServiceModel serviceItem = state.serviceModel;
+                            //       List<Service> services =
+                            //           serviceItem.data.services;
+                            //       //Use user Electricity here
+                            //       return SizedBox(
+                            //         height: 105,
+                            //         child: ListView.builder(
+                            //           physics:
+                            //           const NeverScrollableScrollPhysics(),
+                            //           scrollDirection: Axis.horizontal,
+                            //           // gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            //           //   crossAxisCount: 4,
+                            //           //   crossAxisSpacing: 8.0,
+                            //           //   mainAxisSpacing: 8.0,
+                            //           // ),
+                            //           itemCount: services.length,
+                            //           //AppList().serviceItems.length,
+                            //           itemBuilder: (context, index) {
+                            //             return GestureDetector(
+                            //                 onTap: () {
+                            //                   String selectedAction = '';
+                            //                   setState(() {
+                            //                     //selectedAction=services[index].name;
+                            //                   });
+                            //
+                            //                   //showAirtimeModal(context, AppList().serviceItems[index]);
+                            //                 },
+                            //                 child: networkProviderItem(
+                            //                     services[index].name,
+                            //                     services[index].image,
+                            //                     services[index].id,
+                            //                     theme));
+                            //           },
+                            //         ),
+                            //       );
+                            //     } else {
+                            //       return const CustomText(
+                            //         text: "     Loading.....",
+                            //         size: 15,
+                            //         weight: FontWeight.bold,
+                            //         color: AppColors.white,
+                            //       ); // Show loading indicator or handle error state
+                            //     }
+                            //   },
+                            //   listener: (BuildContext context,
+                            //       ProductState state) async {
+                            //     if (state is AccessTokenExpireState) {
+                            //       String firstame =
+                            //       await SharedPref.getString('firstName');
+                            //
+                            //       AppNavigator.pushAndRemovePreviousPages(
+                            //           context,
+                            //           page: SignInWIthAccessPinBiometrics(
+                            //             userName: firstame,
+                            //           ));
+                            //     }
+                            //   },
+                            // ),
+                            // const SizedBox(
+                            //   height: 20,
+                            // ),
                             Padding(
                               padding: const EdgeInsets.all(10.0),
                               child: GestureDetector(
                                 onTap: () {
-                                  if (selectedNetwork == '') {
-                                    setState(() {
-                                      MSG.warningSnackBar(context,
-                                          'Please Select a service provider');
-                                    });
-                                  } else {
-                                    modalSheet.showMaterialModalBottomSheet(
-                                      backgroundColor: Colors.transparent,
-                                      isDismissible: true,
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(20.0),
-                                        ),
+                                  modalSheet.showMaterialModalBottomSheet(
+                                    backgroundColor: Colors.transparent,
+                                    isDismissible: true,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(20.0),
                                       ),
-                                      context: context,
-                                      builder: (context) => Padding(
-                                        padding:
-                                        const EdgeInsets.only(top: 200.0),
-                                        child: ElectricityPlan(
-                                          onElectricityPlanSelected: (String name,
-                                              String price, String id) {
-                                            setState(() {
-                                              selectedElectricityPlan = name;
-                                              selectedElectricityPlanPrice = price;
-                                              selectedElectricityPlanId = id;
-                                            });
-                                            Navigator.pop(
-                                                context); // Close modal
-                                          },
-                                          categoryId: widget.category.id,
-                                          serviceId: selectedServiceId,
-                                        ),
+                                    ),
+                                    context: context,
+                                    builder: (context) => Padding(
+                                      padding:
+                                          const EdgeInsets.only(top: 200.0),
+                                      child: ElectricityProvider(
+                                        onElectricityProviderSelected:
+                                            (String name, String imageUrl,
+                                                String id) async {
+                                          setState(() {
+                                            selectedElectricityProvider = name;
+                                            selectedElectricityProviderImage =
+                                                imageUrl;
+                                            selectedElectricityProviderId = id;
+                                          });
+                                          print(selectedElectricityProviderId);
+                                          Navigator.pop(context); // Close modal
+                                          String mainServiceId =
+                                              await handleNetworkSelect(
+                                                  selectedElectricityProviderId);
+                                          if (_beneficiaryController
+                                                      .text.length >
+                                                  9 &&
+                                              mainServiceId != '') {
+                                            verifyEntityNumberProductBloc.add(
+                                                VerifyEntityNumberEvent(
+                                                    mainServiceId,
+                                                    _beneficiaryController
+                                                        .text));
+                                          }
+                                        },
+                                        categoryId: widget.category.id,
+                                        serviceId: selectedServiceId,
+                                        theme: theme,
                                       ),
-                                    );
-                                  }
+                                    ),
+                                  );
                                 },
                                 child: Container(
                                   height: 50,
                                   decoration: BoxDecoration(
-                                    color: AppColors.white,
+                                    color: theme.isDark
+                                        ? AppColors
+                                            .darkModeBackgroundContainerColor
+                                        : AppColors.white,
                                     border: Border.all(
                                       color: selectedServiceId.isNotEmpty
                                           ? AppColors.green
@@ -324,16 +394,22 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                     padding: const EdgeInsets.only(left: 25.0),
                                     child: Row(
                                       mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Expanded(
                                           child: CustomText(
-                                            text: selectedElectricityPlan,
+                                            text: selectedElectricityProvider,
                                             size: 14,
-                                            color: selectedElectricityPlan !=
-                                                "Choose Plan"
-                                                ? Colors.black
-                                                : AppColors.lightDivider,
+                                            color:
+                                                selectedElectricityProvider !=
+                                                        "Choose Provider"
+                                                    ? (theme.isDark
+                                                        ? Colors.white
+                                                        : Colors.black)
+                                                    : (theme.isDark
+                                                        ? Colors.grey
+                                                        : AppColors
+                                                            .lightDivider),
                                           ),
                                         ),
                                         const Icon(Icons.arrow_drop_down),
@@ -343,11 +419,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                 ),
                               ),
                             ),
-                            if (selectedElectricityPlanPrice.isNotEmpty)
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: amount(selectedElectricityPlanPrice),
-                              ),
+
                             Padding(
                               padding: const EdgeInsets.all(10.0),
                               child: Form(
@@ -355,75 +427,335 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                   child: Column(
                                     children: [
                                       CustomTextFormField(
-                                        hint: 'Input number here',
-                                        label: 'Beneficiary',
-                                        controller: _beneficiaryController,
+                                        hint: '0.00',
+                                        label: 'Select Amount',
+                                        controller: _selectedAmtController,
                                         textInputType: TextInputType.number,
                                         validator:
-                                        AppValidator.validateTextfield,
-                                        //icon: Icons.flag,
-                                        widget: SvgPicture.asset(AppIcons.nigeriaLogo),
-                                        //isMobileNumber: true,
-                                        borderColor: _beneficiaryController
-                                            .text.isNotEmpty
+                                            AppValidator.validateTextfield,
+                                        widget: SvgPicture.asset(
+                                          AppIcons.naira,
+                                          color: _selectedAmtController
+                                                  .text.isNotEmpty
+                                              ? AppColors.darkGreen
+                                              : AppColors.grey,
+                                        ),
+                                        borderColor: _selectedAmtController
+                                                .text.isNotEmpty
                                             ? AppColors.green
                                             : AppColors.grey,
                                       ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          //selectAmount("2000"),
+                                          //selectAmount("1000", theme),
+                                          selectAmount("2000", theme),
+                                          selectAmount("3000", theme),
+                                          selectAmount("4000", theme),
+                                          selectAmount("5000", theme),
+                                        ],
+                                      ),
+                                  CustomTextFormField(
+                                    hint: 'Enter your meter number',
+                                    label: 'Meter Number',
+                                    controller: _beneficiaryController,
+                                    textInputType: TextInputType.number,
+                                    onChanged: (value) async {
+                                      print(_beneficiaryController.text.length);
+                                      print(selectedElectricityProviderId);
+                                      if (_beneficiaryController.text.length > 9 &&
+                                          selectedElectricityProviderId.isNotEmpty) {
+                                        String mainServiceId =
+                                        await handleNetworkSelect(selectedElectricityProviderId);
 
-                                      ///Remember to add beneficiary
+                                        verifyEntityNumberProductBloc.add(
+                                          VerifyEntityNumberEvent(mainServiceId, _beneficiaryController.text),
+                                        );
+                                      }
+                                    },
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Please enter your SmartCard number';
+                                      } else if (value.length < 9) {
+                                        return 'Invalid SmartCard number';
+                                      }
+                                      return null;
+                                    },
+                                    borderColor: _beneficiaryController.text.isNotEmpty
+                                        ? AppColors.green
+                                        : AppColors.grey,
+                                  ),
+                                      if (_beneficiaryController.text.length >
+                                              9 &&
+                                          selectedElectricityProviderId != '')
+                                        BlocConsumer<ProductBloc, ProductState>(
+                                            bloc: verifyEntityNumberProductBloc,
+                                            // listenWhen: (previous, current) =>
+                                            //     current is! InitialSuccessState,
+                                            // buildWhen: (previous, current) =>
+                                            // current is! GetDataPlanLoadingState,
+                                            listener: (context, state) {
+                                              if (state
+                                                  is EntityNumberErrorState) {
+                                                // MSG.warningSnackBar(context, state.error);
+                                              }
+                                            },
+                                            builder: (context, state) {
+                                              if (_beneficiaryController
+                                                          .text.length >
+                                                      9 &&
+                                                  selectedElectricityProviderId !=
+                                                      '') {
+                                                if (state
+                                                    is EntityNumberSuccessState) {
+                                                  final res = state
+                                                      as EntityNumberSuccessState;
+                                                  // setState(() {
+                                                  //   enableButton=true;
+                                                  //
+                                                  // });
+                                                  return Padding(
+                                                      padding: const EdgeInsets
+                                                          .fromLTRB(
+                                                          10, 0, 10, 25.0),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          CustomText(
+                                                            text: res.name,
+                                                            color:
+                                                                AppColors.green,
+                                                          ),
+                                                        ],
+                                                      ));
+                                                } else if (state
+                                                    is EntityNumberErrorState) {
+                                                  return Padding(
+                                                      padding:
+                                                          EdgeInsets.fromLTRB(
+                                                              10, 0, 10, 25.0),
+                                                      child: CustomText(
+                                                        text:
+                                                            "Invalid Meter number",
+                                                        size: 14,
+                                                        color: AppColors.red,
+                                                      ));
+                                                } else {
+                                                  return const Padding(
+                                                      padding:
+                                                          EdgeInsets.fromLTRB(
+                                                              10, 0, 10, 25.0),
+                                                      child: CustomText(
+                                                        text:
+                                                            "Verifying user.....",
+                                                        size: 14,
+                                                        color: AppColors.black,
+                                                      ));
+                                                }
+                                              } else {
+                                                return const Padding(
+                                                    padding:
+                                                        EdgeInsets.fromLTRB(
+                                                            10, 0, 10, 25.0),
+                                                    child: CustomText(
+                                                      text: "",
+                                                      size: 14,
+                                                      color: AppColors.red,
+                                                    ));
+                                              }
+                                            }),
+                                      Container(
+                                        height: 310,
+                                        child: PaymentMethodScreen(
+                                          amtToPay: _selectedAmtController
+                                                  .text.isEmpty
+                                              ? '0'
+                                              : _selectedAmtController.text,
+                                          onPaymentMethodSelected: (method) {
+                                            // No need to use setState here directly as it might be called during the build phase
+                                            Future.microtask(() {
+                                              if (mounted) {
+                                                setState(() {
+                                                  _selectedPaymentMethod =
+                                                      method;
+                                                  // print(_selectedPaymentMethod);
+                                                });
+                                              }
+                                            });
+                                          },
+                                          ispaymentAllowed: (allowed) {
+                                            // Deferred update to avoid issues during the build phase
+                                            Future.microtask(() {
+                                              if (mounted) {
+                                                setState(() {
+                                                  isPaymentAllowed = allowed;
+                                                  // print(isPaymentAllowed);
+                                                });
+                                              }
+                                            });
+                                          },
+                                        ),
+                                      ),
                                       FormButton(
                                         onPressed: () async {
+                                          print(_selectedPaymentMethod);
+                                          //print(selectedElectricityProviderPrice);
+                                          print(_beneficiaryController
+                                              .text.isNotEmpty);
+                                          print(!isPaymentAllowed);
+
                                           if (_formKey.currentState!
                                               .validate()) {
-                                            var transactionPin = '';
-                                            // transactionPin = await modalSheet
-                                            //     .showMaterialModalBottomSheet(
-                                            //         backgroundColor:
-                                            //             Colors.transparent,
-                                            //         shape:
-                                            //             const RoundedRectangleBorder(
-                                            //           borderRadius:
-                                            //               BorderRadius.vertical(
-                                            //                   top: Radius
-                                            //                       .circular(
-                                            //                           20.0)),
-                                            //         ),
-                                            //         context: context,
-                                            //         builder: (context) =>
-                                            //             Padding(
-                                            //               padding:
-                                            //                   const EdgeInsets
-                                            //                       .only(
-                                            //                       top: 200.0),
-                                            //               child: ConfirmWithPin(
-                                            //                 context: context,
-                                            //                 title:
-                                            //                     'Input your transaction pin to continue',
-                                            //               ),
-                                            //             ));
-                                            print(transactionPin);
-                                            // if (transactionPin != '') {
-                                            //   purchaseProductBloc.add(
-                                            //       PurchaseProductEvent(
-                                            //           context,
-                                            //           double.parse(
-                                            //               selectedElectricityPlanPrice),
-                                            //           _beneficiaryController
-                                            //               .text,
-                                            //           selectedElectricityPlanId,
-                                            //           transactionPin));
-                                            // }
+                                            if (_selectedPaymentMethod !=
+                                                'wallet') {
+                                              var transactionPin = '';
+                                              widget.category.requiredFields
+                                                      .amount =
+                                                  _selectedAmtController.text;
+                                              widget.category.requiredFields
+                                                  .meterNumber =
+                                                  _beneficiaryController.text;
+                                              widget.category.requiredFields
+                                                      .phoneNumber =
+                                                  _beneficiaryController.text;
+
+                                              purchaseProductBloc.add(
+                                                  PurchaseProductEvent(
+                                                      context,
+                                                      widget.category
+                                                          .requiredFields,
+                                                      serviceID,
+                                                      transactionPin,
+                                                      true));
+                                            } else {
+                                              var transactionPin = '';
+                                              transactionPin = await modalSheet
+                                                  .showMaterialModalBottomSheet(
+                                                      backgroundColor:
+                                                          Colors.transparent,
+                                                      shape:
+                                                          const RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.vertical(
+                                                                top: Radius
+                                                                    .circular(
+                                                                        20.0)),
+                                                      ),
+                                                      context: context,
+                                                      builder: (context) =>
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .only(
+                                                                    top: 200.0),
+                                                            child:
+                                                                ConfirmWithPin(
+                                                              context: context,
+                                                              title:
+                                                                  'Input your transaction pin to continue',
+                                                            ),
+                                                          ));
+                                              print(transactionPin);
+                                              if (transactionPin != '') {
+                                                setState(() {
+                                                  widget.category.requiredFields
+                                                          .amount =
+                                                      _selectedAmtController
+                                                          .text;
+                                                  widget.category.requiredFields
+                                                          .phoneNumber =
+                                                      _beneficiaryController
+                                                          .text;
+                                                });
+
+                                                purchaseProductBloc.add(
+                                                    PurchaseProductEvent(
+                                                        context,
+                                                        widget.category
+                                                            .requiredFields,
+                                                        selectedElectricityProviderId,
+                                                        transactionPin,
+                                                        false));
+                                              }
+                                            }
                                           }
                                         },
-                                        disableButton: selectedElectricityPlanId
-                                            .isNotEmpty &&
-                                            _beneficiaryController.text == '',
+                                        disableButton: (!isPaymentAllowed ||
+                                            _beneficiaryController.text.length <
+                                                10),
                                         text: 'Purchase Electricity',
                                         borderColor: AppColors.darkGreen,
                                         bgColor: AppColors.darkGreen,
                                         textColor: AppColors.white,
                                         borderRadius: 10,
+                                      ),
+                                      SizedBox(
+                                        height: 20,
                                       )
+
+                                      ///Remember to add beneficiary
+                                      // FormButton(
+                                      //   onPressed: () async {
+                                      //     if (_formKey.currentState!
+                                      //         .validate()) {
+                                      //       var transactionPin = '';
+                                      //       // transactionPin = await modalSheet
+                                      //       //     .showMaterialModalBottomSheet(
+                                      //       //         backgroundColor:
+                                      //       //             Colors.transparent,
+                                      //       //         shape:
+                                      //       //             const RoundedRectangleBorder(
+                                      //       //           borderRadius:
+                                      //       //               BorderRadius.vertical(
+                                      //       //                   top: Radius
+                                      //       //                       .circular(
+                                      //       //                           20.0)),
+                                      //       //         ),
+                                      //       //         context: context,
+                                      //       //         builder: (context) =>
+                                      //       //             Padding(
+                                      //       //               padding:
+                                      //       //                   const EdgeInsets
+                                      //       //                       .only(
+                                      //       //                       top: 200.0),
+                                      //       //               child: ConfirmWithPin(
+                                      //       //                 context: context,
+                                      //       //                 title:
+                                      //       //                     'Input your transaction pin to continue',
+                                      //       //               ),
+                                      //       //             ));
+                                      //       print(transactionPin);
+                                      //       // if (transactionPin != '') {
+                                      //       //   purchaseProductBloc.add(
+                                      //       //       PurchaseProductEvent(
+                                      //       //           context,
+                                      //       //           double.parse(
+                                      //       //               selectedElectricityProviderPrice),
+                                      //       //           _beneficiaryController
+                                      //       //               .text,
+                                      //       //           selectedElectricityProviderId,
+                                      //       //           transactionPin,false));
+                                      //       // }
+                                      //     }
+                                      //   },
+                                      //   disableButton: (!isPaymentAllowed &&
+                                      //       _beneficiaryController
+                                      //           .text.isNotEmpty),
+                                      //   // selectedElectricityProviderId.isNotEmpty &&
+                                      //   //     _beneficiaryController.text=='',
+                                      //   text: 'Purchase Electricity',
+                                      //   borderColor: AppColors.darkGreen,
+                                      //   bgColor: AppColors.darkGreen,
+                                      //   textColor: AppColors.white,
+                                      //   borderRadius: 10,
+                                      // )
                                     ],
                                   )),
                             ),
@@ -439,7 +771,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
     );
   }
 
-  Widget amount(String amt) {
+  Widget selectAmount(String amt, AdaptiveThemeMode theme) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
@@ -451,15 +783,13 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
         },
         child: Container(
           decoration: BoxDecoration(
-              color: AppColors.white,
+              //color: AppColors.white,
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: AppColors.lightGreen)),
+              border: Border.all(color: AppColors.textColor)),
           child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: CustomText(
-              text: "₦ $amt",
-            ),
-          ),
+              padding: const EdgeInsets.all(5.0),
+              child: TextStyles.textDetails(
+                  textValue: "₦ $amt", textColor: AppColors.textColor)),
         ),
       ),
     );
@@ -487,7 +817,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                       decoration: BoxDecoration(
                           color: Colors.grey.withOpacity(0.2),
                           borderRadius:
-                          const BorderRadius.all(Radius.circular(50)))),
+                              const BorderRadius.all(Radius.circular(50)))),
                   const SizedBox(height: 10),
                   Shimmer(
                     duration: const Duration(seconds: 1),
@@ -528,110 +858,25 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
   }
 
   final _formKey = GlobalKey<FormState>();
-  final String _selectedPlan = '';
+  final String _selectedProvider = '';
 
   String selectedNetwork = "";
   final _beneficiaryController = TextEditingController();
-  final _selectedAmtController = TextEditingController();
-
-  Widget selectAmount(String amt) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: GestureDetector(
-        onTap: () {
-          print(amt);
-          setState(() {
-            _selectedAmtController.text = amt;
-          });
-        },
-        child: Container(
-          decoration: BoxDecoration(
-              color: AppColors.greyAccent,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: AppColors.grey)),
-          child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: CustomText(
-              text: "N $amt",
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget networkProviderItem(String name, String image, String id) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        height: AppUtils.deviceScreenSize(context).width / 5,
-        width: AppUtils.deviceScreenSize(context).width / 5,
-        decoration: BoxDecoration(
-            border: Border.all(
-                color: selectedNetwork == name.toLowerCase()
-                    ? AppColors.green
-                    : Colors.transparent),
-            color: selectedNetwork == name.toLowerCase()
-                ? AppColors.lightShadowGreenColor
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(15)),
-        child: Padding(
-          padding: const EdgeInsets.all(6.0),
-          child: GestureDetector(
-            onTap: () {
-              setState(() {
-                selectedNetwork = name.toLowerCase();
-                selectedServiceId = id;
-                selectedElectricityPlanPrice = '';
-                selectedElectricityPlanId = '';
-                selectedElectricityPlan = 'Choose Plan';
-              });
-            },
-            child: Column(
-              children: [
-                CircleAvatar(
-                  //backgroundColor: service.backgroundColor,
-                  radius: 20,
-                  backgroundImage: NetworkImage(image),
-                  //child: Image.asset(image,height: 20,width: 20,),
-                ),
-                CustomText(
-                  text: name,
-                  color: AppColors.black,
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-// void showElectricityModal(BuildContext context, Services services) {
-//   modalSheet.showMaterialModalBottomSheet(
-//     context: context,
-//     enableDrag: true,
-//     isDismissible: true,
-//     expand: false,
-//     //shape: ShapeDecoration(shape: shape),
-//     builder: (context) => Container(
-//       height: AppUtils.deviceScreenSize(context).height * 0.8,
-//       child: ,
-//     ),
-//   );
-// }
 }
 
-class ElectricityPlan extends StatelessWidget {
+class ElectricityProvider extends StatelessWidget {
   final String categoryId;
   final String serviceId;
-  final Function(String, String, String) onElectricityPlanSelected;
+  final AdaptiveThemeMode theme;
+  final Function(String, String, String) onElectricityProviderSelected;
 
-  ElectricityPlan({
-    Key? key,
-    required this.serviceId,
-    required this.categoryId,
-    required this.onElectricityPlanSelected,
-  }) : super(key: key);
+  ElectricityProvider(
+      {Key? key,
+      required this.serviceId,
+      required this.categoryId,
+      required this.onElectricityProviderSelected,
+      required this.theme})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -642,33 +887,72 @@ class ElectricityPlan extends StatelessWidget {
           body: Column(
             children: [
               Container(
-                height: 50,
-                decoration: const BoxDecoration(
-                    color: AppColors.darkGreen,
+                height: 60,
+                decoration: BoxDecoration(
+                    color: theme.isDark
+                        ? AppColors.darkModeBackgroundColor
+                        : AppColors.white,
                     borderRadius: BorderRadius.only(
                         topRight: Radius.circular(10),
                         topLeft: Radius.circular(10))),
                 child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  padding: const EdgeInsets.all(0.0),
+                  child: Stack(
+                    alignment: Alignment.center,
                     children: [
-                      const CustomText(
-                        text: "Electricity Plans",
-                        color: AppColors.white,
-                        weight: FontWeight.w600,
-                        size: 18,
+                      Positioned(
+                        top: 0, // Adjust position as needed
+                        left: 0,
+                        right: 0,
+                        child: SvgPicture.asset(
+                          AppIcons.billTopBackground,
+                          height: 60,
+                          // Increase height to fit the text
+                          width: double.infinity,
+                          color: AppColors.darkGreen,
+                          // Set the color if needed
+                          placeholderBuilder: (context) {
+                            return Container(
+                              height: 50,
+                              width: double.infinity,
+                              color: Colors.grey[300],
+                              child: Center(child: CircularProgressIndicator()),
+                            );
+                          },
+                        ),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Container(
-                          child: const Icon(
-                            Icons.arrow_back_ios,
-                            size: 40,
-                            color: AppColors.lightShadowGreenColor,
-                          ),
+                      Positioned(
+                        top: 10, // Adjust position as needed
+                        left: 10,
+                        right: 10,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            TextStyles.textHeadings(
+                              textValue: 'Electricity Providers',
+                              textColor: AppColors.darkGreen,
+                              // w: FontWeight.w600,
+                              textSize: 14,
+                            ),
+                            // Text(
+                            //   "Airtime purchase",
+                            //   style: TextStyle(
+                            //     color: AppColors.darkGreen,
+                            //     fontWeight: FontWeight.w600,
+                            //     fontSize: 18,
+                            //   ),
+                            // ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: Icon(
+                                Icons.cancel,
+                                color: Colors.grey,
+                                size: 30,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -676,8 +960,8 @@ class ElectricityPlan extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: ElectricityPlanList(
-                  onElectricityPlanSelected: onElectricityPlanSelected,
+                child: ElectricityProviderList(
+                  onElectricityProviderSelected: onElectricityProviderSelected,
                   serviceId: serviceId,
                   categoryId: categoryId,
                 ),
@@ -690,23 +974,24 @@ class ElectricityPlan extends StatelessWidget {
   }
 }
 
-class ElectricityPlanList extends StatefulWidget {
+class ElectricityProviderList extends StatefulWidget {
   final String categoryId;
   final String serviceId;
-  final Function(String, String, String) onElectricityPlanSelected;
+  final Function(String, String, String) onElectricityProviderSelected;
 
-  ElectricityPlanList({
+  ElectricityProviderList({
     Key? key,
     required this.serviceId,
     required this.categoryId,
-    required this.onElectricityPlanSelected,
+    required this.onElectricityProviderSelected,
   }) : super(key: key);
 
   @override
-  _ElectricityPlanListState createState() => _ElectricityPlanListState();
+  _ElectricityProviderListState createState() =>
+      _ElectricityProviderListState();
 }
 
-class _ElectricityPlanListState extends State<ElectricityPlanList> {
+class _ElectricityProviderListState extends State<ElectricityProviderList> {
   final TextEditingController _searchController = TextEditingController();
   int page = 1;
   ProductBloc productListBloc = ProductBloc();
@@ -715,7 +1000,8 @@ class _ElectricityPlanListState extends State<ElectricityPlanList> {
   void initState() {
     super.initState();
     _searchController.addListener(_onSearchChanged);
-    _fetchElectricityPlan('', page, widget.categoryId, widget.serviceId);
+
+    _fetchElectricityProvider('', page, widget.categoryId, widget.serviceId);
   }
 
   @override
@@ -725,48 +1011,62 @@ class _ElectricityPlanListState extends State<ElectricityPlanList> {
       child: Column(
         children: [
           CustomTextFormField(
-            hint: 'Search Electricity plan',
+            hint: 'Search Electricity Provider',
             label: '',
             controller: _searchController,
             validator: AppValidator.validateAccountNumberfield,
-            widget: Icon(Icons.search)
+            widget: Icon(Icons.search),
           ),
           Expanded(
             child: BlocBuilder<ProductBloc, ProductState>(
               bloc: productListBloc,
               builder: (context, state) {
-                if (state is ProductLoadingState) {
+                if (state is ServiceLoadingState) {
                   return const Center(child: CircularProgressIndicator());
-                } else if (state is ProductSuccessState) {
-                  final product = state as ProductSuccessState;
+                } else if (state is ServiceSuccessState) {
+                  final ServiceSuccessState = state;
                   return ListView.builder(
-                    itemCount: product.productModel.data.items.length,
+                    itemCount:
+                        ServiceSuccessState.serviceModel.data.services.length,
                     itemBuilder: (context, index) {
-                      final singleProduct =
-                      product.productModel.data.items[index];
-                      return ListTile(
-                        onTap: () {
-                          widget.onElectricityPlanSelected(
-                            singleProduct.name,
-                            singleProduct.buyerPrice.toString(),
-                            singleProduct.id,
-                          );
-                        },
-                        title: CustomText(
-                          text: singleProduct.name,
-                          size: 14,
-                          weight: FontWeight.w700,
-                        ),
-                        subtitle: CustomText(
-                          text: singleProduct.buyerPrice.toString(),
-                          size: 14,
-                          weight: FontWeight.w400,
-                        ),
+                      final singleService =
+                          ServiceSuccessState.serviceModel.data.services[index];
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ListTile(
+                            onTap: () {
+                              widget.onElectricityProviderSelected(
+                                singleService.name,
+                                singleService.image,
+                                singleService.id,
+                              );
+                            },
+                            title: CustomText(
+                              text: singleService.name,
+                              size: 14,
+                              weight: FontWeight.w700,
+                            ),
+                            // subtitle: Row(
+                            //   children: [
+                            //     SvgPicture.asset(AppIcons.naira,color: AppColors.green,),
+                            //     CustomText(
+                            //       text: singleProduct.buyerPrice.toString(),
+                            //       size: 14,
+                            //       weight: FontWeight.w400,
+                            //     ),
+                            //   ],
+                            // ),
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(5),
+                            )
+                            //shape: ShapeBorder(),
+                            ),
                       );
                     },
                   );
-                } else if (state is ProductErrorState) {
-                  final error = state as ProductErrorState;
+                } else if (state is ServiceErrorState) {
+                  final error = state;
                   return Center(
                     child: Text(error.error),
                   );
@@ -782,13 +1082,16 @@ class _ElectricityPlanListState extends State<ElectricityPlanList> {
 
   void _onSearchChanged() {
     page = 1; // Reset page number to 1 when search query changes
-    _fetchElectricityPlan(
+    _fetchElectricityProvider(
         _searchController.text, page, widget.categoryId, widget.serviceId);
   }
 
-  void _fetchElectricityPlan(String query, int pageNo, categoryId, serviceId) {
-    productListBloc
-        .add(FetchProduct(query, pageNo.toString(), 20, categoryId, serviceId));
+  void _fetchElectricityProvider(
+      String query, int pageNo, categoryId, serviceId) {
+    // productListBloc
+    //     .add(FetchProduct(query, pageNo.toString(), 20, categoryId, serviceId));
+    productListBloc.add(ListServiceEvent(pageNo.toString(), '20', categoryId));
+
     page++; // Increment page number after making the request
   }
 
