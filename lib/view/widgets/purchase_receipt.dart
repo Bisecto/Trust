@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:teller_trust/model/transactionHistory.dart';
 import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/res/app_images.dart';
+import 'package:teller_trust/utills/app_utils.dart';
 
 import '../../res/app_colors.dart';
 import 'app_custom_text.dart';
@@ -111,10 +113,20 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                         size: 12,
                         color: AppColors.textColor2,
                       ),
-                      CustomText(
-                        text: widget.item.order.requiredFields.phoneNumber,
-                        size: 14,
-                        color: AppColors.black,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CustomText(
+                            text: widget.item.order.requiredFields.phoneNumber,
+                            size: 14,
+                            color: AppColors.black,
+                          ),
+                          GestureDetector(
+                              onTap: () {
+                                AppUtils().copyToClipboard(widget.item.order.requiredFields.phoneNumber, context);
+                              },
+                              child: SvgPicture.asset(AppIcons.copy2))
+                        ],
                       ),
                       // SizedBox(height: 12),
                       // CustomText(
@@ -157,10 +169,21 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                         size: 12,
                         color: AppColors.textColor2,
                       ),
-                      CustomText(
-                        text: widget.item.reference,
-                        size: 14,
-                        color: AppColors.black,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CustomText(
+                            text: widget.item.reference,
+                            size: 14,
+                            color: AppColors.black,
+                          ),
+                          GestureDetector(
+                              onTap: () {
+                                AppUtils().copyToClipboard(widget.item.order.requiredFields.phoneNumber, context);
+                              },
+                              child: SvgPicture.asset(AppIcons.copy2))
+
+                        ],
                       ),
                       SizedBox(height: 12),
                       CustomText(
@@ -193,88 +216,121 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                   ),
                 ),
                 SizedBox(height: 20),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     GestureDetector(
-                      onTap: () {
-                      },
+                      onTap: () {},
                       child: Column(
                         children: [
                           Container(
                             height: 40,
                             width: 40,
                             decoration: BoxDecoration(
-                              color:Color(0xffF3FFEB),
+                                color: Color(0xffF3FFEB),
                                 borderRadius: BorderRadius.circular(10)),
                             child: Center(
-                                child: SvgPicture.asset(AppIcons.send,color: AppColors.darkGreen,)),
+                                child: SvgPicture.asset(
+                              AppIcons.send,
+                              color: AppColors.darkGreen,
+                            )),
                           ),
-                          SizedBox(height: 5,),
-                          CustomText(text: "Share",size: 12,color: AppColors.darkGreen,weight: FontWeight.bold,)
-                        ],
-                      ),
-                    ),
-
-                    GestureDetector(
-                      onTap: () {
-                      },
-                      child: Column(
-                        children: [
-                          Container(
-                            height: 40,
-                            width: 40,
-                            decoration: BoxDecoration(
-                                color:Color(0xffF3FFEB),
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Center(
-                                child: SvgPicture.asset(AppIcons.download,color: AppColors.darkGreen,)),
+                          SizedBox(
+                            height: 5,
                           ),
-                          SizedBox(height: 5,),
-                          CustomText(text: "Download",size: 12,color: AppColors.darkGreen,weight: FontWeight.bold,)
+                          CustomText(
+                            text: "Share",
+                            size: 12,
+                            color: AppColors.darkGreen,
+                            weight: FontWeight.bold,
+                          )
                         ],
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {
-                      },
+                      onTap: () {},
                       child: Column(
                         children: [
                           Container(
                             height: 40,
                             width: 40,
                             decoration: BoxDecoration(
-                                color:Color(0xffF3FFEB),
+                                color: Color(0xffF3FFEB),
                                 borderRadius: BorderRadius.circular(10)),
                             child: Center(
-                                child: SvgPicture.asset(AppIcons.reload,color: AppColors.darkGreen,)),
+                                child: SvgPicture.asset(
+                              AppIcons.download,
+                              color: AppColors.darkGreen,
+                            )),
                           ),
-                          SizedBox(height: 5,),
-                          CustomText(text: "Repeat",size: 12,color: AppColors.darkGreen,weight: FontWeight.bold,)
+                          SizedBox(
+                            height: 5,
+                          ),
+                          CustomText(
+                            text: "Download",
+                            size: 12,
+                            color: AppColors.darkGreen,
+                            weight: FontWeight.bold,
+                          )
                         ],
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {
-                      },
+                      onTap: () {},
                       child: Column(
                         children: [
                           Container(
                             height: 40,
                             width: 40,
                             decoration: BoxDecoration(
-                                color:Color(0xffF3FFEB),
+                                color: Color(0xffF3FFEB),
                                 borderRadius: BorderRadius.circular(10)),
                             child: Center(
-                                child: SvgPicture.asset(AppIcons.infoOutlined,color: AppColors.darkGreen,)),
+                                child: SvgPicture.asset(
+                              AppIcons.reload,
+                              color: AppColors.darkGreen,
+                            )),
                           ),
-                          SizedBox(height: 5,),
-                          CustomText(text: "Report",size: 12,color: AppColors.darkGreen,weight: FontWeight.bold,)
+                          SizedBox(
+                            height: 5,
+                          ),
+                          CustomText(
+                            text: "Repeat",
+                            size: 12,
+                            color: AppColors.darkGreen,
+                            weight: FontWeight.bold,
+                          )
                         ],
                       ),
                     ),
-
+                    GestureDetector(
+                      onTap: () {},
+                      child: Column(
+                        children: [
+                          Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                                color: Color(0xffF3FFEB),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: Center(
+                                child: SvgPicture.asset(
+                              AppIcons.infoOutlined,
+                              color: AppColors.darkGreen,
+                            )),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          CustomText(
+                            text: "Report",
+                            size: 12,
+                            color: AppColors.darkGreen,
+                            weight: FontWeight.bold,
+                          )
+                        ],
+                      ),
+                    ),
                   ],
                 ),
                 SizedBox(height: 0),
@@ -287,15 +343,22 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                 CustomText(
                   text: 'For Your Purchase',
                   textAlign: TextAlign.center,
-                  size: 12,
+                  size: 14,
                   //: Text//(fontSize: 16, color: Colors.grey),
                 ),
                 SizedBox(height: 20),
-                CustomText(
-                  text: 'Secured by Tella Trust',
-                  textAlign: TextAlign.center,
-                  size: 14,
-                  //: Text//(fontSize: 16, color: Colors.grey),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.lock,color: AppColors.green,),
+
+                    CustomText(
+                      text: 'Secured by TellaTrust',
+                      textAlign: TextAlign.center,
+                      size: 14,
+                      //: Text//(fontSize: 16, color: Colors.grey),
+                    ),
+                  ],
                 ),
               ],
             ),
