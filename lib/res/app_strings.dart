@@ -1,5 +1,5 @@
 class AppStrings {
-  static const String appName = 'Tella Trust';
+  static const String appName = 'TellaTrust';
   static const String networkErrorMessage = "Network error, try again later";
   static const String logoutMessage = "Are you sure you want to logout?";
   static const String deleteAccountMessage =
