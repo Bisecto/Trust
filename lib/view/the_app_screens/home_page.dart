@@ -253,6 +253,7 @@ class _HomePageState extends State<HomePage> {
                                 ? AppColors.darkModeBackgroundMainTextColor
                                 : AppColors.textColor,
                             textSize: 14,
+
                           ),
                         ],
                       )
@@ -756,8 +757,14 @@ class _HomePageState extends State<HomePage> {
                               AppIcons.add, "Add Funds")),
                       GestureDetector(
                           onTap: () {
-                            AppNavigator.pushAndStackPage(context,
-                                page: const SendFunds());
+                            showToast(
+                                context: context,
+                                title: 'Info',
+                                subtitle: 'Oops! It looks like this service is still in the oven. We\'re baking up something great, so stay tuned! 🍰',
+                                type: ToastMessageType.info);
+
+                            // AppNavigator.pushAndStackPage(context,
+                            //     page: const SendFunds());
                             // Navigator.push(
                             //   context,
                             //   MaterialPageRoute(
@@ -792,7 +799,7 @@ class _HomePageState extends State<HomePage> {
                             state.customerProfile.customerAccount;
                         // Use user data here
                         return customerAccount == null
-                            ? accountNumberContainer(" ********")
+                            ? accountNumberContainer("***")
                             : accountNumberContainer(" 8765564367");
                       } else {
                         return const SizedBox(); // Show loading indicator or handle error state
@@ -1517,7 +1524,7 @@ class _HomePageState extends State<HomePage> {
     return Container(
       height: 36,
       decoration: BoxDecoration(
-          color: const Color(0xFFC2F6AE), borderRadius: BorderRadius.circular(10)),
+          color: accNumber=='***'?AppColors.lightOrange: Color(0xFFC2F6AE), borderRadius: BorderRadius.circular(10)),
       child: Padding(
         padding: const EdgeInsets.all(5.0),
         child: Row(
@@ -1531,11 +1538,12 @@ class _HomePageState extends State<HomePage> {
                   height: 20,
                   width: 20,
                 ),
-                const CustomText(
-                  text: " Tellatrust Account Number ",
+                 CustomText(
+                  text: accNumber=='***'?"Complete KYC to get TellaTrust Account Number":" Tellatrust Account Number ",
                   color: AppColors.darkGreen,
                   size: 12,
                 ),
+                if(accNumber!='***')
                 CustomText(
                   text: accNumber,
                   color: AppColors.black,
@@ -1543,6 +1551,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
+            if(accNumber!='***')
             GestureDetector(
                 onTap: () {
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
