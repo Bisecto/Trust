@@ -69,6 +69,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                         trailing: CustomText(
                           text: 'NGN${walletInfo.balance}',
                           weight: FontWeight.bold,
+                          size: 12,
                           // style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         selected: _selectedPaymentMethod == 'wallet',
@@ -219,7 +220,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                       Text(
                         title,
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 14,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -228,7 +229,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                           subtitle,
                           style: TextStyle(
                             color: Colors.grey,
-                            fontSize: 14,
+                            fontSize: 12,
                           ),
                         ),
                     ],
