@@ -87,6 +87,11 @@ class _SignInScreenState extends State<SignInScreen> {
                     title: 'Successful',
                     subtitle: state.msg,
                     type: ToastMessageType.success);
+                Future.delayed(const Duration(seconds: 3), () {
+                  Navigator.pop(context);
+                  // setState(() {
+                  // });
+                });
               } else {
                 // MSG.snackBar(context, "Logged in. You have not created an access PIN");
 
@@ -345,7 +350,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                                 text: "Sign up?",
                                                 color: theme.isDark
                                                     ? AppColors.white
-                                                    : AppColors.blue,
+                                                    : AppColors.green,
                                                 weight: FontWeight.w700,
                                                 size: 16,
                                               ),
