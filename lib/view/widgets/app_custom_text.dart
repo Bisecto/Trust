@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -61,7 +63,7 @@ class CustomText extends StatelessWidget {
 
 class TextStyles {
   static textHeadings(
-      {required String textValue, double textSize = 16, Color? textColor}) {
+      {required String textValue,FontWeight fontWeight=FontWeight.w800, double textSize = 16, Color? textColor}) {
     return Text(
       textValue,
       textDirection: TextDirection.ltr,
@@ -71,7 +73,7 @@ class TextStyles {
             color: textColor,
             fontSize: textSize,
 
-            fontWeight: FontWeight.w800),
+            fontWeight: fontWeight),
       ),
       textAlign: TextAlign.end,
     );

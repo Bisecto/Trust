@@ -248,12 +248,12 @@ class _HomePageState extends State<HomePage> {
                           ),
                           TextStyles.textHeadings(
                             textValue:
-                                "${AppUtils.formatString(data:personalInfo.lastName)} ${AppUtils.formatString(data:personalInfo.firstName)}",
+                                "${AppUtils.formatString(data: personalInfo.lastName)} ${AppUtils.formatString(data: personalInfo.firstName)}",
                             textColor: theme.isDark
                                 ? AppColors.darkModeBackgroundMainTextColor
                                 : AppColors.textColor,
                             textSize: 14,
-
+                            fontWeight: FontWeight.w400
                           ),
                         ],
                       )
@@ -306,11 +306,13 @@ class _HomePageState extends State<HomePage> {
                           size: 12,
                         ),
                         TextStyles.textHeadings(
-                          textValue: "${AppUtils.formatString(data:lastname)} ${AppUtils.formatString(data:firstname)}",
+                          textValue:
+                              "${AppUtils.formatString(data: lastname)} ${AppUtils.formatString(data: firstname)}",
                           textColor: theme.isDark
                               ? AppColors.darkModeBackgroundMainTextColor
                               : AppColors.textColor,
                           textSize: 14,
+                            fontWeight: FontWeight.w400
                         )
                       ],
                     )
@@ -672,12 +674,12 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 TextStyles.textHeadings(
                                     textValue: // "196,000.",
-                                        AppUtils.convertPrice(walletInfo.balance
-                                                    .toString())
-                                                .split('.')[0] +
-                                            ".",
+                                        "${AppUtils.convertPrice(walletInfo.balance.toString()).split('.')[0]}.",
                                     textSize: 28,
                                     textColor: AppColors.white),
+                                SizedBox(
+                                  width: 5,
+                                ),
                                 Column(
                                   //mainAxisAlignment: MainAxisAlignment.,
                                   children: [
@@ -760,7 +762,8 @@ class _HomePageState extends State<HomePage> {
                             showToast(
                                 context: context,
                                 title: 'Info',
-                                subtitle: 'Oops! It looks like this service is still in the oven. We\'re baking up something great, so stay tuned! 🍰',
+                                subtitle:
+                                    'Oops! It looks like this service is still in the oven. We\'re baking up something great, so stay tuned! 🍰',
                                 type: ToastMessageType.info);
 
                             // AppNavigator.pushAndStackPage(context,
@@ -923,17 +926,22 @@ class _HomePageState extends State<HomePage> {
                         // //   // AppNavigator.pushAndStackPage(context, page: InternetPurchase(
                         // //   //     services: AppList().serviceItems[index]));
                         // //   return;
-                        default :
+                        default:
                           showToast(
                               context: context,
                               title: 'Info',
-                              subtitle: 'Oops! It looks like this service is still in the oven. We\'re baking up something great, so stay tuned! 🍰',
+                              subtitle:
+                                  'Oops! It looks like this service is still in the oven. We\'re baking up something great, so stay tuned! 🍰',
                               type: ToastMessageType.info);
                       }
 
                       //showAirtimeModal(context, AppList().serviceItems[index]);
                     },
-                    child: quickActionsItem(items[index], theme,['airtime','data','electricity'].contains(items[index].name.toLowerCase())));
+                    child: quickActionsItem(
+                        items[index],
+                        theme,
+                        ['airtime', 'data', 'electricity']
+                            .contains(items[index].name.toLowerCase())));
               },
             ),
           );
@@ -983,13 +991,38 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CustomText(
-                text: "Recent Transactions",
-                color: theme.isDark
-                    ? AppColors.darkModeBackgroundMainTextColor
-                    : AppColors.textColor2,
-                size: 12,
-                weight: FontWeight.bold,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CustomText(
+                    text: "Recent Transactions",
+                    color: theme.isDark
+                        ? AppColors.darkModeBackgroundMainTextColor
+                        : AppColors.textColor2,
+                    size: 12,
+                    weight: FontWeight.bold,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        //color: AppColors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: AppColors.textColor2)),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(8.0, 5, 8, 5),
+                        child: CustomText(
+                          text: "See All",
+                          size: 12,
+                          color: theme.isDark
+                              ? AppColors.darkModeBackgroundSubTextColor
+                              : AppColors.textColor2,
+                        ),
+                      ),
+                    ),
+                  )
+
+                ],
               ),
               const SizedBox(
                 height: 10,
@@ -1129,9 +1162,14 @@ class _HomePageState extends State<HomePage> {
                                               ],
                                             ),
                                             CustomText(
-                                                text: transactionHistory
-                                                    .data.items[index].status
-                                                    .toUpperCase(),
+                                                text: transactionHistory.data
+                                                            .items[index].status
+                                                            .toLowerCase() ==
+                                                        "success"
+                                                    ? "SUCCESSFUL"
+                                                    : transactionHistory.data
+                                                        .items[index].status
+                                                        .toLowerCase(),
                                                 color: transactionHistory.data
                                                             .items[index].status
                                                             .toLowerCase() ==
@@ -1497,14 +1535,23 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget quickActionsItem(Category category, AdaptiveThemeMode theme,bool isPending) {
+  Widget quickActionsItem(
+      Category category, AdaptiveThemeMode theme, bool isPending) {
     return Column(
       children: [
         CircleAvatar(
           //radius: 24,
           //backgroundColor: service.backgroundColor,
           backgroundImage: NetworkImage(category.image),
-          child: Align(alignment:Alignment.bottomRight,child: !isPending?const Icon(Icons.access_time_outlined,size: 10,color: AppColors.yellow,):const SizedBox()),
+          child: Align(
+              alignment: Alignment.bottomRight,
+              child: !isPending
+                  ? const Icon(
+                      Icons.access_time_outlined,
+                      size: 10,
+                      color: AppColors.yellow,
+                    )
+                  : const SizedBox()),
         ),
         const SizedBox(
           height: 5,
@@ -1524,7 +1571,8 @@ class _HomePageState extends State<HomePage> {
     return Container(
       height: 36,
       decoration: BoxDecoration(
-          color: accNumber=='***'?AppColors.lightOrange: Color(0xFFC2F6AE), borderRadius: BorderRadius.circular(10)),
+          color: accNumber == '***' ? AppColors.lightOrange : Color(0xFFC2F6AE),
+          borderRadius: BorderRadius.circular(10)),
       child: Padding(
         padding: const EdgeInsets.all(5.0),
         child: Row(
@@ -1538,33 +1586,35 @@ class _HomePageState extends State<HomePage> {
                   height: 20,
                   width: 20,
                 ),
-                 CustomText(
-                  text: accNumber=='***'?"Complete KYC to get TellaTrust Account Number":" Tellatrust Account Number ",
+                CustomText(
+                  text: accNumber == '***'
+                      ? " Complete KYC to get TellaTrust Account Number"
+                      : " Tellatrust Account Number ",
                   color: AppColors.darkGreen,
                   size: 12,
                 ),
-                if(accNumber!='***')
-                CustomText(
-                  text: accNumber,
-                  color: AppColors.black,
-                  size: 12,
-                ),
+                if (accNumber != '***')
+                  CustomText(
+                    text: accNumber,
+                    color: AppColors.black,
+                    size: 12,
+                  ),
               ],
             ),
-            if(accNumber!='***')
-            GestureDetector(
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: CustomText(
-                    text: "Copied",
-                    color: AppColors.white,
-                  )));
-                  AppUtils().copyToClipboard(accNumber, context);
-                  // MSG.infoSnackBar(context, "copied");
-                },
-                child: SvgPicture.asset(
-                  AppIcons.copy2,
-                ))
+            if (accNumber != '***')
+              GestureDetector(
+                  onTap: () {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: CustomText(
+                      text: "Copied",
+                      color: AppColors.white,
+                    )));
+                    AppUtils().copyToClipboard(accNumber, context);
+                    // MSG.infoSnackBar(context, "copied");
+                  },
+                  child: SvgPicture.asset(
+                    AppIcons.copy2,
+                  ))
           ],
         ),
       ),
