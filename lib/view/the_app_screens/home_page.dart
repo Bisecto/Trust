@@ -261,6 +261,10 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Row(
                     children: [
+                      SvgPicture.asset(AppIcons.network),
+                      const SizedBox(
+                        width: 10,
+                      ),
                       SvgPicture.asset(AppIcons.qrCode),
                       const SizedBox(
                         width: 10,
