@@ -396,6 +396,12 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
+                                        if(selectedElectricityProvider !=
+                                            "Choose Provider")
+                                        Image.network(selectedElectricityProviderImage,height:24 ,width: 24,),
+                                        if(selectedElectricityProvider !=
+                                            "Choose Provider")
+                                        SizedBox(width: 10,),
                                         Expanded(
                                           child: CustomText(
                                             text: selectedElectricityProvider,
@@ -460,36 +466,44 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                           selectAmount("5000", theme),
                                         ],
                                       ),
-                                  CustomTextFormField(
-                                    hint: 'Enter your meter number',
-                                    label: 'Meter Number',
-                                    controller: _beneficiaryController,
-                                    textInputType: TextInputType.number,
-                                    onChanged: (value) async {
-                                      print(_beneficiaryController.text.length);
-                                      print(selectedElectricityProviderId);
-                                      if (_beneficiaryController.text.length > 9 &&
-                                          selectedElectricityProviderId.isNotEmpty) {
-                                        String mainServiceId =
-                                        await handleNetworkSelect(selectedElectricityProviderId);
+                                      CustomTextFormField(
+                                        hint: 'Enter your meter number',
+                                        label: 'Meter Number',
+                                        controller: _beneficiaryController,
+                                        textInputType: TextInputType.number,
+                                        onChanged: (value) async {
+                                          print(_beneficiaryController
+                                              .text.length);
+                                          print(selectedElectricityProviderId);
+                                          if (_beneficiaryController
+                                                      .text.length >
+                                                  9 &&
+                                              selectedElectricityProviderId
+                                                  .isNotEmpty) {
+                                            String mainServiceId =
+                                                await handleNetworkSelect(
+                                                    selectedElectricityProviderId);
 
-                                        verifyEntityNumberProductBloc.add(
-                                          VerifyEntityNumberEvent(mainServiceId, _beneficiaryController.text),
-                                        );
-                                      }
-                                    },
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Please enter your SmartCard number';
-                                      } else if (value.length < 9) {
-                                        return 'Invalid SmartCard number';
-                                      }
-                                      return null;
-                                    },
-                                    borderColor: _beneficiaryController.text.isNotEmpty
-                                        ? AppColors.green
-                                        : AppColors.grey,
-                                  ),
+                                            verifyEntityNumberProductBloc.add(
+                                              VerifyEntityNumberEvent(
+                                                  mainServiceId,
+                                                  _beneficiaryController.text),
+                                            );
+                                          }
+                                        },
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Please enter your SmartCard number';
+                                          } else if (value.length < 9) {
+                                            return 'Invalid SmartCard number';
+                                          }
+                                          return null;
+                                        },
+                                        borderColor: _beneficiaryController
+                                                .text.isNotEmpty
+                                            ? AppColors.green
+                                            : AppColors.grey,
+                                      ),
                                       if (_beneficiaryController.text.length >
                                               9 &&
                                           selectedElectricityProviderId != '')
@@ -620,7 +634,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                                       .amount =
                                                   _selectedAmtController.text;
                                               widget.category.requiredFields
-                                                  .meterNumber =
+                                                      .meterNumber =
                                                   _beneficiaryController.text;
                                               widget.category.requiredFields
                                                       .phoneNumber =
@@ -884,6 +898,9 @@ class ElectricityProvider extends StatelessWidget {
       child: BlocProvider(
         create: (context) => ProductBloc(),
         child: Scaffold(
+          backgroundColor: theme.isDark
+              ? AppColors.darkModeBackgroundColor
+              : AppColors.white,
           body: Column(
             children: [
               Container(
@@ -963,7 +980,7 @@ class ElectricityProvider extends StatelessWidget {
                 child: ElectricityProviderList(
                   onElectricityProviderSelected: onElectricityProviderSelected,
                   serviceId: serviceId,
-                  categoryId: categoryId,
+                  categoryId: categoryId, theme: theme,
                 ),
               ),
             ],
@@ -977,14 +994,16 @@ class ElectricityProvider extends StatelessWidget {
 class ElectricityProviderList extends StatefulWidget {
   final String categoryId;
   final String serviceId;
+  final AdaptiveThemeMode theme;
   final Function(String, String, String) onElectricityProviderSelected;
 
-  ElectricityProviderList({
-    Key? key,
-    required this.serviceId,
-    required this.categoryId,
-    required this.onElectricityProviderSelected,
-  }) : super(key: key);
+  ElectricityProviderList(
+      {Key? key,
+      required this.serviceId,
+      required this.categoryId,
+      required this.onElectricityProviderSelected,
+      required this.theme})
+      : super(key: key);
 
   @override
   _ElectricityProviderListState createState() =>
@@ -1025,7 +1044,12 @@ class _ElectricityProviderListState extends State<ElectricityProviderList> {
                   return const Center(child: CircularProgressIndicator());
                 } else if (state is ServiceSuccessState) {
                   final ServiceSuccessState = state;
-                  return ListView.builder(
+                  return GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3, // Number of items per row
+                      crossAxisSpacing: 8.0, // Spacing between columns
+                      mainAxisSpacing: 8.0, // Spacing between rows
+                    ),
                     itemCount:
                         ServiceSuccessState.serviceModel.data.services.length,
                     itemBuilder: (context, index) {
@@ -1033,35 +1057,43 @@ class _ElectricityProviderListState extends State<ElectricityProviderList> {
                           ServiceSuccessState.serviceModel.data.services[index];
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: ListTile(
-                            onTap: () {
-                              widget.onElectricityProviderSelected(
-                                singleService.name,
-                                singleService.image,
-                                singleService.id,
-                              );
-                            },
-                            title: CustomText(
-                              text: singleService.name,
-                              size: 14,
-                              weight: FontWeight.w700,
+                        child: GestureDetector(
+                          onTap: () {
+                            widget.onElectricityProviderSelected(
+                              singleService.name,
+                              singleService.image,
+                              singleService.id,
+                            );
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: widget.theme.isDark
+                                  ? Color(0xFF092514)
+                                  : AppColors.grey,
+                              //border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                            // subtitle: Row(
-                            //   children: [
-                            //     SvgPicture.asset(AppIcons.naira,color: AppColors.green,),
-                            //     CustomText(
-                            //       text: singleProduct.buyerPrice.toString(),
-                            //       size: 14,
-                            //       weight: FontWeight.w400,
-                            //     ),
-                            //   ],
-                            // ),
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide(color: Colors.grey),
-                              borderRadius: BorderRadius.circular(5),
-                            )
-                            //shape: ShapeBorder(),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.network(
+                                  singleService.image,
+                                  height: 40,
+                                  width: 40,
+                                ),
+                                SizedBox(height: 5),
+                                CustomText(
+                                  text: singleService.name,
+                                  size: 12,
+                                  weight: FontWeight.w700,
+                                  maxLines: 2,
+                                  color:widget.theme.isDark?AppColors.lightPrimary:AppColors.textColor,
+                                ),
+                                // Add more widgets here if needed
+                              ],
                             ),
+                          ),
+                        ),
                       );
                     },
                   );
