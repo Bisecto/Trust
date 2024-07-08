@@ -109,13 +109,16 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                       color: theme.isDark ? AppColors.white : AppColors.black,
                     ),
                     decoration: InputDecoration(
-                      prefixIcon: GestureDetector(
-                        onTap: () {
-                          if (widget.isPasswordField) {
-                            _togglePasswordVisibility();
-                          }
-                        },
-                        child: widget.widget ?? SizedBox(),
+                      prefixIcon: Padding(
+                        padding:  EdgeInsets.all(10),
+                        child: GestureDetector(
+                          onTap: () {
+                            if (widget.isPasswordField) {
+                              _togglePasswordVisibility();
+                            }
+                          },
+                          child: widget.widget ?? SizedBox(),
+                        ),
                       ),
                       suffixIcon: GestureDetector(
                         onTap: () {

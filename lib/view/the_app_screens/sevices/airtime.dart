@@ -369,9 +369,15 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                         textInputType: TextInputType.number,
                                         validator:
                                             AppValidator.validateTextfield,
-                                        widget: SvgPicture.asset(AppIcons.naira,color:  _selectedAmtController
-                                            .text.isNotEmpty
-                                            ? AppColors.darkGreen: AppColors.grey,),
+                                        widget: SvgPicture.asset(
+                                          AppIcons.naira,
+                                          color: _selectedAmtController
+                                                  .text.isNotEmpty
+                                              ? AppColors.darkGreen
+                                              : AppColors.grey,
+                                          height: 22,
+                                          width: 22,
+                                        ),
                                         borderColor: _selectedAmtController
                                                 .text.isNotEmpty
                                             ? AppColors.green
@@ -400,7 +406,8 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                         textInputType: TextInputType.number,
                                         validator:
                                             AppValidator.validateTextfield,
-                                        widget: SvgPicture.asset(AppIcons.nigeriaLogo),
+                                        widget: SvgPicture.asset(
+                                            AppIcons.nigeriaLogo),
                                         //isMobileNumber: true,
                                         borderColor: _beneficiaryController
                                                 .text.isNotEmpty
@@ -454,10 +461,10 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                                 'wallet') {
                                               var transactionPin = '';
                                               widget.category.requiredFields
-                                                  .amount =
+                                                      .amount =
                                                   _selectedAmtController.text;
                                               widget.category.requiredFields
-                                                  .phoneNumber =
+                                                      .phoneNumber =
                                                   _beneficiaryController.text;
 
                                               purchaseProductBloc.add(
