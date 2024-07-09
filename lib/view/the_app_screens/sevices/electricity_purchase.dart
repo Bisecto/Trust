@@ -62,7 +62,8 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
     AppRepository appRepository = AppRepository();
     String accessToken = await SharedPref.getString("access-token");
     String apiUrl =
-        '${AppApis.listProduct}?page=1&pageSize=10&categoryId=${widget.category.id}&serviceId=$selectedServiceId';
+        '${AppApis.listProduct}?page=1&pageSize=10&categoryId=${widget.category
+        .id}&serviceId=$selectedServiceId';
 
     try {
       var listServiceResponse = await appRepository.appGetRequest(
@@ -73,8 +74,8 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
       if (listServiceResponse.statusCode == 200) {
         print("productModel dtddhdhd: ${listServiceResponse.body}");
         productMode.ProductModel productModel =
-            productMode.ProductModel.fromJson(
-                json.decode(listServiceResponse.body));
+        productMode.ProductModel.fromJson(
+            json.decode(listServiceResponse.body));
         setState(() {
           serviceID = productModel.data.items[0].id;
         });
@@ -108,12 +109,16 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+    final theme = Provider
+        .of<CustomThemeState>(context)
+        .adaptiveThemeMode;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
-        height: AppUtils.deviceScreenSize(context).height - 100,
+        height: AppUtils
+            .deviceScreenSize(context)
+            .height - 100,
         decoration: BoxDecoration(
             color: theme.isDark
                 ? AppColors.darkModeBackgroundColor
@@ -128,7 +133,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                 BlocConsumer<ProductBloc, ProductState>(
                     bloc: purchaseProductBloc,
                     listenWhen: (previous, current) =>
-                        current is! ProductInitial,
+                    current is! ProductInitial,
                     listener: (context, state) async {
                       print(state);
                       if (state is PurchaseSuccess) {
@@ -144,7 +149,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                         //     page: LandingPage(studentProfile: state.studentProfile));
                       } else if (state is QuickPayInitiated) {
                         String accessToken =
-                            await SharedPref.getString("access-token");
+                        await SharedPref.getString("access-token");
 
                         AppNavigator.pushAndStackPage(context,
                             page: MakePayment(
@@ -214,7 +219,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                             color: Colors.grey[300],
                                             child: Center(
                                                 child:
-                                                    CircularProgressIndicator()),
+                                                CircularProgressIndicator()),
                                           );
                                         },
                                       ),
@@ -225,7 +230,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                       right: 10,
                                       child: Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                        MainAxisAlignment.spaceBetween,
                                         children: [
                                           TextStyles.textHeadings(
                                             textValue: 'Electricity',
@@ -339,40 +344,46 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                       ),
                                     ),
                                     context: context,
-                                    builder: (context) => Padding(
-                                      padding:
+                                    builder: (context) =>
+                                        Padding(
+                                          padding:
                                           const EdgeInsets.only(top: 200.0),
-                                      child: ElectricityProvider(
-                                        onElectricityProviderSelected:
-                                            (String name, String imageUrl,
+                                          child: ElectricityProvider(
+                                            onElectricityProviderSelected:
+                                                (String name, String imageUrl,
                                                 String id) async {
-                                          setState(() {
-                                            selectedElectricityProvider = name;
-                                            selectedElectricityProviderImage =
-                                                imageUrl;
-                                            selectedElectricityProviderId = id;
-                                          });
-                                          print(selectedElectricityProviderId);
-                                          Navigator.pop(context); // Close modal
-                                          String mainServiceId =
+                                              setState(() {
+                                                selectedElectricityProvider =
+                                                    name;
+                                                selectedElectricityProviderImage =
+                                                    imageUrl;
+                                                selectedElectricityProviderId =
+                                                    id;
+                                              });
+                                              print(
+                                                  selectedElectricityProviderId);
+                                              Navigator.pop(
+                                                  context); // Close modal
+                                              String mainServiceId =
                                               await handleNetworkSelect(
                                                   selectedElectricityProviderId);
-                                          if (_beneficiaryController
-                                                      .text.length >
+                                              if (_beneficiaryController
+                                                  .text.length >
                                                   9 &&
-                                              mainServiceId != '') {
-                                            verifyEntityNumberProductBloc.add(
-                                                VerifyEntityNumberEvent(
-                                                    mainServiceId,
-                                                    _beneficiaryController
-                                                        .text));
-                                          }
-                                        },
-                                        categoryId: widget.category.id,
-                                        serviceId: selectedServiceId,
-                                        theme: theme,
-                                      ),
-                                    ),
+                                                  mainServiceId != '') {
+                                                verifyEntityNumberProductBloc
+                                                    .add(
+                                                    VerifyEntityNumberEvent(
+                                                        mainServiceId,
+                                                        _beneficiaryController
+                                                            .text));
+                                              }
+                                            },
+                                            categoryId: widget.category.id,
+                                            serviceId: selectedServiceId,
+                                            theme: theme,
+                                          ),
+                                        ),
                                   );
                                 },
                                 child: Container(
@@ -380,7 +391,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                   decoration: BoxDecoration(
                                     color: theme.isDark
                                         ? AppColors
-                                            .darkModeBackgroundContainerColor
+                                        .darkModeBackgroundContainerColor
                                         : AppColors.white,
                                     border: Border.all(
                                       color: selectedServiceId.isNotEmpty
@@ -394,28 +405,30 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                     padding: const EdgeInsets.only(left: 25.0),
                                     child: Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.spaceBetween,
                                       children: [
                                         if(selectedElectricityProvider !=
                                             "Choose Provider")
-                                        Image.network(selectedElectricityProviderImage,height:24 ,width: 24,),
+                                          Image.network(
+                                            selectedElectricityProviderImage,
+                                            height: 24, width: 24,),
                                         if(selectedElectricityProvider !=
                                             "Choose Provider")
-                                        SizedBox(width: 10,),
+                                          SizedBox(width: 10,),
                                         Expanded(
                                           child: CustomText(
                                             text: selectedElectricityProvider,
                                             size: 14,
                                             color:
-                                                selectedElectricityProvider !=
-                                                        "Choose Provider"
-                                                    ? (theme.isDark
-                                                        ? Colors.white
-                                                        : Colors.black)
-                                                    : (theme.isDark
-                                                        ? Colors.grey
-                                                        : AppColors
-                                                            .lightDivider),
+                                            selectedElectricityProvider !=
+                                                "Choose Provider"
+                                                ? (theme.isDark
+                                                ? Colors.white
+                                                : Colors.black)
+                                                : (theme.isDark
+                                                ? Colors.grey
+                                                : AppColors
+                                                .lightDivider),
                                           ),
                                         ),
                                         const Icon(Icons.arrow_drop_down),
@@ -438,16 +451,16 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                         controller: _selectedAmtController,
                                         textInputType: TextInputType.number,
                                         validator:
-                                            AppValidator.validateTextfield,
+                                        AppValidator.validateTextfield,
                                         widget: SvgPicture.asset(
                                           AppIcons.naira,
                                           color: _selectedAmtController
-                                                  .text.isNotEmpty
+                                              .text.isNotEmpty
                                               ? AppColors.darkGreen
                                               : AppColors.grey,
                                         ),
                                         borderColor: _selectedAmtController
-                                                .text.isNotEmpty
+                                            .text.isNotEmpty
                                             ? AppColors.green
                                             : AppColors.grey,
                                       ),
@@ -456,7 +469,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                       ),
                                       Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
+                                        MainAxisAlignment.spaceEvenly,
                                         children: [
                                           //selectAmount("2000"),
                                           //selectAmount("1000", theme),
@@ -476,13 +489,13 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                               .text.length);
                                           print(selectedElectricityProviderId);
                                           if (_beneficiaryController
-                                                      .text.length >
-                                                  9 &&
+                                              .text.length >
+                                              9 &&
                                               selectedElectricityProviderId
                                                   .isNotEmpty) {
                                             String mainServiceId =
-                                                await handleNetworkSelect(
-                                                    selectedElectricityProviderId);
+                                            await handleNetworkSelect(
+                                                selectedElectricityProviderId);
 
                                             verifyEntityNumberProductBloc.add(
                                               VerifyEntityNumberEvent(
@@ -500,12 +513,12 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                           return null;
                                         },
                                         borderColor: _beneficiaryController
-                                                .text.isNotEmpty
+                                            .text.isNotEmpty
                                             ? AppColors.green
                                             : AppColors.grey,
                                       ),
                                       if (_beneficiaryController.text.length >
-                                              9 &&
+                                          9 &&
                                           selectedElectricityProviderId != '')
                                         BlocConsumer<ProductBloc, ProductState>(
                                             bloc: verifyEntityNumberProductBloc,
@@ -515,20 +528,20 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                             // current is! GetDataPlanLoadingState,
                                             listener: (context, state) {
                                               if (state
-                                                  is EntityNumberErrorState) {
+                                              is EntityNumberErrorState) {
                                                 // MSG.warningSnackBar(context, state.error);
                                               }
                                             },
                                             builder: (context, state) {
                                               if (_beneficiaryController
-                                                          .text.length >
-                                                      9 &&
+                                                  .text.length >
+                                                  9 &&
                                                   selectedElectricityProviderId !=
                                                       '') {
                                                 if (state
-                                                    is EntityNumberSuccessState) {
+                                                is EntityNumberSuccessState) {
                                                   final res = state
-                                                      as EntityNumberSuccessState;
+                                                  as EntityNumberSuccessState;
                                                   // setState(() {
                                                   //   enableButton=true;
                                                   //
@@ -539,36 +552,36 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                                           10, 0, 10, 25.0),
                                                       child: Column(
                                                         crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
+                                                        CrossAxisAlignment
+                                                            .start,
                                                         children: [
                                                           CustomText(
                                                             text: res.name,
                                                             color:
-                                                                AppColors.green,
+                                                            AppColors.green,
                                                           ),
                                                         ],
                                                       ));
                                                 } else if (state
-                                                    is EntityNumberErrorState) {
+                                                is EntityNumberErrorState) {
                                                   return Padding(
                                                       padding:
-                                                          EdgeInsets.fromLTRB(
-                                                              10, 0, 10, 25.0),
+                                                      EdgeInsets.fromLTRB(
+                                                          10, 0, 10, 25.0),
                                                       child: CustomText(
                                                         text:
-                                                            "Invalid Meter number",
+                                                        "Invalid Meter number",
                                                         size: 14,
                                                         color: AppColors.red,
                                                       ));
                                                 } else {
                                                   return const Padding(
                                                       padding:
-                                                          EdgeInsets.fromLTRB(
-                                                              10, 0, 10, 25.0),
+                                                      EdgeInsets.fromLTRB(
+                                                          10, 0, 10, 25.0),
                                                       child: CustomText(
                                                         text:
-                                                            "Verifying user.....",
+                                                        "Verifying user.....",
                                                         size: 14,
                                                         color: AppColors.black,
                                                       ));
@@ -576,8 +589,8 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                               } else {
                                                 return const Padding(
                                                     padding:
-                                                        EdgeInsets.fromLTRB(
-                                                            10, 0, 10, 25.0),
+                                                    EdgeInsets.fromLTRB(
+                                                        10, 0, 10, 25.0),
                                                     child: CustomText(
                                                       text: "",
                                                       size: 14,
@@ -589,7 +602,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                         height: 310,
                                         child: PaymentMethodScreen(
                                           amtToPay: _selectedAmtController
-                                                  .text.isEmpty
+                                              .text.isEmpty
                                               ? '0'
                                               : _selectedAmtController.text,
                                           onPaymentMethodSelected: (method) {
@@ -631,13 +644,13 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                                 'wallet') {
                                               var transactionPin = '';
                                               widget.category.requiredFields
-                                                      .amount =
+                                                  .amount =
                                                   _selectedAmtController.text;
                                               widget.category.requiredFields
-                                                      .meterNumber =
+                                                  .meterNumber =
                                                   _beneficiaryController.text;
                                               widget.category.requiredFields
-                                                      .phoneNumber =
+                                                  .phoneNumber =
                                                   _beneficiaryController.text;
 
                                               purchaseProductBloc.add(
@@ -652,39 +665,39 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                               var transactionPin = '';
                                               transactionPin = await modalSheet
                                                   .showMaterialModalBottomSheet(
-                                                      backgroundColor:
-                                                          Colors.transparent,
-                                                      shape:
-                                                          const RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.vertical(
-                                                                top: Radius
-                                                                    .circular(
-                                                                        20.0)),
-                                                      ),
-                                                      context: context,
-                                                      builder: (context) =>
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .only(
-                                                                    top: 200.0),
-                                                            child:
-                                                                ConfirmWithPin(
-                                                              context: context,
-                                                              title:
-                                                                  'Input your transaction pin to continue',
-                                                            ),
-                                                          ));
+                                                  backgroundColor:
+                                                  Colors.transparent,
+                                                  shape:
+                                                  const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                    BorderRadius.vertical(
+                                                        top: Radius
+                                                            .circular(
+                                                            20.0)),
+                                                  ),
+                                                  context: context,
+                                                  builder: (context) =>
+                                                      Padding(
+                                                        padding:
+                                                        const EdgeInsets
+                                                            .only(
+                                                            top: 200.0),
+                                                        child:
+                                                        ConfirmWithPin(
+                                                          context: context,
+                                                          title:
+                                                          'Input your transaction pin to continue',
+                                                        ),
+                                                      ));
                                               print(transactionPin);
                                               if (transactionPin != '') {
                                                 setState(() {
                                                   widget.category.requiredFields
-                                                          .amount =
+                                                      .amount =
                                                       _selectedAmtController
                                                           .text;
                                                   widget.category.requiredFields
-                                                          .phoneNumber =
+                                                      .phoneNumber =
                                                       _beneficiaryController
                                                           .text;
                                                 });
@@ -797,7 +810,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
         },
         child: Container(
           decoration: BoxDecoration(
-              //color: AppColors.white,
+            //color: AppColors.white,
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: AppColors.textColor)),
           child: Padding(
@@ -811,8 +824,12 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
 
   Widget _loadingBeneficiaries() {
     return SizedBox(
-      height: AppUtils.deviceScreenSize(context).width / 5,
-      width: AppUtils.deviceScreenSize(context).width / 5,
+      height: AppUtils
+          .deviceScreenSize(context)
+          .width / 5,
+      width: AppUtils
+          .deviceScreenSize(context)
+          .width / 5,
       child: ListView.builder(
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
@@ -831,7 +848,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                       decoration: BoxDecoration(
                           color: Colors.grey.withOpacity(0.2),
                           borderRadius:
-                              const BorderRadius.all(Radius.circular(50)))),
+                          const BorderRadius.all(Radius.circular(50)))),
                   const SizedBox(height: 10),
                   Shimmer(
                     duration: const Duration(seconds: 1),
@@ -884,12 +901,11 @@ class ElectricityProvider extends StatelessWidget {
   final AdaptiveThemeMode theme;
   final Function(String, String, String) onElectricityProviderSelected;
 
-  ElectricityProvider(
-      {Key? key,
-      required this.serviceId,
-      required this.categoryId,
-      required this.onElectricityProviderSelected,
-      required this.theme})
+  ElectricityProvider({Key? key,
+    required this.serviceId,
+    required this.categoryId,
+    required this.onElectricityProviderSelected,
+    required this.theme})
       : super(key: key);
 
   @override
@@ -997,12 +1013,11 @@ class ElectricityProviderList extends StatefulWidget {
   final AdaptiveThemeMode theme;
   final Function(String, String, String) onElectricityProviderSelected;
 
-  ElectricityProviderList(
-      {Key? key,
-      required this.serviceId,
-      required this.categoryId,
-      required this.onElectricityProviderSelected,
-      required this.theme})
+  ElectricityProviderList({Key? key,
+    required this.serviceId,
+    required this.categoryId,
+    required this.onElectricityProviderSelected,
+    required this.theme})
       : super(key: key);
 
   @override
@@ -1051,10 +1066,10 @@ class _ElectricityProviderListState extends State<ElectricityProviderList> {
                       mainAxisSpacing: 8.0, // Spacing between rows
                     ),
                     itemCount:
-                        ServiceSuccessState.serviceModel.data.services.length,
+                    ServiceSuccessState.serviceModel.data.services.length,
                     itemBuilder: (context, index) {
                       final singleService =
-                          ServiceSuccessState.serviceModel.data.services[index];
+                      ServiceSuccessState.serviceModel.data.services[index];
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: GestureDetector(
@@ -1082,14 +1097,15 @@ class _ElectricityProviderListState extends State<ElectricityProviderList> {
                                   width: 40,
                                 ),
                                 SizedBox(height: 5),
-                                CustomText(
+                                 CustomText(
                                   text: singleService.name,
                                   size: 12,
                                   weight: FontWeight.w700,
                                   maxLines: 2,
-                                  color:widget.theme.isDark?AppColors.lightPrimary:AppColors.textColor,
+                                  textAlign: TextAlign.center,
+                                  color:widget.theme.isDark ? AppColors
+                                      .lightPrimary : AppColors.textColor,
                                 ),
-                                // Add more widgets here if needed
                               ],
                             ),
                           ),
@@ -1118,8 +1134,8 @@ class _ElectricityProviderListState extends State<ElectricityProviderList> {
         _searchController.text, page, widget.categoryId, widget.serviceId);
   }
 
-  void _fetchElectricityProvider(
-      String query, int pageNo, categoryId, serviceId) {
+  void _fetchElectricityProvider(String query, int pageNo, categoryId,
+      serviceId) {
     // productListBloc
     //     .add(FetchProduct(query, pageNo.toString(), 20, categoryId, serviceId));
     productListBloc.add(ListServiceEvent(pageNo.toString(), '20', categoryId));

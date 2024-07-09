@@ -75,7 +75,7 @@ class TextStyles {
 
             fontWeight: fontWeight),
       ),
-      textAlign: TextAlign.end,
+      textAlign: TextAlign.center,
     );
   }
 
@@ -108,11 +108,15 @@ class TextStyles {
       textValue,
       textDirection: TextDirection.ltr,
       textAlign: (centerText) ? TextAlign.center : TextAlign.start,
+      //softWrap: true,
+      maxLines: 3,
+      softWrap: true,
       style: TextStyle(
           fontStyle: FontStyle.normal,
           color: textColor,
           fontSize: textSize,
           fontWeight: FontWeight.w400,
+
           height: lineSpacing),
     );
   }
