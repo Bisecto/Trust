@@ -444,6 +444,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                               child: Form(
                                   key: _formKey,
                                   child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       CustomTextFormField(
                                         hint: '0.00',
@@ -549,16 +550,39 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                                   return Padding(
                                                       padding: const EdgeInsets
                                                           .fromLTRB(
-                                                          10, 0, 10, 25.0),
+                                                          10, 10, 10, 25.0),
                                                       child: Column(
-                                                        crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
+
                                                         children: [
-                                                          CustomText(
-                                                            text: res.name,
-                                                            color:
-                                                            AppColors.green,
+                                                          Container(
+                                                            decoration: BoxDecoration(
+                                                              color: AppColors.lightgreen2,
+                                                              border:Border.all(color:AppColors.darkGreen),
+                                                              borderRadius:BorderRadius.circular(10)
+                                                            ),
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.all(5.0),
+                                                              child: CustomText(
+                                                                text: res.name,
+                                                                color:
+                                                                AppColors.green,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Container(
+                                                            decoration: BoxDecoration(
+                                                                color: AppColors.lightgreen2,
+                                                                border:Border.all(color:AppColors.darkGreen),
+                                                                borderRadius:BorderRadius.circular(10)
+                                                            ),
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.all(5.0),
+                                                              child: CustomText(
+                                                                text: res.name,
+                                                                color:
+                                                                AppColors.green,
+                                                              ),
+                                                            ),
                                                           ),
                                                         ],
                                                       ));
@@ -575,15 +599,15 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                                         color: AppColors.red,
                                                       ));
                                                 } else {
-                                                  return const Padding(
+                                                  return  Padding(
                                                       padding:
                                                       EdgeInsets.fromLTRB(
-                                                          10, 0, 10, 25.0),
+                                                          10, 10, 10, 25.0),
                                                       child: CustomText(
                                                         text:
                                                         "Verifying user.....",
                                                         size: 14,
-                                                        color: AppColors.black,
+                                                        color:theme.isDark?AppColors.white: AppColors.black,
                                                       ));
                                                 }
                                               } else {

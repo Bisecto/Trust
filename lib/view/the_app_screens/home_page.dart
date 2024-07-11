@@ -532,9 +532,9 @@ class _HomePageState extends State<HomePage> {
       height: 155,
       child: CarouselSlider.builder(
         key: _sliderKey,
-        unlimitedMode: true,
-        autoSliderDelay: const Duration(seconds: 3),
-        enableAutoSlider: true,
+        // unlimitedMode: true,
+        // autoSliderDelay: const Duration(seconds: 3),
+        // enableAutoSlider: true,
         controller: carouselSliderController,
         // onSlideChanged: (index) {
         //   setState(() {
@@ -1063,7 +1063,7 @@ class _HomePageState extends State<HomePage> {
                                         CustomText(
                                           text: transactionHistory.data
                                               .items[index].order.product.name,
-                                          size: 12,
+                                          size: 10,
                                           color: theme.isDark
                                               ? AppColors
                                                   .darkModeBackgroundSubTextColor
@@ -1089,7 +1089,7 @@ class _HomePageState extends State<HomePage> {
                                                   padding:
                                                       const EdgeInsets.all(8.0),
                                                   child: Container(
-                                                    width: 100,
+                                                    width: 70,
                                                     decoration: BoxDecoration(
                                                         color: theme.isDark
                                                             ? AppColors
@@ -1113,7 +1113,7 @@ class _HomePageState extends State<HomePage> {
                                                             .order
                                                             .requiredFields
                                                             .phoneNumber,
-                                                        size: 12,
+                                                        size: 10,
                                                         color: theme.isDark
                                                             ? AppColors
                                                                 .darkModeBackgroundMainTextColor
@@ -1127,7 +1127,7 @@ class _HomePageState extends State<HomePage> {
                                                   padding:
                                                       const EdgeInsets.all(8.0),
                                                   child: Container(
-                                                    width: 50,
+                                                   // width: 50,
                                                     decoration: BoxDecoration(
                                                         color: theme.isDark
                                                             ? AppColors
@@ -1153,7 +1153,7 @@ class _HomePageState extends State<HomePage> {
                                                                     'debit')
                                                             ? '-N${transactionHistory.data.items[index].order.requiredFields.amount}'
                                                             : '+N${transactionHistory.data.items[index].order.requiredFields.amount}',
-                                                        size: 12,
+                                                        size: 10,
                                                         color: theme.isDark
                                                             ? AppColors
                                                                 .darkModeBackgroundMainTextColor
@@ -1186,7 +1186,7 @@ class _HomePageState extends State<HomePage> {
                                                                 .toLowerCase() ==
                                                             'pending'
                                                         ? Colors.yellow.shade800
-                                                        : AppColors.red)
+                                                        : AppColors.red,size: 10,)
                                             // SvgPicture.asset(AppIcons.reload)
                                           ],
                                         ),
@@ -1595,7 +1595,7 @@ class _HomePageState extends State<HomePage> {
                       ? " Complete KYC to get TellaTrust Account Number"
                       : " Tellatrust Account Number ",
                   color: AppColors.darkGreen,
-                  size: 12,
+                  size: 10,
                 ),
                 if (accNumber != '***')
                   CustomText(
