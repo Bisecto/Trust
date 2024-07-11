@@ -25,6 +25,7 @@ class CustomTextFormField extends StatefulWidget {
   final Color borderColor;
   final TextInputType textInputType;
   final TextEditingController? controller;
+  final bool? enabled;
   final FormFieldValidator<String>? validator;
   final Color backgroundColor;
 
@@ -43,6 +44,7 @@ class CustomTextFormField extends StatefulWidget {
       this.validator,
       this.isMobileNumber = false,
       this.isobscure = false,
+      this.enabled = true,
       this.onChanged,
       this.onFieldSubmitted,
       required this.hint,
@@ -104,6 +106,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                 Expanded(
                   child: TextFormField(
                     controller: widget.controller,
+    enabled:widget.enabled,
                     style: TextStyle(
                       fontSize: 14,
                       color: theme.isDark ? AppColors.white : AppColors.black,

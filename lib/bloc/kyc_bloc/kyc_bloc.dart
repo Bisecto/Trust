@@ -37,7 +37,8 @@ class KycBloc extends Bloc<KycEvent, KycState> {
     try {
       Map<String, String> data = {
         "type": event.identityType,
-        "identityNumber": event.identityNumber
+        "identityNumber": event.identityNumber,
+        "dateOfBirth":event.dob
       };
       String accessToken = await SharedPref.getString("access-token");
 
@@ -79,7 +80,7 @@ class KycBloc extends Bloc<KycEvent, KycState> {
         "identityId": event.identityId,
         "identityNumber": event.identityNumber,
         "type": event.identityType,
-        "otp": event.otp
+        "otp": event.otp,
       };
       String accessToken = await SharedPref.getString("access-token");
 

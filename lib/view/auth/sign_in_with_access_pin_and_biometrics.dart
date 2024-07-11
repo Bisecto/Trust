@@ -173,8 +173,8 @@ class _SignInWIthAccessPinBiometricsState
                                 child: Padding(
                                   padding: const EdgeInsets.all(20.0),
                                   child: SingleChildScrollView(
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
+                                    // physics:
+                                    //     const NeverScrollableScrollPhysics(),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,

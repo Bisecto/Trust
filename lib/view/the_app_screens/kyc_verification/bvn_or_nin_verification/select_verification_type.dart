@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/otp_field_style.dart';
 import 'package:otp_text_field/style.dart';
@@ -36,6 +37,7 @@ class BvnNinKyc2 extends StatefulWidget {
 class _BvnNinKyc2State extends State<BvnNinKyc2> {
   String selectedString = 'NIN';
   final _numberController = TextEditingController();
+  final dob = TextEditingController();
   final KycBloc kycBloc = KycBloc();
   OtpFieldController otpFieldController = OtpFieldController();
   bool isCompleted = false;
@@ -72,7 +74,7 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
             top: 0,
             // bottom: 0,
             child: Container(
-              height: AppUtils.deviceScreenSize(context).height+50,
+              height: AppUtils.deviceScreenSize(context).height + 50,
               width: double.infinity,
               // color: theme.isDark
               //     ? AppColors.darkModeBackgroundColor
@@ -89,7 +91,7 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
                 theme.isDark
                     ? AppIcons.kycDarkBackground
                     : AppIcons.kycBackground,
-                height: AppUtils.deviceScreenSize(context).height+50,
+                height: AppUtils.deviceScreenSize(context).height + 50,
                 width: double.infinity,
               ),
             ),
@@ -301,11 +303,55 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
                                               ? AppColors.green
                                               : AppColors.grey,
                                     ),
+                                    GestureDetector(
+                                      onTap: () async {
+                                        DateTime? pickedDate =
+                                            await showDatePicker(
+                                                context: context,
+                                                initialDate: DateTime.now()
+                                                    .subtract(const Duration(
+                                                        days: 5478)),
+                                                //15 years ago
+                                                firstDate: DateTime(1940),
+                                                //DateTime.now() - not to allow to choose before today.
+                                                lastDate: DateTime.now()
+                                                    .subtract(const Duration(
+                                                        days: 5478)));
+                                        dob.text = pickedDate != null
+                                            ? DateFormat('dd/MM/yyyy')
+                                                .format(pickedDate)
+                                            : '';
+                                      },
+                                      child: CustomTextFormField(
+                                        controller: dob,
+                                        enabled: false,
+                                        hint:'Date of Birth',
+                                        widget: Icon(Icons.calendar_month),
+
+                                        validator:
+                                        AppValidator.validateTextfield,
+                                        borderColor:
+                                        dob.text.isNotEmpty
+                                            ? AppColors.green
+                                            : AppColors.grey, label: '',
+
+                                      ),
+
+
+
+                                      // _buildTF(
+                                      //     enabled: false,
+                                      //     title: "Date of Birth",
+                                      //     iconUrl: 'assets/icons/dob.svg',
+                                      //     controller: dob,
+                                      //     textCapitalization:
+                                      //         TextCapitalization.sentences),
+                                    ),
                                     FormButton(
                                       onPressed: () {
                                         kycBloc.add(InitiateVerification(
                                             selectedString,
-                                            _numberController.text,
+                                            _numberController.text,dob.text,
                                             context));
                                       },
                                       text: 'Save Details',
@@ -326,14 +372,15 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
                                   mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                     CustomText(
+                                    CustomText(
                                       text: 'OTP Verification',
                                       size: 20,
                                       weight: FontWeight.bold,
                                       textAlign: TextAlign.center,
                                       color: theme.isDark
                                           ? AppColors.white
-                                          : AppColors.black,                                      maxLines: 2,
+                                          : AppColors.black,
+                                      maxLines: 2,
                                     ),
                                     CustomText(
                                       text:

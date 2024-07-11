@@ -6,9 +6,10 @@ abstract class KycEvent {}
 class InitiateVerification extends KycEvent {
   final String identityType;
   final String identityNumber;
+  final String dob;
   final BuildContext context;
 
-  InitiateVerification(this.identityType, this.identityNumber, this.context);
+  InitiateVerification(this.identityType, this.identityNumber,this.dob, this.context);
 }
 
 class ValidateVerification extends KycEvent {
@@ -19,5 +20,5 @@ class ValidateVerification extends KycEvent {
   final BuildContext context;
 
   ValidateVerification(this.identityType, this.identityId, this.otp,
-      this.identityNumber, this.context);
+      this.identityNumber,  this.context);
 }
