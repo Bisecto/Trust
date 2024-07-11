@@ -897,39 +897,39 @@ class _HomePageState extends State<HomePage> {
                           // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
                           //     services: AppList().serviceItems[index]));
                           return;
-                        // case 'cable tv':
+                        case 'cable tv':
+                          modalSheet.showMaterialModalBottomSheet(
+                            backgroundColor: Colors.transparent,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(20.0)),
+                            ),
+                            context: context,
+                            builder: (context) => Padding(
+                              padding: const EdgeInsets.only(top: 100.0),
+                              child: CablePurchase(category: items[index]),
+                            ),
+                          );
+                          // AppNavigator.pushAndStackPage(context, page: InternetPurchase(
+                          //     services: AppList().serviceItems[index]));
+                          return;
+                        // case 'Electricity':
                         //   modalSheet.showMaterialModalBottomSheet(
                         //     backgroundColor: Colors.transparent,
                         //     shape: const RoundedRectangleBorder(
-                        //       borderRadius: BorderRadius.vertical(
-                        //           top: Radius.circular(20.0)),
+                        //       borderRadius:
+                        //           BorderRadius.vertical(top: Radius.circular(20.0)),
                         //     ),
                         //     context: context,
                         //     builder: (context) => Padding(
                         //       padding: const EdgeInsets.only(top: 100.0),
-                        //       child: CablePurchase(category: items[index]),
+                        //       child: Electricity(
+                        //           services: AppList().serviceItems[index]),
                         //     ),
                         //   );
                         //   // AppNavigator.pushAndStackPage(context, page: InternetPurchase(
                         //   //     services: AppList().serviceItems[index]));
                         //   return;
-                        // // case 'Electricity':
-                        // //   modalSheet.showMaterialModalBottomSheet(
-                        // //     backgroundColor: Colors.transparent,
-                        // //     shape: const RoundedRectangleBorder(
-                        // //       borderRadius:
-                        // //           BorderRadius.vertical(top: Radius.circular(20.0)),
-                        // //     ),
-                        // //     context: context,
-                        // //     builder: (context) => Padding(
-                        // //       padding: const EdgeInsets.only(top: 100.0),
-                        // //       child: Electricity(
-                        // //           services: AppList().serviceItems[index]),
-                        // //     ),
-                        // //   );
-                        // //   // AppNavigator.pushAndStackPage(context, page: InternetPurchase(
-                        // //   //     services: AppList().serviceItems[index]));
-                        // //   return;
                         default:
                           showToast(
                               context: context,
@@ -944,7 +944,7 @@ class _HomePageState extends State<HomePage> {
                     child: quickActionsItem(
                         items[index],
                         theme,
-                        ['airtime', 'data', 'electricity']
+                        ['airtime', 'data', 'electricity','cable tv']
                             .contains(items[index].name.toLowerCase())));
               },
             ),

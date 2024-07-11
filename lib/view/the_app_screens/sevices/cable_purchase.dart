@@ -1,6 +1,11 @@
+import 'dart:convert';
+
+import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:teller_trust/model/category_model.dart' as mainCategory;
 import 'package:teller_trust/model/quick_access_model.dart';
@@ -9,12 +14,15 @@ import 'package:teller_trust/view/widgets/drop_down.dart';
 
 import '../../../bloc/product_bloc/product_bloc.dart';
 import '../../../model/service_model.dart';
+import '../../../repository/app_repository.dart';
+import '../../../res/apis.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/app_icons.dart';
 import '../../../res/app_list.dart';
 import '../../../utills/app_navigator.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/app_validator.dart';
+import '../../../utills/custom_theme.dart';
 import '../../../utills/enums/toast_mesage.dart';
 import '../../../utills/shared_preferences.dart';
 import '../../auth/otp_pin_pages/confirm_with_otp.dart';
@@ -25,6 +33,9 @@ import '../../widgets/form_input.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
 import '../../widgets/show_toast.dart';
+import 'build_payment_method.dart';
+import 'make_bank_transfer/bank_transfer.dart';
+import '../../../model/product_model.dart' as productMode;
 
 class CablePurchase extends StatefulWidget {
   final mainCategory.Category category;
@@ -38,31 +49,82 @@ class CablePurchase extends StatefulWidget {
 class _CablePurchaseState extends State<CablePurchase> {
   ProductBloc productBloc = ProductBloc();
   ProductBloc purchaseProductBloc = ProductBloc();
+  ProductBloc verifyEntityNumberProductBloc = ProductBloc();
+  String selectedCableProvider = 'Choose Provider';
+  String selectedCableProviderImage = '';
+  String selectedCableProviderId = '';
+  String selectedServiceId = '';
+  String serviceID = '';
+  bool isPaymentAllowed = false;
+  final _selectedAmtController = TextEditingController();
   String selectedCablePlan = 'Choose Plan';
   String selectedCablePlanPrice = '';
   String selectedCablePlanId = '';
-  String selectedServiceId = '';
+  // Future<String> handleNetworkSelect(String? selectedServiceId) async {
+  //   AppRepository appRepository = AppRepository();
+  //   String accessToken = await SharedPref.getString("access-token");
+  //   String apiUrl =
+  //       '${AppApis.listProduct}?page=1&pageSize=10&categoryId=${widget.category
+  //       .id}&serviceId=$selectedServiceId';
+  //
+  //   try {
+  //     var listServiceResponse = await appRepository.appGetRequest(
+  //       apiUrl,
+  //       accessToken: accessToken,
+  //     );
+  //
+  //     if (listServiceResponse.statusCode == 200) {
+  //       print("productModel dtddhdhd: ${listServiceResponse.body}");
+  //       productMode.ProductModel productModel =
+  //       productMode.ProductModel.fromJson(
+  //           json.decode(listServiceResponse.body));
+  //       setState(() {
+  //         serviceID = productModel.data.items[0].id;
+  //       });
+  //       print(productModel);
+  //       print(serviceID);
+  //
+  //       return serviceID;
+  //       // Process the data as needed
+  //     } else {
+  //       print("Error: ${listServiceResponse.statusCode}");
+  //       return '';
+  //
+  //       // Handle error
+  //     }
+  //   } catch (e) {
+  //     return '';
+  //
+  //     print("Network request failed: $e");
+  //     // Handle exception
+  //   }
+  // }
 
   @override
   void initState() {
     // TODO: implement initState
-    print(widget.category.name);
-    print(widget.category.name);
-    print(widget.category.name);
-    print(widget.category.name);
-    productBloc.add(ListServiceEvent("1", "4", widget.category.id));
 
     super.initState();
   }
 
+  String _selectedPaymentMethod = 'wallet';
+
   @override
   Widget build(BuildContext context) {
+    final theme = Provider
+        .of<CustomThemeState>(context)
+        .adaptiveThemeMode;
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
-        height: AppUtils.deviceScreenSize(context).height - 100,
-        decoration: const BoxDecoration(
-            color: AppColors.white,
+        height: AppUtils
+            .deviceScreenSize(context)
+            .height - 100,
+        decoration: BoxDecoration(
+            color: theme.isDark
+                ? AppColors.darkModeBackgroundColor
+                : AppColors.white,
             borderRadius: BorderRadius.only(
                 topRight: Radius.circular(10), topLeft: Radius.circular(10))),
         child: SingleChildScrollView(
@@ -87,6 +149,15 @@ class _CablePurchaseState extends State<CablePurchase> {
 
                         // AppNavigator.pushAndRemovePreviousPages(context,
                         //     page: LandingPage(studentProfile: state.studentProfile));
+                      } else if (state is QuickPayInitiated) {
+                        String accessToken =
+                        await SharedPref.getString("access-token");
+
+                        AppNavigator.pushAndStackPage(context,
+                            page: MakePayment(
+                              quickPayModel: state.quickPayModel,
+                              accessToken: accessToken,
+                            ));
                       } else if (state is AccessTokenExpireState) {
                         showToast(
                             context: context,
@@ -119,133 +190,259 @@ class _CablePurchaseState extends State<CablePurchase> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Container(
-                              height: 100,
-                              decoration: const BoxDecoration(
-                                  color: AppColors.darkGreen,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                  color: theme.isDark
+                                      ? AppColors.darkModeBackgroundColor
+                                      : AppColors.white,
                                   borderRadius: BorderRadius.only(
                                       topRight: Radius.circular(10),
                                       topLeft: Radius.circular(10))),
                               child: Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
+                                padding: const EdgeInsets.all(0.0),
+                                child: Stack(
+                                  alignment: Alignment.center,
                                   children: [
-                                    const CustomText(
-                                      text: "Cable purchase",
-                                      color: AppColors.white,
-                                      weight: FontWeight.bold,
-                                      size: 18,
-                                    ),
-                                    Container(
-                                      height: 30,
-                                    ),
-                                    // FormButton(
-                                    //   onPressed: () {
-                                    //     print(1234);
-                                    //     Navigator.of(context).pop();
-                                    //   },
-                                    //   //text: 'X',
-                                    //   height: 50,
-                                    //   width: 50,
-                                    //   isIcon: true,
-                                    //   iconWidget: Icons.cancel,
-                                    // ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        print(1234);
-                                        Navigator.of(context).pop();
-                                        //Navigator.pop(context);
-                                      },
-                                      child: const SizedBox(
-                                        height: 50,
-                                        //color: AppColors.red,
-                                        width: 50,
-                                        child: Center(
-                                          child: Icon(
-                                            Icons.cancel,
-                                            size: 40,
-                                            color: AppColors.white,
-                                          ),
-                                        ),
+                                    Positioned(
+                                      top: 0, // Adjust position as needed
+                                      left: 0,
+                                      right: 0,
+                                      child: SvgPicture.asset(
+                                        AppIcons.billTopBackground,
+                                        height: 60,
+                                        // Increase height to fit the text
+                                        width: double.infinity,
+                                        color: AppColors.darkGreen,
+                                        // Set the color if needed
+                                        placeholderBuilder: (context) {
+                                          return Container(
+                                            height: 50,
+                                            width: double.infinity,
+                                            color: Colors.grey[300],
+                                            child: Center(
+                                                child:
+                                                CircularProgressIndicator()),
+                                          );
+                                        },
                                       ),
-                                    )
+                                    ),
+                                    Positioned(
+                                      top: 10, // Adjust position as needed
+                                      left: 10,
+                                      right: 10,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          TextStyles.textHeadings(
+                                            textValue: 'Cable',
+                                            textColor: AppColors.darkGreen,
+                                            // w: FontWeight.w600,
+                                            textSize: 14,
+                                          ),
+                                          // Text(
+                                          //   "Airtime purchase",
+                                          //   style: TextStyle(
+                                          //     color: AppColors.darkGreen,
+                                          //     fontWeight: FontWeight.w600,
+                                          //     fontSize: 18,
+                                          //   ),
+                                          // ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Icon(
+                                              Icons.cancel,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
                             ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            BlocConsumer<ProductBloc, ProductState>(
-                              bloc: productBloc,
-                              builder: (context, state) {
-                                if (state is ServiceSuccessState) {
-                                  ServiceModel serviceItem = state.serviceModel;
-                                  List<Service> services =
-                                      serviceItem.data.services;
-                                  //Use user Cable here
-                                  return SizedBox(
-                                    height: 105,
-                                    child: ListView.builder(
-                                      physics:
-                                      const NeverScrollableScrollPhysics(),
-                                      scrollDirection: Axis.horizontal,
-                                      // gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                      //   crossAxisCount: 4,
-                                      //   crossAxisSpacing: 8.0,
-                                      //   mainAxisSpacing: 8.0,
-                                      // ),
-                                      itemCount: services.length,
-                                      //AppList().serviceItems.length,
-                                      itemBuilder: (context, index) {
-                                        return GestureDetector(
-                                            onTap: () {
-                                              String selectedAction = '';
-                                              setState(() {
-                                                //selectedAction=services[index].name;
-                                              });
 
-                                              //showAirtimeModal(context, AppList().serviceItems[index]);
-                                            },
-                                            child: networkProviderItem(
-                                                services[index].name,
-                                                services[index].image,
-                                                services[index].id));
-                                      },
+                            // const SizedBox(
+                            //   height: 10,
+                            // ),
+                            // BlocConsumer<ProductBloc, ProductState>(
+                            //   bloc: productBloc,
+                            //   builder: (context, state) {
+                            //     if (state is ServiceSuccessState) {
+                            //       ServiceModel serviceItem = state.serviceModel;
+                            //       List<Service> services =
+                            //           serviceItem.data.services;
+                            //       //Use user Cable here
+                            //       return SizedBox(
+                            //         height: 105,
+                            //         child: ListView.builder(
+                            //           physics:
+                            //           const NeverScrollableScrollPhysics(),
+                            //           scrollDirection: Axis.horizontal,
+                            //           // gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            //           //   crossAxisCount: 4,
+                            //           //   crossAxisSpacing: 8.0,
+                            //           //   mainAxisSpacing: 8.0,
+                            //           // ),
+                            //           itemCount: services.length,
+                            //           //AppList().serviceItems.length,
+                            //           itemBuilder: (context, index) {
+                            //             return GestureDetector(
+                            //                 onTap: () {
+                            //                   String selectedAction = '';
+                            //                   setState(() {
+                            //                     //selectedAction=services[index].name;
+                            //                   });
+                            //
+                            //                   //showAirtimeModal(context, AppList().serviceItems[index]);
+                            //                 },
+                            //                 child: networkProviderItem(
+                            //                     services[index].name,
+                            //                     services[index].image,
+                            //                     services[index].id,
+                            //                     theme));
+                            //           },
+                            //         ),
+                            //       );
+                            //     } else {
+                            //       return const CustomText(
+                            //         text: "     Loading.....",
+                            //         size: 15,
+                            //         weight: FontWeight.bold,
+                            //         color: AppColors.white,
+                            //       ); // Show loading indicator or handle error state
+                            //     }
+                            //   },
+                            //   listener: (BuildContext context,
+                            //       ProductState state) async {
+                            //     if (state is AccessTokenExpireState) {
+                            //       String firstame =
+                            //       await SharedPref.getString('firstName');
+                            //
+                            //       AppNavigator.pushAndRemovePreviousPages(
+                            //           context,
+                            //           page: SignInWIthAccessPinBiometrics(
+                            //             userName: firstame,
+                            //           ));
+                            //     }
+                            //   },
+                            // ),
+                            // const SizedBox(
+                            //   height: 20,
+                            // ),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  modalSheet.showMaterialModalBottomSheet(
+                                    backgroundColor: Colors.transparent,
+                                    isDismissible: true,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(20.0),
+                                      ),
                                     ),
-                                  );
-                                } else {
-                                  return const CustomText(
-                                    text: "There",
-                                    size: 15,
-                                    weight: FontWeight.bold,
-                                    color: AppColors.white,
-                                  ); // Show loading indicator or handle error state
-                                }
-                              },
-                              listener: (BuildContext context,
-                                  ProductState state) async {
-                                if (state is AccessTokenExpireState) {
-                                  String firstame =
-                                  await SharedPref.getString('firstName');
+                                    context: context,
+                                    builder: (context) =>
+                                        Padding(
+                                          padding:
+                                          const EdgeInsets.only(top: 200.0),
+                                          child: CableProvider(
+                                            onCableProviderSelected:
+                                                (String name, String imageUrl,
+                                                String id) async {
+                                              setState(() {
+                                                selectedCableProvider =
+                                                    name;
+                                                selectedCableProviderImage =
+                                                    imageUrl;
+                                                selectedCableProviderId =
+                                                    id;
+                                              });
+                                              print(
+                                                  selectedCableProviderId);
+                                              Navigator.pop(
+                                                  context); // Close modal
 
-                                  AppNavigator.pushAndRemovePreviousPages(
-                                      context,
-                                      page: SignInWIthAccessPinBiometrics(
-                                        userName: firstame,
-                                      ));
-                                }
-                              },
-                            ),
-                            const SizedBox(
-                              height: 20,
+                                              // if (_beneficiaryController
+                                              //     .text.length >
+                                              //     9 &&
+                                              //     mainServiceId != '') {
+                                              //   verifyEntityNumberProductBloc
+                                              //       .add(
+                                              //       VerifyEntityNumberEvent(
+                                              //           mainServiceId,
+                                              //           _beneficiaryController
+                                              //               .text));
+                                              // }
+                                            },
+                                            categoryId: widget.category.id,
+                                            serviceId: selectedServiceId,
+                                            theme: theme,
+                                          ),
+                                        ),
+                                  );
+                                },
+                                child: Container(
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    color: theme.isDark
+                                        ? AppColors
+                                        .darkModeBackgroundContainerColor
+                                        : AppColors.white,
+                                    border: Border.all(
+                                      color: selectedServiceId.isNotEmpty
+                                          ? AppColors.green
+                                          : AppColors.grey,
+                                      width: 1.0,
+                                    ),
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 25.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        if(selectedCableProvider !=
+                                            "Choose Provider")
+                                          Image.network(
+                                            selectedCableProviderImage,
+                                            height: 24, width: 24,),
+                                        if(selectedCableProvider !=
+                                            "Choose Provider")
+                                          SizedBox(width: 10,),
+                                        Expanded(
+                                          child: CustomText(
+                                            text: selectedCableProvider,
+                                            size: 14,
+                                            color:
+                                            selectedCableProvider !=
+                                                "Choose Provider"
+                                                ? (theme.isDark
+                                                ? Colors.white
+                                                : Colors.black)
+                                                : (theme.isDark
+                                                ? Colors.grey
+                                                : AppColors
+                                                .lightDivider),
+                                          ),
+                                        ),
+                                        const Icon(Icons.arrow_drop_down),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(10.0),
                               child: GestureDetector(
                                 onTap: () {
-                                  if (selectedNetwork == '') {
+                                  if (selectedCableProvider == 'Choose Provider') {
                                     setState(() {
                                       MSG.warningSnackBar(context,
                                           'Please Select a service provider');
@@ -275,7 +472,7 @@ class _CablePurchaseState extends State<CablePurchase> {
                                                 context); // Close modal
                                           },
                                           categoryId: widget.category.id,
-                                          serviceId: selectedServiceId,
+                                          serviceId: selectedCableProviderId, theme: theme,
                                         ),
                                       ),
                                     );
@@ -284,7 +481,10 @@ class _CablePurchaseState extends State<CablePurchase> {
                                 child: Container(
                                   height: 50,
                                   decoration: BoxDecoration(
-                                    color: AppColors.white,
+                                    color: theme.isDark
+                                        ? AppColors
+                                        .darkModeBackgroundContainerColor
+                                        : AppColors.white,
                                     border: Border.all(
                                       color: selectedServiceId.isNotEmpty
                                           ? AppColors.green
@@ -305,8 +505,12 @@ class _CablePurchaseState extends State<CablePurchase> {
                                             size: 14,
                                             color: selectedCablePlan !=
                                                 "Choose Plan"
-                                                ? Colors.black
-                                                : AppColors.lightDivider,
+                                                ? (theme.isDark
+                                                ? Colors.white
+                                                : Colors.black)
+                                                : (theme.isDark
+                                                ? Colors.grey
+                                                : AppColors.lightDivider),
                                           ),
                                         ),
                                         const Icon(Icons.arrow_drop_down),
@@ -326,76 +530,336 @@ class _CablePurchaseState extends State<CablePurchase> {
                               child: Form(
                                   key: _formKey,
                                   child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
+                                      
                                       CustomTextFormField(
-                                        hint: 'Input number here',
+                                        hint: 'Input decoder card number here',
                                         label: 'Beneficiary',
                                         controller: _beneficiaryController,
                                         textInputType: TextInputType.number,
-                                        validator:
-                                        AppValidator.validateTextfield,
-                                        widget: SvgPicture.asset(AppIcons.naira),
-                                        //isMobileNumber: true,
+                                        onChanged: (value) async {
+                                          print(_beneficiaryController
+                                              .text.length);
+                                          print(selectedCableProviderId);
+                                          // if (_beneficiaryController
+                                          //     .text.length >
+                                          //     9 &&
+                                          //     selectedCableProviderId
+                                          //         .isNotEmpty) {
+                                          //   String mainServiceId =
+                                          //   await handleNetworkSelect(
+                                          //       selectedCableProviderId);
+                                          //
+                                          //   verifyEntityNumberProductBloc.add(
+                                          //     VerifyEntityNumberEvent(
+                                          //         mainServiceId,
+                                          //         _beneficiaryController.text),
+                                          //   );
+                                          // }
+                                        },
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Please enter your SmartCard number';
+                                          } else if (value.length < 9) {
+                                            return 'Invalid SmartCard number';
+                                          }
+                                          return null;
+                                        },
                                         borderColor: _beneficiaryController
                                             .text.isNotEmpty
                                             ? AppColors.green
                                             : AppColors.grey,
                                       ),
+                                      if (_beneficiaryController.text.length >
+                                          9 &&
+                                          selectedCableProviderId != '')
+                                        BlocConsumer<ProductBloc, ProductState>(
+                                            bloc: verifyEntityNumberProductBloc,
+                                            // listenWhen: (previous, current) =>
+                                            //     current is! InitialSuccessState,
+                                            // buildWhen: (previous, current) =>
+                                            // current is! GetCablePlanLoadingState,
+                                            listener: (context, state) {
+                                              if (state
+                                              is EntityNumberErrorState) {
+                                                // MSG.warningSnackBar(context, state.error);
+                                              }
+                                            },
+                                            builder: (context, state) {
+                                              if (_beneficiaryController
+                                                  .text.length >
+                                                  9 &&
+                                                  selectedCableProviderId !=
+                                                      '') {
+                                                if (state
+                                                is EntityNumberSuccessState) {
+                                                  final res = state
+                                                  as EntityNumberSuccessState;
+                                                  // setState(() {
+                                                  //   enableButton=true;
+                                                  //
+                                                  // });
+                                                  return Padding(
+                                                      padding: const EdgeInsets
+                                                          .fromLTRB(
+                                                          10, 10, 10, 25.0),
+                                                      child: Column(
 
-                                      ///Remember to add beneficiary
+                                                        children: [
+                                                          Container(
+                                                            decoration: BoxDecoration(
+                                                                color: AppColors.lightgreen2,
+                                                                border:Border.all(color:AppColors.darkGreen),
+                                                                borderRadius:BorderRadius.circular(10)
+                                                            ),
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.all(5.0),
+                                                              child: CustomText(
+                                                                text: res.name,
+                                                                color:
+                                                                AppColors.green,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Container(
+                                                            decoration: BoxDecoration(
+                                                                color: AppColors.lightgreen2,
+                                                                border:Border.all(color:AppColors.darkGreen),
+                                                                borderRadius:BorderRadius.circular(10)
+                                                            ),
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.all(5.0),
+                                                              child: CustomText(
+                                                                text: res.name,
+                                                                color:
+                                                                AppColors.green,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ));
+                                                } else if (state
+                                                is EntityNumberErrorState) {
+                                                  return Padding(
+                                                      padding:
+                                                      EdgeInsets.fromLTRB(
+                                                          10, 0, 10, 25.0),
+                                                      child: CustomText(
+                                                        text:
+                                                        "Invalid Meter number",
+                                                        size: 14,
+                                                        color: AppColors.red,
+                                                      ));
+                                                } else {
+                                                  return  Padding(
+                                                      padding:
+                                                      EdgeInsets.fromLTRB(
+                                                          10, 10, 10, 25.0),
+                                                      child: CustomText(
+                                                        text:
+                                                        "Verifying user.....",
+                                                        size: 14,
+                                                        color:theme.isDark?AppColors.white: AppColors.black,
+                                                      ));
+                                                }
+                                              } else {
+                                                return const Padding(
+                                                    padding:
+                                                    EdgeInsets.fromLTRB(
+                                                        10, 0, 10, 25.0),
+                                                    child: CustomText(
+                                                      text: "",
+                                                      size: 14,
+                                                      color: AppColors.red,
+                                                    ));
+                                              }
+                                            }),
+                                      Container(
+                                        height: 310,
+                                        child: PaymentMethodScreen(
+                                          amtToPay: _selectedAmtController
+                                              .text.isEmpty
+                                              ? '0'
+                                              : _selectedAmtController.text,
+                                          onPaymentMethodSelected: (method) {
+                                            // No need to use setState here directly as it might be called during the build phase
+                                            Future.microtask(() {
+                                              if (mounted) {
+                                                setState(() {
+                                                  _selectedPaymentMethod =
+                                                      method;
+                                                  // print(_selectedPaymentMethod);
+                                                });
+                                              }
+                                            });
+                                          },
+                                          ispaymentAllowed: (allowed) {
+                                            // Deferred update to avoid issues during the build phase
+                                            Future.microtask(() {
+                                              if (mounted) {
+                                                setState(() {
+                                                  isPaymentAllowed = allowed;
+                                                  // print(isPaymentAllowed);
+                                                });
+                                              }
+                                            });
+                                          },
+                                        ),
+                                      ),
                                       FormButton(
                                         onPressed: () async {
+                                          print(_selectedPaymentMethod);
+                                          //print(selectedCableProviderPrice);
+                                          print(_beneficiaryController
+                                              .text.isNotEmpty);
+                                          print(!isPaymentAllowed);
+
                                           if (_formKey.currentState!
                                               .validate()) {
-                                            var transactionPin = '';
-                                            // transactionPin = await modalSheet
-                                            //     .showMaterialModalBottomSheet(
-                                            //         backgroundColor:
-                                            //             Colors.transparent,
-                                            //         shape:
-                                            //             const RoundedRectangleBorder(
-                                            //           borderRadius:
-                                            //               BorderRadius.vertical(
-                                            //                   top: Radius
-                                            //                       .circular(
-                                            //                           20.0)),
-                                            //         ),
-                                            //         context: context,
-                                            //         builder: (context) =>
-                                            //             Padding(
-                                            //               padding:
-                                            //                   const EdgeInsets
-                                            //                       .only(
-                                            //                       top: 200.0),
-                                            //               child: ConfirmWithPin(
-                                            //                 context: context,
-                                            //                 title:
-                                            //                     'Input your transaction pin to continue',
-                                            //               ),
-                                            //             ));
-                                            print(transactionPin);
-                                            // if (transactionPin != '') {
-                                            //   purchaseProductBloc.add(
-                                            //       PurchaseProductEvent(
-                                            //           context,
-                                            //           double.parse(
-                                            //               selectedCablePlanPrice),
-                                            //           _beneficiaryController
-                                            //               .text,
-                                            //           selectedCablePlanId,
-                                            //           transactionPin));
-                                            // }
+                                            if (_selectedPaymentMethod !=
+                                                'wallet') {
+                                              var transactionPin = '';
+                                              widget.category.requiredFields
+                                                  .amount =
+                                                  _selectedAmtController.text;
+                                              widget.category.requiredFields
+                                                  .meterNumber =
+                                                  _beneficiaryController.text;
+                                              widget.category.requiredFields
+                                                  .phoneNumber =
+                                                  _beneficiaryController.text;
+
+                                              purchaseProductBloc.add(
+                                                  PurchaseProductEvent(
+                                                      context,
+                                                      widget.category
+                                                          .requiredFields,
+                                                      serviceID,
+                                                      transactionPin,
+                                                      true));
+                                            } else {
+                                              var transactionPin = '';
+                                              transactionPin = await modalSheet
+                                                  .showMaterialModalBottomSheet(
+                                                  backgroundColor:
+                                                  Colors.transparent,
+                                                  shape:
+                                                  const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                    BorderRadius.vertical(
+                                                        top: Radius
+                                                            .circular(
+                                                            20.0)),
+                                                  ),
+                                                  context: context,
+                                                  builder: (context) =>
+                                                      Padding(
+                                                        padding:
+                                                        const EdgeInsets
+                                                            .only(
+                                                            top: 200.0),
+                                                        child:
+                                                        ConfirmWithPin(
+                                                          context: context,
+                                                          title:
+                                                          'Input your transaction pin to continue',
+                                                        ),
+                                                      ));
+                                              print(transactionPin);
+                                              if (transactionPin != '') {
+                                                setState(() {
+                                                  widget.category.requiredFields
+                                                      .amount =
+                                                      _selectedAmtController
+                                                          .text;
+                                                  widget.category.requiredFields
+                                                      .phoneNumber =
+                                                      _beneficiaryController
+                                                          .text;
+                                                });
+
+                                                purchaseProductBloc.add(
+                                                    PurchaseProductEvent(
+                                                        context,
+                                                        widget.category
+                                                            .requiredFields,
+                                                        selectedCableProviderId,
+                                                        transactionPin,
+                                                        false));
+                                              }
+                                            }
                                           }
                                         },
-                                        disableButton: selectedCablePlanId
-                                            .isNotEmpty &&
-                                            _beneficiaryController.text == '',
+                                        disableButton: (!isPaymentAllowed ||
+                                            _beneficiaryController.text.length <
+                                                10),
                                         text: 'Purchase Cable',
                                         borderColor: AppColors.darkGreen,
                                         bgColor: AppColors.darkGreen,
                                         textColor: AppColors.white,
                                         borderRadius: 10,
+                                      ),
+                                      SizedBox(
+                                        height: 20,
                                       )
+
+                                      ///Remember to add beneficiary
+                                      // FormButton(
+                                      //   onPressed: () async {
+                                      //     if (_formKey.currentState!
+                                      //         .validate()) {
+                                      //       var transactionPin = '';
+                                      //       // transactionPin = await modalSheet
+                                      //       //     .showMaterialModalBottomSheet(
+                                      //       //         backgroundColor:
+                                      //       //             Colors.transparent,
+                                      //       //         shape:
+                                      //       //             const RoundedRectangleBorder(
+                                      //       //           borderRadius:
+                                      //       //               BorderRadius.vertical(
+                                      //       //                   top: Radius
+                                      //       //                       .circular(
+                                      //       //                           20.0)),
+                                      //       //         ),
+                                      //       //         context: context,
+                                      //       //         builder: (context) =>
+                                      //       //             Padding(
+                                      //       //               padding:
+                                      //       //                   const EdgeInsets
+                                      //       //                       .only(
+                                      //       //                       top: 200.0),
+                                      //       //               child: ConfirmWithPin(
+                                      //       //                 context: context,
+                                      //       //                 title:
+                                      //       //                     'Input your transaction pin to continue',
+                                      //       //               ),
+                                      //       //             ));
+                                      //       print(transactionPin);
+                                      //       // if (transactionPin != '') {
+                                      //       //   purchaseProductBloc.add(
+                                      //       //       PurchaseProductEvent(
+                                      //       //           context,
+                                      //       //           double.parse(
+                                      //       //               selectedCableProviderPrice),
+                                      //       //           _beneficiaryController
+                                      //       //               .text,
+                                      //       //           selectedCableProviderId,
+                                      //       //           transactionPin,false));
+                                      //       // }
+                                      //     }
+                                      //   },
+                                      //   disableButton: (!isPaymentAllowed &&
+                                      //       _beneficiaryController
+                                      //           .text.isNotEmpty),
+                                      //   // selectedCableProviderId.isNotEmpty &&
+                                      //   //     _beneficiaryController.text=='',
+                                      //   text: 'Purchase Cable',
+                                      //   borderColor: AppColors.darkGreen,
+                                      //   bgColor: AppColors.darkGreen,
+                                      //   textColor: AppColors.white,
+                                      //   borderRadius: 10,
+                                      // )
                                     ],
                                   )),
                             ),
@@ -410,17 +874,11 @@ class _CablePurchaseState extends State<CablePurchase> {
       ),
     );
   }
-
   Widget amount(String amt) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
-        onTap: () {
-          print(amt);
-          setState(() {
-            _selectedAmtController.text = amt;
-          });
-        },
+
         child: Container(
           decoration: BoxDecoration(
               color: AppColors.white,
@@ -429,7 +887,7 @@ class _CablePurchaseState extends State<CablePurchase> {
           child: Padding(
             padding: const EdgeInsets.all(5.0),
             child: CustomText(
-              text: "₦ $amt",
+              text: "N $amt",
             ),
           ),
         ),
@@ -437,10 +895,15 @@ class _CablePurchaseState extends State<CablePurchase> {
     );
   }
 
+
   Widget _loadingBeneficiaries() {
     return SizedBox(
-      height: AppUtils.deviceScreenSize(context).width / 5,
-      width: AppUtils.deviceScreenSize(context).width / 5,
+      height: AppUtils
+          .deviceScreenSize(context)
+          .width / 5,
+      width: AppUtils
+          .deviceScreenSize(context)
+          .width / 5,
       child: ListView.builder(
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
@@ -500,102 +963,269 @@ class _CablePurchaseState extends State<CablePurchase> {
   }
 
   final _formKey = GlobalKey<FormState>();
-  final String _selectedPlan = '';
+  final String _selectedProvider = '';
 
-  String selectedNetwork = "";
   final _beneficiaryController = TextEditingController();
-  final _selectedAmtController = TextEditingController();
-
-  Widget selectAmount(String amt) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: GestureDetector(
-        onTap: () {
-          print(amt);
-          setState(() {
-            _selectedAmtController.text = amt;
-          });
-        },
-        child: Container(
-          decoration: BoxDecoration(
-              color: AppColors.greyAccent,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: AppColors.grey)),
-          child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: CustomText(
-              text: "N $amt",
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget networkProviderItem(String name, String image, String id) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        height: AppUtils.deviceScreenSize(context).width / 5,
-        width: AppUtils.deviceScreenSize(context).width / 5,
-        decoration: BoxDecoration(
-            border: Border.all(
-                color: selectedNetwork == name.toLowerCase()
-                    ? AppColors.green
-                    : Colors.transparent),
-            color: selectedNetwork == name.toLowerCase()
-                ? AppColors.lightShadowGreenColor
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(15)),
-        child: Padding(
-          padding: const EdgeInsets.all(6.0),
-          child: GestureDetector(
-            onTap: () {
-              setState(() {
-                selectedNetwork = name.toLowerCase();
-                selectedServiceId = id;
-                selectedCablePlanPrice = '';
-                selectedCablePlanId = '';
-                selectedCablePlan = 'Choose Plan';
-              });
-            },
-            child: Column(
-              children: [
-                CircleAvatar(
-                  //backgroundColor: service.backgroundColor,
-                  radius: 20,
-                  backgroundImage: NetworkImage(image),
-                  //child: Image.asset(image,height: 20,width: 20,),
-                ),
-                CustomText(
-                  text: name,
-                  color: AppColors.black,
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-// void showAirtimeModal(BuildContext context, Services services) {
-//   modalSheet.showMaterialModalBottomSheet(
-//     context: context,
-//     enableDrag: true,
-//     isDismissible: true,
-//     expand: false,
-//     //shape: ShapeDecoration(shape: shape),
-//     builder: (context) => Container(
-//       height: AppUtils.deviceScreenSize(context).height * 0.8,
-//       child: ,
-//     ),
-//   );
-// }
 }
 
+class CableProvider extends StatelessWidget {
+  final String categoryId;
+  final String serviceId;
+  final AdaptiveThemeMode theme;
+  final Function(String, String, String) onCableProviderSelected;
+
+  CableProvider({Key? key,
+    required this.serviceId,
+    required this.categoryId,
+    required this.onCableProviderSelected,
+    required this.theme})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: BlocProvider(
+        create: (context) => ProductBloc(),
+        child: Scaffold(
+          backgroundColor: theme.isDark
+              ? AppColors.darkModeBackgroundColor
+              : AppColors.white,
+          body: Column(
+            children: [
+              Container(
+                height: 60,
+                decoration: BoxDecoration(
+                    color: theme.isDark
+                        ? AppColors.darkModeBackgroundColor
+                        : AppColors.white,
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(10),
+                        topLeft: Radius.circular(10))),
+                child: Padding(
+                  padding: const EdgeInsets.all(0.0),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Positioned(
+                        top: 0, // Adjust position as needed
+                        left: 0,
+                        right: 0,
+                        child: SvgPicture.asset(
+                          AppIcons.billTopBackground,
+                          height: 60,
+                          // Increase height to fit the text
+                          width: double.infinity,
+                          color: AppColors.darkGreen,
+                          // Set the color if needed
+                          placeholderBuilder: (context) {
+                            return Container(
+                              height: 50,
+                              width: double.infinity,
+                              color: Colors.grey[300],
+                              child: Center(child: CircularProgressIndicator()),
+                            );
+                          },
+                        ),
+                      ),
+                      Positioned(
+                        top: 10, // Adjust position as needed
+                        left: 10,
+                        right: 10,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            TextStyles.textHeadings(
+                              textValue: 'Cable Providers',
+                              textColor: AppColors.darkGreen,
+                              // w: FontWeight.w600,
+                              textSize: 14,
+                            ),
+                            // Text(
+                            //   "Airtime purchase",
+                            //   style: TextStyle(
+                            //     color: AppColors.darkGreen,
+                            //     fontWeight: FontWeight.w600,
+                            //     fontSize: 18,
+                            //   ),
+                            // ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: Icon(
+                                Icons.cancel,
+                                color: Colors.grey,
+                                size: 30,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                child: CableProviderList(
+                  onCableProviderSelected: onCableProviderSelected,
+                  serviceId: serviceId,
+                  categoryId: categoryId, theme: theme,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CableProviderList extends StatefulWidget {
+  final String categoryId;
+  final String serviceId;
+  final AdaptiveThemeMode theme;
+  final Function(String, String, String) onCableProviderSelected;
+
+  CableProviderList({Key? key,
+    required this.serviceId,
+    required this.categoryId,
+    required this.onCableProviderSelected,
+    required this.theme})
+      : super(key: key);
+
+  @override
+  _CableProviderListState createState() =>
+      _CableProviderListState();
+}
+
+class _CableProviderListState extends State<CableProviderList> {
+  final TextEditingController _searchController = TextEditingController();
+  int page = 1;
+  ProductBloc productListBloc = ProductBloc();
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(_onSearchChanged);
+
+    _fetchCableProvider('', page, widget.categoryId, widget.serviceId);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+      child: Column(
+        children: [
+          CustomTextFormField(
+            hint: 'Search Cable Provider',
+            label: '',
+            controller: _searchController,
+            validator: AppValidator.validateAccountNumberfield,
+            widget: Icon(Icons.search),
+          ),
+          Expanded(
+            child: BlocBuilder<ProductBloc, ProductState>(
+              bloc: productListBloc,
+              builder: (context, state) {
+                if (state is ServiceLoadingState) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is ServiceSuccessState) {
+                  final ServiceSuccessState = state;
+                  return GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3, // Number of items per row
+                      crossAxisSpacing: 8.0, // Spacing between columns
+                      mainAxisSpacing: 8.0, // Spacing between rows
+                    ),
+                    itemCount:
+                    ServiceSuccessState.serviceModel.data.services.length,
+                    itemBuilder: (context, index) {
+                      final singleService =
+                      ServiceSuccessState.serviceModel.data.services[index];
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            widget.onCableProviderSelected(
+                              singleService.name,
+                              singleService.image,
+                              singleService.id,
+                            );
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: widget.theme.isDark
+                                  ? Color(0xFF092514)
+                                  : AppColors.grey,
+                              //border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.network(
+                                  singleService.image,
+                                  height: 40,
+                                  width: 40,
+                                ),
+                                SizedBox(height: 5),
+                                CustomText(
+                                  text: singleService.name,
+                                  size: 12,
+                                  weight: FontWeight.w700,
+                                  maxLines: 2,
+                                  textAlign: TextAlign.center,
+                                  color:widget.theme.isDark ? AppColors
+                                      .lightPrimary : AppColors.textColor,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                } else if (state is ServiceErrorState) {
+                  final error = state;
+                  return Center(
+                    child: Text(error.error),
+                  );
+                }
+                return Container(); // Placeholder, should never be reached
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _onSearchChanged() {
+    page = 1; // Reset page number to 1 when search query changes
+    _fetchCableProvider(
+        _searchController.text, page, widget.categoryId, widget.serviceId);
+  }
+
+  void _fetchCableProvider(String query, int pageNo, categoryId,
+      serviceId) {
+    // productListBloc
+    //     .add(FetchProduct(query, pageNo.toString(), 20, categoryId, serviceId));
+    productListBloc.add(ListServiceEvent(pageNo.toString(), '20', categoryId));
+
+    page++; // Increment page number after making the request
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+}
 class CablePlan extends StatelessWidget {
   final String categoryId;
   final String serviceId;
+  final AdaptiveThemeMode theme;
   final Function(String, String, String) onCablePlanSelected;
 
   CablePlan({
@@ -603,6 +1233,7 @@ class CablePlan extends StatelessWidget {
     required this.serviceId,
     required this.categoryId,
     required this.onCablePlanSelected,
+    required this.theme
   }) : super(key: key);
 
   @override
@@ -614,33 +1245,75 @@ class CablePlan extends StatelessWidget {
           body: Column(
             children: [
               Container(
-                height: 50,
-                decoration: const BoxDecoration(
-                    color: AppColors.darkGreen,
+                height: 60,
+                decoration: BoxDecoration(
+                    color: theme.isDark
+                        ? AppColors.darkModeBackgroundColor
+                        : AppColors.white,
                     borderRadius: BorderRadius.only(
                         topRight: Radius.circular(10),
                         topLeft: Radius.circular(10))),
                 child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  padding: const EdgeInsets.all(0.0),
+                  child: Stack(
+                    alignment: Alignment.center,
                     children: [
-                      const CustomText(
-                        text: "Cable Plans",
-                        color: AppColors.white,
-                        weight: FontWeight.w600,
-                        size: 18,
+                      Positioned(
+                        top: 0, // Adjust position as needed
+                        left: 0,
+                        right: 0,
+                        child: SvgPicture.asset(
+                          AppIcons.billTopBackground,
+                          height: 60,
+                          // Increase height to fit the text
+                          width: double.infinity,
+                          color: AppColors.darkGreen,
+                          // Set the color if needed
+                          placeholderBuilder: (context) {
+                            return Container(
+                              height: 50,
+                              width: double.infinity,
+                              color: Colors.grey[300],
+                              child: Center(
+                                  child:
+                                  CircularProgressIndicator()),
+                            );
+                          },
+                        ),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Container(
-                          child: const Icon(
-                            Icons.arrow_back_ios,
-                            size: 40,
-                            color: AppColors.lightShadowGreenColor,
-                          ),
+                      Positioned(
+                        top: 10, // Adjust position as needed
+                        left: 10,
+                        right: 10,
+                        child: Row(
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
+                          children: [
+                            TextStyles.textHeadings(
+                              textValue: 'Data Plans',
+                              textColor: AppColors.darkGreen,
+                              // w: FontWeight.w600,
+                              textSize: 14,
+                            ),
+                            // Text(
+                            //   "Airtime purchase",
+                            //   style: TextStyle(
+                            //     color: AppColors.darkGreen,
+                            //     fontWeight: FontWeight.w600,
+                            //     fontSize: 18,
+                            //   ),
+                            // ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: Icon(
+                                Icons.cancel,
+                                color: Colors.grey,
+                                size: 30,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -697,11 +1370,11 @@ class _CablePlanListState extends State<CablePlanList> {
       child: Column(
         children: [
           CustomTextFormField(
-            hint: 'Search Cable plan',
+            hint: 'Search Data plan',
             label: '',
             controller: _searchController,
             validator: AppValidator.validateAccountNumberfield,
-            widget: Icon(Icons.search),
+            widget:Icon( Icons.search),
           ),
           Expanded(
             child: BlocBuilder<ProductBloc, ProductState>(
@@ -716,23 +1389,34 @@ class _CablePlanListState extends State<CablePlanList> {
                     itemBuilder: (context, index) {
                       final singleProduct =
                       product.productModel.data.items[index];
-                      return ListTile(
-                        onTap: () {
-                          widget.onCablePlanSelected(
-                            singleProduct.name,
-                            singleProduct.buyerPrice.toString(),
-                            singleProduct.id,
-                          );
-                        },
-                        title: CustomText(
-                          text: singleProduct.name,
-                          size: 14,
-                          weight: FontWeight.w700,
-                        ),
-                        subtitle: CustomText(
-                          text: singleProduct.buyerPrice.toString(),
-                          size: 14,
-                          weight: FontWeight.w400,
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ListTile(
+
+                            onTap: () {
+                              widget.onCablePlanSelected(
+                                singleProduct.name,
+                                singleProduct.buyerPrice.toString(),
+                                singleProduct.id,
+                              );
+                            },
+                            title: CustomText(
+                              text: singleProduct.name,
+                              size: 14,
+                              weight: FontWeight.w700,
+                            ),
+                            subtitle: Row(
+                              children: [
+                                SvgPicture.asset(AppIcons.naira,color: AppColors.green,),
+                                CustomText(
+                                  text: singleProduct.buyerPrice.toString(),
+                                  size: 14,
+                                  weight: FontWeight.w400,
+                                ),
+                              ],
+                            ),
+                            shape:  RoundedRectangleBorder( side: BorderSide(color: Colors.grey),borderRadius: BorderRadius.circular(5),)
+                          //shape: ShapeBorder(),
                         ),
                       );
                     },
