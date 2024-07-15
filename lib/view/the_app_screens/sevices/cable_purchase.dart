@@ -466,6 +466,7 @@ class _CablePurchaseState extends State<CablePurchase> {
                                             setState(() {
                                               selectedCablePlan = name;
                                               selectedCablePlanPrice = price;
+                                              _selectedAmtController.text = price;
                                               selectedCablePlanId = id;
                                             });
                                             Navigator.pop(
@@ -542,21 +543,21 @@ class _CablePurchaseState extends State<CablePurchase> {
                                           print(_beneficiaryController
                                               .text.length);
                                           print(selectedCableProviderId);
-                                          // if (_beneficiaryController
-                                          //     .text.length >
-                                          //     9 &&
-                                          //     selectedCableProviderId
-                                          //         .isNotEmpty) {
-                                          //   String mainServiceId =
-                                          //   await handleNetworkSelect(
-                                          //       selectedCableProviderId);
-                                          //
-                                          //   verifyEntityNumberProductBloc.add(
-                                          //     VerifyEntityNumberEvent(
-                                          //         mainServiceId,
-                                          //         _beneficiaryController.text),
-                                          //   );
-                                          // }
+                                          if (_beneficiaryController
+                                              .text.length >
+                                              9 &&
+                                              selectedCableProviderId
+                                                  .isNotEmpty) {
+                                            //String mainServiceId =
+                                            // await handleNetworkSelect(
+                                            //     selectedCableProviderId);
+
+                                            verifyEntityNumberProductBloc.add(
+                                              VerifyEntityNumberEvent(
+                                                  selectedCablePlanId,
+                                                  _beneficiaryController.text),
+                                            );
+                                          }
                                         },
                                         validator: (value) {
                                           if (value == null || value.isEmpty) {
@@ -616,27 +617,27 @@ class _CablePurchaseState extends State<CablePurchase> {
                                                             child: Padding(
                                                               padding: const EdgeInsets.all(5.0),
                                                               child: CustomText(
-                                                                text: res.name,
+                                                                text: res.electricityVerifiedData.name,
                                                                 color:
                                                                 AppColors.green,
                                                               ),
                                                             ),
                                                           ),
-                                                          Container(
-                                                            decoration: BoxDecoration(
-                                                                color: AppColors.lightgreen2,
-                                                                border:Border.all(color:AppColors.darkGreen),
-                                                                borderRadius:BorderRadius.circular(10)
-                                                            ),
-                                                            child: Padding(
-                                                              padding: const EdgeInsets.all(5.0),
-                                                              child: CustomText(
-                                                                text: res.name,
-                                                                color:
-                                                                AppColors.green,
-                                                              ),
-                                                            ),
-                                                          ),
+                                                          // Container(
+                                                          //   decoration: BoxDecoration(
+                                                          //       color: AppColors.lightgreen2,
+                                                          //       border:Border.all(color:AppColors.darkGreen),
+                                                          //       borderRadius:BorderRadius.circular(10)
+                                                          //   ),
+                                                          //   child: Padding(
+                                                          //     padding: const EdgeInsets.all(5.0),
+                                                          //     child: CustomText(
+                                                          //       text: "res.name",
+                                                          //       color:
+                                                          //       AppColors.green,
+                                                          //     ),
+                                                          //   ),
+                                                          // ),
                                                         ],
                                                       ));
                                                 } else if (state
@@ -723,12 +724,11 @@ class _CablePurchaseState extends State<CablePurchase> {
                                               widget.category.requiredFields
                                                   .amount =
                                                   _selectedAmtController.text;
-                                              widget.category.requiredFields
-                                                  .meterNumber =
+                                              widget.category.requiredFields.cardNumber=
                                                   _beneficiaryController.text;
-                                              widget.category.requiredFields
-                                                  .phoneNumber =
-                                                  _beneficiaryController.text;
+                                              // widget.category.requiredFields
+                                              //     .phoneNumber =
+                                              //     _beneficiaryController.text;
 
                                               purchaseProductBloc.add(
                                                   PurchaseProductEvent(
