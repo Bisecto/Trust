@@ -247,14 +247,13 @@ class _HomePageState extends State<HomePage> {
                             size: 12,
                           ),
                           TextStyles.textHeadings(
-                            textValue:
-                                "${AppUtils.formatString(data: personalInfo.lastName)} ${AppUtils.formatString(data: personalInfo.firstName)}",
-                            textColor: theme.isDark
-                                ? AppColors.darkModeBackgroundMainTextColor
-                                : AppColors.textColor,
-                            textSize: 14,
-                            fontWeight: FontWeight.w400
-                          ),
+                              textValue:
+                                  "${AppUtils.formatString(data: personalInfo.lastName)} ${AppUtils.formatString(data: personalInfo.firstName)}",
+                              textColor: theme.isDark
+                                  ? AppColors.darkModeBackgroundMainTextColor
+                                  : AppColors.textColor,
+                              textSize: 14,
+                              fontWeight: FontWeight.w400),
                         ],
                       )
                     ],
@@ -310,14 +309,13 @@ class _HomePageState extends State<HomePage> {
                           size: 12,
                         ),
                         TextStyles.textHeadings(
-                          textValue:
-                              "${AppUtils.formatString(data: lastname)} ${AppUtils.formatString(data: firstname)}",
-                          textColor: theme.isDark
-                              ? AppColors.darkModeBackgroundMainTextColor
-                              : AppColors.textColor,
-                          textSize: 14,
-                            fontWeight: FontWeight.w400
-                        )
+                            textValue:
+                                "${AppUtils.formatString(data: lastname)} ${AppUtils.formatString(data: firstname)}",
+                            textColor: theme.isDark
+                                ? AppColors.darkModeBackgroundMainTextColor
+                                : AppColors.textColor,
+                            textSize: 14,
+                            fontWeight: FontWeight.w400)
                       ],
                     )
                   ],
@@ -944,7 +942,7 @@ class _HomePageState extends State<HomePage> {
                     child: quickActionsItem(
                         items[index],
                         theme,
-                        ['airtime', 'data', 'electricity','cable tv']
+                        ['airtime', 'data', 'electricity', 'cable tv']
                             .contains(items[index].name.toLowerCase())));
               },
             ),
@@ -1010,7 +1008,7 @@ class _HomePageState extends State<HomePage> {
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
                       decoration: BoxDecoration(
-                        //color: AppColors.white,
+                          //color: AppColors.white,
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(color: AppColors.textColor2)),
                       child: Padding(
@@ -1025,7 +1023,6 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   )
-
                 ],
               ),
               const SizedBox(
@@ -1046,13 +1043,18 @@ class _HomePageState extends State<HomePage> {
                               physics: const NeverScrollableScrollPhysics(),
                               itemCount: transactionHistory.data.items.length,
                               itemBuilder: (context, index) {
+                                final transaction =
+                                    transactionHistory.data.items[index];
+                                final order = transaction.order;
+
                                 return GestureDetector(
                                   onTap: () {
-                                    print(transactionHistory.data.items[index]);
-                                    AppNavigator.pushAndStackPage(context,
-                                        page: TransactionReceipt(
-                                            item: transactionHistory
-                                                .data.items[index]));
+                                    print(transaction);
+                                    AppNavigator.pushAndStackPage(
+                                      context,
+                                      page: TransactionReceipt(
+                                          transaction: transaction),
+                                    );
                                   },
                                   child: Container(
                                     height: 90,
@@ -1061,8 +1063,12 @@ class _HomePageState extends State<HomePage> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         CustomText(
-                                          text: transactionHistory.data
-                                              .items[index].order.product.name,
+                                          text: order?.product.name ??
+                                              (transaction.type
+                                                      .toLowerCase()
+                                                      .contains('credit')
+                                                  ? 'Credit'
+                                                  : 'Debit'),
                                           size: 10,
                                           color: theme.isDark
                                               ? AppColors
@@ -1077,42 +1083,56 @@ class _HomePageState extends State<HomePage> {
                                               children: [
                                                 CircleAvatar(
                                                   backgroundImage: NetworkImage(
-                                                      transactionHistory
-                                                          .data
-                                                          .items[index]
-                                                          .order
-                                                          .product
-                                                          .image),
+                                                      order?.product.image ??
+                                                          ''),
+                                                  child: transaction.type
+                                                          .toLowerCase()
+                                                          .contains('credit')
+                                                      ? Icon(
+                                                          Icons.arrow_downward,
+                                                          color:
+                                                              AppColors.green,
+                                                        )
+                                                      : SizedBox(),
                                                 ),
-                                                //SvgPicture.asset(AppImages.mtn,color: AppColors.white,height: 50,width: 50,),
+                                                //if(order!.requiredFields.phoneNumber.isNotEmpty||order.requiredFields.meterNumber!.isNotEmpty||order.requiredFields.cardNumber!.isNotEmpty)
                                                 Padding(
                                                   padding:
                                                       const EdgeInsets.all(8.0),
                                                   child: Container(
-                                                    width: 70,
+                                                    width: order?.requiredFields
+                                                                .phoneNumber !=
+                                                            null
+                                                        ? 70
+                                                        : 0,
                                                     decoration: BoxDecoration(
-                                                        color: theme.isDark
-                                                            ? AppColors
-                                                                .darkGreen
-                                                            : AppColors
-                                                                .lightShadowGreenColor,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
-                                                        border: Border.all(
-                                                            color: AppColors
-                                                                .green)),
+                                                      color: theme.isDark
+                                                          ? AppColors.darkGreen
+                                                          : AppColors
+                                                              .lightShadowGreenColor,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                      border: Border.all(
+                                                          color:
+                                                              AppColors.green),
+                                                    ),
                                                     child: Padding(
                                                       padding:
                                                           const EdgeInsets.all(
                                                               5.0),
                                                       child: CustomText(
-                                                        text: transactionHistory
-                                                            .data
-                                                            .items[index]
-                                                            .order
-                                                            .requiredFields
-                                                            .phoneNumber,
+                                                        text: order
+                                                                ?.requiredFields
+                                                                .phoneNumber ??
+                                                            order
+                                                                ?.requiredFields
+                                                                .meterNumber ??
+                                                            order
+                                                                ?.requiredFields
+                                                                .cardNumber ??
+                                                            transaction
+                                                                .description,
                                                         size: 10,
                                                         color: theme.isDark
                                                             ? AppColors
@@ -1127,32 +1147,29 @@ class _HomePageState extends State<HomePage> {
                                                   padding:
                                                       const EdgeInsets.all(8.0),
                                                   child: Container(
-                                                   // width: 50,
                                                     decoration: BoxDecoration(
-                                                        color: theme.isDark
-                                                            ? AppColors
-                                                                .darkModeBackgroundContainerColor
-                                                            : AppColors.white,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
-                                                        border: Border.all(
-                                                            color: AppColors
-                                                                .grey)),
+                                                      color: theme.isDark
+                                                          ? AppColors
+                                                              .darkModeBackgroundContainerColor
+                                                          : AppColors.white,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                      border: Border.all(
+                                                          color:
+                                                              AppColors.grey),
+                                                    ),
                                                     child: Padding(
                                                       padding:
                                                           const EdgeInsets.all(
                                                               5.0),
                                                       child: CustomText(
-                                                        text: transactionHistory
-                                                                .data
-                                                                .items[index]
-                                                                .type
+                                                        text: transaction.type
                                                                 .toLowerCase()
                                                                 .contains(
                                                                     'debit')
-                                                            ? '-N${transactionHistory.data.items[index].order.requiredFields.amount}'
-                                                            : '+N${transactionHistory.data.items[index].order.requiredFields.amount}',
+                                                            ? '-N${order?.requiredFields.amount ?? transaction.amount}'
+                                                            : '+N${order?.requiredFields.amount ?? transaction.amount}',
                                                         size: 10,
                                                         color: theme.isDark
                                                             ? AppColors
@@ -1166,28 +1183,23 @@ class _HomePageState extends State<HomePage> {
                                               ],
                                             ),
                                             CustomText(
-                                                text: transactionHistory.data
-                                                            .items[index].status
-                                                            .toLowerCase() ==
-                                                        "success"
-                                                    ? "SUCCESSFUL"
-                                                    : transactionHistory.data
-                                                        .items[index].status
-                                                        .toLowerCase(),
-                                                color: transactionHistory.data
-                                                            .items[index].status
-                                                            .toLowerCase() ==
-                                                        'success'
-                                                    ? AppColors.green
-                                                    : transactionHistory
-                                                                .data
-                                                                .items[index]
-                                                                .status
-                                                                .toLowerCase() ==
-                                                            'pending'
-                                                        ? Colors.yellow.shade800
-                                                        : AppColors.red,size: 10,)
-                                            // SvgPicture.asset(AppIcons.reload)
+                                              text: transaction.status
+                                                          .toLowerCase() ==
+                                                      "success"
+                                                  ? "SUCCESSFUL"
+                                                  : transaction.status
+                                                      .toLowerCase(),
+                                              color: transaction.status
+                                                          .toLowerCase() ==
+                                                      'success'
+                                                  ? AppColors.green
+                                                  : transaction.status
+                                                              .toLowerCase() ==
+                                                          'pending'
+                                                      ? Colors.yellow.shade800
+                                                      : AppColors.red,
+                                              size: 10,
+                                            )
                                           ],
                                         ),
                                         const Divider()

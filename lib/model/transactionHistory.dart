@@ -1,11 +1,4 @@
-// To parse this JSON data, do
-//
-//     final TransactionHistoryModel = TransactionHistoryModelFromJson(jsonString);
-
 import 'dart:convert';
-
-import 'category_model.dart';
-
 
 class TransactionHistoryModel {
   String message;
@@ -16,10 +9,11 @@ class TransactionHistoryModel {
     required this.data,
   });
 
-  factory TransactionHistoryModel.fromJson(Map<String, dynamic> json) => TransactionHistoryModel(
-    message: json["message"],
-    data: Data.fromJson(json["data"]),
-  );
+  factory TransactionHistoryModel.fromJson(Map<String, dynamic> json) =>
+      TransactionHistoryModel(
+        message: json["message"],
+        data: Data.fromJson(json["data"]),
+      );
 
   Map<String, dynamic> toJson() => {
     "message": message,
@@ -31,7 +25,7 @@ class Data {
   int totalItems;
   int totalPages;
   int currentPage;
-  List<Item> items;
+  List<Transaction> items;
 
   Data({
     required this.totalItems,
@@ -44,7 +38,8 @@ class Data {
     totalItems: json["totalItems"],
     totalPages: json["totalPages"],
     currentPage: json["currentPage"],
-    items: List<Item>.from(json["items"].map((x) => Item.fromJson(x))),
+    items: List<Transaction>.from(
+        json["items"].map((x) => Transaction.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -55,17 +50,17 @@ class Data {
   };
 }
 
-class Item {
-  String id;
-  int amount;
-  String description;
-  String type;
-  String reference;
-  String status;
-  DateTime createdAt;
-  Order order;
+class Transaction {
+  final String id;
+  final int amount;
+  final String description;
+  final String type;
+  final String reference;
+  final String status;
+  final DateTime createdAt;
+  final Order? order;
 
-  Item({
+  Transaction({
     required this.id,
     required this.amount,
     required this.description,
@@ -73,69 +68,154 @@ class Item {
     required this.reference,
     required this.status,
     required this.createdAt,
-    required this.order,
+    this.order,
   });
 
-  factory Item.fromJson(Map<String, dynamic> json) => Item(
-    id: json["id"],
-    amount: json["amount"],
-    description: json["description"],
-    type: json["type"],
-    reference: json["reference"],
-    status: json["status"],
-    createdAt: DateTime.parse(json["createdAt"]),
-    order: Order.fromJson(json["order"]),
-  );
+  factory Transaction.fromJson(Map<String, dynamic> json) {
+    return Transaction(
+      id: json['id'],
+      amount: json['amount'],
+      description: json['description'],
+      type: json['type'],
+      reference: json['reference'],
+      status: json['status'],
+      createdAt: DateTime.parse(json['createdAt']),
+      order: json['order'] != null ? Order.fromJson(json['order']) : null,
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "amount": amount,
-    "description": description,
-    "type": type,
-    "reference": reference,
-    "status": status,
-    "createdAt": createdAt.toIso8601String(),
-    "order": order.toJson(),
-  };
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'amount': amount,
+      'description': description,
+      'type': type,
+      'reference': reference,
+      'status': status,
+      'createdAt': createdAt.toIso8601String(),
+      'order': order?.toJson(),
+    };
+  }
 }
 
 class Order {
-  String id;
-  String status;
-  dynamic providerOrderId;
-  RequiredFields requiredFields;
-  Product product;
+  final String id;
+  final String status;
+  final String? providerOrderId;
+  final RequiredFields requiredFields;
+  final Response? response;
+  final Product product;
 
   Order({
     required this.id,
     required this.status,
-    required this.providerOrderId,
+    this.providerOrderId,
     required this.requiredFields,
+    this.response,
     required this.product,
   });
 
-  factory Order.fromJson(Map<String, dynamic> json) => Order(
-    id: json["id"],
-    status: json["status"]??'',
-    providerOrderId: json["providerOrderId"],
-    requiredFields: RequiredFields.fromJson(json["requiredFields"]),
-    product: Product.fromJson(json["product"]),
-  );
+  factory Order.fromJson(Map<String, dynamic> json) {
+    return Order(
+      id: json['id'],
+      status: json['status'],
+      providerOrderId: json['providerOrderId'],
+      requiredFields: RequiredFields.fromJson(json['requiredFields']),
+      response:
+      json['response'] != null ? Response.fromJson(json['response']) : null,
+      product: Product.fromJson(json['product']),
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "status": status,
-    "providerOrderId": providerOrderId,
-    "requiredFields": requiredFields.toJson(),
-    "product": product.toJson(),
-  };
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'status': status,
+      'providerOrderId': providerOrderId,
+      'requiredFields': requiredFields.toJson(),
+      'response': response?.toJson(),
+      'product': product.toJson(),
+    };
+  }
+}
+
+class RequiredFields {
+  final String phoneNumber;
+  final int amount;
+  final String? cardNumber;
+  final String? meterNumber;
+
+  RequiredFields({
+    required this.phoneNumber,
+    required this.amount,
+    this.cardNumber,
+    this.meterNumber,
+  });
+
+  factory RequiredFields.fromJson(Map<String, dynamic> json) {
+    return RequiredFields(
+      phoneNumber: json['phoneNumber'],
+      amount: json['amount'],
+      cardNumber: json['cardNumber'],
+      meterNumber: json['meterNumber'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'phoneNumber': phoneNumber,
+      'amount': amount,
+      'cardNumber': cardNumber,
+      'meterNumber': meterNumber,
+    };
+  }
+}
+
+class Response {
+  final String clientId;
+  final String serviceCategoryId;
+  final String reference;
+  final String status;
+  final int amount;
+  final String id;
+
+  Response({
+    required this.clientId,
+    required this.serviceCategoryId,
+    required this.reference,
+    required this.status,
+    required this.amount,
+    required this.id,
+  });
+
+  factory Response.fromJson(Map<String, dynamic> json) {
+    return Response(
+      clientId: json['clientId'],
+      serviceCategoryId: json['serviceCategoryId'],
+      reference: json['reference'],
+      status: json['status'],
+      amount: json['amount'],
+      id: json['id'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'clientId': clientId,
+      'serviceCategoryId': serviceCategoryId,
+      'reference': reference,
+      'status': status,
+      'amount': amount,
+      'id': id,
+    };
+  }
 }
 
 class Product {
-  String image;
-  String id;
-  String name;
-  String description;
+  final String image;
+  final String id;
+  final String name;
+  final String description;
 
   Product({
     required this.image,
@@ -144,18 +224,21 @@ class Product {
     required this.description,
   });
 
-  factory Product.fromJson(Map<String, dynamic> json) => Product(
-    image: json["image"],
-    id: json["id"],
-    name: json["name"],
-    description: json["description"],
-  );
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+      image: json['image'],
+      id: json['id'],
+      name: json['name'],
+      description: json['description'],
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-    "image": image,
-    "id": id,
-    "name": name,
-    "description": description,
-  };
+  Map<String, dynamic> toJson() {
+    return {
+      'image': image,
+      'id': id,
+      'name': name,
+      'description': description,
+    };
+  }
 }
-

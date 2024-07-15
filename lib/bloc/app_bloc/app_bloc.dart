@@ -57,7 +57,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           profileResponse.statusCode == 201) {
         CustomerProfile customerProfile =
             CustomerProfile.fromJson(json.decode(profileResponse.body)['data']);
-        TransactionHistoryModel transactionHistoryModel = TransactionHistoryModel.fromJson(
+       TransactionHistoryModel transactionHistoryModel = TransactionHistoryModel.fromJson(
             json.decode(userTransactionList.body));
         updateData(customerProfile,transactionHistoryModel);
         emit(SuccessState(customerProfile,transactionHistoryModel)); // Emit success state with data
@@ -74,7 +74,9 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
   void updateData(CustomerProfile _customerProfile,TransactionHistoryModel _transactionHistoryModel) {
     customerProfile = _customerProfile;
+    //print(customerProfile.customerAccount);
     transactionHistoryModel = _transactionHistoryModel;
+    //print(tr)
     emit(SuccessState(customerProfile!,_transactionHistoryModel));
   }
 
