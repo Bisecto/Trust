@@ -140,7 +140,7 @@ class Order {
 }
 
 class RequiredFields {
-  final String phoneNumber;
+  final String? phoneNumber;
   final int amount;
   final String? cardNumber;
   final String? meterNumber;

@@ -136,7 +136,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
           SizedBox(height: 12),
           buildDetailRow(
               'To',
-              widget.transaction.order?.requiredFields.phoneNumber ??
+              widget.transaction.order?.requiredFields.meterNumber ??widget.transaction.order?.requiredFields.cardNumber??widget.transaction.order?.requiredFields.phoneNumber??
                   '',
               true),
           SizedBox(height: 12),

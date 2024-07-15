@@ -1096,7 +1096,7 @@ class _HomePageState extends State<HomePage> {
                                     transactionHistory.data.items[index];
                                 final order = transaction.order;
 
-                                return GestureDetector(
+                                return InkWell(
                                   onTap: () {
                                     print(transaction);
                                     AppNavigator.pushAndStackPage(
@@ -1151,7 +1151,11 @@ class _HomePageState extends State<HomePage> {
                                                   child: Container(
                                                     width: order?.requiredFields
                                                                 .phoneNumber !=
-                                                            null
+                                                            null||order
+                                                        ?.requiredFields
+                                                        .meterNumber!=null||order
+                                                        ?.requiredFields
+                                                        .cardNumber!=null
                                                         ? 70
                                                         : 0,
                                                     decoration: BoxDecoration(
