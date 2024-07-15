@@ -32,6 +32,7 @@ import 'package:teller_trust/view/widgets/purchase_receipt.dart';
 
 import '../../bloc/app_bloc/app_bloc.dart';
 import '../../model/category_model.dart';
+import '../../model/customer_account_model.dart';
 import '../../model/user.dart';
 import '../../res/app_images.dart';
 import '../../utills/custom_theme.dart';
@@ -352,63 +353,79 @@ class _HomePageState extends State<HomePage> {
         const SizedBox(
           height: 20,
         ),
-        GestureDetector(
-          onTap: () {
-            AppNavigator.pushAndStackPage(context,
-                page: BlocProvider.value(
-                    value: context.read<AppBloc>(), child: const KYCIntro()));
-          },
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 10.0),
-            child: Container(
-                height: 40,
-                decoration: BoxDecoration(
-                    color: const Color(0xFFFFF3D5),
-                    border: Border.all(color: const Color(0xFFFFBE62)),
-                    // AppColors.lightOrange),
-                    borderRadius: BorderRadius.circular(10)),
-                child: Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          SvgPicture.asset(AppIcons.info),
-                          const SizedBox(
-                            width: 5,
+        BlocBuilder<AppBloc, AppState>(
+          builder: (context, state) {
+            if (state is SuccessState) {
+              CustomerAccountModel? customerAccount =
+                  state.customerProfile.customerAccount;
+              //print(customerAccount!.id);
+              if (customerAccount !=null) {
+                return SizedBox();
+              } else {
+                return GestureDetector(
+                  onTap: () {
+                    AppNavigator.pushAndStackPage(context,
+                        page: BlocProvider.value(
+                            value: context.read<AppBloc>(),
+                            child: const KYCIntro()));
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Container(
+                        height: 40,
+                        decoration: BoxDecoration(
+                            color: const Color(0xFFFFF3D5),
+                            border: Border.all(color: const Color(0xFFFFBE62)),
+                            // AppColors.lightOrange),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  SvgPicture.asset(AppIcons.info),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  const CustomText(
+                                    text: "Incomplete KYC",
+                                    weight: FontWeight.bold,
+                                    maxLines: 3,
+                                    size: 12,
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  const CustomText(
+                                    text: "Learn more",
+                                    weight: FontWeight.bold,
+                                    maxLines: 3,
+                                    size: 12,
+                                  ),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  SvgPicture.asset(AppIcons.arrowSlant),
+                                  // Icon(
+                                  //   Icons.arrow_upward,
+                                  //   color: AppColors.orange,
+                                  // ),
+                                ],
+                              )
+                            ],
                           ),
-                          const CustomText(
-                            text: "Incomplete KYC",
-                            weight: FontWeight.bold,
-                            maxLines: 3,
-                            size: 12,
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const CustomText(
-                            text: "Learn more",
-                            weight: FontWeight.bold,
-                            maxLines: 3,
-                            size: 12,
-                          ),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          SvgPicture.asset(AppIcons.arrowSlant),
-                          // Icon(
-                          //   Icons.arrow_upward,
-                          //   color: AppColors.orange,
-                          // ),
-                        ],
-                      )
-                    ],
+                        )),
                   ),
-                )),
-          ),
+                );
+              }
+            } else {
+              return SizedBox();
+            }
+          },
         ),
 
         balanceCardContainer(theme),
@@ -742,23 +759,55 @@ class _HomePageState extends State<HomePage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      GestureDetector(
-                          onTap: () {
-                            modalSheet.showMaterialModalBottomSheet(
-                              backgroundColor: Colors.transparent,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(30.0)),
-                              ),
-                              context: context,
-                              builder: (context) => const Padding(
-                                padding: EdgeInsets.only(top: 100.0),
-                                child: AddFunds(),
-                              ),
-                            );
-                          },
-                          child: childBalanceCardContainer(
-                              AppIcons.add, "Add Funds")),
+                      BlocBuilder<AppBloc, AppState>(
+                        builder: (context, state) {
+                          if (state is SuccessState) {
+                            CustomerAccountModel? customerAccount =
+                                state.customerProfile.customerAccount;
+                            //print(customerAccount!.id);
+                            if (customerAccount ==null) {
+                              return GestureDetector(
+                                  onTap: () {
+                                    showToast(
+                                        context: context,
+                                        title: 'Info',
+                                        subtitle:
+                                        'Oops! It looks like you have not done your KYC yet.',
+                                        type: ToastMessageType.info);
+                                  },
+                                  child: childBalanceCardContainer(
+                                      AppIcons.add, "Add Funds"));
+                            } else {
+                              return GestureDetector(
+                                  onTap: () {
+                                    modalSheet.showMaterialModalBottomSheet(
+                                      backgroundColor: Colors.transparent,
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.vertical(
+                                            top: Radius.circular(30.0)),
+                                      ),
+                                      context: context,
+                                      builder: (context) =>  Padding(
+                                        padding: EdgeInsets.only(top: 100.0),
+                                        child: AddFunds(customerAccountModel: customerAccount,),
+                                      ),
+                                    );
+                                  },
+                                  child: childBalanceCardContainer(
+                                      AppIcons.add, "Add Funds"));
+                            }
+                          } else {
+                            return GestureDetector(
+                                onTap: () {
+
+                                },
+                                child: childBalanceCardContainer(
+                                    AppIcons.add, "Add Funds"));
+                          }
+                        },
+                      ),
+
+
                       GestureDetector(
                           onTap: () {
                             showToast(
@@ -1124,13 +1173,13 @@ class _HomePageState extends State<HomePage> {
                                                       child: CustomText(
                                                         text: order
                                                                 ?.requiredFields
-                                                                .phoneNumber ??
-                                                            order
-                                                                ?.requiredFields
                                                                 .meterNumber ??
                                                             order
                                                                 ?.requiredFields
                                                                 .cardNumber ??
+                                                            order
+                                                                ?.requiredFields
+                                                                .phoneNumber ??
                                                             transaction
                                                                 .description,
                                                         size: 10,

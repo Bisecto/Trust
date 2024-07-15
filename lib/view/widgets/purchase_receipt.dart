@@ -20,6 +20,7 @@ import 'package:teller_trust/utills/app_utils.dart';
 import 'package:teller_trust/view/widgets/show_toast.dart';
 
 import '../../res/app_colors.dart';
+import '../../utills/constants/loading_dialog.dart';
 import '../../utills/enums/toast_mesage.dart';
 import 'app_custom_text.dart';
 
@@ -61,7 +62,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                   SizedBox(height: 20),
                   buildReceiptDetails(),
                   SizedBox(height: 20),
-                  if(!isDownloadingPdf||!isSharingPdf)
+                  if(!isSharingPdf||!isSharingPdf)
 
                     buildActionButtons(widget.transaction.description),
                   SizedBox(height: 50),
@@ -83,7 +84,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              if(!isDownloadingPdf||!isSharingPdf)
+              if(!isSharingPdf||!isSharingPdf)
 
                 GestureDetector(
                 onTap: () {
@@ -180,7 +181,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
               ),
             ),
             if (isCopyable)
-              if(!isDownloadingPdf||!isSharingPdf)
+              if(!isSharingPdf||!isSharingPdf)
               GestureDetector(
                 onTap: () {
                   AppUtils().copyToClipboard(value, context);
@@ -239,23 +240,23 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
   Widget buildFooter() {
     return Column(
       children: [
-        if(!isDownloadingPdf||!isSharingPdf)
+        if(!isSharingPdf||!isSharingPdf)
         CustomText(
           text: 'Thank You!',
           textAlign: TextAlign.center,
           size: 14,
         ),
-        if(!isDownloadingPdf||!isSharingPdf)
+        if(!isSharingPdf||!isSharingPdf)
 
           CustomText(
           text: 'For Your Purchase',
           textAlign: TextAlign.center,
           size: 14,
         ),
-        if(!isDownloadingPdf||!isSharingPdf)
+        if(!isSharingPdf||!isSharingPdf)
 
           SizedBox(height: 20),
-        Row(
+          Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.lock, color: AppColors.green),
@@ -274,17 +275,23 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
     return DateFormat('_yyyyMMdd_kkmmss').format(DateTime.now());
   }
 
-  bool isDownloadingPdf = false;
   bool isSharingPdf = false;
+  //bool isSharingPdf = false;
   ScreenshotController screenshotController = ScreenshotController();
 
   //Create a new PDF document.
   PdfDocument? document = PdfDocument();
 
-  Future<void> pdfShare(BuildContext context, String title) async {
+  Future<void> pdfShare(BuildContext context, String title)
+  async {
     final plugin = DeviceInfoPlugin();
     final android = await plugin.androidInfo;
-
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (_) {
+          return const LoadingDialog('Preparing to share...');
+        });
     final storageStatus = android.version.sdkInt < 33
         ? await Permission.storage.request()
         : PermissionStatus.granted;
@@ -343,11 +350,14 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
             }
 
             setState(() {
+              Navigator.pop(context);
               isSharingPdf = false;
 
             });          }
         });
       } else {
+        Navigator.pop(context);
+
         setState(() {
           isSharingPdf = false;
 
@@ -358,6 +368,8 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
             type: ToastMessageType.error);
       }
     } else {
+      Navigator.pop(context);
+
       setState(() {
         isSharingPdf = false;
 
@@ -375,6 +387,12 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
       String title,
       ) async {
     try {
+      showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (_) {
+            return const LoadingDialog('Preparing to download...');
+          });
       final plugin = DeviceInfoPlugin();
       final android = await plugin.androidInfo;
 
@@ -383,7 +401,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
           : PermissionStatus.granted;
       if (storageStatus == PermissionStatus.granted) {
         setState(() {
-          isDownloadingPdf = true;
+          isSharingPdf = true;
 
         });
 
@@ -423,7 +441,8 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
               }
 
               setState(() {
-                isDownloadingPdf = false;
+                isSharingPdf = false;
+                Navigator.pop(context);
 
               });
               showToast(
@@ -435,7 +454,9 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
           });
         } else {
           setState(() {
-            isDownloadingPdf = false;
+            isSharingPdf = false;
+            Navigator.pop(context);
+
 
           });
           showToast(
@@ -446,7 +467,9 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
         }
       } else {
         setState(() {
-          isDownloadingPdf = false;
+          isSharingPdf = false;
+          Navigator.pop(context);
+
 
         });        showToast(
             context: context,
@@ -456,7 +479,9 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
       }
     } catch (e) {
       setState(() {
-        isDownloadingPdf = false;
+        isSharingPdf = false;
+        Navigator.pop(context);
+
 
       });      print(e.toString());
       showToast(

@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
+import '../../../model/customer_account_model.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/app_icons.dart';
 import '../../../utills/app_utils.dart';
@@ -10,7 +11,8 @@ import '../../../utills/custom_theme.dart';
 import '../../widgets/app_custom_text.dart';
 
 class AddFunds extends StatefulWidget {
-  const AddFunds({super.key});
+  CustomerAccountModel? customerAccountModel;
+   AddFunds({super.key,required this.customerAccountModel});
 
   @override
   State<AddFunds> createState() => _AddFundsState();
@@ -127,9 +129,9 @@ class _AddFundsState extends State<AddFunds> {
                   ),
                 ),
 
-                infoContainer("Account Name", "Tella Trust/Ayodele Ajiri",theme),
-                infoContainer("Account Number", "3054339045",theme),
-                infoContainer("Bank Name", "Wema Bank",theme)
+                infoContainer("Account Name", widget.customerAccountModel!.dvaAccountName,theme),
+                infoContainer("Account Number", widget.customerAccountModel!.nuban,theme),
+                infoContainer("Bank Name", widget.customerAccountModel!.dvaBankName,theme)
               ],
             ),
           ),
