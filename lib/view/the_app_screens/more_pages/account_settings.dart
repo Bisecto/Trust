@@ -73,7 +73,7 @@ class _AccountSettingState extends State<AccountSetting> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    GestureDetector(
+                    InkWell(
                       onTap: () {
                         AppNavigator.pushAndStackNamed(context, name: AppRouter.profileDetailsPage);
                         // AppNavigator.pushAndStackPage(context,
@@ -83,7 +83,7 @@ class _AccountSettingState extends State<AccountSetting> {
                           title: "Profile Details",
                           description: "Account name, email, phone"),
                     ),
-                    // GestureDetector(
+                    // InkWell(
                     //   onTap: () {
                     //     AppNavigator.pushAndStackPage(context,
                     //         page: const WithdrawalAccount());
@@ -92,7 +92,7 @@ class _AccountSettingState extends State<AccountSetting> {
                     //       title: "Withdrawal Account",
                     //       description: "View/Add Withdrawal account"),
                     // ),
-                    GestureDetector(
+                    InkWell(
                       onTap: () {
                         AppNavigator.pushAndStackPage(context,
                             page: const KYCIntro());
@@ -100,7 +100,7 @@ class _AccountSettingState extends State<AccountSetting> {
                       child: const CustomContainerFirTitleDesc(
                           title: "KYC", description: "Identification document"),
                     ),
-                    GestureDetector(
+                    InkWell(
                       onTap: () {
                         AppNavigator.pushAndStackPage(context,
                             page: const ChangePassword());
@@ -109,7 +109,7 @@ class _AccountSettingState extends State<AccountSetting> {
                           title: "Change Password",
                           description: "Secure access to your account"),
                     ),
-                    GestureDetector(
+                    InkWell(
                       onTap: () {
                         AppNavigator.pushAndStackPage(context,
                             page: const OldPin());

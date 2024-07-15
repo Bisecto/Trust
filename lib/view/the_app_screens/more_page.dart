@@ -194,7 +194,7 @@ class _MorePageState extends State<MorePage> {
                 SizedBox(
                   height: 10,
                 ),
-                GestureDetector(
+                InkWell(
                     onTap: () {
                       AppNavigator.pushAndStackPage(context,
                           page: AccountSetting());
@@ -202,13 +202,13 @@ class _MorePageState extends State<MorePage> {
                     child: itemContainer(
                         AppIcons.accounsetting, 'Account Setting', theme)),
                 // SvgPicture.asset(AppIcons.accounsetting)),
-                GestureDetector(
+                InkWell(
                     onTap: () {
                       AppNavigator.pushAndStackPage(context, page: Security());
                     },
                     child: itemContainer(AppIcons.security, 'Security', theme)),
                 itemContainer(AppIcons.statement, 'Statement', theme),
-                GestureDetector(
+                InkWell(
                     onTap: () {
                       AppNavigator.pushAndStackPage(context,
                           page: NotificationSetting());
@@ -219,12 +219,12 @@ class _MorePageState extends State<MorePage> {
                   padding: const EdgeInsets.all(20.0),
                   child: Divider(),
                 ),
-                GestureDetector(
+                InkWell(
                     onTap: () {
                       AppNavigator.pushAndStackPage(context, page: GetHelp());
                     },
                     child: itemContainer(AppIcons.getHelp, 'Get Help', theme)),
-                GestureDetector(
+                InkWell(
                     onTap: () {
                       AppNavigator.pushAndStackPage(context, page: Legal());
                     },
@@ -235,7 +235,7 @@ class _MorePageState extends State<MorePage> {
                   padding: const EdgeInsets.all(20.0),
                   child: Divider(),
                 ),
-                GestureDetector(
+                InkWell(
                     onTap: () {
                       SharedPref.remove("password");
                       SharedPref.remove("email");
@@ -296,7 +296,7 @@ class _MorePageState extends State<MorePage> {
           PersonalInfo personalInfo = state.customerProfile.personalInfo;
           print(json.encode(state.customerProfile));
           // Use user data here
-          return GestureDetector(
+          return InkWell(
             onTap: () {
               print(json.encode(state.customerProfile));
             },

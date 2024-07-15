@@ -76,7 +76,7 @@ class _WithdrawalAccountState extends State<WithdrawalAccount> {
                         SizedBox(
                           height: 25,
                         ),
-                        GestureDetector(
+                        InkWell(
                           onTap: () {
                             modalSheet.showMaterialModalBottomSheet(
                               backgroundColor: Colors.transparent,
