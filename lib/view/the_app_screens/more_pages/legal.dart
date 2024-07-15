@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:easy_url_launcher/easy_url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -24,7 +27,6 @@ class _LegalState extends State<Legal> {
       isSwitched = value;
     });
   }
-
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
@@ -38,39 +40,52 @@ class _LegalState extends State<Legal> {
             mainColor: AppColors.lightOrange,
             subColor: AppColors.orange,
           ),
-          Padding(
-            padding: EdgeInsets.all(0.0),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: CustomContainerWithRightIcon(
-                    title: 'Terms & Conditions',
-                    //: SvgPicture.asset(AppIcons.person),
+          InkWell(
+            onTap: ()  async {
+              await EasyLauncher.url(url: "http://tellatrust.com/legal/terms-and-conditions");            },
+            child: Padding(
+              padding: EdgeInsets.all(0.0),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: CustomContainerWithRightIcon(
+                      title: 'Terms & Conditions',
+                      //: SvgPicture.asset(AppIcons.person),
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: CustomContainerWithRightIcon(
-                    title: 'Policies',
-                    //: SvgPicture.asset(AppIcons.person),
+                  InkWell(
+                    onTap: ()  async {
+                      await EasyLauncher.url(url: "http://tellatrust.com/legal/privacy-policy");            },
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: CustomContainerWithRightIcon(
+                        title: 'Policies',
+                        //: SvgPicture.asset(AppIcons.person),
+                      ),
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: CustomContainerWithRightIcon(
-                    title: 'Disclaimer',
-                    //: SvgPicture.asset(AppIcons.person),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: CustomContainerWithRightIcon(
+                      title: 'Disclaimer',
+                      //: SvgPicture.asset(AppIcons.person),
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: CustomContainerWithRightIcon(
-                    title: 'FAQs',
-                    //: SvgPicture.asset(AppIcons.person),
+                  InkWell(
+                    onTap: ()  async {
+                      await EasyLauncher.url(url: "http://tellatrust.com");            },
+
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: CustomContainerWithRightIcon(
+                        title: 'FAQs',
+                        //: SvgPicture.asset(AppIcons.person),
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           )
         ],
