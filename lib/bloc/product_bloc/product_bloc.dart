@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
+import 'package:teller_trust/model/electricity_verify_model.dart';
 import 'package:teller_trust/model/product_model.dart';
 
 import '../../model/category_model.dart';
@@ -231,8 +232,8 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       );
       print(entityNumberResponse.body);
       if (entityNumberResponse.statusCode == 200 || entityNumberResponse.statusCode == 201) {
-        // DataBillModel dataBillModel =
-        //     DataBillModel.fromJson(jsonDecode(response.body)['data']['rows']);
+        ElectricityVerifiedData electricityVerifiedData =
+        ElectricityVerifiedData.fromJson(json.decode(entityNumberResponse.body)['data']);
         // BillPaymentModel billPaymentModel = BillPaymentModel.fromJson(
         //     jsonDecode(response.body)['data']['data']);
 
@@ -241,7 +242,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         //     "No user found";
 
 
-        emit(EntityNumberSuccessState(json.decode(entityNumberResponse.body)['data']['name']));
+        emit(EntityNumberSuccessState(electricityVerifiedData));
       } else {
         emit(EntityNumberErrorState(
             AppUtils.convertString(json.decode(entityNumberResponse.body)['message'])));

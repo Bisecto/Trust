@@ -72,11 +72,11 @@ class ProductSuccessState extends ProductState {
 }
 
 class EntityNumberSuccessState extends ProductState {
-  final String name;
+  final ElectricityVerifiedData electricityVerifiedData;
 
   //final String msg;
 
-  EntityNumberSuccessState(this.name);
+  EntityNumberSuccessState(this.electricityVerifiedData);
 }
 class EntityNumberErrorState extends ProductState{
   final String error;
