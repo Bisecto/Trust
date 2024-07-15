@@ -547,9 +547,9 @@ class _HomePageState extends State<HomePage> {
       height: 155,
       child: CarouselSlider.builder(
         key: _sliderKey,
-        // unlimitedMode: true,
-        // autoSliderDelay: const Duration(seconds: 3),
-        // enableAutoSlider: true,
+        unlimitedMode: true,
+        autoSliderDelay: const Duration(seconds: 3),
+        enableAutoSlider: true,
         controller: carouselSliderController,
         // onSlideChanged: (index) {
         //   setState(() {
@@ -854,7 +854,7 @@ class _HomePageState extends State<HomePage> {
                         // Use user data here
                         return customerAccount == null
                             ? accountNumberContainer("***")
-                            : accountNumberContainer(" 8765564367");
+                            : accountNumberContainer(" ${customerAccount.nuban}");
                       } else {
                         return const SizedBox(); // Show loading indicator or handle error state
                       }

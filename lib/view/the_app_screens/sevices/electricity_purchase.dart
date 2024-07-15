@@ -1005,7 +1005,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                                       _selectedAmtController
                                                           .text;
                                                   widget.category.requiredFields
-                                                          .phoneNumber =
+                                                          .meterNumber =
                                                       _beneficiaryController
                                                           .text;
                                                 });
@@ -1015,7 +1015,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                                         context,
                                                         widget.category
                                                             .requiredFields,
-                                                        selectedElectricityProviderId,
+                                                        serviceID, //selectedElectricityProviderId,
                                                         transactionPin,
                                                         false));
                                               }

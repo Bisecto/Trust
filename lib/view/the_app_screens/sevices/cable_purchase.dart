@@ -735,7 +735,7 @@ class _CablePurchaseState extends State<CablePurchase> {
                                                       context,
                                                       widget.category
                                                           .requiredFields,
-                                                      serviceID,
+                                                      selectedCablePlanId,
                                                       transactionPin,
                                                       true));
                                             } else {
@@ -774,7 +774,7 @@ class _CablePurchaseState extends State<CablePurchase> {
                                                       _selectedAmtController
                                                           .text;
                                                   widget.category.requiredFields
-                                                      .phoneNumber =
+                                                      .cardNumber =
                                                       _beneficiaryController
                                                           .text;
                                                 });
@@ -784,7 +784,7 @@ class _CablePurchaseState extends State<CablePurchase> {
                                                         context,
                                                         widget.category
                                                             .requiredFields,
-                                                        selectedCableProviderId,
+                                                        selectedCablePlanId,
                                                         transactionPin,
                                                         false));
                                               }

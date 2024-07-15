@@ -141,6 +141,12 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
               true),
           SizedBox(height: 12),
           buildDetailRow('Description', widget.transaction.description),
+          if(widget.transaction.order!.response!.utilityToken!='')
+          SizedBox(height: 12),
+          if(widget.transaction.order!.response!.utilityToken.isNotEmpty)
+
+            buildDetailRow('Utility Token', widget.transaction.order!.response!.utilityToken,true),
+
           SizedBox(height: 12),
           buildDetailRow('Date', widget.transaction.createdAt.toString()),
           SizedBox(height: 20),

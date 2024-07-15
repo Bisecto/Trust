@@ -177,6 +177,7 @@ class Response {
   final String reference;
   final String status;
   final int amount;
+  final String utilityToken;
   final String id;
 
   Response({
@@ -185,6 +186,7 @@ class Response {
     required this.reference,
     required this.status,
     required this.amount,
+    required this.utilityToken,
     required this.id,
   });
 
@@ -195,6 +197,7 @@ class Response {
       reference: json['reference'],
       status: json['status'],
       amount: json['amount'],
+      utilityToken: json['utilityToken']??'',
       id: json['id'],
     );
   }
@@ -206,6 +209,7 @@ class Response {
       'reference': reference,
       'status': status,
       'amount': amount,
+      'utilityToken': utilityToken,
       'id': id,
     };
   }

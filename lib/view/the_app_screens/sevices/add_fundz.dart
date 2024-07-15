@@ -171,6 +171,7 @@ class _AddFundsState extends State<AddFunds> {
             GestureDetector(
               onTap: (){
                 AppUtils().copyToClipboard(detail,context);
+
                 Navigator.pop(context);
 
 
