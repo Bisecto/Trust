@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+import 'package:teller_trust/model/quick_pay_transaction_history.dart';
+import 'package:teller_trust/model/required_field_model.dart';
+
 class TransactionHistoryModel {
   String message;
   Data data;
@@ -81,6 +84,7 @@ class Transaction {
       status: json['status'],
       createdAt: DateTime.parse(json['createdAt']),
       order: json['order'] != null ? Order.fromJson(json['order']) : null,
+
     );
   }
 
@@ -100,11 +104,11 @@ class Transaction {
 
 class Order {
   final String id;
-  final String status;
+  final String? status;
   final String? providerOrderId;
   final RequiredFields requiredFields;
   final Response? response;
-  final Product product;
+  final Product? product;
 
   Order({
     required this.id,
@@ -123,7 +127,7 @@ class Order {
       requiredFields: RequiredFields.fromJson(json['requiredFields']),
       response:
       json['response'] != null ? Response.fromJson(json['response']) : null,
-      product: Product.fromJson(json['product']),
+      product: json['product'] != null ?Product.fromJson(json['product']):null,
     );
   }
 
@@ -134,42 +138,11 @@ class Order {
       'providerOrderId': providerOrderId,
       'requiredFields': requiredFields.toJson(),
       'response': response?.toJson(),
-      'product': product.toJson(),
+      'product': product?.toJson(),
     };
   }
 }
 
-class RequiredFields {
-  final String? phoneNumber;
-  final int amount;
-  final String? cardNumber;
-  final String? meterNumber;
-
-  RequiredFields({
-    required this.phoneNumber,
-    required this.amount,
-    this.cardNumber,
-    this.meterNumber,
-  });
-
-  factory RequiredFields.fromJson(Map<String, dynamic> json) {
-    return RequiredFields(
-      phoneNumber: json['phoneNumber'],
-      amount: json['amount'],
-      cardNumber: json['cardNumber'],
-      meterNumber: json['meterNumber'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'phoneNumber': phoneNumber,
-      'amount': amount,
-      'cardNumber': cardNumber,
-      'meterNumber': meterNumber,
-    };
-  }
-}
 
 class Response {
   final String clientId;

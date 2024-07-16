@@ -87,11 +87,11 @@ class _SignInScreenState extends State<SignInScreen> {
                     title: 'Successful',
                     subtitle: state.msg,
                     type: ToastMessageType.success);
-                Future.delayed(const Duration(seconds: 3), () {
-                  Navigator.pop(context);
-                  // setState(() {
-                  // });
-                });
+                // Future.delayed(const Duration(seconds: 3), () {
+                //   Navigator.pop(context);
+                //   // setState(() {
+                //   // });
+                // });
               } else {
                 // MSG.snackBar(context, "Logged in. You have not created an access PIN");
 

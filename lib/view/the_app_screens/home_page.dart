@@ -359,7 +359,7 @@ class _HomePageState extends State<HomePage> {
               CustomerAccountModel? customerAccount =
                   state.customerProfile.customerAccount;
               //print(customerAccount!.id);
-              if (customerAccount !=null) {
+              if (customerAccount != null) {
                 return SizedBox();
               } else {
                 return GestureDetector(
@@ -765,14 +765,14 @@ class _HomePageState extends State<HomePage> {
                             CustomerAccountModel? customerAccount =
                                 state.customerProfile.customerAccount;
                             //print(customerAccount!.id);
-                            if (customerAccount ==null) {
+                            if (customerAccount == null) {
                               return GestureDetector(
                                   onTap: () {
                                     showToast(
                                         context: context,
                                         title: 'Info',
                                         subtitle:
-                                        'Oops! It looks like you have not done your KYC yet.',
+                                            'Oops! It looks like you have not done your KYC yet.',
                                         type: ToastMessageType.info);
                                   },
                                   child: childBalanceCardContainer(
@@ -787,9 +787,11 @@ class _HomePageState extends State<HomePage> {
                                             top: Radius.circular(30.0)),
                                       ),
                                       context: context,
-                                      builder: (context) =>  Padding(
+                                      builder: (context) => Padding(
                                         padding: EdgeInsets.only(top: 100.0),
-                                        child: AddFunds(customerAccountModel: customerAccount,),
+                                        child: AddFunds(
+                                          customerAccountModel: customerAccount,
+                                        ),
                                       ),
                                     );
                                   },
@@ -798,16 +800,12 @@ class _HomePageState extends State<HomePage> {
                             }
                           } else {
                             return GestureDetector(
-                                onTap: () {
-
-                                },
+                                onTap: () {},
                                 child: childBalanceCardContainer(
                                     AppIcons.add, "Add Funds"));
                           }
                         },
                       ),
-
-
                       GestureDetector(
                           onTap: () {
                             showToast(
@@ -854,7 +852,8 @@ class _HomePageState extends State<HomePage> {
                         // Use user data here
                         return customerAccount == null
                             ? accountNumberContainer("***")
-                            : accountNumberContainer(" ${customerAccount.nuban}");
+                            : accountNumberContainer(
+                                " ${customerAccount.nuban}");
                       } else {
                         return const SizedBox(); // Show loading indicator or handle error state
                       }
@@ -1112,7 +1111,8 @@ class _HomePageState extends State<HomePage> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         CustomText(
-                                          text: order?.product.name ??
+                                          text: transaction
+                                                  .order?.product?.name ??
                                               (transaction.type
                                                       .toLowerCase()
                                                       .contains('credit')
@@ -1131,12 +1131,18 @@ class _HomePageState extends State<HomePage> {
                                             Row(
                                               children: [
                                                 CircleAvatar(
-                                                  backgroundImage: NetworkImage(
-                                                      order?.product.image ??
-                                                          ''),
-                                                  child: transaction.type
-                                                          .toLowerCase()
-                                                          .contains('credit')
+                                                  backgroundImage: order
+                                                              ?.product !=
+                                                          null
+                                                      ? NetworkImage(
+                                                          order!.product!.image)
+                                                      : null,
+                                                  child: order?.product ==
+                                                              null &&
+                                                          transaction.type
+                                                              .toLowerCase()
+                                                              .contains(
+                                                                  'credit')
                                                       ? Icon(
                                                           Icons.arrow_downward,
                                                           color:
@@ -1149,13 +1155,16 @@ class _HomePageState extends State<HomePage> {
                                                   padding:
                                                       const EdgeInsets.all(8.0),
                                                   child: Container(
-                                                    width: order?.requiredFields
-                                                                .phoneNumber !=
-                                                            null||order
-                                                        ?.requiredFields
-                                                        .meterNumber!=null||order
-                                                        ?.requiredFields
-                                                        .cardNumber!=null
+                                                    width: order
+                                                                    ?.requiredFields
+                                                                    .phoneNumber !=
+                                                                null ||
+                                                            order?.requiredFields
+                                                                    .meterNumber !=
+                                                                null ||
+                                                            order?.requiredFields
+                                                                    .cardNumber !=
+                                                                null
                                                         ? 70
                                                         : 0,
                                                     decoration: BoxDecoration(
@@ -1185,7 +1194,7 @@ class _HomePageState extends State<HomePage> {
                                                                 ?.requiredFields
                                                                 .phoneNumber ??
                                                             transaction
-                                                                .description,
+                                                                .type,
                                                         size: 10,
                                                         color: theme.isDark
                                                             ? AppColors
@@ -1241,7 +1250,7 @@ class _HomePageState extends State<HomePage> {
                                                       "success"
                                                   ? "SUCCESSFUL"
                                                   : transaction.status
-                                                      .toLowerCase(),
+                                                      .toUpperCase(),
                                               color: transaction.status
                                                           .toLowerCase() ==
                                                       'success'

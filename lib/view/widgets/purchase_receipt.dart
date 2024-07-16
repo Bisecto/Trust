@@ -25,7 +25,7 @@ import '../../utills/enums/toast_mesage.dart';
 import 'app_custom_text.dart';
 
 class TransactionReceipt extends StatefulWidget {
-  Transaction transaction;
+  final Transaction transaction;
 
   TransactionReceipt({super.key, required this.transaction});
 
@@ -34,6 +34,10 @@ class TransactionReceipt extends StatefulWidget {
 }
 
 class _TransactionReceiptState extends State<TransactionReceipt> {
+  bool isSharingPdf = false;
+  ScreenshotController screenshotController = ScreenshotController();
+  PdfDocument? document = PdfDocument();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,8 +66,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                   SizedBox(height: 20),
                   buildReceiptDetails(),
                   SizedBox(height: 20),
-                  if(!isSharingPdf||!isSharingPdf)
-
+                  if (!isSharingPdf)
                     buildActionButtons(widget.transaction.description),
                   SizedBox(height: 50),
                   buildFooter(),
@@ -84,28 +87,27 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              if(!isSharingPdf||!isSharingPdf)
-
+              if (!isSharingPdf)
                 GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Container(
-                  height: 30,
-                  width: 30,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: AppColors.textColor2, width: 2),
-                  ),
-                  child: Center(
-                    child: CustomText(
-                      text: "x",
-                      weight: FontWeight.bold,
-                      color: AppColors.textColor2,
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    height: 30,
+                    width: 30,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: AppColors.textColor2, width: 2),
+                    ),
+                    child: Center(
+                      child: CustomText(
+                        text: "x",
+                        weight: FontWeight.bold,
+                        color: AppColors.textColor2,
+                      ),
                     ),
                   ),
-                ),
-              )
+                )
             ],
           ),
           SvgPicture.asset(AppIcons.logoReceipt),
@@ -126,33 +128,41 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          buildDetailRow('Product Name',
-              widget.transaction.order?.product.name ?? (widget.transaction.type
-                  .toLowerCase()
-                  .contains('credit')
-                  ? 'Credit'
-                  : 'Debit')),
+          buildDetailRow(
+            'Product Name',
+            widget.transaction.order?.product?.name ??
+                (widget.transaction.type.toLowerCase().contains('credit')
+                    ? 'Credit'
+                    : 'Debit'),
+          ),
           buildDetailRow('Amount', 'N${widget.transaction.amount}'),
           SizedBox(height: 12),
           buildDetailRow(
               'To',
-              widget.transaction.order?.requiredFields.meterNumber ??widget.transaction.order?.requiredFields.cardNumber??widget.transaction.order?.requiredFields.phoneNumber??
+              widget.transaction.order?.requiredFields.meterNumber ??
+                  widget.transaction.order?.requiredFields.cardNumber ??
+                  widget.transaction.order?.requiredFields.phoneNumber ??
                   '',
               true),
           SizedBox(height: 12),
           buildDetailRow('Description', widget.transaction.description),
-          if(widget.transaction.order!.response!.utilityToken!='')
-          SizedBox(height: 12),
-          if(widget.transaction.order!.response!.utilityToken.isNotEmpty)
-
-            buildDetailRow('Utility Token', widget.transaction.order!.response!.utilityToken,true),
-
+          if (widget.transaction.order?.response?.utilityToken != null &&
+              widget.transaction.order!.response!.utilityToken!.isNotEmpty &&
+              widget.transaction.status.toLowerCase() == 'success')
+            ...[
+              SizedBox(height: 12),
+              buildDetailRow(
+                'Utility Token',
+                widget.transaction.order!.response!.utilityToken!,
+                true,
+              ),
+            ],
           SizedBox(height: 12),
           buildDetailRow('Date', widget.transaction.createdAt.toString()),
           SizedBox(height: 20),
           Divider(),
           SizedBox(height: 12),
-          buildDetailRow('Transaction Reference', widget.transaction.reference,true),
+          buildDetailRow('Transaction Reference', widget.transaction.reference, true),
           SizedBox(height: 12),
           buildDetailRow('Status', widget.transaction.status.toUpperCase()),
           SizedBox(height: 20),
@@ -187,31 +197,35 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
               ),
             ),
             if (isCopyable)
-              if(!isSharingPdf||!isSharingPdf)
-              GestureDetector(
-                onTap: () {
-                  AppUtils().copyToClipboard(value, context);
-                },
-                child: SvgPicture.asset(AppIcons.copy2),
-              ),
+              if (!isSharingPdf)
+                GestureDetector(
+                  onTap: () {
+                    AppUtils().copyToClipboard(value, context);
+                  },
+                  child: SvgPicture.asset(AppIcons.copy2),
+                ),
           ],
         ),
       ],
     );
   }
 
-  Widget buildActionButtons(title) {
+  Widget buildActionButtons(String title) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         GestureDetector(
-          onTap: (){
+          onTap: () {
             pdfShare(context, title);
           },
-            child: buildActionButton('Share', AppIcons.send, pdfShare)),
-        GestureDetector( onTap: (){
-          pdfDownload(context, title);
-        },child: buildActionButton('Download', AppIcons.download, pdfDownload)),
+          child: buildActionButton('Share', AppIcons.send, pdfShare),
+        ),
+        GestureDetector(
+          onTap: () {
+            pdfDownload(context, title);
+          },
+          child: buildActionButton('Download', AppIcons.download, pdfDownload),
+        ),
         buildActionButton('Repeat', AppIcons.reload, () {}),
         buildActionButton('Report', AppIcons.infoOutlined, () {}),
       ],
@@ -246,58 +260,46 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
   Widget buildFooter() {
     return Column(
       children: [
-        if(!isSharingPdf||!isSharingPdf)
-        CustomText(
-          text: 'Thank You!',
-          textAlign: TextAlign.center,
-          size: 14,
-        ),
-        if(!isSharingPdf||!isSharingPdf)
-
+        if (!isSharingPdf) ...[
           CustomText(
-          text: 'For Your Purchase',
-          textAlign: TextAlign.center,
-          size: 14,
-        ),
-        if(!isSharingPdf||!isSharingPdf)
-
+            text: 'Thank You!',
+            textAlign: TextAlign.center,
+            size: 14,
+          ),
+          CustomText(
+            text: 'For Your Purchase',
+            textAlign: TextAlign.center,
+            size: 14,
+          ),
           SizedBox(height: 20),
           Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.lock, color: AppColors.green),
-            CustomText(
-              text: 'Secured by TellaTrust',
-              textAlign: TextAlign.center,
-              size: 14,
-            ),
-          ],
-        ),
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.lock, color: AppColors.green),
+              CustomText(
+                text: 'Secured by TellaTrust',
+                textAlign: TextAlign.center,
+                size: 14,
+              ),
+            ],
+          ),
+        ],
       ],
     );
   }
 
-  getCurrentDate() {
+  String getCurrentDate() {
     return DateFormat('_yyyyMMdd_kkmmss').format(DateTime.now());
   }
 
-  bool isSharingPdf = false;
-  //bool isSharingPdf = false;
-  ScreenshotController screenshotController = ScreenshotController();
-
-  //Create a new PDF document.
-  PdfDocument? document = PdfDocument();
-
-  Future<void> pdfShare(BuildContext context, String title)
-  async {
+  Future<void> pdfShare(BuildContext context, String title) async {
     final plugin = DeviceInfoPlugin();
     final android = await plugin.androidInfo;
     showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (_) {
-          return const LoadingDialog('Preparing to share...');
-        });
+      barrierDismissible: false,
+      context: context,
+      builder: (_) => const LoadingDialog('Preparing to share...'),
+    );
     final storageStatus = android.version.sdkInt < 33
         ? await Permission.storage.request()
         : PermissionStatus.granted;
@@ -305,18 +307,15 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
     if (storageStatus == PermissionStatus.granted) {
       setState(() {
         isSharingPdf = true;
+      });
 
-      });      var freeSpace = await DiskSpace.getFreeDiskSpace;
+      var freeSpace = await DiskSpace.getFreeDiskSpace;
       if (freeSpace != null && freeSpace > 10.00) {
-        await screenshotController
-            .capture(delay: const Duration(milliseconds: 5))
-            .then((Uint8List? image) async {
+        await screenshotController.capture(delay: const Duration(milliseconds: 5)).then((Uint8List? image) async {
           if (image != null) {
-            var path = await ExternalPath.getExternalStoragePublicDirectory(
-                ExternalPath.DIRECTORY_DOWNLOADS);
+            var path = await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_DOWNLOADS);
 
-            final imagePath =
-            await File('$path/${title + getCurrentDate()}.png').create();
+            final imagePath = await File('$path/${title + getCurrentDate()}.png').create();
             await imagePath.writeAsBytes(image);
 
             final Uint8List imageData = File(imagePath.path).readAsBytesSync();
@@ -324,11 +323,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
 
             final PdfDocument document = PdfDocument();
             final PdfPage page = document.pages.add();
-
-            // Get the page size
             final Size pageSize = page.getClientSize();
-
-            // Draw the image to fill the whole page
             page.graphics.drawImage(pdfBitmap, Rect.fromLTWH(0, 0, pageSize.width, pageSize.height));
 
             var pdfPath = '$path/${title + getCurrentDate()}.pdf';
@@ -338,67 +333,54 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
             final targetFile = File(imagePath.path);
             if (targetFile.existsSync()) {
               targetFile.deleteSync(recursive: true);
-              print('Image file deleted.');
             }
 
-            await Future.delayed(Duration.zero);
-
-            await Share.shareXFiles([
-              XFile(pdfPath,
-                  mimeType: 'application/pdf',
-                  name: '${title + getCurrentDate()}.pdf')
-            ]);
+            await Share.shareXFiles([XFile(pdfPath, mimeType: 'application/pdf', name: '${title + getCurrentDate()}.pdf')]);
 
             final targetFile2 = File(pdfPath);
             if (targetFile2.existsSync()) {
               targetFile2.deleteSync(recursive: true);
-              print('PDF file deleted.');
             }
 
             setState(() {
               Navigator.pop(context);
               isSharingPdf = false;
-
-            });          }
+            });
+          }
         });
       } else {
         Navigator.pop(context);
-
         setState(() {
           isSharingPdf = false;
-
-        });        showToast(
-            context: context,
-            title: 'Error occurred',
-            subtitle: 'Inadequate space on disk',
-            type: ToastMessageType.error);
+        });
+        showToast(
+          context: context,
+          title: 'Error occurred',
+          subtitle: 'Inadequate space on disk',
+          type: ToastMessageType.error,
+        );
       }
     } else {
       Navigator.pop(context);
-
       setState(() {
         isSharingPdf = false;
-
       });
       showToast(
-          context: context,
-          title: "Permission required",
-          subtitle: 'Permission was denied',
-          type: ToastMessageType.info);
+        context: context,
+        title: "Permission required",
+        subtitle: 'Permission was denied',
+        type: ToastMessageType.info,
+      );
     }
   }
 
-  Future<void> pdfDownload(
-      BuildContext context,
-      String title,
-      ) async {
+  Future<void> pdfDownload(BuildContext context, String title) async {
     try {
       showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (_) {
-            return const LoadingDialog('Preparing to download...');
-          });
+        barrierDismissible: false,
+        context: context,
+        builder: (_) => const LoadingDialog('Preparing to download...'),
+      );
       final plugin = DeviceInfoPlugin();
       final android = await plugin.androidInfo;
 
@@ -408,20 +390,15 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
       if (storageStatus == PermissionStatus.granted) {
         setState(() {
           isSharingPdf = true;
-
         });
 
         var freeSpace = await DiskSpace.getFreeDiskSpace;
         if (freeSpace != null && freeSpace > 10.00) {
-          await screenshotController
-              .capture(delay: const Duration(milliseconds: 5))
-              .then((Uint8List? image) async {
+          await screenshotController.capture(delay: const Duration(milliseconds: 5)).then((Uint8List? image) async {
             if (image != null) {
-              var path = await ExternalPath.getExternalStoragePublicDirectory(
-                  ExternalPath.DIRECTORY_DOWNLOADS);
+              var path = await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_DOWNLOADS);
 
-              final imagePath =
-              await File('$path/${title + getCurrentDate()}.png').create();
+              final imagePath = await File('$path/${title + getCurrentDate()}.png').create();
               await imagePath.writeAsBytes(image);
 
               final Uint8List imageData = File(imagePath.path).readAsBytesSync();
@@ -429,11 +406,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
 
               final PdfDocument document = PdfDocument();
               final PdfPage page = document.pages.add();
-
-              // Get the page size
               final Size pageSize = page.getClientSize();
-
-              // Draw the image to fill the whole page
               page.graphics.drawImage(pdfBitmap, Rect.fromLTWH(0, 0, pageSize.width, pageSize.height));
 
               var pdfPath = '$path/${title + getCurrentDate()}.pdf';
@@ -443,59 +416,55 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
               final targetFile = File(imagePath.path);
               if (targetFile.existsSync()) {
                 targetFile.deleteSync(recursive: true);
-                print('Image file deleted.');
               }
 
               setState(() {
                 isSharingPdf = false;
                 Navigator.pop(context);
-
               });
               showToast(
-                  context: context,
-                  title: 'Download Successful',
-                  subtitle: 'View PDF in downloads',
-                  type: ToastMessageType.success);
+                context: context,
+                title: 'Download Successful',
+                subtitle: 'View PDF in downloads',
+                type: ToastMessageType.success,
+              );
             }
           });
         } else {
           setState(() {
             isSharingPdf = false;
             Navigator.pop(context);
-
-
           });
           showToast(
-              context: context,
-              title: 'Error occurred',
-              subtitle: 'Inadequate space on disk',
-              type: ToastMessageType.error);
+            context: context,
+            title: 'Error occurred',
+            subtitle: 'Inadequate space on disk',
+            type: ToastMessageType.error,
+          );
         }
       } else {
         setState(() {
           isSharingPdf = false;
           Navigator.pop(context);
-
-
-        });        showToast(
-            context: context,
-            title: "Permission required",
-            subtitle: 'Permission was denied',
-            type: ToastMessageType.info);
+        });
+        showToast(
+          context: context,
+          title: "Permission required",
+          subtitle: 'Permission was denied',
+          type: ToastMessageType.info,
+        );
       }
     } catch (e) {
       setState(() {
         isSharingPdf = false;
         Navigator.pop(context);
-
-
-      });      print(e.toString());
+      });
       showToast(
-          context: context,
-          title: 'Error occurred',
-          subtitle: 'An unexpected error has occurred, try again later',
-          type: ToastMessageType.error);
+        context: context,
+        title: 'Error occurred',
+        subtitle: 'An unexpected error has occurred, try again later',
+        type: ToastMessageType.error,
+      );
     }
   }
-
 }

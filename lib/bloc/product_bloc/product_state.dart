@@ -39,6 +39,8 @@ class EntityNumberLoadingState extends ProductState {}
 
 
 class PurchaseSuccess extends ProductState {
+  Transaction transaction;
+  PurchaseSuccess(this.transaction);
 }
 
 class QuickPayInitiated extends ProductState {
@@ -65,6 +67,7 @@ class ProductLoadingState extends ProductState {
 
 class ProductSuccessState extends ProductState {
   final ProductModel productModel;
+
 
   //final String msg;
 

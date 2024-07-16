@@ -7,9 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:teller_trust/model/electricity_verify_model.dart';
 import 'package:teller_trust/model/product_model.dart';
+import 'package:teller_trust/model/transactionHistory.dart';
 
 import '../../model/category_model.dart';
+import '../../model/product_model.dart';
+import '../../model/quick_pay_transaction_history.dart';
 import '../../model/quickpay_model.dart';
+import '../../model/required_field_model.dart';
 import '../../model/service_model.dart';
 import '../../repository/app_repository.dart';
 import '../../res/apis.dart';
@@ -56,8 +60,15 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     print(json.decode(listProductResponse.body));
     if (listProductResponse.statusCode == 200 ||
         listProductResponse.statusCode == 201) {
+      print(json.decode(listProductResponse.body)['data']['items'][0]);
+      print(json.decode(listProductResponse.body)['data']['items'][1]);
+      print(json.decode(listProductResponse.body)['data']['items'][2]);
+      print(json.decode(listProductResponse.body)['data']['items'][3]);
+      print(json.decode(listProductResponse.body)['data']['items'][4]);
+      print(json.decode(listProductResponse.body)['data']['items'][5]);
       CategoryModel categoryModel =
           CategoryModel.fromJson(json.decode(listProductResponse.body));
+
       //updateData(customerProfile);
       print(categoryModel);
       emit(CategorySuccessState(categoryModel)); // Emit success state with data
@@ -126,7 +137,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
     AppRepository appRepository = AppRepository();
     String accessToken = await SharedPref.getString("access-token");
-    try {
+    //try {
       Map<String,dynamic> data={
         "productId":event.productId, //"660bbd40-35c5-42c7-83b6-63f55e179e7d",//event.productId,
         "requiredFields": event.requiredFields.toJson()
@@ -153,7 +164,8 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           QuickPayModel quickPayModel= QuickPayModel.fromJson(json.decode(purchaseResponse.body)['data']);
           emit(QuickPayInitiated(quickPayModel));
         }else{
-        emit(PurchaseSuccess());} // Emit success state with data
+          Transaction transaction=Transaction.fromJson(json.decode(purchaseResponse.body)['data']);
+        emit(PurchaseSuccess(transaction));} // Emit success state with data
       } else if (json.decode(purchaseResponse.body)['errorCode'] == "N404") {
         emit(AccessTokenExpireState());
       } else {
@@ -161,10 +173,10 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
             json.decode(purchaseResponse.body)['message'])));
         print(json.decode(purchaseResponse.body));
       }
-    } catch (e) {
-      emit(PurchaseErrorState("An error occurred while fetching categories."));
-      print(e);
-    }
+    // } catch (e) {
+    //   emit(PurchaseErrorState("An error occurred while fetching categories."));
+    //   print(e);
+    // }
   }
 
   FutureOr<void> fetchProduct(FetchProduct event, Emitter<ProductState> emit

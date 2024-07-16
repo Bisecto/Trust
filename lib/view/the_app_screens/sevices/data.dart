@@ -28,6 +28,7 @@ import '../../widgets/form_button.dart';
 import '../../widgets/form_input.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
+import '../../widgets/purchase_receipt.dart';
 import '../../widgets/show_toast.dart';
 import 'build_payment_method.dart';
 import 'make_bank_transfer/bank_transfer.dart';
@@ -86,11 +87,16 @@ class _DataPurchaseState extends State<DataPurchase> {
                     listener: (context, state) async {
                       print(state);
                       if (state is PurchaseSuccess) {
-                        showToast(
-                            context: context,
-                            title: 'Success',
-                            subtitle: 'Purchase was successful',
-                            type: ToastMessageType.info);
+                        _beneficiaryController.clear();
+                        state.transaction.order!.product!.name== widget.category.name;
+
+                        AppNavigator.pushAndStackPage(context, page: TransactionReceipt(transaction: state.transaction));
+
+                        // showToast(
+                        //     context: context,
+                        //     title: 'Success',
+                        //     subtitle: 'Purchase was successful',
+                        //     type: ToastMessageType.info);
                         //refresh();
                         //MSG.snackBar(context, state.msg);
 

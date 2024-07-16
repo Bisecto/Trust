@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:teller_trust/model/required_field_model.dart';
+
 class PaymentReceipt {
   String message;
   Data data;
@@ -144,33 +146,6 @@ class Order {
   };
 }
 
-class RequiredFields {
-  String phoneNumber;
-  int amount;
-  dynamic cardNumber;
-  dynamic meterNumber;
-
-  RequiredFields({
-    required this.phoneNumber,
-    required this.amount,
-    this.cardNumber,
-    this.meterNumber,
-  });
-
-  factory RequiredFields.fromJson(Map<String, dynamic> json) => RequiredFields(
-    phoneNumber: json["phoneNumber"],
-    amount: json["amount"],
-    cardNumber: json["cardNumber"],
-    meterNumber: json["meterNumber"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "phoneNumber": phoneNumber,
-    "amount": amount,
-    "cardNumber": cardNumber,
-    "meterNumber": meterNumber,
-  };
-}
 
 class Response {
   String clientId;

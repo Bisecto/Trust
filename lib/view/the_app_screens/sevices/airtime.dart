@@ -11,6 +11,7 @@ import 'package:teller_trust/model/quick_access_model.dart';
 import 'package:teller_trust/model/service_model.dart' as serviceModel;
 import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/make_bank_transfer/bank_transfer.dart';
+import 'package:teller_trust/view/widgets/purchase_receipt.dart';
 
 import '../../../bloc/product_bloc/product_bloc.dart';
 import '../../../model/category_model.dart' as categoryModel;
@@ -122,11 +123,18 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                     listener: (context, state) async {
                       print(state);
                       if (state is PurchaseSuccess) {
-                        showToast(
-                            context: context,
-                            title: 'Success',
-                            subtitle: 'Purchase was successful',
-                            type: ToastMessageType.info);
+                        _beneficiaryController.clear();
+                        _selectedAmtController.clear();
+                        state.transaction.order!.product!.name== widget.category.name;
+                        AppNavigator.pushAndStackPage(context,
+                            page: TransactionReceipt(
+                                transaction: state.transaction));
+
+                        // showToast(
+                        //     context: context,
+                        //     title: 'Success',
+                        //     subtitle: 'Purchase was successful',
+                        //     type: ToastMessageType.info);
                         //refresh();
                         //MSG.snackBar(context, state.msg);
 
