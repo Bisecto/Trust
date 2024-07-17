@@ -13,12 +13,9 @@ import 'package:teller_trust/view/auth/sign_up_screen.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
 
 import '../../bloc/auth_bloc/auth_bloc.dart';
-import '../../res/app_router.dart';
 import '../../utills/app_validator.dart';
-import '../../utills/constants/loading_dialog.dart';
 import '../../utills/custom_theme.dart';
 import '../../utills/enums/toast_mesage.dart';
-import '../important_pages/dialog_box.dart';
 import '../important_pages/not_found_page.dart';
 import '../widgets/form_button.dart';
 import '../widgets/form_input.dart';
@@ -154,7 +151,7 @@ class _SignInScreenState extends State<SignInScreen> {
               //   );
               case AuthInitial || ErrorState:
                 return SingleChildScrollView(
-                  child: Container(
+                  child: SizedBox(
                     height: AppUtils.deviceScreenSize(context).height,
                     width: AppUtils.deviceScreenSize(context).width,
                     child: Stack(
@@ -262,7 +259,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                                 controller: _emailController,
                                                 validator: AppValidator
                                                     .validateTextfield,
-                                                widget: Icon(Icons.email),
+                                                widget: const Icon(Icons.email),
                                                 borderColor: _emailController
                                                         .text.isNotEmpty
                                                     ? AppColors.green
@@ -275,7 +272,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                                     .validatePassword,
                                                 controller: _passwordController,
                                                 hint: 'Password',
-                                                widget: Icon(Icons.password),
+                                                widget: const Icon(Icons.password),
                                                 borderColor: _passwordController
                                                         .text.isNotEmpty
                                                     ? AppColors.green
@@ -310,7 +307,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                       GestureDetector(
                                         onTap: () {
                                           AppNavigator.pushAndStackPage(context,
-                                              page: RequestOtp());
+                                              page: const RequestOtp());
                                         },
                                         child: const Center(
                                           child: CustomText(
@@ -337,14 +334,14 @@ class _SignInScreenState extends State<SignInScreen> {
                                                   : AppColors.textColor,
                                               size: 16,
                                             ),
-                                            SizedBox(
+                                            const SizedBox(
                                               width: 10,
                                             ),
                                             GestureDetector(
                                               onTap: () {
                                                 AppNavigator.pushAndStackPage(
                                                     context,
-                                                    page: SignUpScreen());
+                                                    page: const SignUpScreen());
                                               },
                                               child: CustomText(
                                                 text: "Sign up?",
@@ -454,7 +451,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 ? AppColors.darkModeBackgroundColor
                 : AppColors.white,
             contentPadding: EdgeInsets.zero,
-            shape: RoundedRectangleBorder(
+            shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20.0)),
             ),
             content: Container(
@@ -482,11 +479,11 @@ class _SignInScreenState extends State<SignInScreen> {
                           fit: BoxFit.fill,
                         ),
                         //color: AppColors.red,
-                        borderRadius: BorderRadius.only(
+                        borderRadius: const BorderRadius.only(
                             topRight: Radius.circular(20),
                             topLeft: Radius.circular(20))),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   CustomText(
@@ -497,7 +494,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         ? AppColors.darkModeBackgroundMainTextColor
                         : AppColors.textColor,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   CustomText(
@@ -527,7 +524,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       borderRadius: 10,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   )
                 ],
@@ -541,7 +538,7 @@ class _SignInScreenState extends State<SignInScreen> {
 class DividerWithTextWidget extends StatelessWidget {
   final String text;
 
-  DividerWithTextWidget({required this.text});
+  const DividerWithTextWidget({super.key, required this.text});
 
   @override
   Widget build(BuildContext context) {

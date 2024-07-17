@@ -1,15 +1,11 @@
-import 'dart:io';
 
 import 'package:easy_url_launcher/easy_url_launcher.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/res/app_colors.dart';
 
-import '../../../res/app_icons.dart';
 import '../../../utills/custom_theme.dart';
 import '../../widgets/appBar_widget.dart';
-import '../../widgets/app_custom_text.dart';
 import '../../widgets/custom_container.dart';
 
 class Legal extends StatefulWidget {
@@ -35,7 +31,7 @@ class _LegalState extends State<Legal> {
       backgroundColor: theme.isDark?AppColors.darkModeBackgroundColor:AppColors.white,
       body: Column(
         children: [
-          CustomAppBar(
+          const CustomAppBar(
             title: "Legal",
             mainColor: AppColors.lightOrange,
             subColor: AppColors.orange,
@@ -44,11 +40,11 @@ class _LegalState extends State<Legal> {
             onTap: ()  async {
               await EasyLauncher.url(url: "http://tellatrust.com/legal/terms-and-conditions");            },
             child: Padding(
-              padding: EdgeInsets.all(0.0),
+              padding: const EdgeInsets.all(0.0),
               child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
+                  const Padding(
+                    padding: EdgeInsets.all(10.0),
                     child: CustomContainerWithRightIcon(
                       title: 'Terms & Conditions',
                       //: SvgPicture.asset(AppIcons.person),
@@ -57,16 +53,16 @@ class _LegalState extends State<Legal> {
                   InkWell(
                     onTap: ()  async {
                       await EasyLauncher.url(url: "http://tellatrust.com/legal/privacy-policy");            },
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
+                    child: const Padding(
+                      padding: EdgeInsets.all(10.0),
                       child: CustomContainerWithRightIcon(
                         title: 'Policies',
                         //: SvgPicture.asset(AppIcons.person),
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
+                  const Padding(
+                    padding: EdgeInsets.all(10.0),
                     child: CustomContainerWithRightIcon(
                       title: 'Disclaimer',
                       //: SvgPicture.asset(AppIcons.person),
@@ -76,8 +72,8 @@ class _LegalState extends State<Legal> {
                     onTap: ()  async {
                       await EasyLauncher.url(url: "http://tellatrust.com");            },
 
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
+                    child: const Padding(
+                      padding: EdgeInsets.all(10.0),
                       child: CustomContainerWithRightIcon(
                         title: 'FAQs',
                         //: SvgPicture.asset(AppIcons.person),

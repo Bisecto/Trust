@@ -23,10 +23,10 @@ class _ReceiptState extends State<Receipt> {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                const Color(0xF4FCE3).withOpacity(1),
-                const Color(0xFFE4AB).withOpacity(1),
+                const Color(0x00f4fce3).withOpacity(1),
+                const Color(0x00ffe4ab).withOpacity(1),
                 //const Color(0xC2F6AE).withOpacity(1),
-                const Color(0xC2F6AE).withOpacity(1),
+                const Color(0x00c2f6ae).withOpacity(1),
               ],
               begin: Alignment.topCenter,
               end: Alignment.bottomRight,
@@ -36,7 +36,7 @@ class _ReceiptState extends State<Receipt> {
             padding: const EdgeInsets.only(left: 15, right: 15),
             child: Column(
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 50,
                 ),
                 Container(
@@ -57,7 +57,7 @@ class _ReceiptState extends State<Receipt> {
                                   borderRadius: BorderRadius.circular(8),
                                   border: Border.all(
                                       color: AppColors.textColor2, width: 2)),
-                              child: Center(
+                              child: const Center(
                                   child: CustomText(
                                 text: "x",
                                 weight: FontWeight.bold,
@@ -68,19 +68,19 @@ class _ReceiptState extends State<Receipt> {
                         ],
                       ),
                       SvgPicture.asset(AppIcons.logoReceipt),
-                      CustomText(
+                      const CustomText(
                         text: 'Transaction Receipt',
                       ),
                     ],
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Container(
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
+                    boxShadow: const [
                       BoxShadow(
                         color: Colors.black12,
                         blurRadius: 10,
@@ -101,10 +101,10 @@ class _ReceiptState extends State<Receipt> {
                         size: 14,
                         color: AppColors.black,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 12,
                       ),
-                      CustomText(
+                      const CustomText(
                         text: 'To',
                         size: 12,
                         color: AppColors.textColor2,
@@ -126,8 +126,8 @@ class _ReceiptState extends State<Receipt> {
                       //   size: 14,
                       //   color: AppColors.black,
                       // ),
-                      SizedBox(height: 12),
-                      CustomText(
+                      const SizedBox(height: 12),
+                      const CustomText(
                         text: 'Description',
                         size: 12,
                         color: AppColors.textColor2,
@@ -137,8 +137,8 @@ class _ReceiptState extends State<Receipt> {
                         size: 14,
                         color: AppColors.black,
                       ),
-                      SizedBox(height: 12),
-                      CustomText(
+                      const SizedBox(height: 12),
+                      const CustomText(
                         text: 'Date',
                         size: 12,
                         color: AppColors.textColor2,
@@ -148,10 +148,10 @@ class _ReceiptState extends State<Receipt> {
                         size: 14,
                         color: AppColors.black,
                       ),
-                      SizedBox(height: 20),
-                      Divider(),
-                      SizedBox(height: 12),
-                      CustomText(
+                      const SizedBox(height: 20),
+                      const Divider(),
+                      const SizedBox(height: 12),
+                      const CustomText(
                         text: 'Transaction Reference',
                         size: 12,
                         color: AppColors.textColor2,
@@ -161,8 +161,8 @@ class _ReceiptState extends State<Receipt> {
                         size: 14,
                         color: AppColors.black,
                       ),
-                      SizedBox(height: 12),
-                      CustomText(
+                      const SizedBox(height: 12),
+                      const CustomText(
                         text: 'Status',
                         size: 12,
                         color: AppColors.textColor2,
@@ -183,7 +183,7 @@ class _ReceiptState extends State<Receipt> {
                       //   size: 14,
                       //   color: AppColors.black,
                       // ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       Center(
                           child: TextStyles.textHeadings(
                               textValue: 'Tellatrust',
@@ -191,7 +191,7 @@ class _ReceiptState extends State<Receipt> {
                     ],
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -203,7 +203,7 @@ class _ReceiptState extends State<Receipt> {
                             height: 40,
                             width: 40,
                             decoration: BoxDecoration(
-                                color: Color(0xffF3FFEB),
+                                color: const Color(0xffF3FFEB),
                                 borderRadius: BorderRadius.circular(10)),
                             child: Center(
                                 child: SvgPicture.asset(
@@ -211,10 +211,10 @@ class _ReceiptState extends State<Receipt> {
                               color: AppColors.darkGreen,
                             )),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 5,
                           ),
-                          CustomText(
+                          const CustomText(
                             text: "Share",
                             size: 12,
                             color: AppColors.darkGreen,
@@ -231,7 +231,7 @@ class _ReceiptState extends State<Receipt> {
                             height: 40,
                             width: 40,
                             decoration: BoxDecoration(
-                                color: Color(0xffF3FFEB),
+                                color: const Color(0xffF3FFEB),
                                 borderRadius: BorderRadius.circular(10)),
                             child: Center(
                                 child: SvgPicture.asset(
@@ -239,10 +239,10 @@ class _ReceiptState extends State<Receipt> {
                               color: AppColors.darkGreen,
                             )),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 5,
                           ),
-                          CustomText(
+                          const CustomText(
                             text: "Download",
                             size: 12,
                             color: AppColors.darkGreen,
@@ -259,7 +259,7 @@ class _ReceiptState extends State<Receipt> {
                             height: 40,
                             width: 40,
                             decoration: BoxDecoration(
-                                color: Color(0xffF3FFEB),
+                                color: const Color(0xffF3FFEB),
                                 borderRadius: BorderRadius.circular(10)),
                             child: Center(
                                 child: SvgPicture.asset(
@@ -267,10 +267,10 @@ class _ReceiptState extends State<Receipt> {
                               color: AppColors.darkGreen,
                             )),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 5,
                           ),
-                          CustomText(
+                          const CustomText(
                             text: "Repeat",
                             size: 12,
                             color: AppColors.darkGreen,
@@ -287,7 +287,7 @@ class _ReceiptState extends State<Receipt> {
                             height: 40,
                             width: 40,
                             decoration: BoxDecoration(
-                                color: Color(0xffF3FFEB),
+                                color: const Color(0xffF3FFEB),
                                 borderRadius: BorderRadius.circular(10)),
                             child: Center(
                                 child: SvgPicture.asset(
@@ -295,10 +295,10 @@ class _ReceiptState extends State<Receipt> {
                               color: AppColors.darkGreen,
                             )),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 5,
                           ),
-                          CustomText(
+                          const CustomText(
                             text: "Report",
                             size: 12,
                             color: AppColors.darkGreen,
@@ -309,21 +309,21 @@ class _ReceiptState extends State<Receipt> {
                     ),
                   ],
                 ),
-                SizedBox(height: 0),
-                CustomText(
+                const SizedBox(height: 0),
+                const CustomText(
                   text: 'Thank You!',
                   textAlign: TextAlign.center,
                   size: 14,
                   //: Text//(fontSize: 16, color: Colors.grey),
                 ),
-                CustomText(
+                const CustomText(
                   text: 'For Your Purchase',
                   textAlign: TextAlign.center,
                   size: 12,
                   //: Text//(fontSize: 16, color: Colors.grey),
                 ),
-                SizedBox(height: 20),
-                CustomText(
+                const SizedBox(height: 20),
+                const CustomText(
                   text: 'Secured by Tella Trust',
                   textAlign: TextAlign.center,
                   size: 14,

@@ -2,11 +2,9 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:disk_space/disk_space.dart';
+import 'package:disk_space_update/disk_space_update.dart';
 import 'package:external_path/external_path.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -15,7 +13,6 @@ import 'package:share_plus/share_plus.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:teller_trust/model/transactionHistory.dart';
 import 'package:teller_trust/res/app_icons.dart';
-import 'package:teller_trust/res/app_images.dart';
 import 'package:teller_trust/utills/app_utils.dart';
 import 'package:teller_trust/view/widgets/show_toast.dart';
 
@@ -27,7 +24,7 @@ import 'app_custom_text.dart';
 class TransactionReceipt extends StatefulWidget {
   final Transaction transaction;
 
-  TransactionReceipt({super.key, required this.transaction});
+  const TransactionReceipt({super.key, required this.transaction});
 
   @override
   State<TransactionReceipt> createState() => _TransactionReceiptState();
@@ -48,9 +45,9 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                const Color(0xF4FCE3).withOpacity(1),
-                const Color(0xFFE4AB).withOpacity(1),
-                const Color(0xC2F6AE).withOpacity(1),
+                const Color(0x00f4fce3).withOpacity(1),
+                const Color(0x00ffe4ab).withOpacity(1),
+                const Color(0x00c2f6ae).withOpacity(1),
               ],
               begin: Alignment.topCenter,
               end: Alignment.bottomRight,
@@ -61,14 +58,14 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  SizedBox(height: 50),
+                  const SizedBox(height: 50),
                   buildHeader(context),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   buildReceiptDetails(),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   if (!isSharingPdf)
                     buildActionButtons(widget.transaction.description),
-                  SizedBox(height: 50),
+                  const SizedBox(height: 50),
                   buildFooter(),
                 ],
               ),
@@ -99,7 +96,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(color: AppColors.textColor2, width: 2),
                     ),
-                    child: Center(
+                    child: const Center(
                       child: CustomText(
                         text: "x",
                         weight: FontWeight.bold,
@@ -111,7 +108,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
             ],
           ),
           SvgPicture.asset(AppIcons.logoReceipt),
-          CustomText(text: 'Transaction Receipt'),
+          const CustomText(text: 'Transaction Receipt'),
         ],
       ),
     );
@@ -119,11 +116,11 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
 
   Widget buildReceiptDetails() {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10)],
+        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 10)],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -136,7 +133,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                     : 'Debit'),
           ),
           buildDetailRow('Amount', 'N${widget.transaction.amount}'),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           buildDetailRow(
               'To',
               widget.transaction.order?.requiredFields.meterNumber ??
@@ -144,28 +141,28 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                   widget.transaction.order?.requiredFields.phoneNumber ??
                   '',
               true),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           buildDetailRow('Description', widget.transaction.description),
           if (widget.transaction.order?.response?.utilityToken != null &&
-              widget.transaction.order!.response!.utilityToken!.isNotEmpty &&
+              widget.transaction.order!.response!.utilityToken.isNotEmpty &&
               widget.transaction.status.toLowerCase() == 'success')
             ...[
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               buildDetailRow(
                 'Utility Token',
-                widget.transaction.order!.response!.utilityToken!,
+                widget.transaction.order!.response!.utilityToken,
                 true,
               ),
             ],
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           buildDetailRow('Date', widget.transaction.createdAt.toString()),
-          SizedBox(height: 20),
-          Divider(),
-          SizedBox(height: 12),
+          const SizedBox(height: 20),
+          const Divider(),
+          const SizedBox(height: 12),
           buildDetailRow('Transaction Reference', widget.transaction.reference, true),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           buildDetailRow('Status', widget.transaction.status.toUpperCase()),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Center(
             child: TextStyles.textHeadings(
               textValue: 'Tellatrust',
@@ -185,7 +182,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
+            SizedBox(
               width: isCopyable
                   ? AppUtils.deviceScreenSize(context).width / 1.5
                   : null,
@@ -239,14 +236,14 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
           height: 40,
           width: 40,
           decoration: BoxDecoration(
-            color: Color(0xffF3FFEB),
+            color: const Color(0xffF3FFEB),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Center(
             child: SvgPicture.asset(icon, color: AppColors.darkGreen),
           ),
         ),
-        SizedBox(height: 5),
+        const SizedBox(height: 5),
         CustomText(
           text: label,
           size: 12,
@@ -261,18 +258,18 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
     return Column(
       children: [
         if (!isSharingPdf) ...[
-          CustomText(
+          const CustomText(
             text: 'Thank You!',
             textAlign: TextAlign.center,
             size: 14,
           ),
-          CustomText(
+          const CustomText(
             text: 'For Your Purchase',
             textAlign: TextAlign.center,
             size: 14,
           ),
-          SizedBox(height: 20),
-          Row(
+          const SizedBox(height: 20),
+          const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(Icons.lock, color: AppColors.green),

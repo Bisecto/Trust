@@ -5,21 +5,17 @@ import 'package:teller_trust/utills/app_navigator.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/payment_receipt.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 
 import '../../../../../res/app_colors.dart';
 import '../../../../model/quick_pay_transaction_history.dart';
 import '../../../../model/quickpay_model.dart';
-import '../../../../model/transactionHistory.dart';
-import '../../../../utills/shared_preferences.dart';
 import '../../../widgets/app_custom_text.dart';
-import '../../../widgets/purchase_receipt.dart';
 
 class MakePayment extends StatefulWidget {
   final QuickPayModel quickPayModel;
   final String accessToken;
 
-  MakePayment({
+  const MakePayment({
     Key? key,
     required this.quickPayModel,
     required this.accessToken,

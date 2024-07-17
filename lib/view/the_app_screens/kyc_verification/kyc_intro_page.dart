@@ -1,10 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/res/app_icons.dart';
-import 'package:teller_trust/res/app_images.dart';
 import 'package:teller_trust/utills/app_navigator.dart';
 import 'package:teller_trust/utills/app_utils.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
@@ -73,7 +70,7 @@ class _KYCIntroState extends State<KYCIntro> {
             left: 0,
             top: 0,
             // bottom: 0,
-            child: Container(
+            child: SizedBox(
               height: AppUtils.deviceScreenSize(context).height + 50,
               width: double.infinity,
               // color: theme.isDark
@@ -123,7 +120,7 @@ class _KYCIntroState extends State<KYCIntro> {
           ),
           Align(
             alignment: Alignment.bottomCenter,
-            child: Container(
+            child: SizedBox(
                 //height: AppUtils.deviceScreenSize(context).height,
                 width: AppUtils.deviceScreenSize(context).width,
 
@@ -183,7 +180,7 @@ class _KYCIntroState extends State<KYCIntro> {
                                       : AppColors.black,
                                   maxLines: 2,
                                 ),
-                                Container(
+                                SizedBox(
                                   height: 80,
                                   width:
                                       AppUtils.deviceScreenSize(context).width -

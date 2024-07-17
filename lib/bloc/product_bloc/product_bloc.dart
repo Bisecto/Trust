@@ -1,17 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 import 'package:teller_trust/model/electricity_verify_model.dart';
 import 'package:teller_trust/model/product_model.dart';
 import 'package:teller_trust/model/transactionHistory.dart';
 
 import '../../model/category_model.dart';
-import '../../model/product_model.dart';
-import '../../model/quick_pay_transaction_history.dart';
 import '../../model/quickpay_model.dart';
 import '../../model/required_field_model.dart';
 import '../../model/service_model.dart';
@@ -20,7 +16,6 @@ import '../../res/apis.dart';
 import '../../utills/app_utils.dart';
 import '../../utills/constants/loading_dialog.dart';
 import '../../utills/shared_preferences.dart';
-import '../app_bloc/app_bloc.dart';
 
 part 'product_event.dart';
 
@@ -143,7 +138,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         "requiredFields": event.requiredFields.toJson()
       };
       var purchaseResponse = await appRepository.appPostRequest(data,event.isQuickPay?AppApis.quickPay:
-        '${AppApis.purchaseProduct}',
+        AppApis.purchaseProduct,
         accessToken: accessToken,
         accessPIN: event.accessPIN,
       );

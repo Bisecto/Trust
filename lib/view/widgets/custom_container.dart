@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:teller_trust/utills/app_utils.dart';
 
 import '../../res/app_colors.dart';
 import '../../utills/custom_theme.dart';
@@ -91,7 +89,7 @@ class CustomContainerFirTitleDescIcon extends StatelessWidget {
 
             children: [
               iconData,
-              SizedBox(
+              const SizedBox(
                 width: 10,
               ),
               Container(
@@ -271,7 +269,7 @@ class CustomContainerWithRightIcon extends StatelessWidget {
                 size: 14,
                 color:theme.isDark?AppColors.white:AppColors.black
               ),
-              Icon(Icons.arrow_forward_ios,color: AppColors.grey)
+              const Icon(Icons.arrow_forward_ios,color: AppColors.grey)
             ],
           ),
         ),

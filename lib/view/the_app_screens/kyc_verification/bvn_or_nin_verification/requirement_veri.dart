@@ -1,10 +1,8 @@
 import 'package:dotted_border/dotted_border.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/res/app_icons.dart';
-import 'package:teller_trust/res/app_images.dart';
 import 'package:teller_trust/utills/app_utils.dart';
 import 'package:teller_trust/view/the_app_screens/kyc_verification/bvn_or_nin_verification/select_verification_type.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
@@ -52,7 +50,7 @@ class _BVN_NIN_KYC_1State extends State<BVN_NIN_KYC_1> {
             left: 0,
             top: 0,
             // bottom: 0,
-            child: Container(
+            child: SizedBox(
               height: AppUtils.deviceScreenSize(context).height+50,
               width: double.infinity,
               // color: theme.isDark
@@ -141,8 +139,8 @@ class _BVN_NIN_KYC_1State extends State<BVN_NIN_KYC_1> {
                         const SizedBox(height: 20),
                         Row(
                           children: [
-                            Icon(Icons.person_2_outlined),
-                            SizedBox(width: 10),
+                            const Icon(Icons.person_2_outlined),
+                            const SizedBox(width: 10),
                             CustomText(
                               text: "BVN or NIN",
                               color: theme.isDark
@@ -156,8 +154,8 @@ class _BVN_NIN_KYC_1State extends State<BVN_NIN_KYC_1> {
                         const SizedBox(height: 10),
                         Row(
                           children: [
-                            Icon(Icons.check),
-                            SizedBox(width: 10),
+                            const Icon(Icons.check),
+                            const SizedBox(width: 10),
                             CustomText(
                               text: "Attestation",
                               color: theme.isDark
@@ -180,18 +178,18 @@ class _BVN_NIN_KYC_1State extends State<BVN_NIN_KYC_1> {
                         DottedBorder(
                           borderType: BorderType.RRect,
                           radius: const Radius.circular(10),
-                          dashPattern: [10, 10],
+                          dashPattern: const [10, 10],
                           color: AppColors.lightgrey,
                           strokeWidth: 2,
                           child: Padding(
-                            padding: EdgeInsets.all(10.0),
+                            padding: const EdgeInsets.all(10.0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    CustomText(
+                                    const CustomText(
                                       text: 'Single Credit Limit:',
                                       size: 10,
                                       textAlign: TextAlign.center,
@@ -212,7 +210,7 @@ class _BVN_NIN_KYC_1State extends State<BVN_NIN_KYC_1> {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    CustomText(
+                                    const CustomText(
                                       text: 'Daily Credit Limit:',
                                       size: 10,
                                       textAlign: TextAlign.center,
@@ -238,18 +236,18 @@ class _BVN_NIN_KYC_1State extends State<BVN_NIN_KYC_1> {
                         DottedBorder(
                           borderType: BorderType.RRect,
                           radius: const Radius.circular(10),
-                          dashPattern: [10, 10],
+                          dashPattern: const [10, 10],
                           color: AppColors.lightgrey,
                           strokeWidth: 2,
                           child: Padding(
-                            padding: EdgeInsets.all(10.0),
+                            padding: const EdgeInsets.all(10.0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    CustomText(
+                                    const CustomText(
                                       text: 'Single Debit Limit:',
                                       size: 10,
                                       textAlign: TextAlign.center,
@@ -270,7 +268,7 @@ class _BVN_NIN_KYC_1State extends State<BVN_NIN_KYC_1> {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    CustomText(
+                                    const CustomText(
                                       text: 'Daily Debit Limit:',
                                       size: 10,
                                       textAlign: TextAlign.center,

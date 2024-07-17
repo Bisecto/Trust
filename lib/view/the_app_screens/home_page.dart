@@ -1,8 +1,6 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
-import 'package:custom_pin_screen/custom_pin_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_carousel_slider/carousel_slider.dart';
@@ -10,11 +8,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/bloc/product_bloc/product_bloc.dart';
 import 'package:teller_trust/model/personal_profile.dart';
-import 'package:teller_trust/model/quick_access_model.dart';
 import 'package:teller_trust/model/wallet_info.dart';
 import 'package:teller_trust/res/app_colors.dart';
 import 'package:teller_trust/res/app_icons.dart';
-import 'package:teller_trust/res/app_list.dart';
 import 'package:teller_trust/utills/app_navigator.dart';
 import 'package:teller_trust/utills/app_utils.dart';
 import 'package:teller_trust/utills/shared_preferences.dart';
@@ -23,9 +19,6 @@ import 'package:teller_trust/view/the_app_screens/sevices/airtime.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/cable_purchase.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/data.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/electricity_purchase.dart';
-import 'package:teller_trust/view/the_app_screens/sevices/internet.dart';
-import 'package:teller_trust/view/the_app_screens/sevices/make_bank_transfer/bank_transfer.dart';
-import 'package:teller_trust/view/the_app_screens/sevices/send_funds.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 import 'package:teller_trust/view/widgets/purchase_receipt.dart';
@@ -33,17 +26,14 @@ import 'package:teller_trust/view/widgets/purchase_receipt.dart';
 import '../../bloc/app_bloc/app_bloc.dart';
 import '../../model/category_model.dart';
 import '../../model/customer_account_model.dart';
-import '../../model/user.dart';
 import '../../res/app_images.dart';
 import '../../utills/custom_theme.dart';
 import '../../utills/enums/toast_mesage.dart';
-import '../important_pages/dialog_box.dart';
 import '../widgets/show_toast.dart';
 import 'kyc_verification/kyc_intro_page.dart';
-import 'more_pages/withdrawal_account.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({
+  const HomePage({
     super.key,
   });
 
@@ -360,7 +350,7 @@ class _HomePageState extends State<HomePage> {
                   state.customerProfile.customerAccount;
               //print(customerAccount!.id);
               if (customerAccount != null) {
-                return SizedBox();
+                return const SizedBox();
               } else {
                 return GestureDetector(
                   onTap: () {
@@ -423,7 +413,7 @@ class _HomePageState extends State<HomePage> {
                 );
               }
             } else {
-              return SizedBox();
+              return const SizedBox();
             }
           },
         ),
@@ -611,16 +601,16 @@ class _HomePageState extends State<HomePage> {
         gradient: LinearGradient(
           colors: theme.isDark
               ? [
-                  const Color(0x0C311A).withOpacity(1),
-                  const Color(0x0C311A).withOpacity(0.4),
+                  const Color(0x000c311a).withOpacity(1),
+                  const Color(0x000c311a).withOpacity(0.4),
                   Colors.blue.shade900.withOpacity(0.1), //Color(0x122E5A),
                   Colors.blue.shade900.withOpacity(0.3)
                 ]
               : [
-                  const Color(0x0B321A).withOpacity(1),
-                  const Color(0x0B321A).withOpacity(1),
-                  const Color(0x0C662F).withOpacity(1),
-                  const Color(0x0C662F).withOpacity(1),
+                  const Color(0x000b321a).withOpacity(1),
+                  const Color(0x000b321a).withOpacity(1),
+                  const Color(0x000c662f).withOpacity(1),
+                  const Color(0x000c662f).withOpacity(1),
                 ],
           begin: Alignment.topLeft,
           end: Alignment.topRight,
@@ -696,7 +686,7 @@ class _HomePageState extends State<HomePage> {
                                         "${AppUtils.convertPrice(walletInfo.balance.toString()).split('.')[0]}.",
                                     textSize: 28,
                                     textColor: AppColors.white),
-                                SizedBox(
+                                const SizedBox(
                                   width: 5,
                                 ),
                                 Column(
@@ -788,7 +778,7 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                       context: context,
                                       builder: (context) => Padding(
-                                        padding: EdgeInsets.only(top: 100.0),
+                                        padding: const EdgeInsets.only(top: 100.0),
                                         child: AddFunds(
                                           customerAccountModel: customerAccount,
                                         ),
@@ -1021,14 +1011,14 @@ class _HomePageState extends State<HomePage> {
           gradient: LinearGradient(
             colors: theme.isDark
                 ? [
-                    const Color(0x0C311A).withOpacity(1),
-                    const Color(0x0C311A).withOpacity(0.4),
+                    const Color(0x000c311a).withOpacity(1),
+                    const Color(0x000c311a).withOpacity(0.4),
                     Colors.blue.shade900.withOpacity(0.1), //Color(0x122E5A),
                     Colors.blue.shade900.withOpacity(0.3)
                   ]
                 : [
-                    const Color(0xE6FBEE).withOpacity(1),
-                    const Color(0xE6FBEE).withOpacity(0.4),
+                    const Color(0x00e6fbee).withOpacity(1),
+                    const Color(0x00e6fbee).withOpacity(0.4),
                     Colors.blue.shade900.withOpacity(0.1), //Color(0x122E5A),
                     Colors.blue.shade900.withOpacity(0.3)
                   ],
@@ -1085,7 +1075,7 @@ class _HomePageState extends State<HomePage> {
                     print("transactionHistory");
                     print("transactionHistory");
                     return transactionHistory.data.items.isNotEmpty
-                        ? Container(
+                        ? SizedBox(
                             height: transactionHistory.data.items.length * 90,
                             child: ListView.builder(
                               physics: const NeverScrollableScrollPhysics(),
@@ -1104,7 +1094,7 @@ class _HomePageState extends State<HomePage> {
                                           transaction: transaction),
                                     );
                                   },
-                                  child: Container(
+                                  child: SizedBox(
                                     height: 90,
                                     child: Column(
                                       crossAxisAlignment:
@@ -1143,12 +1133,12 @@ class _HomePageState extends State<HomePage> {
                                                               .toLowerCase()
                                                               .contains(
                                                                   'credit')
-                                                      ? Icon(
+                                                      ? const Icon(
                                                           Icons.arrow_downward,
                                                           color:
                                                               AppColors.green,
                                                         )
-                                                      : SizedBox(),
+                                                      : const SizedBox(),
                                                 ),
                                                 //if(order!.requiredFields.phoneNumber.isNotEmpty||order.requiredFields.meterNumber!.isNotEmpty||order.requiredFields.cardNumber!.isNotEmpty)
                                                 Padding(
@@ -1649,7 +1639,7 @@ class _HomePageState extends State<HomePage> {
     return Container(
       height: 36,
       decoration: BoxDecoration(
-          color: accNumber == '***' ? AppColors.lightOrange : Color(0xFFC2F6AE),
+          color: accNumber == '***' ? AppColors.lightOrange : const Color(0xFFC2F6AE),
           borderRadius: BorderRadius.circular(10)),
       child: Padding(
         padding: const EdgeInsets.all(5.0),

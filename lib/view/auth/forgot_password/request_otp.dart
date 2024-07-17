@@ -1,23 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:otp_text_field/otp_field.dart';
-import 'package:otp_text_field/otp_field_style.dart';
-import 'package:otp_text_field/style.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/view/auth/forgot_password/reset_password.dart';
-import 'package:teller_trust/view/auth/otp_pin_pages/create_pin.dart';
 
 import '../../../bloc/auth_bloc/auth_bloc.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/app_images.dart';
-import '../../../res/app_router.dart';
 import '../../../utills/app_navigator.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/app_validator.dart';
 import '../../../utills/custom_theme.dart';
 import '../../../utills/enums/toast_mesage.dart';
-import '../../important_pages/dialog_box.dart';
 import '../../important_pages/not_found_page.dart';
 import '../../widgets/app_custom_text.dart';
 import '../../widgets/form_button.dart';
@@ -25,7 +19,7 @@ import '../../widgets/form_input.dart';
 import '../../widgets/show_toast.dart';
 
 class RequestOtp extends StatefulWidget {
-  RequestOtp({
+  const RequestOtp({
     super.key,
   });
 
@@ -90,7 +84,7 @@ class _RequestOtpState extends State<RequestOtp> {
             switch (state.runtimeType) {
               case AuthInitial || ErrorState:
                 return SingleChildScrollView(
-                  child: Container(
+                  child: SizedBox(
                     height: AppUtils.deviceScreenSize(context).height,
                     width: AppUtils.deviceScreenSize(context).width,
                     child: Stack(
@@ -105,7 +99,7 @@ class _RequestOtpState extends State<RequestOtp> {
                             height:
                                 AppUtils.deviceScreenSize(context).height * 0.5,
                             width: AppUtils.deviceScreenSize(context).width,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               image: DecorationImage(
                                 image: AssetImage(AppImages.authAppLogoImage),
                                 fit: BoxFit.fill,
@@ -202,7 +196,7 @@ class _RequestOtpState extends State<RequestOtp> {
                                                 controller: _emailController,
                                                 validator: AppValidator
                                                     .validateTextfield,
-                                                widget: Icon(Icons.email),
+                                                widget: const Icon(Icons.email),
                                                 borderColor: _emailController
                                                         .text.isNotEmpty
                                                     ? AppColors.green

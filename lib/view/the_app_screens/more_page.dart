@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -16,7 +15,6 @@ import 'package:teller_trust/view/the_app_screens/more_pages/security_page.dart'
 
 import '../../bloc/app_bloc/app_bloc.dart';
 import '../../model/personal_profile.dart';
-import '../../model/user.dart';
 import '../../res/app_colors.dart';
 import '../../utills/app_navigator.dart';
 import '../../utills/custom_theme.dart';
@@ -25,7 +23,7 @@ import '../widgets/app_custom_text.dart';
 import 'more_pages/account_settings.dart';
 
 class MorePage extends StatefulWidget {
-  MorePage({
+  const MorePage({
     super.key,
   });
 
@@ -68,7 +66,7 @@ class _MorePageState extends State<MorePage> {
                       ? AppColors.darkGreen
                       : AppColors.lightShadowGreenColor,
                   borderRadius:
-                      BorderRadius.vertical(bottom: Radius.circular(30))),
+                      const BorderRadius.vertical(bottom: Radius.circular(30))),
               child: Column(
                 children: [
                   Container(
@@ -77,9 +75,9 @@ class _MorePageState extends State<MorePage> {
                     decoration: BoxDecoration(
                         color: theme.isDark
                             ? AppColors.darkModeBackgroundColor
-                            : Color.fromRGBO(227, 255, 214, 100),
+                            : const Color.fromRGBO(227, 255, 214, 100),
                         borderRadius:
-                            BorderRadius.vertical(bottom: Radius.circular(30))),
+                            const BorderRadius.vertical(bottom: Radius.circular(30))),
                     child: SafeArea(
                       child: Column(
                         children: [
@@ -93,7 +91,7 @@ class _MorePageState extends State<MorePage> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 5,
                   ),
                   Container(
@@ -187,52 +185,52 @@ class _MorePageState extends State<MorePage> {
             ),
             Column(
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 SvgPicture.asset(AppIcons.tellaRewards),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 InkWell(
                     onTap: () {
                       AppNavigator.pushAndStackPage(context,
-                          page: AccountSetting());
+                          page: const AccountSetting());
                     },
                     child: itemContainer(
                         AppIcons.accounsetting, 'Account Setting', theme)),
                 // SvgPicture.asset(AppIcons.accounsetting)),
                 InkWell(
                     onTap: () {
-                      AppNavigator.pushAndStackPage(context, page: Security());
+                      AppNavigator.pushAndStackPage(context, page: const Security());
                     },
                     child: itemContainer(AppIcons.security, 'Security', theme)),
                 itemContainer(AppIcons.statement, 'Statement', theme),
                 InkWell(
                     onTap: () {
                       AppNavigator.pushAndStackPage(context,
-                          page: NotificationSetting());
+                          page: const NotificationSetting());
                     },
                     child: itemContainer(
                         AppIcons.notificationSetting, 'Notifications', theme)),
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
+                const Padding(
+                  padding: EdgeInsets.all(20.0),
                   child: Divider(),
                 ),
                 InkWell(
                     onTap: () {
-                      AppNavigator.pushAndStackPage(context, page: GetHelp());
+                      AppNavigator.pushAndStackPage(context, page: const GetHelp());
                     },
                     child: itemContainer(AppIcons.getHelp, 'Get Help', theme)),
                 InkWell(
                     onTap: () {
-                      AppNavigator.pushAndStackPage(context, page: Legal());
+                      AppNavigator.pushAndStackPage(context, page: const Legal());
                     },
                     child: itemContainer(AppIcons.legal, 'Legal', theme)),
                 itemContainer(
                     AppIcons.aboutTellaTrust, 'About Tellatrust', theme),
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
+                const Padding(
+                  padding: EdgeInsets.all(20.0),
                   child: Divider(),
                 ),
                 InkWell(
@@ -250,7 +248,7 @@ class _MorePageState extends State<MorePage> {
                       SharedPref.remove("refresh-token");
                       SharedPref.remove("access-token");
                       AppNavigator.pushAndRemovePreviousPages(context,
-                          page: SignInScreen());
+                          page: const SignInScreen());
                     },
                     child: SvgPicture.asset(AppIcons.logOut)),
               ],
@@ -271,7 +269,7 @@ class _MorePageState extends State<MorePage> {
             Row(
               children: [
                 SvgPicture.asset(icon),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 CustomText(
@@ -282,7 +280,7 @@ class _MorePageState extends State<MorePage> {
                 )
               ],
             ),
-            Icon(Icons.navigate_next_outlined)
+            const Icon(Icons.navigate_next_outlined)
           ],
         ),
       ),
@@ -354,7 +352,7 @@ class _MorePageState extends State<MorePage> {
                       )
                     ],
                   ),
-                  Icon(Icons.navigate_next_outlined)
+                  const Icon(Icons.navigate_next_outlined)
                 ],
               ),
             ),

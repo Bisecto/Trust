@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pin_plus_keyboard/package/controllers/pin_input_controller.dart';
 import 'package:pin_plus_keyboard/package/pin_plus_keyboard_package.dart';
 import 'package:provider/provider.dart';
-import 'package:teller_trust/utills/app_navigator.dart';
 
 import '../../../bloc/auth_bloc/auth_bloc.dart';
 import '../../../res/app_colors.dart';
-import '../../../res/app_icons.dart';
-import '../../../res/app_images.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/custom_theme.dart';
-import '../../important_pages/dialog_box.dart';
 import '../../widgets/app_custom_text.dart';
 
 class ConfirmWithPin extends StatefulWidget {

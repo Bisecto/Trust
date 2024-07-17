@@ -1,6 +1,4 @@
-import 'dart:convert';
 
-import 'package:teller_trust/model/quick_pay_transaction_history.dart';
 import 'package:teller_trust/model/required_field_model.dart';
 
 class TransactionHistoryModel {

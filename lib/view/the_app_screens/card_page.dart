@@ -45,7 +45,7 @@ class _CardPageState extends State<CardPage> {
               right: 0,
               height: 230,
               child: Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: AppColors.darkGreen,
                   borderRadius:
                       BorderRadius.vertical(bottom: Radius.circular(30)),
@@ -66,7 +66,7 @@ class _CardPageState extends State<CardPage> {
                 child: Column(
                   children: [
                     cardTopContainer(),
-                    SizedBox(height: 10), // Add some spacing
+                    const SizedBox(height: 10), // Add some spacing
                     cardTabController(),
                   ],
                 ),
@@ -110,7 +110,7 @@ class _CardPageState extends State<CardPage> {
               ],
             ),
           ),
-          Container(
+          SizedBox(
             height: AppUtils.deviceScreenSize(context).height -
                 200, // Set an appropriate height
             width: AppUtils.deviceScreenSize(context).width,
@@ -125,21 +125,21 @@ class _CardPageState extends State<CardPage> {
   }
 
   Widget cardTopContainer() {
-    return Container(
+    return SizedBox(
       height: 40,
       width: AppUtils.deviceScreenSize(context).width,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          CustomText(
+          const CustomText(
             text: "Card",
             color: AppColors.white,
             size: 24,
             weight: FontWeight.bold,
           ),
           CircleAvatar(
-            child: SvgPicture.asset(AppIcons.notification),
             backgroundColor: AppColors.lightPrimary,
+            child: SvgPicture.asset(AppIcons.notification),
           )
         ],
       ),
@@ -157,7 +157,7 @@ class _CardPageState extends State<CardPage> {
                 //color: Colors.grey[300],
                 //border: Border.all(color: AppColors.lightPrimaryGreen),
                 borderRadius: BorderRadius.circular(20.0),
-                image: DecorationImage(
+                image: const DecorationImage(
                     image: AssetImage(AppImages.virtualCardStraight),
                     fit: BoxFit.cover)),
           ),
@@ -197,7 +197,7 @@ class _CardPageState extends State<CardPage> {
                 //color: Colors.grey[300],
                 //border: Border.all(color: AppColors.lightPrimaryGreen),
                 borderRadius: BorderRadius.circular(20.0),
-                image: DecorationImage(
+                image: const DecorationImage(
                     image: AssetImage(AppImages.physicalCardStraight),
                     fit: BoxFit.fill)),
           ),
@@ -210,8 +210,8 @@ class _CardPageState extends State<CardPage> {
                       BorderRadius.vertical(top: Radius.circular(20.0)),
                 ),
                 context: context,
-                builder: (context) => Padding(
-                  padding: const EdgeInsets.only(top: 100.0),
+                builder: (context) => const Padding(
+                  padding: EdgeInsets.only(top: 100.0),
                   child: TellaCardRequest(),
                 ),
               );

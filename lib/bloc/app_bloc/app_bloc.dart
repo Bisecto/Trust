@@ -4,16 +4,11 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meta/meta.dart';
 import 'package:teller_trust/model/customer_profile.dart';
-import 'package:teller_trust/model/personal_profile.dart';
-import 'package:teller_trust/model/wallet_info.dart';
 import 'package:teller_trust/repository/app_repository.dart';
 import 'package:teller_trust/res/apis.dart';
 
-import '../../model/category_model.dart';
 import '../../model/transactionHistory.dart';
-import '../../model/user.dart';
 import '../../utills/app_utils.dart';
 import '../../utills/constants/loading_dialog.dart';
 import '../../utills/shared_preferences.dart';
@@ -47,7 +42,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         accessToken: accessToken,
       );
       var userTransactionList = await appRepository.appGetRequest(
-        AppApis.listTransaction+"?page=1&pageSize=5",
+        "${AppApis.listTransaction}?page=1&pageSize=5",
         accessToken: accessToken,
       );
       print(userTransactionList.body);
@@ -72,12 +67,12 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     // }
   }
 
-  void updateData(CustomerProfile _customerProfile,TransactionHistoryModel _transactionHistoryModel) {
-    customerProfile = _customerProfile;
+  void updateData(CustomerProfile customerProfile,TransactionHistoryModel transactionHistoryModel) {
+    customerProfile = customerProfile;
     //print(customerProfile.customerAccount);
-    transactionHistoryModel = _transactionHistoryModel;
+    transactionHistoryModel = transactionHistoryModel;
     //print(tr)
-    emit(SuccessState(customerProfile!,_transactionHistoryModel));
+    emit(SuccessState(customerProfile,transactionHistoryModel));
   }
 
   Future<FutureOr<void>> addWithdrawalAccount(
@@ -107,11 +102,11 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       print(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
         var profileResponse = await appRepository.appGetRequest(
-          AppApis.userProfile+"?page=1&pageSize=5",
+          "${AppApis.userProfile}?page=1&pageSize=5",
           accessToken: accessToken,
         );
         var userTransactionList = await appRepository.appGetRequest(
-          AppApis.listTransaction+"?page=1&pageSize=5",
+          "${AppApis.listTransaction}?page=1&pageSize=5",
           accessToken: accessToken,
         );
         print(userTransactionList.body);

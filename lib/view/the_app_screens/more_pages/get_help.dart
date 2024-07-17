@@ -6,7 +6,6 @@ import 'package:teller_trust/res/app_colors.dart';
 import '../../../res/app_icons.dart';
 import '../../../utills/custom_theme.dart';
 import '../../widgets/appBar_widget.dart';
-import '../../widgets/app_custom_text.dart';
 import '../../widgets/custom_container.dart';
 
 class GetHelp extends StatefulWidget {
@@ -34,13 +33,13 @@ class _GetHelpState extends State<GetHelp> {
 
       body: Column(
         children: [
-          CustomAppBar(
+          const CustomAppBar(
             title: "Get Help",
             mainColor: AppColors.lightPurple,
             subColor: AppColors.purple,
           ),
           Padding(
-            padding: EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(20.0),
             child: Column(
               children: [
                 CustomContainerFirTitleDescIcon(

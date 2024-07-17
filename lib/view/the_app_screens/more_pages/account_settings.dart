@@ -7,22 +7,17 @@ import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/view/the_app_screens/kyc_verification/kyc_intro_page.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/change_password.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/change_pin/old_pin.dart';
-import 'package:teller_trust/view/the_app_screens/more_pages/kyc_verification.dart';
-import 'package:teller_trust/view/the_app_screens/more_pages/profile_details.dart';
-import 'package:teller_trust/view/the_app_screens/more_pages/withdrawal_account.dart';
 
-import '../../../model/user.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/app_router.dart';
 import '../../../utills/app_navigator.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/custom_theme.dart';
 import '../../widgets/appBar_widget.dart';
-import '../../widgets/app_custom_text.dart';
 import '../../widgets/custom_container.dart';
 
 class AccountSetting extends StatefulWidget {
-  AccountSetting({
+  const AccountSetting({
     super.key,
   });
 
@@ -43,7 +38,7 @@ class _AccountSettingState extends State<AccountSetting> {
   Widget build(BuildContext context) {
     final themeContext = Provider.of<CustomThemeState>(context);
     final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
-    _buildSwitchToggle() {
+    buildSwitchToggle() {
       return CupertinoSwitch(
           value: themeContext.adaptiveThemeMode.isDark,
           activeColor:
@@ -126,14 +121,14 @@ class _AccountSettingState extends State<AccountSetting> {
                       isSwitched: isSwitched,
                       toggleSwitch: _toggleSwitch,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     BuildListTile(
                       icon: AppIcons.darkMode,
                       title: "Enable Dark Mode",
                       onPressed: null,
-                      trailingWidget: _buildSwitchToggle(),
+                      trailingWidget: buildSwitchToggle(),
                     ),
                     const CustomContainerFirTitleDesc(
                         title: "Close Account",
@@ -205,7 +200,7 @@ class BuildListTile extends StatelessWidget {
               subtitle: subtitle != null
                   ? Text(
                       subtitle!,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: AppColors.grey,
                         fontSize: 14,
                       ),

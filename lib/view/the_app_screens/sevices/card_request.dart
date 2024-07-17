@@ -43,14 +43,14 @@ class _TellaCardRequestState extends State<TellaCardRequest> {
                   SvgPicture.asset(AppIcons.cancel),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               SvgPicture.asset(
                 AppIcons.deliveryFee,
                 height: 50,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               DropDown(
@@ -85,7 +85,7 @@ class _TellaCardRequestState extends State<TellaCardRequest> {
                         controller: _houseDetailsController,
                         validator:
                         AppValidator.validateTextfield,
-                        widget: Icon(Icons.house),
+                        widget: const Icon(Icons.house),
                         borderColor: _houseDetailsController.text.isNotEmpty?AppColors.green:AppColors.grey,
 
                       ),
@@ -96,7 +96,7 @@ class _TellaCardRequestState extends State<TellaCardRequest> {
                         AppValidator.validatePassword,
                         controller: _streetDetailsController,
                         hint: 'Add Street details Here',
-                        widget: Icon(Icons.streetview),
+                        widget: const Icon(Icons.streetview),
                         borderColor: _streetDetailsController.text.isNotEmpty?AppColors.green:AppColors.grey,
 
                       ), CustomTextFormField(
@@ -105,7 +105,7 @@ class _TellaCardRequestState extends State<TellaCardRequest> {
                         AppValidator.validatePassword,
                         controller: _landmarkDetailsController,
                         hint: 'Any Landmark?',
-                        widget: Icon(Icons.location_on),
+                        widget: const Icon(Icons.location_on),
                         borderColor: _landmarkDetailsController.text.isNotEmpty?AppColors.green:AppColors.grey,
 
                       ),
@@ -115,7 +115,7 @@ class _TellaCardRequestState extends State<TellaCardRequest> {
                         AppValidator.validatePassword,
                         controller: _landmarkDetailsController,
                         hint: 'Phone Number',
-                        widget: Icon(Icons.phone_in_talk),
+                        widget: const Icon(Icons.phone_in_talk),
                         borderColor: _landmarkDetailsController.text.isNotEmpty?AppColors.green:AppColors.grey,
 
                       ),

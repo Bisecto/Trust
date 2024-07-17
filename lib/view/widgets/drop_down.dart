@@ -17,7 +17,7 @@ class DropDown extends StatefulWidget {
   final bool showBorder;
   final double borderRadius;
 
-  DropDown({
+  const DropDown({
     Key? key,
     required this.selectedValue,
     this.label = '',

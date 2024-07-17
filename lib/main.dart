@@ -28,7 +28,7 @@ void main() async {
           create: (context) => ProductBloc(),
         ),
         ChangeNotifierProvider<CustomThemeState>(
-          create: (_) => CustomThemeState(adaptiveThemeMode!),
+          create: (_) => CustomThemeState(adaptiveThemeMode),
         ),
       ],
       child: MyApp(
@@ -41,7 +41,7 @@ void main() async {
 class MyApp extends StatefulWidget {
   final AdaptiveThemeMode? adaptiveThemeMode;
 
-  MyApp({Key? key, required this.adaptiveThemeMode}) : super(key: key);
+  const MyApp({Key? key, required this.adaptiveThemeMode}) : super(key: key);
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -88,13 +88,14 @@ class _MyAppState extends State<MyApp> {
     ));
 
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.0)),
+      data: MediaQuery.of(context)
+          .copyWith(textScaler: const TextScaler.linear(1.0)),
       child: AdaptiveTheme(
         light: ThemeData(
           brightness: Brightness.light,
           primarySwatch: Colors.green,
           fontFamily: "CeraPro",
-          appBarTheme: AppBarTheme(
+          appBarTheme: const AppBarTheme(
             systemOverlayStyle: SystemUiOverlayStyle.dark,
           ),
         ),
@@ -102,7 +103,7 @@ class _MyAppState extends State<MyApp> {
           brightness: Brightness.dark,
           primarySwatch: Colors.green,
           fontFamily: "CeraPro",
-          appBarTheme: AppBarTheme(
+          appBarTheme: const AppBarTheme(
             systemOverlayStyle: SystemUiOverlayStyle.light,
           ),
         ),
@@ -114,7 +115,7 @@ class _MyAppState extends State<MyApp> {
           theme: theme,
           darkTheme: darkTheme,
           home: _connected
-              ? SplashScreen()
+              ? const SplashScreen()
               : No_internet_Page(onRetry: _checkConnectivity),
         ),
       ),

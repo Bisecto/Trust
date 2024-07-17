@@ -1,20 +1,16 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:teller_trust/model/category_model.dart' as mainCategory;
-import 'package:teller_trust/model/quick_access_model.dart';
 import 'package:teller_trust/view/important_pages/dialog_box.dart';
-import 'package:teller_trust/view/widgets/drop_down.dart';
 
 import '../../../bloc/product_bloc/product_bloc.dart';
 import '../../../model/service_model.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/app_icons.dart';
-import '../../../res/app_list.dart';
 import '../../../utills/app_navigator.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/app_validator.dart';
@@ -73,7 +69,7 @@ class _DataPurchaseState extends State<DataPurchase> {
             color: theme.isDark
                 ? AppColors.darkModeBackgroundColor
                 : AppColors.white,
-            borderRadius: BorderRadius.only(
+            borderRadius: const BorderRadius.only(
                 topRight: Radius.circular(10), topLeft: Radius.circular(10))),
         child: SingleChildScrollView(
           child: Padding(
@@ -148,7 +144,7 @@ class _DataPurchaseState extends State<DataPurchase> {
                                   color: theme.isDark
                                       ? AppColors.darkModeBackgroundColor
                                       : AppColors.white,
-                                  borderRadius: BorderRadius.only(
+                                  borderRadius: const BorderRadius.only(
                                       topRight: Radius.circular(10),
                                       topLeft: Radius.circular(10))),
                               child: Padding(
@@ -172,7 +168,7 @@ class _DataPurchaseState extends State<DataPurchase> {
                                             height: 50,
                                             width: double.infinity,
                                             color: Colors.grey[300],
-                                            child: Center(
+                                            child: const Center(
                                                 child:
                                                     CircularProgressIndicator()),
                                           );
@@ -205,7 +201,7 @@ class _DataPurchaseState extends State<DataPurchase> {
                                             onTap: () {
                                               Navigator.pop(context);
                                             },
-                                            child: Icon(
+                                            child: const Icon(
                                               Icons.cancel,
                                               color: Colors.grey,
                                             ),
@@ -393,7 +389,7 @@ class _DataPurchaseState extends State<DataPurchase> {
                                             ? AppColors.green
                                             : AppColors.grey,
                                       ),
-                                      Container(
+                                      SizedBox(
                                         height: 310,
                                         child: PaymentMethodScreen(
                                           amtToPay:
@@ -514,7 +510,7 @@ class _DataPurchaseState extends State<DataPurchase> {
                                         textColor: AppColors.white,
                                         borderRadius: 10,
                                       ),
-                                      SizedBox(height: 20,)
+                                      const SizedBox(height: 20,)
                                       ///Remember to add beneficiary
                                       // FormButton(
                                       //   onPressed: () async {
@@ -713,7 +709,7 @@ class _DataPurchaseState extends State<DataPurchase> {
                   backgroundImage: NetworkImage(image),
                   //child: Image.asset(image,height: 20,width: 20,),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 5,
                 ),
                 if (selectedNetwork == name.toLowerCase())
@@ -761,7 +757,7 @@ class DataPlan extends StatelessWidget {
   final AdaptiveThemeMode theme;
   final Function(String, String, String) onDataPlanSelected;
 
-  DataPlan({
+  const DataPlan({
     Key? key,
     required this.serviceId,
     required this.categoryId,
@@ -783,7 +779,7 @@ class DataPlan extends StatelessWidget {
                     color: theme.isDark
                         ? AppColors.darkModeBackgroundColor
                         : AppColors.white,
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                         topRight: Radius.circular(10),
                         topLeft: Radius.circular(10))),
                 child: Padding(
@@ -807,7 +803,7 @@ class DataPlan extends StatelessWidget {
                               height: 50,
                               width: double.infinity,
                               color: Colors.grey[300],
-                              child: Center(
+                              child: const Center(
                                   child:
                                   CircularProgressIndicator()),
                             );
@@ -840,7 +836,7 @@ class DataPlan extends StatelessWidget {
                               onTap: () {
                                 Navigator.pop(context);
                               },
-                              child: Icon(
+                              child: const Icon(
                                 Icons.cancel,
                                 color: Colors.grey,
                                 size: 30,
@@ -873,7 +869,7 @@ class DataPlanList extends StatefulWidget {
   final String serviceId;
   final Function(String, String, String) onDataPlanSelected;
 
-  DataPlanList({
+  const DataPlanList({
     Key? key,
     required this.serviceId,
     required this.categoryId,
@@ -907,7 +903,7 @@ class _DataPlanListState extends State<DataPlanList> {
             label: '',
             controller: _searchController,
             validator: AppValidator.validateAccountNumberfield,
-            widget:Icon( Icons.search),
+            widget:const Icon( Icons.search),
           ),
           Expanded(
             child: BlocBuilder<ProductBloc, ProductState>(
@@ -916,7 +912,7 @@ class _DataPlanListState extends State<DataPlanList> {
                 if (state is ProductLoadingState) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (state is ProductSuccessState) {
-                  final product = state as ProductSuccessState;
+                  final product = state;
                   return ListView.builder(
                     itemCount: product.productModel.data.items.length,
                     itemBuilder: (context, index) {
@@ -948,14 +944,14 @@ class _DataPlanListState extends State<DataPlanList> {
                               ),
                             ],
                           ),
-                          shape:  RoundedRectangleBorder( side: BorderSide(color: Colors.grey),borderRadius: BorderRadius.circular(5),)
+                          shape:  RoundedRectangleBorder( side: const BorderSide(color: Colors.grey),borderRadius: BorderRadius.circular(5),)
                           //shape: ShapeBorder(),
                         ),
                       );
                     },
                   );
                 } else if (state is ProductErrorState) {
-                  final error = state as ProductErrorState;
+                  final error = state;
                   return Center(
                     child: Text(error.error),
                   );
