@@ -28,7 +28,6 @@ dependencies:
   webview_flutter: ^2.0.13
   modal_bottom_sheet: ^3.0.0-pre
   pin_plus_keyboard: ^2.0.6
-  flutter_svg: ^1.0.3
   persistent_bottom_nav_bar: ^4.0.2
   device_info_plus: any # specify a version if known
   local_auth: ^2.1.8
@@ -52,6 +51,8 @@ dependencies:
   image_picker: ^1.1.1
   either_dart: ^1.0.0
   flutter_dotenv: ^5.1.0
+  flutter_svg: ^2.0.10+1
+  percent_indicator: ^4.2.3
 
 dev_dependencies:
   flutter_test:
@@ -68,3 +69,4 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/animations/
+    - assets/icons/networkCenter/

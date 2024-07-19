@@ -45,6 +45,16 @@ class AppRouter {
 
   static const String chooseLocation = "/choose-location-page";
 
+  // network center screens
+  static const String networkMainPage = '/network-main-page';
+  static const String airtimeNetworkPage = '/airtime-network-page';
+  static const String dataNetworkPage = '/data-network-page';
+  static const String electricityNetworkPage = '/electricity-network-page';
+  static const String bettingNetworkPage = '/betting-network-page';
+  static const String internetNetworkPage = '/internet-network-page';
+  static const String cableTVNetworkPage = '/cable-tv-network-page';
+  static const String bankNetworkPage = '/bank-network-page';
+
   Route onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
       case splashScreen:

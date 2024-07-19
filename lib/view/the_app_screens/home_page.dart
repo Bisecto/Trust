@@ -14,6 +14,7 @@ import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/utills/app_navigator.dart';
 import 'package:teller_trust/utills/app_utils.dart';
 import 'package:teller_trust/utills/shared_preferences.dart';
+import 'package:teller_trust/view/networkCenter/pages/network_center_main_page.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/add_fundz.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/airtime.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/cable_purchase.dart';
@@ -251,7 +252,15 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Row(
                     children: [
-                      SvgPicture.asset(AppIcons.network),
+                      InkWell(
+                        onTap: () {
+                          AppNavigator.pushAndStackPage(
+                            context,
+                            page: const NetworkCenterMainPage(),
+                          );
+                        },
+                        child: SvgPicture.asset(AppIcons.network),
+                      ),
                       const SizedBox(
                         width: 10,
                       ),
@@ -778,7 +787,8 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                       context: context,
                                       builder: (context) => Padding(
-                                        padding: const EdgeInsets.only(top: 100.0),
+                                        padding:
+                                            const EdgeInsets.only(top: 100.0),
                                         child: AddFunds(
                                           customerAccountModel: customerAccount,
                                         ),
@@ -1183,8 +1193,7 @@ class _HomePageState extends State<HomePage> {
                                                             order
                                                                 ?.requiredFields
                                                                 .phoneNumber ??
-                                                            transaction
-                                                                .type,
+                                                            transaction.type,
                                                         size: 10,
                                                         color: theme.isDark
                                                             ? AppColors
@@ -1639,7 +1648,9 @@ class _HomePageState extends State<HomePage> {
     return Container(
       height: 36,
       decoration: BoxDecoration(
-          color: accNumber == '***' ? AppColors.lightOrange : const Color(0xFFC2F6AE),
+          color: accNumber == '***'
+              ? AppColors.lightOrange
+              : const Color(0xFFC2F6AE),
           borderRadius: BorderRadius.circular(10)),
       child: Padding(
         padding: const EdgeInsets.all(5.0),
