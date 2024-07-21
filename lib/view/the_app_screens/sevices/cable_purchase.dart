@@ -749,7 +749,9 @@ class _CablePurchaseState extends State<CablePurchase> {
                                                   .showMaterialModalBottomSheet(
                                                       backgroundColor:
                                                           Colors.transparent,
-                                                      shape:
+                                                  isDismissible: true,
+
+                                                  shape:
                                                           const RoundedRectangleBorder(
                                                         borderRadius:
                                                             BorderRadius.vertical(

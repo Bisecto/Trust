@@ -455,7 +455,9 @@ class _DataPurchaseState extends State<DataPurchase> {
                                                   .showMaterialModalBottomSheet(
                                                       backgroundColor:
                                                           Colors.transparent,
-                                                      shape:
+                                                  isDismissible: true,
+
+                                                  shape:
                                                           const RoundedRectangleBorder(
                                                         borderRadius:
                                                             BorderRadius.vertical(

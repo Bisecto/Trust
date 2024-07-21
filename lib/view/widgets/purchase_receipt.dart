@@ -41,7 +41,9 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
       body: Screenshot(
         controller: screenshotController,
         child: Container(
-          height: AppUtils.deviceScreenSize(context).height,
+          height: AppUtils
+              .deviceScreenSize(context)
+              .height,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
@@ -159,13 +161,14 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
           const SizedBox(height: 20),
           const Divider(),
           const SizedBox(height: 12),
-          buildDetailRow('Transaction Reference', widget.transaction.reference, true),
+          buildDetailRow(
+              'Transaction Reference', widget.transaction.reference, true),
           const SizedBox(height: 12),
           buildDetailRow('Status', widget.transaction.status.toUpperCase()),
           const SizedBox(height: 20),
           Center(
             child: TextStyles.textHeadings(
-              textValue: 'Tellatrust',
+              textValue: 'TellaTrust',
               textColor: AppColors.textColor2,
             ),
           ),
@@ -176,34 +179,38 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
 
   Widget buildDetailRow(String label, String value, [bool isCopyable = false]) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
         CustomText(text: label, size: 12, color: AppColors.textColor2),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SizedBox(
-              width: isCopyable
-                  ? AppUtils.deviceScreenSize(context).width / 1.5
-                  : null,
-              child: CustomText(
-                text: value,
-                size: 14,
-                color: AppColors.black,
-                maxLines: 2,
-              ),
-            ),
-            if (isCopyable)
-              if (!isSharingPdf)
-                GestureDetector(
-                  onTap: () {
-                    AppUtils().copyToClipboard(value, context);
-                  },
-                  child: SvgPicture.asset(AppIcons.copy2),
-                ),
-          ],
-        ),
-      ],
+    Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+    SizedBox(
+    width:
+    //isCopyable
+
+    // ?
+    AppUtils.deviceScreenSize(context).width / 1.5,
+
+    //  : null,
+    child: CustomText(
+    text: value,
+    size: 14,
+    color: AppColors.black,
+    maxLines: 2,
+    ),
+    ),
+    if (isCopyable)
+    if (!isSharingPdf)
+    GestureDetector(
+    onTap: () {
+    AppUtils().copyToClipboard(value, context);
+    },
+    child: SvgPicture.asset(AppIcons.copy2),
+    ),
+    ],
+    ),
+    ],
     );
   }
 
@@ -308,11 +315,15 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
 
       var freeSpace = await DiskSpace.getFreeDiskSpace;
       if (freeSpace != null && freeSpace > 10.00) {
-        await screenshotController.capture(delay: const Duration(milliseconds: 5)).then((Uint8List? image) async {
+        await screenshotController.capture(
+            delay: const Duration(milliseconds: 5)).then((
+            Uint8List? image) async {
           if (image != null) {
-            var path = await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_DOWNLOADS);
+            var path = await ExternalPath.getExternalStoragePublicDirectory(
+                ExternalPath.DIRECTORY_DOWNLOADS);
 
-            final imagePath = await File('$path/${title + getCurrentDate()}.png').create();
+            final imagePath = await File(
+                '$path/${title + getCurrentDate()}.png').create();
             await imagePath.writeAsBytes(image);
 
             final Uint8List imageData = File(imagePath.path).readAsBytesSync();
@@ -321,7 +332,8 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
             final PdfDocument document = PdfDocument();
             final PdfPage page = document.pages.add();
             final Size pageSize = page.getClientSize();
-            page.graphics.drawImage(pdfBitmap, Rect.fromLTWH(0, 0, pageSize.width, pageSize.height));
+            page.graphics.drawImage(pdfBitmap,
+                Rect.fromLTWH(0, 0, pageSize.width, pageSize.height));
 
             var pdfPath = '$path/${title + getCurrentDate()}.pdf';
             await File(pdfPath).writeAsBytes(await document.save());
@@ -332,7 +344,10 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
               targetFile.deleteSync(recursive: true);
             }
 
-            await Share.shareXFiles([XFile(pdfPath, mimeType: 'application/pdf', name: '${title + getCurrentDate()}.pdf')]);
+            await Share.shareXFiles([
+              XFile(pdfPath, mimeType: 'application/pdf',
+                  name: '${title + getCurrentDate()}.pdf')
+            ]);
 
             final targetFile2 = File(pdfPath);
             if (targetFile2.existsSync()) {
@@ -391,20 +406,26 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
 
         var freeSpace = await DiskSpace.getFreeDiskSpace;
         if (freeSpace != null && freeSpace > 10.00) {
-          await screenshotController.capture(delay: const Duration(milliseconds: 5)).then((Uint8List? image) async {
+          await screenshotController.capture(
+              delay: const Duration(milliseconds: 5)).then((
+              Uint8List? image) async {
             if (image != null) {
-              var path = await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_DOWNLOADS);
+              var path = await ExternalPath.getExternalStoragePublicDirectory(
+                  ExternalPath.DIRECTORY_DOWNLOADS);
 
-              final imagePath = await File('$path/${title + getCurrentDate()}.png').create();
+              final imagePath = await File(
+                  '$path/${title + getCurrentDate()}.png').create();
               await imagePath.writeAsBytes(image);
 
-              final Uint8List imageData = File(imagePath.path).readAsBytesSync();
+              final Uint8List imageData = File(imagePath.path)
+                  .readAsBytesSync();
               final PdfBitmap pdfBitmap = PdfBitmap(imageData);
 
               final PdfDocument document = PdfDocument();
               final PdfPage page = document.pages.add();
               final Size pageSize = page.getClientSize();
-              page.graphics.drawImage(pdfBitmap, Rect.fromLTWH(0, 0, pageSize.width, pageSize.height));
+              page.graphics.drawImage(pdfBitmap,
+                  Rect.fromLTWH(0, 0, pageSize.width, pageSize.height));
 
               var pdfPath = '$path/${title + getCurrentDate()}.pdf';
               await File(pdfPath).writeAsBytes(await document.save());

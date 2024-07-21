@@ -17,32 +17,32 @@ class CustomNetworkCenterItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SvgPicture.asset(
-            imagePath,
-            height: 25.0,
-            width: 25.0,
-          ),
-          const AppSpacer(
-            width: 10.0,
-          ),
-          Text(itemName),
-          Expanded(
-            child: Align(
-              alignment: AlignmentDirectional.topEnd,
-              child: InkWell(
-                onTap: navigationCallback,
+      child: InkWell(
+        onTap: navigationCallback,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              imagePath,
+              height: 25.0,
+              width: 25.0,
+            ),
+            const AppSpacer(
+              width: 10.0,
+            ),
+            Text(itemName),
+            Expanded(
+              child: Align(
+                alignment: AlignmentDirectional.topEnd,
                 child: const Icon(
                   Icons.arrow_forward_ios,
                   size: 16,
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

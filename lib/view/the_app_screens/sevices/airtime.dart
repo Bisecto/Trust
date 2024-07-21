@@ -484,6 +484,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                                   .showMaterialModalBottomSheet(
                                                       backgroundColor:
                                                           Colors.transparent,
+                                                      isDismissible: true,
                                                       shape:
                                                           const RoundedRectangleBorder(
                                                         borderRadius:

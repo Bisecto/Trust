@@ -38,7 +38,7 @@ class _LegalState extends State<Legal> {
           ),
           InkWell(
             onTap: ()  async {
-              await EasyLauncher.url(url: "http://tellatrust.com/legal/terms-and-conditions");            },
+              await EasyLauncher.url(url: "https://tellatrust.com/legal/terms-and-conditions");            },
             child: Padding(
               padding: const EdgeInsets.all(0.0),
               child: Column(
@@ -52,7 +52,7 @@ class _LegalState extends State<Legal> {
                   ),
                   InkWell(
                     onTap: ()  async {
-                      await EasyLauncher.url(url: "http://tellatrust.com/legal/privacy-policy");            },
+                      await EasyLauncher.url(url: "https://tellatrust.com/legal/privacy-policy");            },
                     child: const Padding(
                       padding: EdgeInsets.all(10.0),
                       child: CustomContainerWithRightIcon(
@@ -70,7 +70,7 @@ class _LegalState extends State<Legal> {
                   ),
                   InkWell(
                     onTap: ()  async {
-                      await EasyLauncher.url(url: "http://tellatrust.com");            },
+                      await EasyLauncher.url(url: "https://tellatrust.com");            },
 
                     child: const Padding(
                       padding: EdgeInsets.all(10.0),
