@@ -469,11 +469,11 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                             MainAxisAlignment.spaceEvenly,
                                         children: [
                                           //selectAmount("2000"),
-                                          //selectAmount("1000", theme),
+                                          selectAmount("1000", theme),
                                           selectAmount("2000", theme),
                                           selectAmount("3000", theme),
-                                          selectAmount("4000", theme),
                                           selectAmount("5000", theme),
+                                          //selectAmount("5000", theme),
                                         ],
                                       ),
                                       CustomTextFormField(

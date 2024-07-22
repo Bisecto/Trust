@@ -394,11 +394,11 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                             MainAxisAlignment.spaceEvenly,
                                         children: [
                                           //selectAmount("2000"),
-                                          selectAmount("2000", theme),
-                                          selectAmount("1500", theme),
-                                          selectAmount("1000", theme),
-                                          selectAmount("500", theme),
                                           selectAmount("200", theme),
+                                          selectAmount("500", theme),
+                                          selectAmount("1000", theme),
+                                          selectAmount("1500", theme),
+                                          selectAmount("2000", theme),
                                         ],
                                       ),
                                       CustomTextFormField(
