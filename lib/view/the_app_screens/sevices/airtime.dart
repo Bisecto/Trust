@@ -261,21 +261,21 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                   List<serviceModel.Service> services =
                                       serviceItem.data.services;
                                   if (isInitial) {
-                                    _handleNetworkSelect(services
-                                        .firstWhere(
-                                            (service) =>
-                                                service.name.toLowerCase() ==
-                                                'mtn'.toLowerCase(),
-                                            orElse: () => serviceModel.Service(
-                                                image: '',
-                                                id: '',
-                                                name: '',
-                                                slug: '',
-                                                category: serviceModel.Category(
-                                                    id: '',
-                                                    name: '',
-                                                    slug: '')))
-                                        .id);
+                                    // _handleNetworkSelect(services
+                                    //     .firstWhere(
+                                    //         (service) =>
+                                    //             service.name.toLowerCase() ==
+                                    //             'mtn'.toLowerCase(),
+                                    //         orElse: () => serviceModel.Service(
+                                    //             image: '',
+                                    //             id: '',
+                                    //             name: '',
+                                    //             slug: '',
+                                    //             category: serviceModel.Category(
+                                    //                 id: '',
+                                    //                 name: '',
+                                    //                 slug: '')))
+                                    //     .id);
                                   }
                                   //Use user data here
                                   return SizedBox(
@@ -460,6 +460,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
 
                                           if (_formKey.currentState!
                                               .validate()) {
+                                            if(selectedServiceID!=''){
                                             if (_selectedPaymentMethod !=
                                                 'wallet') {
                                               var transactionPin = '';
@@ -530,7 +531,13 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                                         false));
                                               }
                                             }
-                                          }
+                                          }else{
+                                              showToast(
+                                                  context: context,
+                                                  title: 'Info',
+                                                  subtitle: 'Please select a network provider',
+                                                  type: ToastMessageType.info);
+                                            }}
                                         },
                                         disableButton: (!isPaymentAllowed ||
                                             !_beneficiaryController
@@ -558,7 +565,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
 
   final _formKey = GlobalKey<FormState>();
 
-  String selectedNetwork = "mtn";
+  String selectedNetwork = "";
   final _beneficiaryController = TextEditingController();
   final _selectedAmtController = TextEditingController();
 
