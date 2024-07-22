@@ -198,7 +198,7 @@ class _MorePageState extends State<MorePage> {
                           page: const AccountSetting());
                     },
                     child: itemContainer(
-                        AppIcons.accounsetting, 'Account Setting', theme)),
+                        AppIcons.accounsetting, 'Account Settings', theme)),
                 // SvgPicture.asset(AppIcons.accounsetting)),
                 InkWell(
                     onTap: () {

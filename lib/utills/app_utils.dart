@@ -136,7 +136,7 @@ class AppUtils {
   static String formateSimpleDate({String? dateTime}) {
     var inputDate = DateTime.parse(dateTime!);
 
-    var outputFormat = DateFormat('MMM d, hh:mm a');
+    var outputFormat = DateFormat('yyyy MMM d, hh:mm a');
     var outputDate = outputFormat.format(inputDate);
 
     return outputDate;

@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> {
   bool selector = true;
   bool isMoneyBlocked = false;
   String firstname = "";
-  String lastname = "";
+  //String lastname = "";
 
   @override
   void initState() {
@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> getName() async {
     firstname = await SharedPref.getString('firstName');
-    lastname = await SharedPref.getString('lastName');
+    //lastname = await SharedPref.getString('lastName');
     isMoneyBlocked = await SharedPref.getBool('isMoneyBlocked') ?? false;
     print(isMoneyBlocked);
     print(isMoneyBlocked);
@@ -240,7 +240,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                           TextStyles.textHeadings(
                               textValue:
-                                  "${AppUtils.formatString(data: personalInfo.lastName)} ${AppUtils.formatString(data: personalInfo.firstName)}",
+                                  "${AppUtils.formatString(data: personalInfo.firstName)}",
                               textColor: theme.isDark
                                   ? AppColors.darkModeBackgroundMainTextColor
                                   : AppColors.textColor,
@@ -310,7 +310,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         TextStyles.textHeadings(
                             textValue:
-                                "${AppUtils.formatString(data: lastname)} ${AppUtils.formatString(data: firstname)}",
+                                "${AppUtils.formatString(data: firstname)}",
                             textColor: theme.isDark
                                 ? AppColors.darkModeBackgroundMainTextColor
                                 : AppColors.textColor,
@@ -1132,21 +1132,28 @@ class _HomePageState extends State<HomePage> {
                                               children: [
                                                 CircleAvatar(
                                                   backgroundImage: order
-                                                              ?.product !=
+                                                               !=
                                                           null
                                                       ? NetworkImage(
-                                                          order!.product!.image)
+                                                          order.product!.image)
                                                       : null,
-                                                  child: order?.product ==
+                                                  child: order ==
                                                               null &&
-                                                          transaction.type
+                                                          (transaction.type
                                                               .toLowerCase()
                                                               .contains(
-                                                                  'credit')
-                                                      ? const Icon(
-                                                          Icons.arrow_downward,
+                                                                  'credit')||transaction.type
+                                                              .toLowerCase()
+                                                              .contains(
+                                                              'debit'))
+                                                      ?  Icon(transaction.type
+                                                      .toLowerCase()
+                                                      .contains('credit')?
+                                                          Icons.arrow_downward:Icons.arrow_upward,
                                                           color:
-                                                              AppColors.green,
+                                                          transaction.type
+                                                              .toLowerCase()
+                                                              .contains('credit')?AppColors.green:AppColors.red,
                                                         )
                                                       : const SizedBox(),
                                                 ),
