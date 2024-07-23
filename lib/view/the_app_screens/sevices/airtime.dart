@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:teller_trust/model/service_model.dart' as serviceModel;
 import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/make_bank_transfer/bank_transfer.dart';
@@ -252,6 +253,17 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                 ),
                               ),
                             ),
+                            // Padding(
+                            //     padding: const EdgeInsets.all(15.0),
+                            //     child: Beneficiary(
+                            //       billType: 'airtime',
+                            //       onBeneficiarySelected: (phone) {
+                            //         setState(() {
+                            //           numberTextEditingControlller.text =
+                            //               phone; // Update the selected beneficiary's phone number
+                            //         });
+                            //       },
+                            //     )),
                             BlocConsumer<ProductBloc, ProductState>(
                               bloc: productBloc,
                               builder: (context, state) {
@@ -331,12 +343,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                     ),
                                   );
                                 } else {
-                                  return const CustomText(
-                                    text: "     Loading.....",
-                                    size: 15,
-                                    weight: FontWeight.bold,
-                                    color: AppColors.white,
-                                  ); // Show loading indicator or handle error state
+                                  return _loadingNetwork(); // Show loading indicator or handle error state
                                 }
                               },
                               listener: (BuildContext context,
@@ -648,6 +655,66 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
             ),
           ),
         ),
+      ),
+    );
+  }
+  Widget _loadingNetwork() {
+    return SizedBox(
+      height: 90,
+      child: ListView.builder(
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        //physics: const NeverScrollableScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 0),
+        itemCount: 8,
+        itemBuilder: (BuildContext context, int index) {
+          return Padding(
+              padding: const EdgeInsets.only(right: 10.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.2),
+                          borderRadius:
+                          const BorderRadius.all(Radius.circular(50)))),
+                  const SizedBox(height: 10),
+                  Shimmer(
+                    duration: const Duration(seconds: 1),
+                    interval: const Duration(milliseconds: 50),
+                    color: Colors.grey.withOpacity(0.5),
+                    colorOpacity: 0.5,
+                    enabled: true,
+                    direction: const ShimmerDirection.fromLTRB(),
+                    child: Container(
+                      height: 10,
+                      width: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Shimmer(
+                    duration: const Duration(seconds: 1),
+                    interval: const Duration(milliseconds: 50),
+                    color: Colors.grey.withOpacity(0.5),
+                    colorOpacity: 0.5,
+                    enabled: true,
+                    direction: ShimmerDirection.fromLTRB(),
+                    child: Container(
+                      height: 5,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.2),
+                      ),
+                    ),
+                  )
+                ],
+              ));
+        },
       ),
     );
   }

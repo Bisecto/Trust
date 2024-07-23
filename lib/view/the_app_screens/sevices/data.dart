@@ -257,12 +257,7 @@ class _DataPurchaseState extends State<DataPurchase> {
                                     ),
                                   );
                                 } else {
-                                  return const CustomText(
-                                    text: "     Loading.....",
-                                    size: 15,
-                                    weight: FontWeight.bold,
-                                    color: AppColors.white,
-                                  ); // Show loading indicator or handle error state
+                                  return _loadingNetwork(); // Show loading indicator or handle error state
                                 }
                               },
                               listener: (BuildContext context,
@@ -580,6 +575,66 @@ class _DataPurchaseState extends State<DataPurchase> {
             ),
           ),
         ),
+      ),
+    );
+  }
+  Widget _loadingNetwork() {
+    return SizedBox(
+      height: 90,
+      child: ListView.builder(
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        //physics: const NeverScrollableScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 0),
+        itemCount: 8,
+        itemBuilder: (BuildContext context, int index) {
+          return Padding(
+              padding: const EdgeInsets.only(right: 10.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.2),
+                          borderRadius:
+                          const BorderRadius.all(Radius.circular(50)))),
+                  const SizedBox(height: 10),
+                  Shimmer(
+                    duration: const Duration(seconds: 1),
+                    interval: const Duration(milliseconds: 50),
+                    color: Colors.grey.withOpacity(0.5),
+                    colorOpacity: 0.5,
+                    enabled: true,
+                    direction: const ShimmerDirection.fromLTRB(),
+                    child: Container(
+                      height: 10,
+                      width: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Shimmer(
+                    duration: const Duration(seconds: 1),
+                    interval: const Duration(milliseconds: 50),
+                    color: Colors.grey.withOpacity(0.5),
+                    colorOpacity: 0.5,
+                    enabled: true,
+                    direction: ShimmerDirection.fromLTRB(),
+                    child: Container(
+                      height: 5,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.2),
+                      ),
+                    ),
+                  )
+                ],
+              ));
+        },
       ),
     );
   }

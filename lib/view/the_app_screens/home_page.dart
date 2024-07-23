@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_carousel_slider/carousel_slider.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:teller_trust/bloc/product_bloc/product_bloc.dart';
 import 'package:teller_trust/model/personal_profile.dart';
 import 'package:teller_trust/model/wallet_info.dart';
@@ -996,18 +997,112 @@ class _HomePageState extends State<HomePage> {
             ),
           );
         } else {
-          return Center(
-            child: CustomText(
-              text: "loading.....",
-              size: 15,
-              weight: FontWeight.bold,
-              color: theme.isDark
-                  ? AppColors.darkModeBackgroundSubTextColor
-                  : AppColors.textColor,
+          return SizedBox(
+            height: 160,
+            child: GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                crossAxisSpacing: 10.0,
+                mainAxisSpacing: 5.0,
+              ),
+              itemCount: 8, //AppList().serviceItems.length,
+              itemBuilder: (context, index) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                        height: 30,
+                        width: 30,
+                        decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(0.2),
+                            borderRadius:
+                            const BorderRadius.all(Radius.circular(50)))),
+                    const SizedBox(height: 5),
+                    Shimmer(
+                      duration: const Duration(seconds: 1),
+                      interval: const Duration(milliseconds: 50),
+                      color: Colors.grey.withOpacity(0.5),
+                      colorOpacity: 0.5,
+                      enabled: true,
+                      direction: const ShimmerDirection.fromLTRB(),
+                      child: Container(
+                        height: 5,
+                        width: 30,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.2),
+                        ),
+                      ),
+                    ),
+
+
+                  ],
+                );
+              },
             ),
           ); // Show loading indicator or handle error state
         }
       },
+    );
+  }
+  Widget _loadingNetwork() {
+    return SizedBox(
+      height: 90,
+      child: ListView.builder(
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        //physics: const NeverScrollableScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 0),
+        itemCount: 8,
+        itemBuilder: (BuildContext context, int index) {
+          return Padding(
+              padding: const EdgeInsets.only(right: 10.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.2),
+                          borderRadius:
+                          const BorderRadius.all(Radius.circular(50)))),
+                  const SizedBox(height: 10),
+                  Shimmer(
+                    duration: const Duration(seconds: 1),
+                    interval: const Duration(milliseconds: 50),
+                    color: Colors.grey.withOpacity(0.5),
+                    colorOpacity: 0.5,
+                    enabled: true,
+                    direction: const ShimmerDirection.fromLTRB(),
+                    child: Container(
+                      height: 10,
+                      width: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Shimmer(
+                    duration: const Duration(seconds: 1),
+                    interval: const Duration(milliseconds: 50),
+                    color: Colors.grey.withOpacity(0.5),
+                    colorOpacity: 0.5,
+                    enabled: true,
+                    direction: ShimmerDirection.fromLTRB(),
+                    child: Container(
+                      height: 5,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.2),
+                      ),
+                    ),
+                  )
+                ],
+              ));
+        },
+      ),
     );
   }
 
