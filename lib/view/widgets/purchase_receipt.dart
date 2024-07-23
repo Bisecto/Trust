@@ -5,9 +5,11 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:disk_space_update/disk_space_update.dart';
 import 'package:external_path/external_path.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
@@ -18,6 +20,7 @@ import 'package:teller_trust/view/widgets/show_toast.dart';
 
 import '../../res/app_colors.dart';
 import '../../utills/constants/loading_dialog.dart';
+import '../../utills/custom_theme.dart';
 import '../../utills/enums/toast_mesage.dart';
 import 'app_custom_text.dart';
 
@@ -38,10 +41,17 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
   void initState() {
     // TODO: implement initState
   print(widget.transaction.toJson());
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness:
+    Brightness.dark,
+  ));
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return Scaffold(
       body: Screenshot(
         controller: screenshotController,
@@ -66,7 +76,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
               child: Column(
                 children: [
                   const SizedBox(height: 50),
-                  buildHeader(context),
+                  buildHeader(context,theme),
                   const SizedBox(height: 20),
                   buildReceiptDetails(),
                   const SizedBox(height: 20),
@@ -82,8 +92,10 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
       ),
     );
   }
+  // AdaptiveThemeMode? adaptiveThemeMode =
+  //     await AdaptiveTheme.getThemeMode() ?? AdaptiveThemeMode.light;
 
-  Widget buildHeader(BuildContext context) {
+  Widget buildHeader(BuildContext context,theme) {
     return Container(
       alignment: Alignment.center,
       child: Column(
@@ -95,6 +107,11 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                 GestureDetector(
                   onTap: () {
                     Navigator.pop(context);
+                    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+                      statusBarColor: Colors.transparent,
+                      statusBarIconBrightness:
+                      theme.isDark ? Brightness.light : Brightness.dark,
+                    ));
                   },
                   child: Container(
                     height: 30,
