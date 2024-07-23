@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
 import 'package:teller_trust/model/bank_model.dart';
 import 'package:teller_trust/repository/app_repository.dart';
 

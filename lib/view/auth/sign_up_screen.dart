@@ -16,7 +16,6 @@ import '../../res/app_strings.dart';
 import '../../utills/app_validator.dart';
 import '../../utills/custom_theme.dart';
 import '../../utills/enums/toast_mesage.dart';
-import '../important_pages/dialog_box.dart';
 import '../important_pages/not_found_page.dart';
 import '../widgets/form_button.dart';
 import '../widgets/form_input.dart';
@@ -268,7 +267,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                           _firstNameController,
                                                       validator: AppValidator
                                                           .validateTextfield,
-                                                      widget: Icon(Icons
+                                                      widget: const Icon(Icons
                                                           .person_2_outlined),
                                                       borderColor:
                                                           _firstNameController
@@ -285,7 +284,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                           _middleNameController,
                                                       // validator: AppValidator
                                                       //     .validateTextfield,
-                                                      widget: Icon(Icons
+                                                      widget: const Icon(Icons
                                                           .person_2_outlined),
                                                       borderColor:
                                                           _middleNameController
@@ -301,7 +300,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                           _surNameController,
                                                       validator: AppValidator
                                                           .validateTextfield,
-                                                      widget: Icon(Icons
+                                                      widget: const Icon(Icons
                                                           .person_2_outlined),
                                                       borderColor:
                                                           _surNameController
@@ -318,7 +317,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                       validator: AppValidator
                                                           .validateEmail,
                                                       widget:
-                                                          Icon(Icons.email_outlined),
+                                                          const Icon(Icons.email_outlined),
                                                       borderColor:
                                                           _emailController.text
                                                                   .isNotEmpty
@@ -332,7 +331,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                           _phoneController,
                                                       validator: AppValidator
                                                           .validateTextfield,
-                                                      widget: Icon(Icons
+                                                      widget: const Icon(Icons
                                                           .local_phone_outlined),
                                                       borderColor:
                                                           _phoneController.text
@@ -348,7 +347,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                       controller:
                                                           _passwordController,
                                                       hint: 'Password',
-                                                      widget: Icon(Icons.lock_outline),
+                                                      widget: const Icon(Icons.lock_outline),
                                                       borderColor:
                                                           _passwordController
                                                                   .text
@@ -516,7 +515,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           fit: BoxFit.fill,
                         ),
                         //color: AppColors.red,
-                        borderRadius: BorderRadius.only(
+                        borderRadius: const BorderRadius.only(
                             topRight: Radius.circular(20),
                             topLeft: Radius.circular(20))),
                   ),

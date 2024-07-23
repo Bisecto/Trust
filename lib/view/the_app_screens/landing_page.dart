@@ -2,20 +2,16 @@ import 'dart:async';
 
 import 'package:cross_connectivity/cross_connectivity.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:idle_detector_wrapper/idle_detector_wrapper.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/bloc/product_bloc/product_bloc.dart';
 import 'package:teller_trust/res/app_icons.dart';
-import 'package:teller_trust/res/app_list.dart';
 import 'package:teller_trust/view/important_pages/no_internet.dart';
 import 'package:teller_trust/view/the_app_screens/send_page.dart';
 
 import '../../bloc/app_bloc/app_bloc.dart';
-import '../../model/user.dart';
 import '../../res/app_colors.dart';
-import '../../res/app_images.dart';
 import '../../utills/app_navigator.dart';
 import '../../utills/custom_theme.dart';
 import '../../utills/shared_preferences.dart';
@@ -26,7 +22,7 @@ import 'home_page.dart';
 import 'more_page.dart';
 
 class LandingPage extends StatefulWidget {
-  LandingPage({super.key});
+  const LandingPage({super.key});
 
   @override
   State<LandingPage> createState() => _LandingPageState();
@@ -49,11 +45,11 @@ class _LandingPageState extends State<LandingPage> {
         Connectivity().onConnectivityChanged.listen(_handleConnectivity);
 
     landPageScreens = [
-      HomePage(),
+      const HomePage(),
       const SendPage(),
       const BillsPage(),
       const CardPage(),
-      MorePage()
+      const MorePage()
     ];
     super.initState();
   }

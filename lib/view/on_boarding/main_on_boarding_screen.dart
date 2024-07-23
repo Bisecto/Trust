@@ -13,7 +13,6 @@ import '../../utills/app_utils.dart';
 import '../../utills/custom_theme.dart';
 import '../widgets/app_custom_text.dart';
 import '../widgets/form_button.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
 class OnBoardingScreen extends StatefulWidget {
   const OnBoardingScreen({super.key});

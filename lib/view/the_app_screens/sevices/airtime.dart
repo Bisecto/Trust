@@ -1,13 +1,10 @@
 import 'dart:convert';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
-import 'package:custom_pin_screen/custom_pin_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:teller_trust/model/quick_access_model.dart';
 import 'package:teller_trust/model/service_model.dart' as serviceModel;
 import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/make_bank_transfer/bank_transfer.dart';
@@ -15,12 +12,10 @@ import 'package:teller_trust/view/widgets/purchase_receipt.dart';
 
 import '../../../bloc/product_bloc/product_bloc.dart';
 import '../../../model/category_model.dart' as categoryModel;
-import '../../../model/category_model.dart';
 import '../../../model/product_model.dart' as productMode;
 import '../../../repository/app_repository.dart';
 import '../../../res/apis.dart';
 import '../../../res/app_colors.dart';
-import '../../../res/app_list.dart';
 import '../../../utills/app_navigator.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/app_validator.dart';
@@ -108,7 +103,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
             color: theme.isDark
                 ? AppColors.darkModeBackgroundColor
                 : AppColors.white,
-            borderRadius: BorderRadius.only(
+            borderRadius: const BorderRadius.only(
                 topRight: Radius.circular(10), topLeft: Radius.circular(10))),
         child: SingleChildScrollView(
           child: Padding(
@@ -186,7 +181,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                   color: theme.isDark
                                       ? AppColors.darkModeBackgroundColor
                                       : AppColors.white,
-                                  borderRadius: BorderRadius.only(
+                                  borderRadius: const BorderRadius.only(
                                       topRight: Radius.circular(10),
                                       topLeft: Radius.circular(10))),
                               child: Padding(
@@ -212,7 +207,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                             height: 50,
                                             width: double.infinity,
                                             color: Colors.grey[300],
-                                            child: Center(
+                                            child: const Center(
                                                 child:
                                                     CircularProgressIndicator()),
                                           );
@@ -245,7 +240,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                             onTap: () {
                                               Navigator.pop(context);
                                             },
-                                            child: Icon(
+                                            child: const Icon(
                                               Icons.cancel,
                                               color: Colors.grey,
                                             ),
@@ -266,21 +261,21 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                   List<serviceModel.Service> services =
                                       serviceItem.data.services;
                                   if (isInitial) {
-                                    _handleNetworkSelect(services
-                                        .firstWhere(
-                                            (service) =>
-                                                service.name.toLowerCase() ==
-                                                'mtn'.toLowerCase(),
-                                            orElse: () => serviceModel.Service(
-                                                image: '',
-                                                id: '',
-                                                name: '',
-                                                slug: '',
-                                                category: serviceModel.Category(
-                                                    id: '',
-                                                    name: '',
-                                                    slug: '')))
-                                        .id);
+                                    // _handleNetworkSelect(services
+                                    //     .firstWhere(
+                                    //         (service) =>
+                                    //             service.name.toLowerCase() ==
+                                    //             'mtn'.toLowerCase(),
+                                    //         orElse: () => serviceModel.Service(
+                                    //             image: '',
+                                    //             id: '',
+                                    //             name: '',
+                                    //             slug: '',
+                                    //             category: serviceModel.Category(
+                                    //                 id: '',
+                                    //                 name: '',
+                                    //                 slug: '')))
+                                    //     .id);
                                   }
                                   //Use user data here
                                   return SizedBox(
@@ -391,7 +386,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                             ? AppColors.green
                                             : AppColors.grey,
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         height: 10,
                                       ),
                                       Row(
@@ -399,11 +394,11 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                             MainAxisAlignment.spaceEvenly,
                                         children: [
                                           //selectAmount("2000"),
-                                          selectAmount("2000", theme),
-                                          selectAmount("1500", theme),
-                                          selectAmount("1000", theme),
-                                          selectAmount("500", theme),
                                           selectAmount("200", theme),
+                                          selectAmount("500", theme),
+                                          selectAmount("1000", theme),
+                                          selectAmount("1500", theme),
+                                          selectAmount("2000", theme),
                                         ],
                                       ),
                                       CustomTextFormField(
@@ -422,7 +417,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                             ? AppColors.green
                                             : AppColors.grey,
                                       ),
-                                      Container(
+                                      SizedBox(
                                         height: 310,
                                         child: PaymentMethodScreen(
                                           amtToPay: _selectedAmtController
@@ -465,6 +460,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
 
                                           if (_formKey.currentState!
                                               .validate()) {
+                                            if(selectedServiceID!=''){
                                             if (_selectedPaymentMethod !=
                                                 'wallet') {
                                               var transactionPin = '';
@@ -489,6 +485,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                                   .showMaterialModalBottomSheet(
                                                       backgroundColor:
                                                           Colors.transparent,
+                                                      isDismissible: true,
                                                       shape:
                                                           const RoundedRectangleBorder(
                                                         borderRadius:
@@ -534,7 +531,13 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                                         false));
                                               }
                                             }
-                                          }
+                                          }else{
+                                              showToast(
+                                                  context: context,
+                                                  title: 'Info',
+                                                  subtitle: 'Please select a network provider',
+                                                  type: ToastMessageType.info);
+                                            }}
                                         },
                                         disableButton: (!isPaymentAllowed ||
                                             !_beneficiaryController
@@ -562,7 +565,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
 
   final _formKey = GlobalKey<FormState>();
 
-  String selectedNetwork = "mtn";
+  String selectedNetwork = "";
   final _beneficiaryController = TextEditingController();
   final _selectedAmtController = TextEditingController();
 

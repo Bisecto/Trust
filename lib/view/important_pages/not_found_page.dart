@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 
-import '../widgets/app_custom_text.dart';
 
 class NotFoundPage extends StatelessWidget {
   const NotFoundPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return   Scaffold(
+    return   const Scaffold(
       body: Center(
         child: CircularProgressIndicator(),
         // Column(

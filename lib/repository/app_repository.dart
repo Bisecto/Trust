@@ -1,9 +1,5 @@
 import 'dart:convert';
 
-import 'package:teller_trust/res/apis.dart';
-import 'package:dio/dio.dart';
-import '../model/user.dart';
-import '../res/app_strings.dart';
 import 'package:http/http.dart' as http;
 
 class AppRepository {

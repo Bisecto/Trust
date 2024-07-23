@@ -113,14 +113,14 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                     ),
                     decoration: InputDecoration(
                       prefixIcon: Padding(
-                        padding:  EdgeInsets.all(10),
+                        padding:  const EdgeInsets.all(10),
                         child: GestureDetector(
                           onTap: () {
                             if (widget.isPasswordField) {
                               _togglePasswordVisibility();
                             }
                           },
-                          child: widget.widget ?? SizedBox(),
+                          child: widget.widget ?? const SizedBox(),
                         ),
                       ),
                       suffixIcon: GestureDetector(

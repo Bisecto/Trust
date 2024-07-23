@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:otp_text_field/otp_field.dart';
-import 'package:otp_text_field/otp_field_style.dart';
-import 'package:otp_text_field/style.dart';
 
 import 'package:pin_plus_keyboard/package/controllers/pin_input_controller.dart';
 import 'package:pin_plus_keyboard/package/pin_plus_keyboard_package.dart';
 import 'package:provider/provider.dart';
-import 'package:teller_trust/res/app_router.dart';
-import 'package:teller_trust/view/important_pages/dialog_box.dart';
 
 import '../../../../bloc/auth_bloc/auth_bloc.dart';
 import '../../../../res/app_colors.dart';
-import '../../../../res/app_icons.dart';
 import '../../../../utills/app_utils.dart';
 import '../../../../utills/custom_theme.dart';
 import '../../../../utills/enums/toast_mesage.dart';
@@ -55,7 +50,7 @@ class _ChangeConfirmPinState extends State<ChangeConfirmPin> {
 
         body: Column(
           children: [
-             CustomAppBar(
+             const CustomAppBar(
                title: "Change 4-digit Pin",
             ),
             BlocConsumer<AuthBloc, AuthState>(

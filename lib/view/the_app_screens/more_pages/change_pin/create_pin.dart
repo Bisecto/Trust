@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:otp_text_field/otp_field.dart';
-import 'package:otp_text_field/otp_field_style.dart';
-import 'package:otp_text_field/style.dart';
 
 import 'package:pin_plus_keyboard/package/controllers/pin_input_controller.dart';
 import 'package:pin_plus_keyboard/package/pin_plus_keyboard_package.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/utills/app_navigator.dart';
-import 'package:teller_trust/view/auth/otp_pin_pages/confirm_pin.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/change_pin/confirm_pin.dart';
 
 import '../../../../res/app_colors.dart';
-import '../../../../res/app_icons.dart';
 import '../../../../utills/app_utils.dart';
 import '../../../../utills/custom_theme.dart';
 import '../../../widgets/appBar_widget.dart';
@@ -114,8 +109,7 @@ class _ChangePinNewState extends State<ChangePinNew> {
                     onSubmit: () {
                       /// ignore: avoid_print
                       AppNavigator.pushAndStackPage(context, page: ChangeConfirmPin(pin: pinInputController.text, oldPin: widget.oldPin));
-                      print("Text is : " +
-                          pinInputController.text);
+                      print("Text is : ${pinInputController.text}");
                     },
                     keyboardFontFamily: '',
                   ),

@@ -1,24 +1,16 @@
-import 'dart:convert';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:teller_trust/model/category_model.dart' as mainCategory;
-import 'package:teller_trust/model/quick_access_model.dart';
 import 'package:teller_trust/view/important_pages/dialog_box.dart';
-import 'package:teller_trust/view/widgets/drop_down.dart';
 
 import '../../../bloc/product_bloc/product_bloc.dart';
-import '../../../model/service_model.dart';
-import '../../../repository/app_repository.dart';
-import '../../../res/apis.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/app_icons.dart';
-import '../../../res/app_list.dart';
 import '../../../utills/app_navigator.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/app_validator.dart';
@@ -26,7 +18,6 @@ import '../../../utills/custom_theme.dart';
 import '../../../utills/enums/toast_mesage.dart';
 import '../../../utills/shared_preferences.dart';
 import '../../auth/otp_pin_pages/confirm_with_otp.dart';
-import '../../auth/sign_in_with_access_pin_and_biometrics.dart';
 import '../../widgets/app_custom_text.dart';
 import '../../widgets/form_button.dart';
 import '../../widgets/form_input.dart';
@@ -36,7 +27,6 @@ import '../../widgets/purchase_receipt.dart';
 import '../../widgets/show_toast.dart';
 import 'build_payment_method.dart';
 import 'make_bank_transfer/bank_transfer.dart';
-import '../../../model/product_model.dart' as productMode;
 
 class CablePurchase extends StatefulWidget {
   final mainCategory.Category category;
@@ -123,7 +113,7 @@ class _CablePurchaseState extends State<CablePurchase> {
             color: theme.isDark
                 ? AppColors.darkModeBackgroundColor
                 : AppColors.white,
-            borderRadius: BorderRadius.only(
+            borderRadius: const BorderRadius.only(
                 topRight: Radius.circular(10), topLeft: Radius.circular(10))),
         child: SingleChildScrollView(
           child: Padding(
@@ -201,7 +191,7 @@ class _CablePurchaseState extends State<CablePurchase> {
                                   color: theme.isDark
                                       ? AppColors.darkModeBackgroundColor
                                       : AppColors.white,
-                                  borderRadius: BorderRadius.only(
+                                  borderRadius: const BorderRadius.only(
                                       topRight: Radius.circular(10),
                                       topLeft: Radius.circular(10))),
                               child: Padding(
@@ -225,7 +215,7 @@ class _CablePurchaseState extends State<CablePurchase> {
                                             height: 50,
                                             width: double.infinity,
                                             color: Colors.grey[300],
-                                            child: Center(
+                                            child: const Center(
                                                 child:
                                                     CircularProgressIndicator()),
                                           );
@@ -258,7 +248,7 @@ class _CablePurchaseState extends State<CablePurchase> {
                                             onTap: () {
                                               Navigator.pop(context);
                                             },
-                                            child: Icon(
+                                            child: const Icon(
                                               Icons.cancel,
                                               color: Colors.grey,
                                             ),
@@ -416,7 +406,7 @@ class _CablePurchaseState extends State<CablePurchase> {
                                           ),
                                         if (selectedCableProvider !=
                                             "Choose Provider")
-                                          SizedBox(
+                                          const SizedBox(
                                             width: 10,
                                           ),
                                         Expanded(
@@ -600,8 +590,7 @@ class _CablePurchaseState extends State<CablePurchase> {
                                                       '') {
                                                 if (state
                                                     is EntityNumberSuccessState) {
-                                                  final res = state
-                                                      as EntityNumberSuccessState;
+                                                  final res = state;
                                                   // setState(() {
                                                   //   enableButton=true;
                                                   //
@@ -655,7 +644,7 @@ class _CablePurchaseState extends State<CablePurchase> {
                                                       ));
                                                 } else if (state
                                                     is EntityNumberErrorState) {
-                                                  return Padding(
+                                                  return const Padding(
                                                       padding:
                                                           EdgeInsets.fromLTRB(
                                                               10, 0, 10, 25.0),
@@ -668,7 +657,7 @@ class _CablePurchaseState extends State<CablePurchase> {
                                                 } else {
                                                   return Padding(
                                                       padding:
-                                                          EdgeInsets.fromLTRB(
+                                                          const EdgeInsets.fromLTRB(
                                                               10, 10, 10, 25.0),
                                                       child: CustomText(
                                                         text:
@@ -691,7 +680,7 @@ class _CablePurchaseState extends State<CablePurchase> {
                                                     ));
                                               }
                                             }),
-                                      Container(
+                                      SizedBox(
                                         height: 310,
                                         child: PaymentMethodScreen(
                                           amtToPay: _selectedAmtController
@@ -760,7 +749,9 @@ class _CablePurchaseState extends State<CablePurchase> {
                                                   .showMaterialModalBottomSheet(
                                                       backgroundColor:
                                                           Colors.transparent,
-                                                      shape:
+                                                  isDismissible: true,
+
+                                                  shape:
                                                           const RoundedRectangleBorder(
                                                         borderRadius:
                                                             BorderRadius.vertical(
@@ -816,7 +807,7 @@ class _CablePurchaseState extends State<CablePurchase> {
                                         textColor: AppColors.white,
                                         borderRadius: 10,
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         height: 20,
                                       )
 
@@ -985,7 +976,7 @@ class CableProvider extends StatelessWidget {
   final AdaptiveThemeMode theme;
   final Function(String, String, String) onCableProviderSelected;
 
-  CableProvider(
+  const CableProvider(
       {Key? key,
       required this.serviceId,
       required this.categoryId,
@@ -1010,7 +1001,7 @@ class CableProvider extends StatelessWidget {
                     color: theme.isDark
                         ? AppColors.darkModeBackgroundColor
                         : AppColors.white,
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                         topRight: Radius.circular(10),
                         topLeft: Radius.circular(10))),
                 child: Padding(
@@ -1034,7 +1025,7 @@ class CableProvider extends StatelessWidget {
                               height: 50,
                               width: double.infinity,
                               color: Colors.grey[300],
-                              child: Center(child: CircularProgressIndicator()),
+                              child: const Center(child: CircularProgressIndicator()),
                             );
                           },
                         ),
@@ -1064,7 +1055,7 @@ class CableProvider extends StatelessWidget {
                               onTap: () {
                                 Navigator.pop(context);
                               },
-                              child: Icon(
+                              child: const Icon(
                                 Icons.cancel,
                                 color: Colors.grey,
                                 size: 30,
@@ -1099,7 +1090,7 @@ class CableProviderList extends StatefulWidget {
   final AdaptiveThemeMode theme;
   final Function(String, String, String) onCableProviderSelected;
 
-  CableProviderList(
+  const CableProviderList(
       {Key? key,
       required this.serviceId,
       required this.categoryId,
@@ -1135,7 +1126,7 @@ class _CableProviderListState extends State<CableProviderList> {
             label: '',
             controller: _searchController,
             validator: AppValidator.validateAccountNumberfield,
-            widget: Icon(Icons.search),
+            widget: const Icon(Icons.search),
           ),
           Expanded(
             child: BlocBuilder<ProductBloc, ProductState>(
@@ -1146,7 +1137,7 @@ class _CableProviderListState extends State<CableProviderList> {
                 } else if (state is ServiceSuccessState) {
                   final ServiceSuccessState = state;
                   return GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3, // Number of items per row
                       crossAxisSpacing: 8.0, // Spacing between columns
                       mainAxisSpacing: 8.0, // Spacing between rows
@@ -1169,7 +1160,7 @@ class _CableProviderListState extends State<CableProviderList> {
                           child: Container(
                             decoration: BoxDecoration(
                               color: widget.theme.isDark
-                                  ? Color(0xFF092514)
+                                  ? const Color(0xFF092514)
                                   : AppColors.grey,
                               //border: Border.all(color: Colors.grey),
                               borderRadius: BorderRadius.circular(10),
@@ -1182,7 +1173,7 @@ class _CableProviderListState extends State<CableProviderList> {
                                   height: 40,
                                   width: 40,
                                 ),
-                                SizedBox(height: 5),
+                                const SizedBox(height: 5),
                                 CustomText(
                                   text: singleService.name,
                                   size: 12,
@@ -1242,7 +1233,7 @@ class CablePlan extends StatelessWidget {
   final AdaptiveThemeMode theme;
   final Function(String, String, String) onCablePlanSelected;
 
-  CablePlan(
+  const CablePlan(
       {Key? key,
       required this.serviceId,
       required this.categoryId,
@@ -1264,7 +1255,7 @@ class CablePlan extends StatelessWidget {
                     color: theme.isDark
                         ? AppColors.darkModeBackgroundColor
                         : AppColors.white,
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                         topRight: Radius.circular(10),
                         topLeft: Radius.circular(10))),
                 child: Padding(
@@ -1288,7 +1279,7 @@ class CablePlan extends StatelessWidget {
                               height: 50,
                               width: double.infinity,
                               color: Colors.grey[300],
-                              child: Center(child: CircularProgressIndicator()),
+                              child: const Center(child: CircularProgressIndicator()),
                             );
                           },
                         ),
@@ -1318,7 +1309,7 @@ class CablePlan extends StatelessWidget {
                               onTap: () {
                                 Navigator.pop(context);
                               },
-                              child: Icon(
+                              child: const Icon(
                                 Icons.cancel,
                                 color: Colors.grey,
                                 size: 30,
@@ -1351,7 +1342,7 @@ class CablePlanList extends StatefulWidget {
   final String serviceId;
   final Function(String, String, String) onCablePlanSelected;
 
-  CablePlanList({
+  const CablePlanList({
     Key? key,
     required this.serviceId,
     required this.categoryId,
@@ -1385,7 +1376,7 @@ class _CablePlanListState extends State<CablePlanList> {
             label: '',
             controller: _searchController,
             validator: AppValidator.validateAccountNumberfield,
-            widget: Icon(Icons.search),
+            widget: const Icon(Icons.search),
           ),
           Expanded(
             child: BlocBuilder<ProductBloc, ProductState>(
@@ -1394,7 +1385,7 @@ class _CablePlanListState extends State<CablePlanList> {
                 if (state is ProductLoadingState) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (state is ProductSuccessState) {
-                  final product = state as ProductSuccessState;
+                  final product = state;
                   return ListView.builder(
                     itemCount: product.productModel.data.items.length,
                     itemBuilder: (context, index) {
@@ -1429,7 +1420,7 @@ class _CablePlanListState extends State<CablePlanList> {
                               ],
                             ),
                             shape: RoundedRectangleBorder(
-                              side: BorderSide(color: Colors.grey),
+                              side: const BorderSide(color: Colors.grey),
                               borderRadius: BorderRadius.circular(5),
                             )
                             //shape: ShapeBorder(),
@@ -1438,7 +1429,7 @@ class _CablePlanListState extends State<CablePlanList> {
                     },
                   );
                 } else if (state is ProductErrorState) {
-                  final error = state as ProductErrorState;
+                  final error = state;
                   return Center(
                     child: Text(error.error),
                   );

@@ -14,7 +14,6 @@ import '../../../utills/app_utils.dart';
 import '../../../utills/app_validator.dart';
 import '../../../utills/custom_theme.dart';
 import '../../../utills/enums/toast_mesage.dart';
-import '../../important_pages/dialog_box.dart';
 import '../../important_pages/not_found_page.dart';
 import '../../widgets/appBar_widget.dart';
 import '../../widgets/custom_container.dart';
@@ -56,7 +55,7 @@ class _ChangePasswordState extends State<ChangePassword> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              CustomAppBar(
+              const CustomAppBar(
                 title: "Change Password",
               ),
               BlocConsumer<AuthBloc, AuthState>(
@@ -104,8 +103,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(10.0),
+                                          const Padding(
+                                            padding: EdgeInsets.all(10.0),
                                             child: CustomText(
                                               text:
                                                   "Let's help you restore your password",
@@ -127,7 +126,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                                 AppValidator.validatePassword,
                                             controller: _oldPasswordController,
                                             hint: 'Old Password',
-                                            widget: Icon(Icons.password),
+                                            widget: const Icon(Icons.password),
                                             borderColor: _oldPasswordController
                                                     .text.isNotEmpty
                                                 ? AppColors.green
@@ -140,7 +139,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                                 AppValidator.validatePassword,
                                             controller: _newPasswordController,
                                             hint: 'New Password',
-                                            widget:Icon (Icons.password),
+                                            widget:const Icon (Icons.password),
                                             borderColor: _newPasswordController
                                                     .text.isNotEmpty
                                                 ? AppColors.green
@@ -154,7 +153,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                             controller:
                                                 _confirmPasswordController,
                                             hint: 'Confirm Password',
-                                            widget: Icon(Icons.password),
+                                            widget: const Icon(Icons.password),
                                             borderColor:
                                                 _confirmPasswordController
                                                         .text.isNotEmpty
@@ -167,7 +166,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                   ),
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.fromLTRB(10, 0, 10, 30),
+                                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 30),
                                   child: FormButton(
                                       onPressed: () {
                                         Map<String, dynamic> data = {
@@ -244,7 +243,7 @@ class _PinContinueState extends State<PinContinue> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: AppUtils.deviceScreenSize(context).height / 1.3,
       child: Scaffold(
         resizeToAvoidBottomInset: true,
@@ -259,7 +258,7 @@ class _PinContinueState extends State<PinContinue> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        CustomText(
+                        const CustomText(
                           text: "Please enter your PIN to change password.",
                           weight: FontWeight.bold,
                           size: 16,

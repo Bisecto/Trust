@@ -2,15 +2,11 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:otp_text_field/otp_field.dart';
-import 'package:otp_text_field/otp_field_style.dart';
-import 'package:otp_text_field/style.dart';
 
 import 'package:pin_plus_keyboard/package/controllers/pin_input_controller.dart';
 import 'package:pin_plus_keyboard/package/pin_plus_keyboard_package.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/res/app_router.dart';
-import 'package:teller_trust/view/important_pages/dialog_box.dart';
-import 'package:teller_trust/view/the_app_screens/landing_page.dart';
 
 import '../../../bloc/auth_bloc/auth_bloc.dart';
 import '../../../res/app_colors.dart';
@@ -79,7 +75,7 @@ class _ConfirmPinState extends State<ConfirmPin> {
               switch (state.runtimeType) {
                 case AuthInitial || ErrorState:
                   return SingleChildScrollView(
-                    child: Container(
+                    child: SizedBox(
                       height: AppUtils.deviceScreenSize(context).height,
                       width: AppUtils.deviceScreenSize(context).width,
                       child: Stack(
@@ -297,7 +293,7 @@ class _ConfirmPinState extends State<ConfirmPin> {
                           fit: BoxFit.fill,
                         ),
                         //color: AppColors.red,
-                        borderRadius: BorderRadius.only(
+                        borderRadius: const BorderRadius.only(
                             topRight: Radius.circular(20),
                             topLeft: Radius.circular(20))),
                   ),

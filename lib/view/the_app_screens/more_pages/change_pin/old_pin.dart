@@ -1,24 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:otp_text_field/otp_field.dart';
-import 'package:otp_text_field/otp_field_style.dart';
-import 'package:otp_text_field/style.dart';
 
 import 'package:pin_plus_keyboard/package/controllers/pin_input_controller.dart';
 import 'package:pin_plus_keyboard/package/pin_plus_keyboard_package.dart';
 import 'package:provider/provider.dart';
-import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/utills/app_navigator.dart';
-import 'package:teller_trust/view/auth/otp_pin_pages/confirm_pin.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/change_pin/create_pin.dart';
 import 'package:teller_trust/view/widgets/appBar_widget.dart';
 
-import '../../../../bloc/auth_bloc/auth_bloc.dart';
 import '../../../../res/app_colors.dart';
 import '../../../../utills/app_utils.dart';
 import '../../../../utills/custom_theme.dart';
-import '../../../important_pages/dialog_box.dart';
-import '../../../important_pages/not_found_page.dart';
 import '../../../widgets/app_custom_text.dart';
 
 class OldPin extends StatefulWidget {
@@ -105,7 +97,7 @@ class _OldPinState extends State<OldPin> {
                         AppNavigator.pushAndStackPage(context, page: ChangePinNew(oldPin: pinInputController.text));
                         /// ignore: avoid_print
                         //authBloc.add(VerificationContinueEvent());
-                        print("Text is : " + pinInputController.text);
+                        print("Text is : ${pinInputController.text}");
                       },
                       keyboardFontFamily: '',
                     ),

@@ -8,7 +8,6 @@ import 'package:teller_trust/view/widgets/form_button.dart';
 
 import '../../../bloc/app_bloc/app_bloc.dart';
 import '../../../model/personal_profile.dart';
-import '../../../model/user.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/app_icons.dart';
 import '../../../utills/constants/loading_dialog.dart';
@@ -17,7 +16,7 @@ import '../../widgets/appBar_widget.dart';
 import '../../widgets/custom_container.dart';
 
 class ProfileDetails extends StatefulWidget {
-  ProfileDetails({
+  const ProfileDetails({
     super.key,
   });
 

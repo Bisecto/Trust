@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:teller_trust/view/widgets/app_custom_text.dart';
 
 import '../res/app_colors.dart';
-import '../res/app_icons.dart';
 import '../res/app_images.dart';
-import '../res/app_strings.dart';
 import '../utills/app_utils.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -31,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
         body: Container(
             height: AppUtils.deviceScreenSize(context).height,
             width: AppUtils.deviceScreenSize(context).width,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               color: AppColors.darkGreen,
 
               image: DecorationImage(image: AssetImage(AppImages.splashLogo,),fit: BoxFit.fill)

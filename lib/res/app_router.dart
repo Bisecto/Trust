@@ -3,19 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:teller_trust/view/auth/sign_up_screen.dart';
 import 'package:teller_trust/view/the_app_screens/bills_page.dart';
 import 'package:teller_trust/view/the_app_screens/card_page.dart';
-import 'package:teller_trust/view/the_app_screens/home_page.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/profile_details.dart';
 
 import '../bloc/app_bloc/app_bloc.dart';
-import '../model/user.dart';
 import '../view/auth/sign_in_with_access_pin_and_biometrics.dart';
-import '../view/auth/otp_pin_pages/verify_otp.dart';
 import '../view/auth/sign_in_screen.dart';
 import '../view/important_pages/not_found_page.dart';
 import '../view/on_boarding/main_on_boarding_screen.dart';
 import '../view/splash_screen.dart';
 import '../view/the_app_screens/landing_page.dart';
-import '../view/the_app_screens/more_page.dart';
 import '../view/the_app_screens/send_page.dart';
 
 class AppRouter {
@@ -49,6 +45,16 @@ class AppRouter {
 
   static const String chooseLocation = "/choose-location-page";
 
+  // network center screens
+  static const String networkMainPage = '/network-main-page';
+  static const String airtimeNetworkPage = '/airtime-network-page';
+  static const String dataNetworkPage = '/data-network-page';
+  static const String electricityNetworkPage = '/electricity-network-page';
+  static const String bettingNetworkPage = '/betting-network-page';
+  static const String internetNetworkPage = '/internet-network-page';
+  static const String cableTVNetworkPage = '/cable-tv-network-page';
+  static const String bankNetworkPage = '/bank-network-page';
+
   Route onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
       case splashScreen:
@@ -69,14 +75,14 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
             create: (_) => AppBloc(),
-            child: LandingPage(),
+            child: const LandingPage(),
           ),
         );
       case profileDetailsPage:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
             create: (_) => AppBloc(),
-            child: ProfileDetails(),
+            child: const ProfileDetails(),
           ),
         );
       case signInWIthAccessPinBiometrics:

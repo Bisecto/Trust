@@ -1,18 +1,16 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:teller_trust/model/wallet_info.dart';
 import 'package:teller_trust/res/app_colors.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
 import '../../../bloc/app_bloc/app_bloc.dart';
-import '../../../model/personal_profile.dart';
 
 class PaymentMethodScreen extends StatefulWidget {
   final String amtToPay;
   final ValueChanged<String> onPaymentMethodSelected;
   final ValueChanged<bool> ispaymentAllowed;
 
-  PaymentMethodScreen({
+  const PaymentMethodScreen({super.key, 
     required this.amtToPay,
     required this.onPaymentMethodSelected,
     required this.ispaymentAllowed,
@@ -44,7 +42,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomText(
+          const CustomText(
             text: 'Choose Payment Method',
             // style: TextStyle(
             //   fontSize: 12,
@@ -52,7 +50,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
             //   color: Colors.grey[700],
             // ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           BlocBuilder<AppBloc, AppState>(
             builder: (context, state) {
               if (state is SuccessState) {
@@ -78,9 +76,9 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                         additionalInfo: _selectedPaymentMethod == 'wallet' &&
                                 double.parse(widget.amtToPay) >
                                     double.parse(walletInfo.balance.toString())
-                            ? Padding(
+                            ? const Padding(
                                 padding:
-                                    const EdgeInsets.only(left: 16, top: 4),
+                                    EdgeInsets.only(left: 16, top: 4),
                                 child: Row(
                                   children: [
                                     Icon(
@@ -102,18 +100,18 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                             : null,
                       ),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     _buildPaymentOption(
                       title: 'Pay Using Quick Pay',
                       selected: _selectedPaymentMethod == 'quick_pay',
                       onChanged: () =>
                           _onPaymentMethodChanged('quick_pay', walletInfo),
                     ),
-                    SizedBox(height: 24),
+                    const SizedBox(height: 24),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        CustomText(
+                        const CustomText(
                           text: 'Save as Beneficiary',
                           size: 14,
                           weight: FontWeight.bold,
@@ -132,7 +130,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                   ],
                 );
               } else {
-                return Center(
+                return const Center(
                   child: CustomText(text: "Loading....."),
                 ); // Show loading indicator or handle error state
               }
@@ -194,7 +192,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
     return GestureDetector(
       onTap: onChanged,
       child: Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           border: Border.all(
             color: selected ? Colors.blue : Colors.grey,
@@ -219,7 +217,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                     children: [
                       Text(
                         title,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
                         ),
@@ -227,7 +225,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                       if (subtitle != null)
                         Text(
                           subtitle,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 12,
                           ),

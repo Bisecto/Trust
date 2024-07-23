@@ -1,5 +1,4 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:otp_text_field/otp_field.dart';
@@ -8,7 +7,6 @@ import 'package:pin_plus_keyboard/package/pin_plus_keyboard_package.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/utills/shared_preferences.dart';
 import 'package:teller_trust/view/auth/sign_in_screen.dart';
-import 'package:teller_trust/view/the_app_screens/landing_page.dart';
 import '../../bloc/auth_bloc/auth_bloc.dart';
 import '../../res/app_colors.dart';
 import '../../res/app_images.dart';
@@ -16,13 +14,10 @@ import '../../res/app_router.dart';
 import '../../res/app_strings.dart';
 import '../../utills/app_navigator.dart';
 import '../../utills/app_utils.dart';
-import '../../utills/app_validator.dart';
 import '../../utills/custom_theme.dart';
 import '../../utills/enums/toast_mesage.dart';
-import '../important_pages/dialog_box.dart';
 import '../important_pages/not_found_page.dart';
 import '../widgets/app_custom_text.dart';
-import '../widgets/form_input.dart';
 import 'package:local_auth/local_auth.dart';
 
 import '../widgets/show_toast.dart';
@@ -96,7 +91,7 @@ class _SignInWIthAccessPinBiometricsState
               switch (state.runtimeType) {
                 case AuthInitial || ErrorState:
                   return SingleChildScrollView(
-                    child: Container(
+                    child: SizedBox(
                       height: AppUtils.deviceScreenSize(context).height,
                       width: AppUtils.deviceScreenSize(context).width,
                       child: Stack(
@@ -369,10 +364,10 @@ class _SignInWIthAccessPinBiometricsState
                                           onSubmit: () async {
                                             /// ignore: avoid_print
                                             String userData =
-                                                await await SharedPref
+                                                await SharedPref
                                                     .getString('userData');
                                             String password =
-                                                await await SharedPref
+                                                await SharedPref
                                                     .getString('password');
                                             authBloc.add(SignInEventClick(
                                                 userData,
@@ -444,14 +439,14 @@ class _SignInWIthAccessPinBiometricsState
                         color: theme.isDark
                             ? AppColors.darkModeBackgroundContainerColor
                             : AppColors.white,
-                        image: DecorationImage(
+                        image: const DecorationImage(
                           image: AssetImage(
                             AppImages.welcomeImage2,
                           ),
                           fit: BoxFit.fill,
                         ),
                         //color: AppColors.red,
-                        borderRadius: BorderRadius.only(
+                        borderRadius: const BorderRadius.only(
                             topRight: Radius.circular(20),
                             topLeft: Radius.circular(20))),
                   ),

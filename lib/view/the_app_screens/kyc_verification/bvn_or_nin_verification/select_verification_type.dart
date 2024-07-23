@@ -1,5 +1,3 @@
-import 'package:dotted_border/dotted_border.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -11,7 +9,6 @@ import 'package:provider/provider.dart';
 import 'package:teller_trust/bloc/kyc_bloc/kyc_bloc.dart';
 import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/utills/app_utils.dart';
-import 'package:teller_trust/utills/constants/loading_dialog.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
 import 'package:teller_trust/view/widgets/form_button.dart';
 
@@ -35,7 +32,7 @@ class BvnNinKyc2 extends StatefulWidget {
 }
 
 class _BvnNinKyc2State extends State<BvnNinKyc2> {
-  String selectedString = 'NIN';
+  String selectedString = 'BVN';
   final _numberController = TextEditingController();
   final dob = TextEditingController();
   final KycBloc kycBloc = KycBloc();
@@ -73,7 +70,7 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
             left: 0,
             top: 0,
             // bottom: 0,
-            child: Container(
+            child: SizedBox(
               height: AppUtils.deviceScreenSize(context).height + 50,
               width: double.infinity,
               // color: theme.isDark
@@ -178,7 +175,7 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Container(
-                                      width: 80,
+                                      width: 45,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(20),
                                         border: Border.all(
@@ -188,38 +185,40 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
                                       child: Padding(
                                         padding: const EdgeInsets.all(3.0),
                                         child: Row(
+                                          // mainAxisAlignment:
+                                          //     MainAxisAlignment.spaceBetween,
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.center,
                                           children: [
-                                            GestureDetector(
-                                              onTap: () {
-                                                setState(() {
-                                                  selectedString = 'NIN';
-                                                });
-                                              },
-                                              child: Container(
-                                                width: 35,
-                                                height: 20,
-                                                decoration: BoxDecoration(
-                                                  color: selectedString == 'NIN'
-                                                      ? AppColors.green
-                                                      : Colors.transparent,
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                                child: Center(
-                                                  child: CustomText(
-                                                    text: 'NIN',
-                                                    color:
-                                                        selectedString == 'NIN'
-                                                            ? AppColors.white
-                                                            : Colors.black,
-                                                    size: 10,
-                                                    weight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
+                                            // GestureDetector(
+                                            //   onTap: () {
+                                            //     setState(() {
+                                            //       selectedString = 'NIN';
+                                            //     });
+                                            //   },
+                                            //   child: Container(
+                                            //     width: 35,
+                                            //     height: 20,
+                                            //     decoration: BoxDecoration(
+                                            //       color: selectedString == 'NIN'
+                                            //           ? AppColors.green
+                                            //           : Colors.transparent,
+                                            //       borderRadius:
+                                            //           BorderRadius.circular(10),
+                                            //     ),
+                                            //     child: Center(
+                                            //       child: CustomText(
+                                            //         text: 'NIN',
+                                            //         color:
+                                            //             selectedString == 'NIN'
+                                            //                 ? AppColors.white
+                                            //                 : Colors.black,
+                                            //         size: 10,
+                                            //         weight: FontWeight.bold,
+                                            //       ),
+                                            //     ),
+                                            //   ),
+                                            // ),
                                             GestureDetector(
                                               onTap: () {
                                                 setState(() {
@@ -296,7 +295,7 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
                                       hint: selectedString == 'NIN'
                                           ? 'Enter your NIN (11 digits)'
                                           : 'Enter your BVN (11 digits)',
-                                      widget: Icon(Icons.verified_outlined),
+                                      widget: const Icon(Icons.verified_outlined),
                                       textInputType: TextInputType.number,
                                       borderColor:
                                           _numberController.text.isNotEmpty
@@ -326,7 +325,7 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
                                         controller: dob,
                                         enabled: false,
                                         hint:'Date of Birth',
-                                        widget: Icon(Icons.calendar_month),
+                                        widget: const Icon(Icons.calendar_month),
 
                                         validator:
                                         AppValidator.validateTextfield,
@@ -506,7 +505,7 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
                                           borderRadius:
                                               BorderRadius.circular(10)),
                                       child: Padding(
-                                        padding: EdgeInsets.all(8.0),
+                                        padding: const EdgeInsets.all(8.0),
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,

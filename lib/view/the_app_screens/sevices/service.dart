@@ -1,15 +1,10 @@
-import 'package:custom_pin_screen/custom_pin_screen.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:teller_trust/model/quick_access_model.dart';
 import 'package:teller_trust/model/service_model.dart';
 import 'package:teller_trust/res/app_icons.dart';
 
-import '../../../model/category_model.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/app_list.dart';
-import '../../../utills/app_navigator.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/app_validator.dart';
 import '../../auth/otp_pin_pages/confirm_with_otp.dart';
@@ -34,7 +29,7 @@ class _ServicePurchaseState extends State<ServicePurchase> {
       backgroundColor: Colors.transparent,
       body: Container(
         height: AppUtils.deviceScreenSize(context).height-100,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
             color: AppColors.white,
             borderRadius: BorderRadius.only(
                 topRight: Radius.circular(10),
@@ -86,7 +81,7 @@ class _ServicePurchaseState extends State<ServicePurchase> {
                 // ),
                 Container(
                   height: 50,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                       color: AppColors.darkGreen,
                       borderRadius: BorderRadius.only(
                           topRight: Radius.circular(10),
@@ -96,7 +91,7 @@ class _ServicePurchaseState extends State<ServicePurchase> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        CustomText(
+                        const CustomText(
                           text: "Airtime purchase",
                           color: AppColors.white,
                           weight: FontWeight.w600,
@@ -106,7 +101,7 @@ class _ServicePurchaseState extends State<ServicePurchase> {
                           onTap: (){
                             Navigator.pop(context);
                           },
-                          child: Icon(
+                          child: const Icon(
                             Icons.cancel,
                             color: AppColors.lightShadowGreenColor,
                           ),
@@ -135,8 +130,8 @@ class _ServicePurchaseState extends State<ServicePurchase> {
                 const SizedBox(
                   height: 20,
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
+                const Padding(
+                  padding: EdgeInsets.all(10.0),
                   child: CustomText(
                     text: "Select Amount",
                   ),

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:teller_trust/res/app_colors.dart';
 
 import '../../../res/app_icons.dart';
 import '../../widgets/appBar_widget.dart';
-import '../../widgets/app_custom_text.dart';
 import '../../widgets/custom_container.dart';
 
 class KycVerification extends StatefulWidget {
@@ -25,7 +23,7 @@ class _KycVerificationState extends State<KycVerification> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Column(
         children: [
           CustomAppBar(

@@ -1,10 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/res/app_images.dart';
-import 'package:teller_trust/utills/app_utils.dart';
 import '../../res/app_colors.dart';
 import '../../utills/custom_theme.dart';
 import '../../utills/enums/toast_mesage.dart';
@@ -61,7 +59,7 @@ Future<bool?> alert({
           borderRadius: BorderRadius.circular(20),
 
 
-          image: DecorationImage(
+          image: const DecorationImage(
               image: AssetImage(AppImages.modalBackground), fit: BoxFit.cover)),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -117,7 +115,7 @@ Future<bool?> alert({
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               )
             ],

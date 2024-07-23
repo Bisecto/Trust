@@ -7,17 +7,14 @@ import 'package:teller_trust/view/widgets/form_button.dart';
 
 import '../../../bloc/app_bloc/app_bloc.dart' as appBloc;
 import '../../../bloc/bank_bloc/bank_bloc.dart' as bankBloc;
-import '../../../repository/app_repository.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/app_icons.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/app_validator.dart';
-import '../../../utills/enums/toast_mesage.dart';
 import '../../widgets/appBar_widget.dart';
 import '../../widgets/form_input.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
-import '../../widgets/show_toast.dart';
 
 class WithdrawalAccount extends StatefulWidget {
   const WithdrawalAccount({Key? key}) : super(key: key);
@@ -56,7 +53,7 @@ class _WithdrawalAccountState extends State<WithdrawalAccount> {
                           label: '',
                           controller: _bvmController,
                           validator: AppValidator.validateTextfield,
-                          widget: Icon(Icons.numbers),
+                          widget: const Icon(Icons.numbers),
                           textInputType: TextInputType.number,
                           borderColor: _bvmController.text.isNotEmpty
                               ? AppColors.green
@@ -68,12 +65,12 @@ class _WithdrawalAccountState extends State<WithdrawalAccount> {
                           textInputType: TextInputType.number,
                           controller: _accNumberController,
                           validator: AppValidator.validateAccountNumberfield,
-                          widget: Icon(Icons.numbers),
+                          widget: const Icon(Icons.numbers),
                           borderColor: _accNumberController.text.length == 10
                               ? AppColors.green
                               : AppColors.grey,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 25,
                         ),
                         InkWell(
@@ -114,8 +111,8 @@ class _WithdrawalAccountState extends State<WithdrawalAccount> {
                               padding: const EdgeInsets.only(left: 25.0),
                               child: Row(
                                 children: [
-                                  Icon(Icons.money),
-                                  SizedBox(width: 10),
+                                  const Icon(Icons.money),
+                                  const SizedBox(width: 10),
                                   Expanded(
                                     child: CustomText(
                                       text: selectedBank,
@@ -178,7 +175,7 @@ class BankPage extends StatelessWidget {
       create: (context) => bankBloc.BankBloc(),
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Bank List'),
+          title: const Text('Bank List'),
         ),
         body: BankList(onBankSelected: onBankSelected),
       ),
@@ -217,12 +214,12 @@ class _BankListState extends State<BankList> {
             label: '',
             controller: _searchController,
             validator: AppValidator.validateAccountNumberfield,
-            widget: Icon(Icons.search),
+            widget: const Icon(Icons.search),
           ),
           BlocBuilder<bankBloc.BankBloc, bankBloc.BankState>(
             builder: (context, state) {
               if (state is bankBloc.LoadingState) {
-                return CircularProgressIndicator();
+                return const CircularProgressIndicator();
               } else {
                 if (state is bankBloc.SuccessState) {
                   return Expanded(
@@ -300,7 +297,7 @@ class _PinContinueState extends State<PinContinue> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: AppUtils.deviceScreenSize(context).height / 1.3,
       child:BlocProvider<appBloc.AppBloc>(
         create: (context) => appBloc.AppBloc(),
@@ -317,7 +314,7 @@ class _PinContinueState extends State<PinContinue> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        CustomText(
+                        const CustomText(
                           text: "Please enter your PIN to change password.",
                           weight: FontWeight.bold,
                           size: 16,

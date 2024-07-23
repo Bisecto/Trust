@@ -3,21 +3,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:teller_trust/model/category_model.dart' as mainCategory;
-import 'package:teller_trust/model/quick_access_model.dart';
 import 'package:teller_trust/view/important_pages/dialog_box.dart';
-import 'package:teller_trust/view/widgets/drop_down.dart';
 
 import '../../../bloc/product_bloc/product_bloc.dart';
 import '../../../model/service_model.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/app_icons.dart';
-import '../../../res/app_list.dart';
 import '../../../utills/app_navigator.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/app_validator.dart';
 import '../../../utills/enums/toast_mesage.dart';
 import '../../../utills/shared_preferences.dart';
-import '../../auth/otp_pin_pages/confirm_with_otp.dart';
 import '../../auth/sign_in_with_access_pin_and_biometrics.dart';
 import '../../widgets/app_custom_text.dart';
 import '../../widgets/form_button.dart';
@@ -598,7 +594,7 @@ class InternetPlan extends StatelessWidget {
   final String serviceId;
   final Function(String, String, String) onInternetPlanSelected;
 
-  InternetPlan({
+  const InternetPlan({
     Key? key,
     required this.serviceId,
     required this.categoryId,
@@ -667,7 +663,7 @@ class InternetPlanList extends StatefulWidget {
   final String serviceId;
   final Function(String, String, String) onInternetPlanSelected;
 
-  InternetPlanList({
+  const InternetPlanList({
     Key? key,
     required this.serviceId,
     required this.categoryId,
@@ -701,7 +697,7 @@ class _InternetPlanListState extends State<InternetPlanList> {
             label: '',
             controller: _searchController,
             validator: AppValidator.validateAccountNumberfield,
-            widget: Icon(Icons.search),
+            widget: const Icon(Icons.search),
           ),
           Expanded(
             child: BlocBuilder<ProductBloc, ProductState>(
@@ -710,7 +706,7 @@ class _InternetPlanListState extends State<InternetPlanList> {
                 if (state is ProductLoadingState) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (state is ProductSuccessState) {
-                  final product = state as ProductSuccessState;
+                  final product = state;
                   return ListView.builder(
                     itemCount: product.productModel.data.items.length,
                     itemBuilder: (context, index) {
@@ -738,7 +734,7 @@ class _InternetPlanListState extends State<InternetPlanList> {
                     },
                   );
                 } else if (state is ProductErrorState) {
-                  final error = state as ProductErrorState;
+                  final error = state;
                   return Center(
                     child: Text(error.error),
                   );

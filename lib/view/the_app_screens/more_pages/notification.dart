@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/res/app_colors.dart';
 
-import '../../../res/app_icons.dart';
 import '../../../utills/custom_theme.dart';
 import '../../widgets/appBar_widget.dart';
-import '../../widgets/app_custom_text.dart';
 import '../../widgets/custom_container.dart';
 
 class NotificationSetting extends StatefulWidget {
@@ -34,9 +32,9 @@ class _NotificationSettingState extends State<NotificationSetting> {
       theme.isDark ? AppColors.darkModeBackgroundColor : AppColors.white,
       body: Column(
         children: [
-          CustomAppBar(title: "Notification",),
+          const CustomAppBar(title: "Notification",),
           Padding(
-            padding: EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(20.0),
             child: Column(
               children: [
                 CustomContainerForToggle(

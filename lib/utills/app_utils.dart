@@ -1,8 +1,6 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -10,7 +8,6 @@ import 'package:local_auth/local_auth.dart';
 import 'package:teller_trust/utills/shared_preferences.dart';
 import 'package:teller_trust/view/auth/sign_in_screen.dart';
 import 'package:teller_trust/view/auth/sign_in_with_access_pin_and_biometrics.dart';
-import 'package:teller_trust/view/important_pages/dialog_box.dart';
 
 import '../res/app_router.dart';
 import 'app_navigator.dart';
@@ -40,7 +37,7 @@ class AppUtils {
         print(4);
 
         Future.delayed(const Duration(seconds: 3), () {
-          AppNavigator.pushAndRemovePreviousPages(context, page: SignInScreen());
+          AppNavigator.pushAndRemovePreviousPages(context, page: const SignInScreen());
         });
       }
     } else {
@@ -139,7 +136,7 @@ class AppUtils {
   static String formateSimpleDate({String? dateTime}) {
     var inputDate = DateTime.parse(dateTime!);
 
-    var outputFormat = DateFormat('MMM d, hh:mm a');
+    var outputFormat = DateFormat('yyyy MMM d, hh:mm a');
     var outputDate = outputFormat.format(inputDate);
 
     return outputDate;

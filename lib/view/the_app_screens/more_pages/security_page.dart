@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:teller_trust/res/app_colors.dart';
 
-import '../../../res/app_icons.dart';
 import '../../widgets/appBar_widget.dart';
-import '../../widgets/app_custom_text.dart';
 import '../../widgets/custom_container.dart';
 
 class Security extends StatefulWidget {

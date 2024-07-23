@@ -20,7 +20,7 @@ class FormButton extends StatelessWidget {
   final FontWeight weight;
   final bool isIcon;
 
-  FormButton({
+  const FormButton({
     Key? key,
     this.isIcon = false,
     this.iconWidget,

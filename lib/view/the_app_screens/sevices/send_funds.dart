@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../auth/sign_in_with_access_pin_and_biometrics.dart';
-import 'package:custom_pin_screen/custom_pin_screen.dart';
 
 class SendFunds extends StatefulWidget {
   const SendFunds({super.key});
@@ -13,7 +11,7 @@ class SendFunds extends StatefulWidget {
 class _SendFundsState extends State<SendFunds> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Column(
         children: [
           Padding(

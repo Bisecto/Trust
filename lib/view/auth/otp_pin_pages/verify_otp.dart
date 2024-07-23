@@ -12,7 +12,6 @@ import 'package:teller_trust/view/auth/otp_pin_pages/create_pin.dart';
 import '../../../bloc/auth_bloc/auth_bloc.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/app_images.dart';
-import '../../../res/app_router.dart';
 import '../../../utills/app_navigator.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/custom_theme.dart';
@@ -127,7 +126,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
             switch (state.runtimeType) {
               case (AuthInitial || ErrorState):
                 return SingleChildScrollView(
-                  child: Container(
+                  child: SizedBox(
                     height: AppUtils.deviceScreenSize(context).height,
                     width: AppUtils.deviceScreenSize(context).width,
                     child: Stack(

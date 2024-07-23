@@ -9,6 +9,7 @@ import 'package:teller_trust/bloc/product_bloc/product_bloc.dart';
 import 'package:teller_trust/res/app_router.dart';
 import 'package:teller_trust/utills/custom_theme.dart';
 import 'package:teller_trust/view/important_pages/no_internet.dart';
+import 'package:teller_trust/view/networkCenter/pages/network_center_main_page.dart';
 import 'package:teller_trust/view/splash_screen.dart';
 import 'bloc/app_bloc/app_bloc.dart';
 
@@ -28,7 +29,7 @@ void main() async {
           create: (context) => ProductBloc(),
         ),
         ChangeNotifierProvider<CustomThemeState>(
-          create: (_) => CustomThemeState(adaptiveThemeMode!),
+          create: (_) => CustomThemeState(adaptiveThemeMode),
         ),
       ],
       child: MyApp(
@@ -41,7 +42,7 @@ void main() async {
 class MyApp extends StatefulWidget {
   final AdaptiveThemeMode? adaptiveThemeMode;
 
-  MyApp({Key? key, required this.adaptiveThemeMode}) : super(key: key);
+  const MyApp({Key? key, required this.adaptiveThemeMode}) : super(key: key);
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -88,13 +89,14 @@ class _MyAppState extends State<MyApp> {
     ));
 
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.0)),
+      data: MediaQuery.of(context)
+          .copyWith(textScaler: const TextScaler.linear(1.0)),
       child: AdaptiveTheme(
         light: ThemeData(
           brightness: Brightness.light,
           primarySwatch: Colors.green,
           fontFamily: "CeraPro",
-          appBarTheme: AppBarTheme(
+          appBarTheme: const AppBarTheme(
             systemOverlayStyle: SystemUiOverlayStyle.dark,
           ),
         ),
@@ -102,7 +104,7 @@ class _MyAppState extends State<MyApp> {
           brightness: Brightness.dark,
           primarySwatch: Colors.green,
           fontFamily: "CeraPro",
-          appBarTheme: AppBarTheme(
+          appBarTheme: const AppBarTheme(
             systemOverlayStyle: SystemUiOverlayStyle.light,
           ),
         ),
@@ -113,8 +115,9 @@ class _MyAppState extends State<MyApp> {
           onGenerateRoute: _appRoutes.onGenerateRoute,
           theme: theme,
           darkTheme: darkTheme,
+          // home: const NetworkCenterMainPage(),
           home: _connected
-              ? SplashScreen()
+              ? const SplashScreen()
               : No_internet_Page(onRetry: _checkConnectivity),
         ),
       ),

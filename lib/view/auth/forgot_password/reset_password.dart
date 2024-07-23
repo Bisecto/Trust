@@ -5,19 +5,16 @@ import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/otp_field_style.dart';
 import 'package:otp_text_field/style.dart';
 import 'package:provider/provider.dart';
-import 'package:teller_trust/view/auth/otp_pin_pages/create_pin.dart';
 import 'package:teller_trust/view/auth/sign_in_screen.dart';
 
 import '../../../bloc/auth_bloc/auth_bloc.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/app_images.dart';
-import '../../../res/app_router.dart';
 import '../../../utills/app_navigator.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/app_validator.dart';
 import '../../../utills/custom_theme.dart';
 import '../../../utills/enums/toast_mesage.dart';
-import '../../important_pages/dialog_box.dart';
 import '../../important_pages/not_found_page.dart';
 import '../../widgets/app_custom_text.dart';
 import '../../widgets/form_button.dart';
@@ -68,7 +65,7 @@ class _ResetPasswordState extends State<ResetPassword> {
             if (state is PasswordResetSuccessState) {
               // MSG.snackBar(context, state.msg);
 
-              AppNavigator.pushAndStackPage(context, page: SignInScreen());
+              AppNavigator.pushAndStackPage(context, page: const SignInScreen());
               showToast(
                   context: context,
                   title: 'Successful',
@@ -86,7 +83,7 @@ class _ResetPasswordState extends State<ResetPassword> {
             switch (state.runtimeType) {
               case AuthInitial || ErrorState:
                 return SingleChildScrollView(
-                  child: Container(
+                  child: SizedBox(
                     height: AppUtils.deviceScreenSize(context).height,
                     width: AppUtils.deviceScreenSize(context).width,
                     child: Stack(
@@ -101,7 +98,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                             height:
                                 AppUtils.deviceScreenSize(context).height * 0.5,
                             width: AppUtils.deviceScreenSize(context).width,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               image: DecorationImage(
                                 image: AssetImage(AppImages.authAppLogoImage),
                                 fit: BoxFit.fill,
@@ -224,7 +221,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                                                     .validatePassword,
                                                 controller: _passwordController,
                                                 hint: 'New Password',
-                                                widget: Icon(Icons.password),
+                                                widget: const Icon(Icons.password),
                                                 borderColor: _passwordController
                                                         .text.isNotEmpty
                                                     ? AppColors.green
@@ -238,7 +235,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                                                 controller:
                                                     _confirmPasswordController,
                                                 hint: 'Confirm New Password',
-                                                widget: Icon(Icons.password),
+                                                widget: const Icon(Icons.password),
                                                 borderColor:
                                                     _confirmPasswordController
                                                             .text.isNotEmpty

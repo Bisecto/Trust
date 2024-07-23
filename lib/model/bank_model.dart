@@ -2,7 +2,6 @@
 //
 //     final banks = banksFromJson(jsonString);
 
-import 'dart:convert';
 
 
 class BankModel {

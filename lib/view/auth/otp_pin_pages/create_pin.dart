@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:otp_text_field/otp_field.dart';
-import 'package:otp_text_field/otp_field_style.dart';
-import 'package:otp_text_field/style.dart';
 
 import 'package:pin_plus_keyboard/package/controllers/pin_input_controller.dart';
 import 'package:pin_plus_keyboard/package/pin_plus_keyboard_package.dart';
@@ -16,7 +14,6 @@ import '../../../res/app_images.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/custom_theme.dart';
 import '../../../utills/enums/toast_mesage.dart';
-import '../../important_pages/dialog_box.dart';
 import '../../important_pages/not_found_page.dart';
 import '../../widgets/app_custom_text.dart';
 import '../../widgets/show_toast.dart';
@@ -75,7 +72,7 @@ class _CreatePinState extends State<CreatePin> {
             switch (state.runtimeType) {
               case AuthInitial || ErrorState:
                 return SingleChildScrollView(
-                    child: Container(
+                    child: SizedBox(
                       height: AppUtils.deviceScreenSize(context).height,
                       width: AppUtils.deviceScreenSize(context).width,
                       child: Stack(
@@ -90,7 +87,7 @@ class _CreatePinState extends State<CreatePin> {
                               height:
                                   AppUtils.deviceScreenSize(context).height * 0.5,
                               width: AppUtils.deviceScreenSize(context).width,
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 image: DecorationImage(
                                   image: AssetImage(AppImages.authAppLogoImage),
                                   fit: BoxFit.fill,
@@ -235,8 +232,7 @@ class _CreatePinState extends State<CreatePin> {
                                           onSubmit: () {
                                             /// ignore: avoid_print
                                            authBloc.add(VerificationContinueEvent(context));
-                                            print("Text is : " +
-                                                pinInputController.text);
+                                            print("Text is : ${pinInputController.text}");
                                           },
                                           keyboardFontFamily: '',
                                         ),

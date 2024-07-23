@@ -1,11 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:teller_trust/view/the_app_screens/bills_page.dart';
-import 'package:teller_trust/view/the_app_screens/card_page.dart';
-import 'package:teller_trust/view/the_app_screens/home_page.dart';
-import 'package:teller_trust/view/the_app_screens/more_page.dart';
 
 import '../model/quick_access_model.dart';
-import '../view/the_app_screens/send_page.dart';
 import 'app_colors.dart';
 import 'app_icons.dart';
 import 'app_images.dart';

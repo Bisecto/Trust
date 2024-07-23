@@ -3,8 +3,6 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
-import 'package:teller_trust/bloc/auth_bloc/auth_bloc.dart';
 
 import '../../repository/app_repository.dart';
 import '../../res/apis.dart';

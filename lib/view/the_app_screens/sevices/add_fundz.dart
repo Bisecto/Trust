@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../../model/customer_account_model.dart';
@@ -34,7 +33,7 @@ class _AddFundsState extends State<AddFunds> {
             color: theme.isDark
                 ? AppColors.darkModeBackgroundContainerColor
                 : AppColors.white,
-            borderRadius: BorderRadius.only(
+            borderRadius: const BorderRadius.only(
                 topRight: Radius.circular(30), topLeft: Radius.circular(30))),
         child: SingleChildScrollView(
           child: Padding(
@@ -83,7 +82,7 @@ class _AddFundsState extends State<AddFunds> {
                 // ),
                 Container(
                   height: 50,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                       // color: !theme.isDark
                       //     ? AppColors.darkModeBackgroundContainerColor
                       //     : AppColors.white,
@@ -98,7 +97,7 @@ class _AddFundsState extends State<AddFunds> {
                       children: [
                         SvgPicture.asset(
                           AppIcons.yourNgnAccount,
-                          theme: SvgTheme(
+                          theme: const SvgTheme(
                             // currentColor: theme.isDark
                             //     ? AppColors.darkModeBackgroundColor
                             //     : AppColors.white
@@ -143,7 +142,7 @@ class _AddFundsState extends State<AddFunds> {
   Widget infoContainer(name, detail,theme) {
     return Padding(
       padding: const EdgeInsets.all(15.0),
-      child: Container(
+      child: SizedBox(
         height: 50,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
