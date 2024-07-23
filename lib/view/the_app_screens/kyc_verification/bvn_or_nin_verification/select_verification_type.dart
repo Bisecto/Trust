@@ -32,7 +32,7 @@ class BvnNinKyc2 extends StatefulWidget {
 }
 
 class _BvnNinKyc2State extends State<BvnNinKyc2> {
-  String selectedString = 'NIN';
+  String selectedString = 'BVN';
   final _numberController = TextEditingController();
   final dob = TextEditingController();
   final KycBloc kycBloc = KycBloc();
@@ -175,7 +175,7 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Container(
-                                      width: 80,
+                                      width: 45,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(20),
                                         border: Border.all(
@@ -185,38 +185,40 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
                                       child: Padding(
                                         padding: const EdgeInsets.all(3.0),
                                         child: Row(
+                                          // mainAxisAlignment:
+                                          //     MainAxisAlignment.spaceBetween,
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.center,
                                           children: [
-                                            GestureDetector(
-                                              onTap: () {
-                                                setState(() {
-                                                  selectedString = 'NIN';
-                                                });
-                                              },
-                                              child: Container(
-                                                width: 35,
-                                                height: 20,
-                                                decoration: BoxDecoration(
-                                                  color: selectedString == 'NIN'
-                                                      ? AppColors.green
-                                                      : Colors.transparent,
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                                child: Center(
-                                                  child: CustomText(
-                                                    text: 'NIN',
-                                                    color:
-                                                        selectedString == 'NIN'
-                                                            ? AppColors.white
-                                                            : Colors.black,
-                                                    size: 10,
-                                                    weight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
+                                            // GestureDetector(
+                                            //   onTap: () {
+                                            //     setState(() {
+                                            //       selectedString = 'NIN';
+                                            //     });
+                                            //   },
+                                            //   child: Container(
+                                            //     width: 35,
+                                            //     height: 20,
+                                            //     decoration: BoxDecoration(
+                                            //       color: selectedString == 'NIN'
+                                            //           ? AppColors.green
+                                            //           : Colors.transparent,
+                                            //       borderRadius:
+                                            //           BorderRadius.circular(10),
+                                            //     ),
+                                            //     child: Center(
+                                            //       child: CustomText(
+                                            //         text: 'NIN',
+                                            //         color:
+                                            //             selectedString == 'NIN'
+                                            //                 ? AppColors.white
+                                            //                 : Colors.black,
+                                            //         size: 10,
+                                            //         weight: FontWeight.bold,
+                                            //       ),
+                                            //     ),
+                                            //   ),
+                                            // ),
                                             GestureDetector(
                                               onTap: () {
                                                 setState(() {
