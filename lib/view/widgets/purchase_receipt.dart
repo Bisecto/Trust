@@ -37,17 +37,18 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
   bool isSharingPdf = false;
   ScreenshotController screenshotController = ScreenshotController();
   PdfDocument? document = PdfDocument();
-@override
+
+  @override
   void initState() {
     // TODO: implement initState
-  print(widget.transaction.toJson());
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent,
-    statusBarIconBrightness:
-    Brightness.dark,
-  ));
+    print(widget.transaction.toJson());
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+    ));
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
@@ -56,9 +57,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
       body: Screenshot(
         controller: screenshotController,
         child: Container(
-          height: AppUtils
-              .deviceScreenSize(context)
-              .height,
+          height: AppUtils.deviceScreenSize(context).height,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
@@ -76,7 +75,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
               child: Column(
                 children: [
                   const SizedBox(height: 50),
-                  buildHeader(context,theme),
+                  buildHeader(context, theme),
                   const SizedBox(height: 20),
                   buildReceiptDetails(),
                   const SizedBox(height: 20),
@@ -92,10 +91,11 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
       ),
     );
   }
+
   // AdaptiveThemeMode? adaptiveThemeMode =
   //     await AdaptiveTheme.getThemeMode() ?? AdaptiveThemeMode.light;
 
-  Widget buildHeader(BuildContext context,theme) {
+  Widget buildHeader(BuildContext context, theme) {
     return Container(
       alignment: Alignment.center,
       child: Column(
@@ -110,7 +110,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
                       statusBarColor: Colors.transparent,
                       statusBarIconBrightness:
-                      theme.isDark ? Brightness.light : Brightness.dark,
+                          theme.isDark ? Brightness.light : Brightness.dark,
                     ));
                   },
                   child: Container(
@@ -157,39 +157,43 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                     : 'Debit'),
           ),
           buildDetailRow('Amount', 'N${widget.transaction.amount}'),
-          if(widget.transaction.order!=null)
-
-            const SizedBox(height: 12),
-          if(widget.transaction.order!=null)
-          buildDetailRow(
-              'To',
-              widget.transaction.order?.requiredFields.meterNumber ??
-                  widget.transaction.order?.requiredFields.cardNumber ??
-                  widget.transaction.order?.requiredFields.phoneNumber ??
-                  '',
-              true),
+          if (widget.transaction.order != null) const SizedBox(height: 12),
+          if (widget.transaction.order != null)
+            buildDetailRow(
+                'To',
+                widget.transaction.order?.requiredFields.meterNumber ??
+                    widget.transaction.order?.requiredFields.cardNumber ??
+                    widget.transaction.order?.requiredFields.phoneNumber ??
+                    '',
+                true),
           const SizedBox(height: 12),
           buildDetailRow('Description', widget.transaction.description),
           if (widget.transaction.order?.response?.utilityToken != null &&
               widget.transaction.order!.response!.utilityToken.isNotEmpty &&
-              widget.transaction.status.toLowerCase() == 'success')
-            ...[
-              const SizedBox(height: 12),
-              buildDetailRow(
-                'Utility Token',
-                widget.transaction.order!.response!.utilityToken,
-                true,
-              ),
-            ],
+              widget.transaction.status.toLowerCase() == 'success') ...[
+            const SizedBox(height: 12),
+            buildDetailRow(
+              'Utility Token',
+              widget.transaction.order!.response!.utilityToken,
+              true,
+            ),
+          ],
           const SizedBox(height: 12),
-          buildDetailRow('Date', AppUtils.formateSimpleDate(dateTime:widget.transaction.createdAt.toString())),
+          buildDetailRow(
+              'Date',
+              AppUtils.formateSimpleDate(
+                  dateTime: widget.transaction.createdAt.toString())),
           const SizedBox(height: 20),
           const Divider(),
           const SizedBox(height: 12),
           buildDetailRow(
               'Transaction Reference', widget.transaction.reference, true),
           const SizedBox(height: 12),
-          buildDetailRow('Status', widget.transaction.status.toLowerCase()=='success'?"SUCCESSFUL":widget.transaction.status.toUpperCase()),
+          buildDetailRow(
+              'Status',
+              widget.transaction.status.toLowerCase() == 'success'
+                  ? "SUCCESSFUL"
+                  : widget.transaction.status.toUpperCase()),
           const SizedBox(height: 20),
           Center(
             child: TextStyles.textHeadings(
@@ -204,38 +208,38 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
 
   Widget buildDetailRow(String label, String value, [bool isCopyable = false]) {
     return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
         CustomText(text: label, size: 12, color: AppColors.textColor2),
-    Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-    SizedBox(
-    width:
-    //isCopyable
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(
+              width:
+                  //isCopyable
 
-    // ?
-    AppUtils.deviceScreenSize(context).width / 1.5,
+                  // ?
+                  AppUtils.deviceScreenSize(context).width / 1.5,
 
-    //  : null,
-    child: CustomText(
-    text: value,
-    size: 14,
-    color: AppColors.black,
-    maxLines: 2,
-    ),
-    ),
-    if (isCopyable)
-    if (!isSharingPdf)
-    GestureDetector(
-    onTap: () {
-    AppUtils().copyToClipboard(value, context);
-    },
-    child: SvgPicture.asset(AppIcons.copy2),
-    ),
-    ],
-    ),
-    ],
+              //  : null,
+              child: CustomText(
+                text: value,
+                size: 14,
+                color: AppColors.black,
+                maxLines: 2,
+              ),
+            ),
+            if (isCopyable)
+              if (!isSharingPdf)
+                GestureDetector(
+                  onTap: () {
+                    AppUtils().copyToClipboard(value, context);
+                  },
+                  child: SvgPicture.asset(AppIcons.copy2),
+                ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -289,30 +293,28 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
   Widget buildFooter() {
     return Column(
       children: [
-        if (!isSharingPdf) ...[
-          const CustomText(
-            text: 'Thank You!',
-            textAlign: TextAlign.center,
-            size: 14,
-          ),
-          const CustomText(
-            text: 'For Your Purchase',
-            textAlign: TextAlign.center,
-            size: 14,
-          ),
-          const SizedBox(height: 20),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.lock, color: AppColors.green),
-              CustomText(
-                text: 'Secured by TellaTrust',
-                textAlign: TextAlign.center,
-                size: 14,
-              ),
-            ],
-          ),
-        ],
+        const CustomText(
+          text: 'Thank You!',
+          textAlign: TextAlign.center,
+          size: 14,
+        ),
+        const CustomText(
+          text: 'For Your Purchase',
+          textAlign: TextAlign.center,
+          size: 14,
+        ),
+        const SizedBox(height: 20),
+        const Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.lock, color: AppColors.green),
+            CustomText(
+              text: 'Secured by TellaTrust',
+              textAlign: TextAlign.center,
+              size: 14,
+            ),
+          ],
+        ),
       ],
     );
   }
@@ -340,8 +342,9 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
 
       var freeSpace = await DiskSpace.getFreeDiskSpace;
       if (freeSpace != null && freeSpace > 10.00) {
-        await screenshotController.capture(
-            delay: const Duration(milliseconds: 5)).then((Uint8List? image) async {
+        await screenshotController
+            .capture(delay: const Duration(milliseconds: 5))
+            .then((Uint8List? image) async {
           if (image != null) {
             var path = await ExternalPath.getExternalStoragePublicDirectory(
                 ExternalPath.DIRECTORY_DOWNLOADS);
@@ -352,7 +355,9 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
               directory.createSync(recursive: true);
             }
 
-            final imagePath = await File('$path/${title + getCurrentDate()}.png').create(recursive: true);
+            final imagePath =
+                await File('$path/${title + getCurrentDate()}.png')
+                    .create(recursive: true);
             await imagePath.writeAsBytes(image);
 
             final Uint8List imageData = File(imagePath.path).readAsBytesSync();
@@ -361,7 +366,8 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
             final PdfDocument document = PdfDocument();
             final PdfPage page = document.pages.add();
             final Size pageSize = page.getClientSize();
-            page.graphics.drawImage(pdfBitmap, Rect.fromLTWH(0, 0, pageSize.width, pageSize.height));
+            page.graphics.drawImage(pdfBitmap,
+                Rect.fromLTWH(0, 0, pageSize.width, pageSize.height));
 
             var pdfPath = '$path/${title + getCurrentDate()}.pdf';
             await File(pdfPath).writeAsBytes(await document.save());
@@ -373,7 +379,9 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
             }
 
             await Share.shareXFiles([
-              XFile(pdfPath, mimeType: 'application/pdf', name: '${title + getCurrentDate()}.pdf')
+              XFile(pdfPath,
+                  mimeType: 'application/pdf',
+                  name: '${title + getCurrentDate()}.pdf')
             ]);
 
             final targetFile2 = File(pdfPath);
@@ -433,19 +441,19 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
 
         var freeSpace = await DiskSpace.getFreeDiskSpace;
         if (freeSpace != null && freeSpace > 10.00) {
-          await screenshotController.capture(
-              delay: const Duration(milliseconds: 5)).then((
-              Uint8List? image) async {
+          await screenshotController
+              .capture(delay: const Duration(milliseconds: 5))
+              .then((Uint8List? image) async {
             if (image != null) {
               var path = await ExternalPath.getExternalStoragePublicDirectory(
                   ExternalPath.DIRECTORY_DOWNLOADS);
 
-              final imagePath = await File(
-                  '$path/${title + getCurrentDate()}.png').create();
+              final imagePath =
+                  await File('$path/${title + getCurrentDate()}.png').create();
               await imagePath.writeAsBytes(image);
 
-              final Uint8List imageData = File(imagePath.path)
-                  .readAsBytesSync();
+              final Uint8List imageData =
+                  File(imagePath.path).readAsBytesSync();
               final PdfBitmap pdfBitmap = PdfBitmap(imageData);
 
               final PdfDocument document = PdfDocument();

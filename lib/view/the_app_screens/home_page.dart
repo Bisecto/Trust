@@ -1769,8 +1769,8 @@ class _HomePageState extends State<HomePage> {
                 ),
                 CustomText(
                   text: accNumber == '***'
-                      ? " Complete KYC to get TellaTrust Account Number"
-                      : " Tellatrust Account Number ",
+                      ? " Complete KYC to get Safe Haven Account Number"
+                      : " Safe Haven Account Number ",
                   color: AppColors.darkGreen,
                   size: 10,
                 ),
