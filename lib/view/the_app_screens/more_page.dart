@@ -368,7 +368,7 @@ class _MorePageState extends State<MorePage> {
                   children: [
                     CircleAvatar(
                       //backgroundImage: NetworkImage(),
-                      child: SvgPicture.network(
+                      child: SvgPicture.asset(
                         AppIcons.person,
                         height: 32,
                         width: 32,
