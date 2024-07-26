@@ -43,7 +43,7 @@ class CustomerAccountModel {
       email: json['email'] ?? '',
       nin: json['nin'] ?? '',
       phone: json['phone'] ?? '',
-      nuban: json['nuban'] ?? '',
+      nuban: json['nuban'] ?? '*****',
       bankCode: json['bankCode'] ?? '',
       dvaNuban: json['dvaNuban'] ?? '',
       dvaAccountName: json['dvaAccountName'] ?? '',

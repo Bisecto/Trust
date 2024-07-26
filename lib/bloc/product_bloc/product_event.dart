@@ -10,7 +10,10 @@ class ListCategoryEvent extends ProductEvent {
 
   ListCategoryEvent(this.page, this.pageSize);
 }
-
+class GetProductBeneficiaryEvent extends ProductEvent{
+  final String productId;
+  GetProductBeneficiaryEvent(this.productId);
+}
 class ListServiceEvent extends ProductEvent {
   final String page;
   final String pageSize;
@@ -43,7 +46,9 @@ class PurchaseProductEvent extends ProductEvent {
   final String productId;
   final String accessPIN;
   final bool isQuickPay;
+  final bool isSaveAsBeneficiarySelected;
+  final String beneficiaryName;
 
   PurchaseProductEvent(this.context, this.requiredFields, this.productId,
-      this.accessPIN, this.isQuickPay);
+      this.accessPIN, this.isQuickPay,this.isSaveAsBeneficiarySelected,this.beneficiaryName);
 }

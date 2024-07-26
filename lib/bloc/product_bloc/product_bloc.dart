@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:teller_trust/model/electricity_verify_model.dart';
 import 'package:teller_trust/model/product_model.dart';
 import 'package:teller_trust/model/transactionHistory.dart';
 
+import '../../model/beneficiary_model.dart';
 import '../../model/category_model.dart';
 import '../../model/quickpay_model.dart';
 import '../../model/required_field_model.dart';
@@ -28,6 +30,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     on<FetchProduct>(fetchProduct);
     on<PurchaseProductEvent>(purchaseProductEvent);
     on<VerifyEntityNumberEvent>(verifyEntityNumberEvent);
+    on<GetProductBeneficiaryEvent>(getProductBeneficiaryEvent);
     // on<ProductEvent>((event, emit) {
     //   // TODO: implement event handler
     // });
@@ -142,6 +145,20 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         accessToken: accessToken,
         accessPIN: event.accessPIN,
       );
+      if(event.isSaveAsBeneficiarySelected){
+        Map<String,dynamic> beneficiarydData={
+          "productId":event.productId,
+          "fullName":event.beneficiaryName,
+          "requiredFields": event.requiredFields.toJson()
+        };
+        var response = await appRepository.appPostRequest(beneficiarydData,event.isQuickPay?AppApis.quickPay:
+        AppApis.createBeneficiary,
+          accessToken: accessToken,
+          accessPIN: event.accessPIN,
+        );
+        print(json.decode(response.body));
+        print((response.statusCode));
+      }
       Navigator.pop(event.context);
       print(purchaseResponse.body);
 
@@ -257,6 +274,40 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     }  catch (e) {
 
       emit(EntityNumberErrorState(AppUtils.convertString(e.toString())));
+    }
+  }
+
+  FutureOr<void> getProductBeneficiaryEvent(GetProductBeneficiaryEvent event, Emitter<ProductState> emit) async {
+    emit(BeneficiaryLoadingState());
+    AppRepository appRepository = AppRepository();
+
+    try {
+      String accessToken = await SharedPref.getString("access-token");
+
+      var response = await appRepository.appGetRequest(
+          accessToken: accessToken,
+          "${AppApis.listBeneficiary}?productId=${event.productId}");
+      print(response.statusCode);
+      print(response.body);
+      print(json.decode(response.body));
+      if (response.statusCode == 200 || response.statusCode == 201) {
+
+        BeneficiaryModel beneficiaryModel=BeneficiaryModel.fromJson(json.decode(response.body)['data']);
+
+        emit(GetBeneficiarySuccessState(beneficiaryModel));
+      } else {
+        emit(ErrorState(
+            AppUtils.convertString(json.decode(response.body)['message'])));
+      }
+    } on SocketException {
+      emit(ErrorState(
+          'Network error: Unable to connect. Please check your internet connection.'));
+    } on HttpException {
+      emit(ErrorState('Server error: Unable to communicate with the server.'));
+    } on FormatException {
+      emit(ErrorState('Data error: Received data is in an unexpected format.'));
+    } catch (e) {
+      emit(ErrorState(AppUtils.convertString(e.toString())));
     }
   }
 }

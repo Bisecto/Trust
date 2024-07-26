@@ -9,6 +9,7 @@ import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:teller_trust/model/service_model.dart' as serviceModel;
 import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/make_bank_transfer/bank_transfer.dart';
+import 'package:teller_trust/view/the_app_screens/sevices/product_beneficiary/product_beneficiary.dart';
 import 'package:teller_trust/view/widgets/purchase_receipt.dart';
 
 import '../../../bloc/product_bloc/product_bloc.dart';
@@ -31,7 +32,7 @@ import '../../widgets/form_input.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
 import '../../widgets/show_toast.dart';
-import 'build_payment_method.dart';
+import 'payment_method/payment_method.dart';
 
 class AirtimePurchase extends StatefulWidget {
   final categoryModel.Category category;
@@ -57,9 +58,12 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
   }
 
   bool isInitial = true;
-  String selectedServiceID = '';
+  String productId = '';
 
   void _handleNetworkSelect(String? networkName) async {
+    setState(() {
+      productId = '';
+    });
     AppRepository appRepository = AppRepository();
     String accessToken = await SharedPref.getString("access-token");
     String apiUrl =
@@ -77,10 +81,10 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
             productMode.ProductModel.fromJson(
                 json.decode(listServiceResponse.body));
         setState(() {
-          selectedServiceID = productModel.data.items[0].id;
+          productId = productModel.data.items[0].id;
           isInitial = false;
         });
-        print(selectedServiceID);
+        print(productId);
         // Process the data as needed
       } else {
         print("Error: ${listServiceResponse.statusCode}");
@@ -121,7 +125,8 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                       if (state is PurchaseSuccess) {
                         _beneficiaryController.clear();
                         _selectedAmtController.clear();
-                        state.transaction.order!.product!.name== widget.category.name;
+                        state.transaction.order!.product!.name ==
+                            widget.category.name;
                         AppNavigator.pushAndStackPage(context,
                             page: TransactionReceipt(
                                 transaction: state.transaction));
@@ -408,6 +413,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                           selectAmount("2000", theme),
                                         ],
                                       ),
+
                                       CustomTextFormField(
                                         hint: 'Input number here',
                                         label: 'Beneficiary',
@@ -424,6 +430,12 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                             ? AppColors.green
                                             : AppColors.grey,
                                       ),
+                                      if(productId.isNotEmpty)
+                                        SizedBox(height: 10,),
+                                      if(productId.isNotEmpty)
+                                        BeneficiaryWidget(productId: productId, beneficiaryNum: (value) { setState(() {
+                                          _beneficiaryController.text=value;
+                                        }); },),
                                       SizedBox(
                                         height: 310,
                                         child: PaymentMethodScreen(
@@ -454,12 +466,39 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                               }
                                             });
                                           },
+                                          number: _beneficiaryController.text,
+                                          name: (value) {
+                                            print(value);
+                                            Future.microtask(() {
+                                              if (mounted) {
+                                                setState(() {
+                                                  print(value);
+                                                  beneficiaryName = value;
+                                                  // print(isPaymentAllowed);
+                                                });
+                                              }
+                                            });
+                                          },
+                                          isSaveAsBeneficiarySelected: (value) {
+                                            print(value);
+                                            Future.microtask(() {
+                                              if (mounted) {
+                                                setState(() {
+                                                  isSaveAsBeneficiarySelected =
+                                                      value;
+                                                  // print(isPaymentAllowed);
+                                                });
+                                              }
+                                            });
+                                          },
                                         ),
                                       ),
 
                                       ///Remember to add beneficiary
                                       FormButton(
                                         onPressed: () async {
+                                          print(beneficiaryName);
+                                          print(isSaveAsBeneficiarySelected);
                                           print(_selectedPaymentMethod);
                                           print(_beneficiaryController
                                               .text.isNotEmpty);
@@ -467,84 +506,93 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
 
                                           if (_formKey.currentState!
                                               .validate()) {
-                                            if(selectedServiceID!=''){
-                                            if (_selectedPaymentMethod !=
-                                                'wallet') {
-                                              var transactionPin = '';
-                                              widget.category.requiredFields
-                                                      .amount =
-                                                  _selectedAmtController.text;
-                                              widget.category.requiredFields
-                                                      .phoneNumber =
-                                                  _beneficiaryController.text;
-
-                                              purchaseProductBloc.add(
-                                                  PurchaseProductEvent(
-                                                      context,
-                                                      widget.category
-                                                          .requiredFields,
-                                                      selectedServiceID,
-                                                      transactionPin,
-                                                      true));
-                                            } else {
-                                              var transactionPin = '';
-                                              transactionPin = await modalSheet
-                                                  .showMaterialModalBottomSheet(
-                                                      backgroundColor:
-                                                          Colors.transparent,
-                                                      isDismissible: true,
-                                                      shape:
-                                                          const RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.vertical(
-                                                                top: Radius
-                                                                    .circular(
-                                                                        20.0)),
-                                                      ),
-                                                      context: context,
-                                                      builder: (context) =>
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .only(
-                                                                    top: 200.0),
-                                                            child:
-                                                                ConfirmWithPin(
-                                                              context: context,
-                                                              title:
-                                                                  'Input your transaction pin to continue',
-                                                            ),
-                                                          ));
-                                              print(transactionPin);
-                                              if (transactionPin != '') {
-                                                setState(() {
-                                                  widget.category.requiredFields
-                                                          .amount =
-                                                      _selectedAmtController
-                                                          .text;
-                                                  widget.category.requiredFields
-                                                          .phoneNumber =
-                                                      _beneficiaryController
-                                                          .text;
-                                                });
+                                            if (productId != '') {
+                                              if (_selectedPaymentMethod !=
+                                                  'wallet') {
+                                                var transactionPin = '';
+                                                widget.category.requiredFields
+                                                        .amount =
+                                                    _selectedAmtController.text;
+                                                widget.category.requiredFields
+                                                        .phoneNumber =
+                                                    _beneficiaryController.text;
 
                                                 purchaseProductBloc.add(
                                                     PurchaseProductEvent(
                                                         context,
                                                         widget.category
                                                             .requiredFields,
-                                                        selectedServiceID,
+                                                        productId,
                                                         transactionPin,
-                                                        false));
+                                                        true,
+                                                        isSaveAsBeneficiarySelected,beneficiaryName));
+                                              } else {
+                                                var transactionPin = '';
+                                                transactionPin = await modalSheet
+                                                    .showMaterialModalBottomSheet(
+                                                        backgroundColor:
+                                                            Colors.transparent,
+                                                        isDismissible: true,
+                                                        shape:
+                                                            const RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.vertical(
+                                                                  top: Radius
+                                                                      .circular(
+                                                                          20.0)),
+                                                        ),
+                                                        context: context,
+                                                        builder: (context) =>
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      top:
+                                                                          200.0),
+                                                              child:
+                                                                  ConfirmWithPin(
+                                                                context:
+                                                                    context,
+                                                                title:
+                                                                    'Input your transaction pin to continue',
+                                                              ),
+                                                            ));
+                                                print(transactionPin);
+                                                if (transactionPin != '') {
+                                                  setState(() {
+                                                    widget
+                                                            .category
+                                                            .requiredFields
+                                                            .amount =
+                                                        _selectedAmtController
+                                                            .text;
+                                                    widget
+                                                            .category
+                                                            .requiredFields
+                                                            .phoneNumber =
+                                                        _beneficiaryController
+                                                            .text;
+                                                  });
+
+                                                  purchaseProductBloc.add(
+                                                      PurchaseProductEvent(
+                                                          context,
+                                                          widget.category
+                                                              .requiredFields,
+                                                          productId,
+                                                          transactionPin,
+                                                          false,isSaveAsBeneficiarySelected,beneficiaryName));
+                                                }
                                               }
-                                            }
-                                          }else{
+                                            } else {
                                               showToast(
                                                   context: context,
                                                   title: 'Info',
-                                                  subtitle: 'Please select a network provider',
+                                                  subtitle:
+                                                      'Please select a network provider',
                                                   type: ToastMessageType.info);
-                                            }}
+                                            }
+                                          }
                                         },
                                         disableButton: (!isPaymentAllowed ||
                                             !_beneficiaryController
@@ -575,6 +623,8 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
   String selectedNetwork = "";
   final _beneficiaryController = TextEditingController();
   final _selectedAmtController = TextEditingController();
+  bool isSaveAsBeneficiarySelected = false;
+  String beneficiaryName = '';
 
   Widget selectAmount(String amt, AdaptiveThemeMode theme) {
     return Padding(
@@ -658,6 +708,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
       ),
     );
   }
+
   Widget _loadingNetwork() {
     return SizedBox(
       height: 90,
@@ -679,7 +730,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                       decoration: BoxDecoration(
                           color: Colors.grey.withOpacity(0.2),
                           borderRadius:
-                          const BorderRadius.all(Radius.circular(50)))),
+                              const BorderRadius.all(Radius.circular(50)))),
                   const SizedBox(height: 10),
                   Shimmer(
                     duration: const Duration(seconds: 1),
