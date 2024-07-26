@@ -1,49 +1,54 @@
+import 'dart:convert';
+
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:teller_trust/model/category_model.dart' as mainCategory;
-import 'package:teller_trust/view/important_pages/dialog_box.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/product_beneficiary/product_beneficiary.dart';
 
-import '../../../bloc/product_bloc/product_bloc.dart';
-import '../../../res/app_colors.dart';
-import '../../../res/app_icons.dart';
-import '../../../utills/app_navigator.dart';
-import '../../../utills/app_utils.dart';
-import '../../../utills/app_validator.dart';
-import '../../../utills/custom_theme.dart';
-import '../../../utills/enums/toast_mesage.dart';
-import '../../../utills/shared_preferences.dart';
-import '../../auth/otp_pin_pages/confirm_with_otp.dart';
-import '../../widgets/app_custom_text.dart';
-import '../../widgets/form_button.dart';
-import '../../widgets/form_input.dart';
+import '../../../../bloc/product_bloc/product_bloc.dart';
+import '../../../../repository/app_repository.dart';
+import '../../../../res/apis.dart';
+import '../../../../res/app_colors.dart';
+import '../../../../res/app_icons.dart';
+import '../../../../utills/app_navigator.dart';
+import '../../../../utills/app_utils.dart';
+import '../../../../utills/app_validator.dart';
+import '../../../../utills/custom_theme.dart';
+import '../../../../utills/enums/toast_mesage.dart';
+import '../../../../utills/shared_preferences.dart';
+import '../../../auth/otp_pin_pages/confirm_with_otp.dart';
+import '../../../widgets/app_custom_text.dart';
+import '../../../widgets/form_button.dart';
+import '../../../widgets/form_input.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
-import '../../widgets/purchase_receipt.dart';
-import '../../widgets/show_toast.dart';
-import 'payment_method/payment_method.dart';
-import 'make_bank_transfer/bank_transfer.dart';
+import '../../../widgets/purchase_receipt.dart';
+import '../../../widgets/show_toast.dart';
+import '../payment_method/payment_method.dart';
+import '../make_bank_transfer/bank_transfer.dart';
+import '../../../../model/product_model.dart' as productMode;
 
-class CablePurchase extends StatefulWidget {
+class ElectricityPurchase extends StatefulWidget {
   final mainCategory.Category category;
 
-  const CablePurchase({super.key, required this.category});
+  const ElectricityPurchase({super.key, required this.category});
 
   @override
-  State<CablePurchase> createState() => _CablePurchaseState();
+  State<ElectricityPurchase> createState() => _ElectricityPurchaseState();
 }
 
-class _CablePurchaseState extends State<CablePurchase> {
+class _ElectricityPurchaseState extends State<ElectricityPurchase> {
   ProductBloc productBloc = ProductBloc();
   ProductBloc purchaseProductBloc = ProductBloc();
   ProductBloc verifyEntityNumberProductBloc = ProductBloc();
-  String selectedCableProvider = 'Choose Provider';
-  String selectedCableProviderImage = '';
-  String selectedCableProviderId = '';
+  String selectedElectricityProvider = 'Choose Provider';
+  String selectedElectricityProviderImage = '';
+  String selectedElectricityProviderId = '';
   String selectedServiceId = '';
   String serviceID = '';
   bool isPaymentAllowed = false;
@@ -51,50 +56,46 @@ class _CablePurchaseState extends State<CablePurchase> {
   bool isSaveAsBeneficiarySelected = false;
   String beneficiaryName = '';
 
-//bool isBeneficiaryAllowed=false;
-  String selectedCablePlan = 'Choose Plan';
-  String selectedCablePlanPrice = '';
-  String selectedCablePlanId = '';
+  bool isShow = false;
 
-  // Future<String> handleNetworkSelect(String? selectedServiceId) async {
-  //   AppRepository appRepository = AppRepository();
-  //   String accessToken = await SharedPref.getString("access-token");
-  //   String apiUrl =
-  //       '${AppApis.listProduct}?page=1&pageSize=10&categoryId=${widget.category
-  //       .id}&serviceId=$selectedServiceId';
-  //
-  //   try {
-  //     var listServiceResponse = await appRepository.appGetRequest(
-  //       apiUrl,
-  //       accessToken: accessToken,
-  //     );
-  //
-  //     if (listServiceResponse.statusCode == 200) {
-  //       print("productModel dtddhdhd: ${listServiceResponse.body}");
-  //       productMode.ProductModel productModel =
-  //       productMode.ProductModel.fromJson(
-  //           json.decode(listServiceResponse.body));
-  //       setState(() {
-  //         serviceID = productModel.data.items[0].id;
-  //       });
-  //       print(productModel);
-  //       print(serviceID);
-  //
-  //       return serviceID;
-  //       // Process the data as needed
-  //     } else {
-  //       print("Error: ${listServiceResponse.statusCode}");
-  //       return '';
-  //
-  //       // Handle error
-  //     }
-  //   } catch (e) {
-  //     return '';
-  //
-  //     print("Network request failed: $e");
-  //     // Handle exception
-  //   }
-  // }
+  Future<String> handleNetworkSelect(String? selectedServiceId) async {
+    AppRepository appRepository = AppRepository();
+    String accessToken = await SharedPref.getString("access-token");
+    String apiUrl =
+        '${AppApis.listProduct}?page=1&pageSize=10&categoryId=${widget.category.id}&serviceId=$selectedServiceId';
+
+    try {
+      var listServiceResponse = await appRepository.appGetRequest(
+        apiUrl,
+        accessToken: accessToken,
+      );
+
+      if (listServiceResponse.statusCode == 200) {
+        print("productModel dtddhdhd: ${listServiceResponse.body}");
+        productMode.ProductModel productModel =
+            productMode.ProductModel.fromJson(
+                json.decode(listServiceResponse.body));
+        setState(() {
+          serviceID = productModel.data.items[0].id;
+        });
+        print(productModel);
+        print(serviceID);
+
+        return serviceID;
+        // Process the data as needed
+      } else {
+        print("Error: ${listServiceResponse.statusCode}");
+        return '';
+
+        // Handle error
+      }
+    } catch (e) {
+      return '';
+
+      print("Network request failed: $e");
+      // Handle exception
+    }
+  }
 
   @override
   void initState() {
@@ -132,13 +133,15 @@ class _CablePurchaseState extends State<CablePurchase> {
                       print(state);
                       if (state is PurchaseSuccess) {
                         _beneficiaryController.clear();
-                        //_selectedAmtController.clear();
+                        _selectedAmtController.clear();
+                        isShow = false;
                         state.transaction.order!.product!.name ==
                             widget.category.name;
 
                         AppNavigator.pushAndStackPage(context,
                             page: TransactionReceipt(
-                                transaction: state.transaction));
+                              transaction: state.transaction,
+                            ));
 
                         // showToast(
                         //     context: context,
@@ -236,7 +239,7 @@ class _CablePurchaseState extends State<CablePurchase> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           TextStyles.textHeadings(
-                                            textValue: 'Cable',
+                                            textValue: 'Electricity',
                                             textColor: AppColors.darkGreen,
                                             // w: FontWeight.w600,
                                             textSize: 14,
@@ -276,7 +279,7 @@ class _CablePurchaseState extends State<CablePurchase> {
                             //       ServiceModel serviceItem = state.serviceModel;
                             //       List<Service> services =
                             //           serviceItem.data.services;
-                            //       //Use user Cable here
+                            //       //Use user Electricity here
                             //       return SizedBox(
                             //         height: 105,
                             //         child: ListView.builder(
@@ -350,29 +353,31 @@ class _CablePurchaseState extends State<CablePurchase> {
                                     builder: (context) => Padding(
                                       padding:
                                           const EdgeInsets.only(top: 200.0),
-                                      child: CableProvider(
-                                        onCableProviderSelected: (String name,
-                                            String imageUrl, String id) async {
+                                      child: ElectricityProvider(
+                                        onElectricityProviderSelected:
+                                            (String name, String imageUrl,
+                                                String id) async {
                                           setState(() {
-                                            selectedCableProvider = name;
-                                            selectedCableProviderImage =
+                                            selectedElectricityProvider = name;
+                                            selectedElectricityProviderImage =
                                                 imageUrl;
-                                            selectedCableProviderId = id;
+                                            selectedElectricityProviderId = id;
                                           });
-                                          print(selectedCableProviderId);
+                                          print(selectedElectricityProviderId);
                                           Navigator.pop(context); // Close modal
-
-                                          // if (_beneficiaryController
-                                          //     .text.length >
-                                          //     9 &&
-                                          //     mainServiceId != '') {
-                                          //   verifyEntityNumberProductBloc
-                                          //       .add(
-                                          //       VerifyEntityNumberEvent(
-                                          //           mainServiceId,
-                                          //           _beneficiaryController
-                                          //               .text));
-                                          // }
+                                          String mainServiceId =
+                                              await handleNetworkSelect(
+                                                  selectedElectricityProviderId);
+                                          if (_beneficiaryController
+                                                      .text.length >
+                                                  9 &&
+                                              mainServiceId != '') {
+                                            verifyEntityNumberProductBloc.add(
+                                                VerifyEntityNumberEvent(
+                                                    mainServiceId,
+                                                    _beneficiaryController
+                                                        .text));
+                                          }
                                         },
                                         categoryId: widget.category.id,
                                         serviceId: selectedServiceId,
@@ -402,30 +407,32 @@ class _CablePurchaseState extends State<CablePurchase> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        if (selectedCableProvider !=
+                                        if (selectedElectricityProvider !=
                                             "Choose Provider")
                                           Image.network(
-                                            selectedCableProviderImage,
+                                            selectedElectricityProviderImage,
                                             height: 24,
                                             width: 24,
                                           ),
-                                        if (selectedCableProvider !=
+                                        if (selectedElectricityProvider !=
                                             "Choose Provider")
                                           const SizedBox(
                                             width: 10,
                                           ),
                                         Expanded(
                                           child: CustomText(
-                                            text: selectedCableProvider,
+                                            text: selectedElectricityProvider,
                                             size: 14,
-                                            color: selectedCableProvider !=
-                                                    "Choose Provider"
-                                                ? (theme.isDark
-                                                    ? Colors.white
-                                                    : Colors.black)
-                                                : (theme.isDark
-                                                    ? Colors.grey
-                                                    : AppColors.lightDivider),
+                                            color:
+                                                selectedElectricityProvider !=
+                                                        "Choose Provider"
+                                                    ? (theme.isDark
+                                                        ? Colors.white
+                                                        : Colors.black)
+                                                    : (theme.isDark
+                                                        ? Colors.grey
+                                                        : AppColors
+                                                            .lightDivider),
                                           ),
                                         ),
                                         const Icon(Icons.arrow_drop_down),
@@ -435,97 +442,7 @@ class _CablePurchaseState extends State<CablePurchase> {
                                 ),
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: GestureDetector(
-                                onTap: () {
-                                  if (selectedCableProvider ==
-                                      'Choose Provider') {
-                                    setState(() {
-                                      MSG.warningSnackBar(context,
-                                          'Please Select a service provider');
-                                    });
-                                  } else {
-                                    modalSheet.showMaterialModalBottomSheet(
-                                      backgroundColor: Colors.transparent,
-                                      isDismissible: true,
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(20.0),
-                                        ),
-                                      ),
-                                      context: context,
-                                      builder: (context) => Padding(
-                                        padding:
-                                            const EdgeInsets.only(top: 200.0),
-                                        child: CablePlan(
-                                          onCablePlanSelected: (String name,
-                                              String price, String id) {
-                                            setState(() {
-                                              selectedCablePlan = name;
-                                              selectedCablePlanPrice = price;
-                                              _selectedAmtController.text =
-                                                  price;
-                                              selectedCablePlanId = id;
-                                            });
-                                            Navigator.pop(
-                                                context); // Close modal
-                                          },
-                                          categoryId: widget.category.id,
-                                          serviceId: selectedCableProviderId,
-                                          theme: theme,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                                child: Container(
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                    color: theme.isDark
-                                        ? AppColors
-                                            .darkModeBackgroundContainerColor
-                                        : AppColors.white,
-                                    border: Border.all(
-                                      color: selectedServiceId.isNotEmpty
-                                          ? AppColors.green
-                                          : AppColors.grey,
-                                      width: 1.0,
-                                    ),
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 25.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Expanded(
-                                          child: CustomText(
-                                            text: selectedCablePlan,
-                                            size: 14,
-                                            color: selectedCablePlan !=
-                                                    "Choose Plan"
-                                                ? (theme.isDark
-                                                    ? Colors.white
-                                                    : Colors.black)
-                                                : (theme.isDark
-                                                    ? Colors.grey
-                                                    : AppColors.lightDivider),
-                                          ),
-                                        ),
-                                        const Icon(Icons.arrow_drop_down),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            if (selectedCablePlanPrice.isNotEmpty)
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: amount(selectedCablePlanPrice),
-                              ),
+
                             Padding(
                               padding: const EdgeInsets.all(10.0),
                               child: Form(
@@ -535,27 +452,60 @@ class _CablePurchaseState extends State<CablePurchase> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       CustomTextFormField(
-                                        hint: 'Input decoder card number here',
-                                        label: 'Beneficiary',
+                                        hint: '0.00',
+                                        label: 'Select Amount',
+                                        controller: _selectedAmtController,
+                                        textInputType: TextInputType.number,
+                                        validator:
+                                            AppValidator.validateTextfield,
+                                        widget: SvgPicture.asset(
+                                          AppIcons.naira,
+                                          color: _selectedAmtController
+                                                  .text.isNotEmpty
+                                              ? AppColors.darkGreen
+                                              : AppColors.grey,
+                                        ),
+                                        borderColor: _selectedAmtController
+                                                .text.isNotEmpty
+                                            ? AppColors.green
+                                            : AppColors.grey,
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          //selectAmount("2000"),
+                                          selectAmount("1000", theme),
+                                          selectAmount("2000", theme),
+                                          selectAmount("3000", theme),
+                                          selectAmount("5000", theme),
+                                          //selectAmount("5000", theme),
+                                        ],
+                                      ),
+                                      CustomTextFormField(
+                                        hint: 'Enter your meter number',
+                                        label: 'Meter Number',
                                         controller: _beneficiaryController,
                                         textInputType: TextInputType.number,
-                                        widget: const Icon(Icons.numbers),
                                         onChanged: (value) async {
                                           print(_beneficiaryController
                                               .text.length);
-                                          print(selectedCableProviderId);
+                                          print(selectedElectricityProviderId);
                                           if (_beneficiaryController
                                                       .text.length >
                                                   9 &&
-                                              selectedCableProviderId
+                                              selectedElectricityProviderId
                                                   .isNotEmpty) {
-                                            //String mainServiceId =
-                                            // await handleNetworkSelect(
-                                            //     selectedCableProviderId);
+                                            String mainServiceId =
+                                                await handleNetworkSelect(
+                                                    selectedElectricityProviderId);
 
                                             verifyEntityNumberProductBloc.add(
                                               VerifyEntityNumberEvent(
-                                                  selectedCablePlanId,
+                                                  mainServiceId,
                                                   _beneficiaryController.text),
                                             );
                                           }
@@ -572,16 +522,17 @@ class _CablePurchaseState extends State<CablePurchase> {
                                                 .text.isNotEmpty
                                             ? AppColors.green
                                             : AppColors.grey,
+                                        widget: const Icon(Icons.numbers),
                                       ),
                                       if (_beneficiaryController.text.length >
                                               9 &&
-                                          selectedCableProviderId != '')
+                                          selectedElectricityProviderId != '')
                                         BlocConsumer<ProductBloc, ProductState>(
                                             bloc: verifyEntityNumberProductBloc,
                                             // listenWhen: (previous, current) =>
                                             //     current is! InitialSuccessState,
                                             // buildWhen: (previous, current) =>
-                                            // current is! GetCablePlanLoadingState,
+                                            // current is! GetDataPlanLoadingState,
                                             listener: (context, state) {
                                               if (state
                                                   is EntityNumberErrorState) {
@@ -592,7 +543,7 @@ class _CablePurchaseState extends State<CablePurchase> {
                                               if (_beneficiaryController
                                                           .text.length >
                                                       9 &&
-                                                  selectedCableProviderId !=
+                                                  selectedElectricityProviderId !=
                                                       '') {
                                                 if (state
                                                     is EntityNumberSuccessState) {
@@ -607,45 +558,272 @@ class _CablePurchaseState extends State<CablePurchase> {
                                                           10, 10, 10, 25.0),
                                                       child: Column(
                                                         children: [
-                                                          Container(
-                                                            decoration: BoxDecoration(
-                                                                color: AppColors
-                                                                    .lightgreen2,
-                                                                border: Border.all(
+                                                          Row(
+                                                            children: [
+                                                              Container(
+                                                                decoration: BoxDecoration(
                                                                     color: AppColors
-                                                                        .darkGreen),
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
+                                                                        .lightgreen2,
+                                                                    border: Border.all(
+                                                                        color: AppColors
+                                                                            .darkGreen),
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
                                                                             10)),
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(5.0),
-                                                              child: CustomText(
-                                                                text: res
-                                                                    .electricityVerifiedData
-                                                                    .name,
-                                                                color: AppColors
-                                                                    .green,
+                                                                child: Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .all(
+                                                                          5.0),
+                                                                  child:
+                                                                      CustomText(
+                                                                    text: res
+                                                                        .electricityVerifiedData
+                                                                        .name,
+                                                                    color: AppColors
+                                                                        .green,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              GestureDetector(
+                                                                onTap: () {
+                                                                  setState(() {
+                                                                    isShow =
+                                                                        !isShow;
+                                                                  });
+                                                                },
+                                                                child: Align(
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .center,
+                                                                  child:
+                                                                      Container(
+                                                                    decoration: BoxDecoration(
+                                                                        //color: AppColors.lightgreen2,
+                                                                        border: Border.all(color: AppColors.darkGreen),
+                                                                        borderRadius: BorderRadius.circular(10)),
+                                                                    child:
+                                                                        Padding(
+                                                                      padding: const EdgeInsets
+                                                                          .all(
+                                                                          5.0),
+                                                                      child: isShow
+                                                                          ? const CustomText(
+                                                                              text: "hide order review",
+                                                                              color: AppColors.green,
+                                                                            )
+                                                                          : const CustomText(
+                                                                              text: "show order review",
+                                                                              color: AppColors.green,
+                                                                            ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          if (isShow)
+                                                            const SizedBox(
+                                                                height: 10),
+                                                          if (isShow)
+                                                            DottedBorder(
+                                                              borderType:
+                                                                  BorderType
+                                                                      .RRect,
+                                                              radius:
+                                                                  const Radius
+                                                                      .circular(
+                                                                      10),
+                                                              dashPattern: const [
+                                                                10,
+                                                                10
+                                                              ],
+                                                              color: AppColors
+                                                                  .lightgrey,
+                                                              strokeWidth: 2,
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .all(
+                                                                        10.0),
+                                                                child: Column(
+                                                                  children: [
+                                                                    Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceBetween,
+                                                                      children: [
+                                                                        const Column(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            CustomText(
+                                                                              text: 'Meter Number',
+                                                                              size: 10,
+                                                                              textAlign: TextAlign.center,
+                                                                              color: AppColors.lightgrey,
+                                                                              weight: FontWeight.bold,
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        Column(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.end,
+                                                                          children: [
+                                                                            CustomText(
+                                                                              text: res.electricityVerifiedData.meterNo,
+                                                                              size: 10,
+                                                                              textAlign: TextAlign.center,
+                                                                              color: AppColors.lightgrey,
+                                                                              weight: FontWeight.bold,
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceBetween,
+                                                                      children: [
+                                                                        const Column(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            CustomText(
+                                                                              text: 'Name',
+                                                                              size: 10,
+                                                                              textAlign: TextAlign.center,
+                                                                              color: AppColors.lightgrey,
+                                                                              weight: FontWeight.bold,
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        Column(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.end,
+                                                                          children: [
+                                                                            CustomText(
+                                                                              text: res.electricityVerifiedData.name,
+                                                                              size: 10,
+                                                                              textAlign: TextAlign.center,
+                                                                              color: AppColors.lightgrey,
+                                                                              weight: FontWeight.bold,
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceBetween,
+                                                                      children: [
+                                                                        const Column(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            CustomText(
+                                                                              text: 'Meter Type',
+                                                                              size: 10,
+                                                                              textAlign: TextAlign.center,
+                                                                              color: AppColors.lightgrey,
+                                                                              weight: FontWeight.bold,
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        Column(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.end,
+                                                                          children: [
+                                                                            CustomText(
+                                                                              text: res.electricityVerifiedData.vendType,
+                                                                              size: 10,
+                                                                              textAlign: TextAlign.center,
+                                                                              color: AppColors.lightgrey,
+                                                                              weight: FontWeight.bold,
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceBetween,
+                                                                      children: [
+                                                                        const Column(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            CustomText(
+                                                                              text: 'Outstanding',
+                                                                              size: 10,
+                                                                              textAlign: TextAlign.center,
+                                                                              color: AppColors.lightgrey,
+                                                                              weight: FontWeight.bold,
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        Column(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.end,
+                                                                          children: [
+                                                                            CustomText(
+                                                                              text: res.electricityVerifiedData.outstanding.toString(),
+                                                                              size: 10,
+                                                                              textAlign: TextAlign.center,
+                                                                              color: AppColors.lightgrey,
+                                                                              weight: FontWeight.bold,
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceBetween,
+                                                                      children: [
+                                                                        const Column(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            CustomText(
+                                                                              text: 'Address',
+                                                                              size: 10,
+                                                                              textAlign: TextAlign.center,
+                                                                              color: AppColors.lightgrey,
+                                                                              weight: FontWeight.bold,
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        Column(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.end,
+                                                                          children: [
+                                                                            CustomText(
+                                                                              text: res.electricityVerifiedData.address.toString(),
+                                                                              size: 10,
+                                                                              textAlign: TextAlign.center,
+                                                                              color: AppColors.lightgrey,
+                                                                              weight: FontWeight.bold,
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                ),
                                                               ),
                                                             ),
-                                                          ),
-                                                          // Container(
-                                                          //   decoration: BoxDecoration(
-                                                          //       color: AppColors.lightgreen2,
-                                                          //       border:Border.all(color:AppColors.darkGreen),
-                                                          //       borderRadius:BorderRadius.circular(10)
-                                                          //   ),
-                                                          //   child: Padding(
-                                                          //     padding: const EdgeInsets.all(5.0),
-                                                          //     child: CustomText(
-                                                          //       text: "res.name",
-                                                          //       color:
-                                                          //       AppColors.green,
-                                                          //     ),
-                                                          //   ),
-                                                          // ),
                                                         ],
                                                       ));
                                                 } else if (state
@@ -686,10 +864,10 @@ class _CablePurchaseState extends State<CablePurchase> {
                                                     ));
                                               }
                                             }),
-                                      if(selectedCablePlanId.isNotEmpty)
+                                      if(serviceID.isNotEmpty)
                                         SizedBox(height: 10,),
-                                      if(selectedCablePlanId.isNotEmpty)
-                                        BeneficiaryWidget(productId: selectedCablePlanId, beneficiaryNum: (value) { setState(() {
+                                      if(serviceID.isNotEmpty)
+                                        BeneficiaryWidget(productId: serviceID, beneficiaryNum: (value) { setState(() {
                                           _beneficiaryController.text=value;
                                         }); },),
                                       SizedBox(
@@ -751,7 +929,7 @@ class _CablePurchaseState extends State<CablePurchase> {
                                       FormButton(
                                         onPressed: () async {
                                           print(_selectedPaymentMethod);
-                                          //print(selectedCableProviderPrice);
+                                          //print(selectedElectricityProviderPrice);
                                           print(_beneficiaryController
                                               .text.isNotEmpty);
                                           print(!isPaymentAllowed);
@@ -765,18 +943,18 @@ class _CablePurchaseState extends State<CablePurchase> {
                                                       .amount =
                                                   _selectedAmtController.text;
                                               widget.category.requiredFields
-                                                      .cardNumber =
+                                                      .meterNumber =
                                                   _beneficiaryController.text;
-                                              // widget.category.requiredFields
-                                              //     .phoneNumber =
-                                              //     _beneficiaryController.text;
+                                              widget.category.requiredFields
+                                                      .phoneNumber =
+                                                  _beneficiaryController.text;
 
                                               purchaseProductBloc.add(
                                                   PurchaseProductEvent(
                                                       context,
                                                       widget.category
                                                           .requiredFields,
-                                                      selectedCablePlanId,
+                                                      serviceID,
                                                       transactionPin,
                                                       true,isSaveAsBeneficiarySelected,beneficiaryName));
                                             } else {
@@ -816,7 +994,7 @@ class _CablePurchaseState extends State<CablePurchase> {
                                                       _selectedAmtController
                                                           .text;
                                                   widget.category.requiredFields
-                                                          .cardNumber =
+                                                          .meterNumber =
                                                       _beneficiaryController
                                                           .text;
                                                 });
@@ -826,7 +1004,8 @@ class _CablePurchaseState extends State<CablePurchase> {
                                                         context,
                                                         widget.category
                                                             .requiredFields,
-                                                        selectedCablePlanId,
+                                                        serviceID,
+                                                        //selectedElectricityProviderId,
                                                         transactionPin,
                                                         false,isSaveAsBeneficiarySelected,beneficiaryName));
                                               }
@@ -836,7 +1015,7 @@ class _CablePurchaseState extends State<CablePurchase> {
                                         disableButton: (!isPaymentAllowed ||
                                             _beneficiaryController.text.length <
                                                 10),
-                                        text: 'Purchase Cable',
+                                        text: 'Purchase Electricity',
                                         borderColor: AppColors.darkGreen,
                                         bgColor: AppColors.darkGreen,
                                         textColor: AppColors.white,
@@ -883,10 +1062,10 @@ class _CablePurchaseState extends State<CablePurchase> {
                                       //       //       PurchaseProductEvent(
                                       //       //           context,
                                       //       //           double.parse(
-                                      //       //               selectedCableProviderPrice),
+                                      //       //               selectedElectricityProviderPrice),
                                       //       //           _beneficiaryController
                                       //       //               .text,
-                                      //       //           selectedCableProviderId,
+                                      //       //           selectedElectricityProviderId,
                                       //       //           transactionPin,false));
                                       //       // }
                                       //     }
@@ -894,9 +1073,9 @@ class _CablePurchaseState extends State<CablePurchase> {
                                       //   disableButton: (!isPaymentAllowed &&
                                       //       _beneficiaryController
                                       //           .text.isNotEmpty),
-                                      //   // selectedCableProviderId.isNotEmpty &&
+                                      //   // selectedElectricityProviderId.isNotEmpty &&
                                       //   //     _beneficiaryController.text=='',
-                                      //   text: 'Purchase Cable',
+                                      //   text: 'Purchase Electricity',
                                       //   borderColor: AppColors.darkGreen,
                                       //   bgColor: AppColors.darkGreen,
                                       //   textColor: AppColors.white,
@@ -917,21 +1096,25 @@ class _CablePurchaseState extends State<CablePurchase> {
     );
   }
 
-  Widget amount(String amt) {
+  Widget selectAmount(String amt, AdaptiveThemeMode theme) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
+        onTap: () {
+          print(amt);
+          setState(() {
+            _selectedAmtController.text = amt;
+          });
+        },
         child: Container(
           decoration: BoxDecoration(
-              color: AppColors.white,
+              //color: AppColors.white,
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: AppColors.lightGreen)),
+              border: Border.all(color: AppColors.textColor)),
           child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: CustomText(
-              text: "N $amt",
-            ),
-          ),
+              padding: const EdgeInsets.all(5.0),
+              child: TextStyles.textDetails(
+                  textValue: "₦ $amt", textColor: AppColors.textColor)),
         ),
       ),
     );
@@ -1001,22 +1184,22 @@ class _CablePurchaseState extends State<CablePurchase> {
 
   final _formKey = GlobalKey<FormState>();
   final String _selectedProvider = '';
-  //final String beneficiaryName = '';
 
+  String selectedNetwork = "";
   final _beneficiaryController = TextEditingController();
 }
 
-class CableProvider extends StatelessWidget {
+class ElectricityProvider extends StatelessWidget {
   final String categoryId;
   final String serviceId;
   final AdaptiveThemeMode theme;
-  final Function(String, String, String) onCableProviderSelected;
+  final Function(String, String, String) onElectricityProviderSelected;
 
-  const CableProvider(
+  const ElectricityProvider(
       {Key? key,
       required this.serviceId,
       required this.categoryId,
-      required this.onCableProviderSelected,
+      required this.onElectricityProviderSelected,
       required this.theme})
       : super(key: key);
 
@@ -1075,7 +1258,7 @@ class CableProvider extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             TextStyles.textHeadings(
-                              textValue: 'Cable Providers',
+                              textValue: 'Electricity Providers',
                               textColor: AppColors.darkGreen,
                               // w: FontWeight.w600,
                               textSize: 14,
@@ -1106,8 +1289,8 @@ class CableProvider extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: CableProviderList(
-                  onCableProviderSelected: onCableProviderSelected,
+                child: ElectricityProviderList(
+                  onElectricityProviderSelected: onElectricityProviderSelected,
                   serviceId: serviceId,
                   categoryId: categoryId,
                   theme: theme,
@@ -1121,25 +1304,26 @@ class CableProvider extends StatelessWidget {
   }
 }
 
-class CableProviderList extends StatefulWidget {
+class ElectricityProviderList extends StatefulWidget {
   final String categoryId;
   final String serviceId;
   final AdaptiveThemeMode theme;
-  final Function(String, String, String) onCableProviderSelected;
+  final Function(String, String, String) onElectricityProviderSelected;
 
-  const CableProviderList(
+  const ElectricityProviderList(
       {Key? key,
       required this.serviceId,
       required this.categoryId,
-      required this.onCableProviderSelected,
+      required this.onElectricityProviderSelected,
       required this.theme})
       : super(key: key);
 
   @override
-  _CableProviderListState createState() => _CableProviderListState();
+  _ElectricityProviderListState createState() =>
+      _ElectricityProviderListState();
 }
 
-class _CableProviderListState extends State<CableProviderList> {
+class _ElectricityProviderListState extends State<ElectricityProviderList> {
   final TextEditingController _searchController = TextEditingController();
   int page = 1;
   ProductBloc productListBloc = ProductBloc();
@@ -1149,7 +1333,7 @@ class _CableProviderListState extends State<CableProviderList> {
     super.initState();
     _searchController.addListener(_onSearchChanged);
 
-    _fetchCableProvider('', page, widget.categoryId, widget.serviceId);
+    _fetchElectricityProvider('', page, widget.categoryId, widget.serviceId);
   }
 
   @override
@@ -1159,7 +1343,7 @@ class _CableProviderListState extends State<CableProviderList> {
       child: Column(
         children: [
           CustomTextFormField(
-            hint: 'Search Cable Provider',
+            hint: 'Search Electricity Provider',
             label: '',
             controller: _searchController,
             validator: AppValidator.validateAccountNumberfield,
@@ -1189,7 +1373,7 @@ class _CableProviderListState extends State<CableProviderList> {
                         padding: const EdgeInsets.all(8.0),
                         child: GestureDetector(
                           onTap: () {
-                            widget.onCableProviderSelected(
+                            widget.onElectricityProviderSelected(
                               singleService.name,
                               singleService.image,
                               singleService.id,
@@ -1246,251 +1430,16 @@ class _CableProviderListState extends State<CableProviderList> {
 
   void _onSearchChanged() {
     page = 1; // Reset page number to 1 when search query changes
-    _fetchCableProvider(
+    _fetchElectricityProvider(
         _searchController.text, page, widget.categoryId, widget.serviceId);
   }
 
-  void _fetchCableProvider(String query, int pageNo, categoryId, serviceId) {
+  void _fetchElectricityProvider(
+      String query, int pageNo, categoryId, serviceId) {
     // productListBloc
     //     .add(FetchProduct(query, pageNo.toString(), 20, categoryId, serviceId));
     productListBloc.add(ListServiceEvent(pageNo.toString(), '20', categoryId));
 
-    page++; // Increment page number after making the request
-  }
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-}
-
-class CablePlan extends StatelessWidget {
-  final String categoryId;
-  final String serviceId;
-  final AdaptiveThemeMode theme;
-  final Function(String, String, String) onCablePlanSelected;
-
-  const CablePlan(
-      {Key? key,
-      required this.serviceId,
-      required this.categoryId,
-      required this.onCablePlanSelected,
-      required this.theme})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: BlocProvider(
-        create: (context) => ProductBloc(),
-        child: Scaffold(
-          body: Column(
-            children: [
-              Container(
-                height: 60,
-                decoration: BoxDecoration(
-                    color: theme.isDark
-                        ? AppColors.darkModeBackgroundColor
-                        : AppColors.white,
-                    borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(10),
-                        topLeft: Radius.circular(10))),
-                child: Padding(
-                  padding: const EdgeInsets.all(0.0),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Positioned(
-                        top: 0, // Adjust position as needed
-                        left: 0,
-                        right: 0,
-                        child: SvgPicture.asset(
-                          AppIcons.billTopBackground,
-                          height: 60,
-                          // Increase height to fit the text
-                          width: double.infinity,
-                          color: AppColors.darkGreen,
-                          // Set the color if needed
-                          placeholderBuilder: (context) {
-                            return Container(
-                              height: 50,
-                              width: double.infinity,
-                              color: Colors.grey[300],
-                              child: const Center(
-                                  child: CircularProgressIndicator()),
-                            );
-                          },
-                        ),
-                      ),
-                      Positioned(
-                        top: 10, // Adjust position as needed
-                        left: 10,
-                        right: 10,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            TextStyles.textHeadings(
-                              textValue: 'Data Plans',
-                              textColor: AppColors.darkGreen,
-                              // w: FontWeight.w600,
-                              textSize: 14,
-                            ),
-                            // Text(
-                            //   "Airtime purchase",
-                            //   style: TextStyle(
-                            //     color: AppColors.darkGreen,
-                            //     fontWeight: FontWeight.w600,
-                            //     fontSize: 18,
-                            //   ),
-                            // ),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Icon(
-                                Icons.cancel,
-                                color: Colors.grey,
-                                size: 30,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Expanded(
-                child: CablePlanList(
-                  onCablePlanSelected: onCablePlanSelected,
-                  serviceId: serviceId,
-                  categoryId: categoryId,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class CablePlanList extends StatefulWidget {
-  final String categoryId;
-  final String serviceId;
-  final Function(String, String, String) onCablePlanSelected;
-
-  const CablePlanList({
-    Key? key,
-    required this.serviceId,
-    required this.categoryId,
-    required this.onCablePlanSelected,
-  }) : super(key: key);
-
-  @override
-  _CablePlanListState createState() => _CablePlanListState();
-}
-
-class _CablePlanListState extends State<CablePlanList> {
-  final TextEditingController _searchController = TextEditingController();
-  int page = 1;
-  ProductBloc productListBloc = ProductBloc();
-
-  @override
-  void initState() {
-    super.initState();
-    _searchController.addListener(_onSearchChanged);
-    _fetchCablePlan('', page, widget.categoryId, widget.serviceId);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15.0),
-      child: Column(
-        children: [
-          CustomTextFormField(
-            hint: 'Search Data plan',
-            label: '',
-            controller: _searchController,
-            validator: AppValidator.validateAccountNumberfield,
-            widget: const Icon(Icons.search),
-          ),
-          Expanded(
-            child: BlocBuilder<ProductBloc, ProductState>(
-              bloc: productListBloc,
-              builder: (context, state) {
-                if (state is ProductLoadingState) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state is ProductSuccessState) {
-                  final product = state;
-                  return ListView.builder(
-                    itemCount: product.productModel.data.items.length,
-                    itemBuilder: (context, index) {
-                      final singleProduct =
-                          product.productModel.data.items[index];
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ListTile(
-                            onTap: () {
-                              widget.onCablePlanSelected(
-                                singleProduct.name,
-                                singleProduct.buyerPrice.toString(),
-                                singleProduct.id,
-                              );
-                            },
-                            title: CustomText(
-                              text: singleProduct.name,
-                              size: 14,
-                              weight: FontWeight.w700,
-                            ),
-                            subtitle: Row(
-                              children: [
-                                SvgPicture.asset(
-                                  AppIcons.naira,
-                                  color: AppColors.green,
-                                ),
-                                CustomText(
-                                  text: singleProduct.buyerPrice.toString(),
-                                  size: 14,
-                                  weight: FontWeight.w400,
-                                ),
-                              ],
-                            ),
-                            shape: RoundedRectangleBorder(
-                              side: const BorderSide(color: Colors.grey),
-                              borderRadius: BorderRadius.circular(5),
-                            )
-                            //shape: ShapeBorder(),
-                            ),
-                      );
-                    },
-                  );
-                } else if (state is ProductErrorState) {
-                  final error = state;
-                  return Center(
-                    child: Text(error.error),
-                  );
-                }
-                return Container(); // Placeholder, should never be reached
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _onSearchChanged() {
-    page = 1; // Reset page number to 1 when search query changes
-    _fetchCablePlan(
-        _searchController.text, page, widget.categoryId, widget.serviceId);
-  }
-
-  void _fetchCablePlan(String query, int pageNo, categoryId, serviceId) {
-    productListBloc
-        .add(FetchProduct(query, pageNo.toString(), 20, categoryId, serviceId));
     page++; // Increment page number after making the request
   }
 

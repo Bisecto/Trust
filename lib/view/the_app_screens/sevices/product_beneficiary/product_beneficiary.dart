@@ -10,18 +10,20 @@ import 'package:teller_trust/model/required_field_model.dart';
 import '../../../../bloc/product_bloc/product_bloc.dart';
 import '../../../../model/beneficiary_model.dart';
 import '../../../../res/app_colors.dart';
+import '../../../../res/app_icons.dart';
+import '../../../../utills/app_utils.dart';
 import '../../../../utills/custom_theme.dart';
 import '../../../../utills/enums/toast_mesage.dart';
 import '../../../widgets/app_custom_text.dart';
+import '../../../widgets/form_button.dart';
 import '../../../widgets/show_toast.dart';
 
 class BeneficiaryWidget extends StatefulWidget {
   String productId;
   final ValueChanged<String> beneficiaryNum;
+
   BeneficiaryWidget(
-      {super.key,
-      required this.productId,
-      required this.beneficiaryNum});
+      {super.key, required this.productId, required this.beneficiaryNum});
 
   @override
   State<BeneficiaryWidget> createState() => _BeneficiaryWidgetState();
@@ -50,7 +52,7 @@ class _BeneficiaryWidgetState extends State<BeneficiaryWidget> {
             showToast(
                 context: context,
                 title: 'Error',
-                subtitle: "There was a problem fetching beneficiary",
+                subtitle: "There was a problem fetching beneficiaries",
                 type: ToastMessageType.error);
           }
         },
@@ -97,7 +99,8 @@ class _BeneficiaryWidgetState extends State<BeneficiaryWidget> {
                                 return serviceItem(
                                     getBeneficiarySuccessState
                                         .beneficiaryModel.items[index],
-                                    theme);
+                                    theme,
+                                    context);
                               },
                             ),
                           ),
@@ -113,12 +116,12 @@ class _BeneficiaryWidgetState extends State<BeneficiaryWidget> {
         });
   }
 
-  Widget serviceItem(Item item, AdaptiveThemeMode theme) {
+  Widget serviceItem(Item item, AdaptiveThemeMode theme, context) {
     return GestureDetector(
       onTap: () {
         setState(() {
           print(item.requiredFields);
-          widget.beneficiaryNum( item.requiredFields.meterNumber ??
+          widget.beneficiaryNum(item.requiredFields.meterNumber ??
               item.requiredFields.cardNumber ??
               item.requiredFields.phoneNumber ??
               '');
@@ -134,6 +137,9 @@ class _BeneficiaryWidgetState extends State<BeneficiaryWidget> {
         //     widget.onBeneficiarySelected!(beneficiary.phone);
         //   } // Pass the selected phone number
         // }
+      },
+      onLongPress: () {
+        showDeleteModal(context: context, beneficiaryId: item.id);
       },
       child: Padding(
         padding: const EdgeInsets.only(right: 10.0),
@@ -200,6 +206,136 @@ class _BeneficiaryWidgetState extends State<BeneficiaryWidget> {
               ));
         },
       ),
+    );
+  }
+
+  Future<bool?> showDeleteModal({
+    required BuildContext context,
+    required beneficiaryId,
+  }) {
+    final theme =
+        Provider.of<CustomThemeState>(context, listen: false).adaptiveThemeMode;
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.transparent,
+          content: Container(
+            width: double.infinity,
+            height: 200,
+            decoration: BoxDecoration(
+              color: theme.isDark
+                  ? AppColors.darkModeBackgroundColor
+                  : AppColors.white,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10.0, right: 10),
+              child: Column(
+                //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    height: 60,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        color: theme.isDark
+                            ? AppColors.darkModeBackgroundColor
+                            : AppColors.white,
+                        borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(10),
+                            topLeft: Radius.circular(10))),
+                    child: Padding(
+                      padding: const EdgeInsets.all(0.0),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Positioned(
+                            top: 0, // Adjust position as needed
+                            left: 0,
+                            right: 0,
+                            child: SvgPicture.asset(
+                              AppIcons.billTopBackground,
+                              height: 60,
+                              // Increase height to fit the text
+                              width: AppUtils.deviceScreenSize(context).width,
+                              color: AppColors.darkGreen,
+                              // Set the color if needed
+                              placeholderBuilder: (context) {
+                                return Container(
+                                  height: 50,
+                                  width: double.infinity,
+                                  color: Colors.grey[300],
+                                  child: const Center(
+                                      child: CircularProgressIndicator()),
+                                );
+                              },
+                            ),
+                          ),
+                          Positioned(
+                            top: 10, // Adjust position as needed
+                            left: 0,
+                            right: 0,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                TextStyles.textHeadings(
+                                  textValue: 'Delete Beneficiary',
+                                  textColor: AppColors.darkGreen,
+                                  // w: FontWeight.w600,
+                                  textSize: 14,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Icon(
+                                    Icons.cancel,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  CustomText(
+                    text: 'Are you sure you want to delete this beneficiary?',
+                    maxLines: 3,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      FormButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        text: "Cancel",
+                        bgColor: AppColors.red,
+                        width: 100,
+                        borderRadius: 10,
+                      ),
+                      FormButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          productBloc
+                              .add(DeleteBeneficiaryEvent(beneficiaryId,widget.productId));
+                        },
+                        width: 100,
+                        bgColor: AppColors.green,
+                        text: "Ok",
+                        borderRadius: 10,
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

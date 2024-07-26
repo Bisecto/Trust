@@ -12,38 +12,38 @@ import 'package:teller_trust/view/the_app_screens/sevices/make_bank_transfer/ban
 import 'package:teller_trust/view/the_app_screens/sevices/product_beneficiary/product_beneficiary.dart';
 import 'package:teller_trust/view/widgets/purchase_receipt.dart';
 
-import '../../../bloc/product_bloc/product_bloc.dart';
-import '../../../model/category_model.dart' as categoryModel;
-import '../../../model/product_model.dart' as productMode;
-import '../../../repository/app_repository.dart';
-import '../../../res/apis.dart';
-import '../../../res/app_colors.dart';
-import '../../../utills/app_navigator.dart';
-import '../../../utills/app_utils.dart';
-import '../../../utills/app_validator.dart';
-import '../../../utills/custom_theme.dart';
-import '../../../utills/enums/toast_mesage.dart';
-import '../../../utills/shared_preferences.dart';
-import '../../auth/otp_pin_pages/confirm_with_otp.dart';
-import '../../auth/sign_in_with_access_pin_and_biometrics.dart';
-import '../../widgets/app_custom_text.dart';
-import '../../widgets/form_button.dart';
-import '../../widgets/form_input.dart';
+import '../../../../bloc/product_bloc/product_bloc.dart';
+import '../../../../model/category_model.dart' as categoryModel;
+import '../../../../model/product_model.dart' as productMode;
+import '../../../../repository/app_repository.dart';
+import '../../../../res/apis.dart';
+import '../../../../res/app_colors.dart';
+import '../../../../utills/app_navigator.dart';
+import '../../../../utills/app_utils.dart';
+import '../../../../utills/app_validator.dart';
+import '../../../../utills/custom_theme.dart';
+import '../../../../utills/enums/toast_mesage.dart';
+import '../../../../utills/shared_preferences.dart';
+import '../../../auth/otp_pin_pages/confirm_with_otp.dart';
+import '../../../auth/sign_in_with_access_pin_and_biometrics.dart';
+import '../../../widgets/app_custom_text.dart';
+import '../../../widgets/form_button.dart';
+import '../../../widgets/form_input.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
-import '../../widgets/show_toast.dart';
-import 'payment_method/payment_method.dart';
+import '../../../widgets/show_toast.dart';
+import '../payment_method/payment_method.dart';
 
-class AirtimePurchase extends StatefulWidget {
+class AirtimeToCash extends StatefulWidget {
   final categoryModel.Category category;
 
-  const AirtimePurchase({super.key, required this.category});
+  const AirtimeToCash({super.key, required this.category});
 
   @override
-  State<AirtimePurchase> createState() => _AirtimePurchaseState();
+  State<AirtimeToCash> createState() => _AirtimeToCashState();
 }
 
-class _AirtimePurchaseState extends State<AirtimePurchase> {
+class _AirtimeToCashState extends State<AirtimeToCash> {
   ProductBloc productBloc = ProductBloc();
   ProductBloc purchaseProductBloc = ProductBloc();
   String _selectedPaymentMethod = 'wallet';
@@ -57,7 +57,6 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
     super.initState();
   }
 
-  bool isInitial = true;
   String productId = '';
 
   void _handleNetworkSelect(String? networkName) async {
@@ -78,11 +77,10 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
       if (listServiceResponse.statusCode == 200) {
         print("productModel dtddhdhd: ${listServiceResponse.body}");
         productMode.ProductModel productModel =
-            productMode.ProductModel.fromJson(
-                json.decode(listServiceResponse.body));
+        productMode.ProductModel.fromJson(
+            json.decode(listServiceResponse.body));
         setState(() {
           productId = productModel.data.items[0].id;
-          isInitial = false;
         });
         print(productId);
         // Process the data as needed
@@ -119,11 +117,10 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                 BlocConsumer<ProductBloc, ProductState>(
                     bloc: purchaseProductBloc,
                     listenWhen: (previous, current) =>
-                        current is! ProductInitial,
+                    current is! ProductInitial,
                     listener: (context, state) async {
                       print(state);
                       if (state is PurchaseSuccess) {
-                        _beneficiaryController.clear();
                         _selectedAmtController.clear();
                         state.transaction.order!.product!.name ==
                             widget.category.name;
@@ -143,7 +140,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                         //     page: LandingPage(studentProfile: state.studentProfile));
                       } else if (state is QuickPayInitiated) {
                         String accessToken =
-                            await SharedPref.getString("access-token");
+                        await SharedPref.getString("access-token");
 
                         AppNavigator.pushAndStackPage(context,
                             page: MakePayment(
@@ -204,8 +201,8 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                         height: 60,
                                         // Increase height to fit the text
                                         width:
-                                            AppUtils.deviceScreenSize(context)
-                                                .width,
+                                        AppUtils.deviceScreenSize(context)
+                                            .width,
                                         color: AppColors.darkGreen,
                                         // Set the color if needed
                                         placeholderBuilder: (context) {
@@ -215,7 +212,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                             color: Colors.grey[300],
                                             child: const Center(
                                                 child:
-                                                    CircularProgressIndicator()),
+                                                CircularProgressIndicator()),
                                           );
                                         },
                                       ),
@@ -226,10 +223,10 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                       right: 10,
                                       child: Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                        MainAxisAlignment.spaceBetween,
                                         children: [
                                           TextStyles.textHeadings(
-                                            textValue: 'Airtime',
+                                            textValue: 'Airtime to Cash',
                                             textColor: AppColors.darkGreen,
                                             // w: FontWeight.w600,
                                             textSize: 14,
@@ -277,29 +274,12 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                       state.serviceModel;
                                   List<serviceModel.Service> services =
                                       serviceItem.data.services;
-                                  if (isInitial) {
-                                    // _handleNetworkSelect(services
-                                    //     .firstWhere(
-                                    //         (service) =>
-                                    //             service.name.toLowerCase() ==
-                                    //             'mtn'.toLowerCase(),
-                                    //         orElse: () => serviceModel.Service(
-                                    //             image: '',
-                                    //             id: '',
-                                    //             name: '',
-                                    //             slug: '',
-                                    //             category: serviceModel.Category(
-                                    //                 id: '',
-                                    //                 name: '',
-                                    //                 slug: '')))
-                                    //     .id);
-                                  }
                                   //Use user data here
                                   return SizedBox(
                                     height: 90,
                                     child: ListView.builder(
                                       physics:
-                                          const NeverScrollableScrollPhysics(),
+                                      const NeverScrollableScrollPhysics(),
                                       scrollDirection: Axis.horizontal,
                                       // gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                                       //   crossAxisCount: 4,
@@ -322,27 +302,27 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                                 services[index].name,
                                                 services[index].image,
                                                 theme,
-                                                () => _handleNetworkSelect(services
+                                                    () => _handleNetworkSelect(services
                                                     .firstWhere(
                                                         (service) =>
-                                                            service.name
-                                                                .toLowerCase() ==
-                                                            services[index]
-                                                                .name
-                                                                .toLowerCase(),
-                                                        orElse: () =>
-                                                            serviceModel.Service(
-                                                                image: '',
+                                                    service.name
+                                                        .toLowerCase() ==
+                                                        services[index]
+                                                            .name
+                                                            .toLowerCase(),
+                                                    orElse: () =>
+                                                        serviceModel.Service(
+                                                            image: '',
+                                                            id: '',
+                                                            name: '',
+                                                            slug: '',
+                                                            category: serviceModel
+                                                                .Category(
                                                                 id: '',
-                                                                name: '',
-                                                                slug: '',
-                                                                category: serviceModel
-                                                                    .Category(
-                                                                        id: '',
-                                                                        name:
-                                                                            '',
-                                                                        slug:
-                                                                            '')))
+                                                                name:
+                                                                '',
+                                                                slug:
+                                                                '')))
                                                     .id)));
                                       },
                                     ),
@@ -355,7 +335,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                   ProductState state) async {
                                 if (state is AccessTokenExpireState) {
                                   String firstame =
-                                      await SharedPref.getString('firstName');
+                                  await SharedPref.getString('firstName');
 
                                   AppNavigator.pushAndRemovePreviousPages(
                                       context,
@@ -370,31 +350,31 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                             ),
                             Padding(
                               padding:
-                                  const EdgeInsets.fromLTRB(10.0, 0, 10, 10),
+                              const EdgeInsets.fromLTRB(10.0, 0, 10, 10),
                               child: Form(
                                   key: _formKey,
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: [
                                       CustomTextFormField(
                                         hint: '0.00',
-                                        label: 'Select Amount',
+                                        label: 'Airtime Amount',
                                         controller: _selectedAmtController,
                                         textInputType: TextInputType.number,
                                         validator:
-                                            AppValidator.validateTextfield,
+                                        AppValidator.validateTextfield,
                                         widget: SvgPicture.asset(
                                           AppIcons.naira,
                                           color: _selectedAmtController
-                                                  .text.isNotEmpty
+                                              .text.isNotEmpty
                                               ? AppColors.darkGreen
                                               : AppColors.grey,
                                           height: 22,
                                           width: 22,
                                         ),
                                         borderColor: _selectedAmtController
-                                                .text.isNotEmpty
+                                            .text.isNotEmpty
                                             ? AppColors.green
                                             : AppColors.grey,
                                       ),
@@ -403,7 +383,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                       ),
                                       Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
+                                        MainAxisAlignment.spaceEvenly,
                                         children: [
                                           //selectAmount("2000"),
                                           selectAmount("200", theme),
@@ -414,95 +394,9 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                         ],
                                       ),
 
-                                      CustomTextFormField(
-                                        hint: 'Input number here',
-                                        label: 'Beneficiary',
-
-                                        controller: _beneficiaryController,
-                                        textInputType: TextInputType.number,
-                                        validator:
-                                            AppValidator.validateTextfield,
-                                        widget: SvgPicture.asset(
-                                            AppIcons.nigeriaLogo),
-                                        //isMobileNumber: true,
-                                        borderColor: _beneficiaryController
-                                                .text.isNotEmpty
-                                            ? AppColors.green
-                                            : AppColors.grey,
-                                      ),
-                                      if(productId.isNotEmpty)
-                                        SizedBox(height: 10,),
-                                      if(productId.isNotEmpty)
-                                        BeneficiaryWidget(productId: productId, beneficiaryNum: (value) { setState(() {
-                                          _beneficiaryController.text=value;
-                                        }); },),
-                                      SizedBox(
-                                        height: 310,
-                                        child: PaymentMethodScreen(
-                                          amtToPay: _selectedAmtController
-                                                  .text.isEmpty
-                                              ? '0'
-                                              : _selectedAmtController.text,
-                                          onPaymentMethodSelected: (method) {
-                                            // No need to use setState here directly as it might be called during the build phase
-                                            Future.microtask(() {
-                                              if (mounted) {
-                                                setState(() {
-                                                  _selectedPaymentMethod =
-                                                      method;
-                                                  //print(_selectedPaymentMethod);
-                                                });
-                                              }
-                                            });
-                                          },
-                                          ispaymentAllowed: (allowed) {
-                                            // Deferred update to avoid issues during the build phase
-                                            Future.microtask(() {
-                                              if (mounted) {
-                                                setState(() {
-                                                  isPaymentAllowed = allowed;
-                                                  // print(isPaymentAllowed);
-                                                });
-                                              }
-                                            });
-                                          },
-                                          number: _beneficiaryController.text,
-                                          name: (value) {
-                                            print(value);
-                                            Future.microtask(() {
-                                              if (mounted) {
-                                                setState(() {
-                                                  print(value);
-                                                  beneficiaryName = value;
-                                                  // print(isPaymentAllowed);
-                                                });
-                                              }
-                                            });
-                                          },
-                                          isSaveAsBeneficiarySelected: (value) {
-                                            print(value);
-                                            Future.microtask(() {
-                                              if (mounted) {
-                                                setState(() {
-                                                  isSaveAsBeneficiarySelected =
-                                                      value;
-                                                  // print(isPaymentAllowed);
-                                                });
-                                              }
-                                            });
-                                          },
-                                        ),
-                                      ),
-
-                                      ///Remember to add beneficiary
                                       FormButton(
                                         onPressed: () async {
-                                          print(beneficiaryName);
-                                          print(isSaveAsBeneficiarySelected);
-                                          print(_selectedPaymentMethod);
-                                          print(_beneficiaryController
-                                              .text.isNotEmpty);
-                                          print(!isPaymentAllowed);
+
 
                                           if (_formKey.currentState!
                                               .validate()) {
@@ -511,11 +405,9 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                                   'wallet') {
                                                 var transactionPin = '';
                                                 widget.category.requiredFields
-                                                        .amount =
+                                                    .amount =
                                                     _selectedAmtController.text;
-                                                widget.category.requiredFields
-                                                        .phoneNumber =
-                                                    _beneficiaryController.text;
+
 
                                                 purchaseProductBloc.add(
                                                     PurchaseProductEvent(
@@ -525,53 +417,48 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                                         productId,
                                                         transactionPin,
                                                         true,
-                                                        isSaveAsBeneficiarySelected,beneficiaryName));
+                                                        false,''));
                                               } else {
                                                 var transactionPin = '';
                                                 transactionPin = await modalSheet
                                                     .showMaterialModalBottomSheet(
-                                                        backgroundColor:
-                                                            Colors.transparent,
-                                                        isDismissible: true,
-                                                        shape:
-                                                            const RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius.vertical(
-                                                                  top: Radius
-                                                                      .circular(
-                                                                          20.0)),
-                                                        ),
-                                                        context: context,
-                                                        builder: (context) =>
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .only(
-                                                                      top:
-                                                                          200.0),
-                                                              child:
-                                                                  ConfirmWithPin(
-                                                                context:
-                                                                    context,
-                                                                title:
-                                                                    'Input your transaction pin to continue',
-                                                              ),
-                                                            ));
+                                                    backgroundColor:
+                                                    Colors.transparent,
+                                                    isDismissible: true,
+                                                    shape:
+                                                    const RoundedRectangleBorder(
+                                                      borderRadius:
+                                                      BorderRadius.vertical(
+                                                          top: Radius
+                                                              .circular(
+                                                              20.0)),
+                                                    ),
+                                                    context: context,
+                                                    builder: (context) =>
+                                                        Padding(
+                                                          padding:
+                                                          const EdgeInsets
+                                                              .only(
+                                                              top:
+                                                              200.0),
+                                                          child:
+                                                          ConfirmWithPin(
+                                                            context:
+                                                            context,
+                                                            title:
+                                                            'Input your transaction pin to continue',
+                                                          ),
+                                                        ));
                                                 print(transactionPin);
                                                 if (transactionPin != '') {
                                                   setState(() {
                                                     widget
-                                                            .category
-                                                            .requiredFields
-                                                            .amount =
+                                                        .category
+                                                        .requiredFields
+                                                        .amount =
                                                         _selectedAmtController
                                                             .text;
-                                                    widget
-                                                            .category
-                                                            .requiredFields
-                                                            .phoneNumber =
-                                                        _beneficiaryController
-                                                            .text;
+
                                                   });
 
                                                   purchaseProductBloc.add(
@@ -581,7 +468,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                                               .requiredFields,
                                                           productId,
                                                           transactionPin,
-                                                          false,isSaveAsBeneficiarySelected,beneficiaryName));
+                                                          false,false,''));
                                                 }
                                               }
                                             } else {
@@ -589,15 +476,15 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                                   context: context,
                                                   title: 'Info',
                                                   subtitle:
-                                                      'Please select a network provider',
+                                                  'Please select a network provider',
                                                   type: ToastMessageType.info);
                                             }
                                           }
                                         },
-                                        disableButton: (!isPaymentAllowed ||
-                                            !_beneficiaryController
+                                        disableButton: (
+                                            !_selectedAmtController
                                                 .text.isNotEmpty),
-                                        text: 'Purchase Airtime',
+                                        text: 'Continue',
                                         borderColor: AppColors.darkGreen,
                                         bgColor: AppColors.darkGreen,
                                         textColor: AppColors.white,
@@ -621,10 +508,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
   final _formKey = GlobalKey<FormState>();
 
   String selectedNetwork = "";
-  final _beneficiaryController = TextEditingController();
   final _selectedAmtController = TextEditingController();
-  bool isSaveAsBeneficiarySelected = false;
-  String beneficiaryName = '';
 
   Widget selectAmount(String amt, AdaptiveThemeMode theme) {
     return Padding(
@@ -638,7 +522,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
         },
         child: Container(
           decoration: BoxDecoration(
-              //color: AppColors.white,
+            //color: AppColors.white,
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: AppColors.textColor)),
           child: Padding(
@@ -651,11 +535,11 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
   }
 
   Widget networkProviderItem(
-    String name,
-    String image,
-    AdaptiveThemeMode theme,
-    void Function() onNetworkSelect, // Callback for network request
-  ) {
+      String name,
+      String image,
+      AdaptiveThemeMode theme,
+      void Function() onNetworkSelect, // Callback for network request
+      ) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -698,8 +582,8 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                     color: selectedNetwork == name.toLowerCase()
                         ? AppColors.darkGreen
                         : theme.isDark
-                            ? AppColors.white
-                            : AppColors.black,
+                        ? AppColors.white
+                        : AppColors.black,
                   ),
               ],
             ),
@@ -730,7 +614,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                       decoration: BoxDecoration(
                           color: Colors.grey.withOpacity(0.2),
                           borderRadius:
-                              const BorderRadius.all(Radius.circular(50)))),
+                          const BorderRadius.all(Radius.circular(50)))),
                   const SizedBox(height: 10),
                   Shimmer(
                     duration: const Duration(seconds: 1),

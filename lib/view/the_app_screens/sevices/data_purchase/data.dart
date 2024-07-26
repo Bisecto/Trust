@@ -8,27 +8,27 @@ import 'package:teller_trust/model/category_model.dart' as mainCategory;
 import 'package:teller_trust/view/important_pages/dialog_box.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/product_beneficiary/product_beneficiary.dart';
 
-import '../../../bloc/product_bloc/product_bloc.dart';
-import '../../../model/service_model.dart';
-import '../../../res/app_colors.dart';
-import '../../../res/app_icons.dart';
-import '../../../utills/app_navigator.dart';
-import '../../../utills/app_utils.dart';
-import '../../../utills/app_validator.dart';
-import '../../../utills/custom_theme.dart';
-import '../../../utills/enums/toast_mesage.dart';
-import '../../../utills/shared_preferences.dart';
-import '../../auth/otp_pin_pages/confirm_with_otp.dart';
-import '../../auth/sign_in_with_access_pin_and_biometrics.dart';
-import '../../widgets/app_custom_text.dart';
-import '../../widgets/form_button.dart';
-import '../../widgets/form_input.dart';
+import '../../../../bloc/product_bloc/product_bloc.dart';
+import '../../../../model/service_model.dart';
+import '../../../../res/app_colors.dart';
+import '../../../../res/app_icons.dart';
+import '../../../../utills/app_navigator.dart';
+import '../../../../utills/app_utils.dart';
+import '../../../../utills/app_validator.dart';
+import '../../../../utills/custom_theme.dart';
+import '../../../../utills/enums/toast_mesage.dart';
+import '../../../../utills/shared_preferences.dart';
+import '../../../auth/otp_pin_pages/confirm_with_otp.dart';
+import '../../../auth/sign_in_with_access_pin_and_biometrics.dart';
+import '../../../widgets/app_custom_text.dart';
+import '../../../widgets/form_button.dart';
+import '../../../widgets/form_input.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
-import '../../widgets/purchase_receipt.dart';
-import '../../widgets/show_toast.dart';
-import 'payment_method/payment_method.dart';
-import 'make_bank_transfer/bank_transfer.dart';
+import '../../../widgets/purchase_receipt.dart';
+import '../../../widgets/show_toast.dart';
+import '../payment_method/payment_method.dart';
+import '../make_bank_transfer/bank_transfer.dart';
 
 class DataPurchase extends StatefulWidget {
   final mainCategory.Category category;

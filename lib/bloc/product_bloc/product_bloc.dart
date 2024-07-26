@@ -31,6 +31,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     on<PurchaseProductEvent>(purchaseProductEvent);
     on<VerifyEntityNumberEvent>(verifyEntityNumberEvent);
     on<GetProductBeneficiaryEvent>(getProductBeneficiaryEvent);
+    on<DeleteBeneficiaryEvent>(deleteBeneficiaryEvent);
     // on<ProductEvent>((event, emit) {
     //   // TODO: implement event handler
     // });
@@ -124,8 +125,8 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     }
   }
 
-
-  FutureOr<void> purchaseProductEvent(PurchaseProductEvent event, Emitter<ProductState> emit)async {
+  FutureOr<void> purchaseProductEvent(
+      PurchaseProductEvent event, Emitter<ProductState> emit) async {
     showDialog(
         barrierDismissible: false,
         context: event.context,
@@ -136,102 +137,108 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     AppRepository appRepository = AppRepository();
     String accessToken = await SharedPref.getString("access-token");
     //try {
-      Map<String,dynamic> data={
-        "productId":event.productId, //"660bbd40-35c5-42c7-83b6-63f55e179e7d",//event.productId,
+    Map<String, dynamic> data = {
+      "productId": event.productId,
+      //"660bbd40-35c5-42c7-83b6-63f55e179e7d",//event.productId,
+      "requiredFields": event.requiredFields.toJson()
+    };
+    var purchaseResponse = await appRepository.appPostRequest(
+      data,
+      event.isQuickPay ? AppApis.quickPay : AppApis.purchaseProduct,
+      accessToken: accessToken,
+      accessPIN: event.accessPIN,
+    );
+    if (event.isSaveAsBeneficiarySelected) {
+      Map<String, dynamic> beneficiarydData = {
+        "productId": event.productId,
+        "fullName": event.beneficiaryName,
         "requiredFields": event.requiredFields.toJson()
       };
-      var purchaseResponse = await appRepository.appPostRequest(data,event.isQuickPay?AppApis.quickPay:
-        AppApis.purchaseProduct,
+      var response = await appRepository.appPostRequest(
+        beneficiarydData,
+        event.isQuickPay ? AppApis.quickPay : AppApis.createBeneficiary,
         accessToken: accessToken,
         accessPIN: event.accessPIN,
       );
-      if(event.isSaveAsBeneficiarySelected){
-        Map<String,dynamic> beneficiarydData={
-          "productId":event.productId,
-          "fullName":event.beneficiaryName,
-          "requiredFields": event.requiredFields.toJson()
-        };
-        var response = await appRepository.appPostRequest(beneficiarydData,event.isQuickPay?AppApis.quickPay:
-        AppApis.createBeneficiary,
-          accessToken: accessToken,
-          accessPIN: event.accessPIN,
-        );
-        print(json.decode(response.body));
-        print((response.statusCode));
-      }
-      Navigator.pop(event.context);
-      print(purchaseResponse.body);
+      print(json.decode(response.body));
+      print((response.statusCode));
+    }
+    Navigator.pop(event.context);
+    print(purchaseResponse.body);
 
-      print(
-          "purchaseResponse status Code ${purchaseResponse.statusCode}");
-      print("purchaseResponse Data ${purchaseResponse.body}");
-      print(json.decode(purchaseResponse.body));
-      if (purchaseResponse.statusCode == 200 ||
-          purchaseResponse.statusCode == 201) {
-        // ServiceModel serviceModel =
-        // ServiceModel.fromJson(json.decode(listServiceResponse.body));
-        // //updateData(customerProfile);
-        // print(serviceModel);
-        if(event.isQuickPay){
-          QuickPayModel quickPayModel= QuickPayModel.fromJson(json.decode(purchaseResponse.body)['data']);
-          emit(QuickPayInitiated(quickPayModel));
-        }else{
-          Transaction transaction=Transaction.fromJson(json.decode(purchaseResponse.body)['data']);
-        emit(PurchaseSuccess(transaction));} // Emit success state with data
-      } else if (json.decode(purchaseResponse.body)['errorCode'] == "N404") {
-        emit(AccessTokenExpireState());
+    print("purchaseResponse status Code ${purchaseResponse.statusCode}");
+    print("purchaseResponse Data ${purchaseResponse.body}");
+    print(json.decode(purchaseResponse.body));
+    if (purchaseResponse.statusCode == 200 ||
+        purchaseResponse.statusCode == 201) {
+      // ServiceModel serviceModel =
+      // ServiceModel.fromJson(json.decode(listServiceResponse.body));
+      // //updateData(customerProfile);
+      // print(serviceModel);
+      if (event.isQuickPay) {
+        QuickPayModel quickPayModel =
+            QuickPayModel.fromJson(json.decode(purchaseResponse.body)['data']);
+        emit(QuickPayInitiated(quickPayModel));
       } else {
-        emit(PurchaseErrorState(AppUtils.convertString(
-            json.decode(purchaseResponse.body)['message'])));
-        print(json.decode(purchaseResponse.body));
-      }
+        Transaction transaction =
+            Transaction.fromJson(json.decode(purchaseResponse.body)['data']);
+        emit(PurchaseSuccess(transaction));
+      } // Emit success state with data
+    } else if (json.decode(purchaseResponse.body)['errorCode'] == "N404") {
+      emit(AccessTokenExpireState());
+    } else {
+      emit(PurchaseErrorState(AppUtils.convertString(
+          json.decode(purchaseResponse.body)['message'])));
+      print(json.decode(purchaseResponse.body));
+    }
     // } catch (e) {
     //   emit(PurchaseErrorState("An error occurred while fetching categories."));
     //   print(e);
     // }
   }
 
-  FutureOr<void> fetchProduct(FetchProduct event, Emitter<ProductState> emit
-      ) async {
+  FutureOr<void> fetchProduct(
+      FetchProduct event, Emitter<ProductState> emit) async {
     emit(ProductLoadingState()); // Emit loading state at the start of the event
 
     AppRepository appRepository = AppRepository();
     String accessToken = await SharedPref.getString("access-token");
-     try {
-    var listServiceResponse = await appRepository.appGetRequest(
-      '${AppApis.listProduct}?page=${event.page}&pageSize=${event.pageSize}&categoryId=${event.categoryId}&serviceId=${event.serviceId}',
-      accessToken: accessToken,
-    );
-    // var listProductResponse = await appRepository.appGetRequest(
-    //   '${AppApis.listProduct}?page=${event.page}&pageSize=${event.pageSize}&categoryId=${event.categoryId}&serviceId=152d04b2-476c-45b3-bf39-4cb5faf43569',
-    //   accessToken: accessToken,
-    // );
-    //print(listProductResponse.body);
+    try {
+      var listServiceResponse = await appRepository.appGetRequest(
+        '${AppApis.listProduct}?page=${event.page}&pageSize=${event.pageSize}&categoryId=${event.categoryId}&serviceId=${event.serviceId}',
+        accessToken: accessToken,
+      );
+      // var listProductResponse = await appRepository.appGetRequest(
+      //   '${AppApis.listProduct}?page=${event.page}&pageSize=${event.pageSize}&categoryId=${event.categoryId}&serviceId=152d04b2-476c-45b3-bf39-4cb5faf43569',
+      //   accessToken: accessToken,
+      // );
+      //print(listProductResponse.body);
 
-    print(
-        "productModel status Code ${listServiceResponse.statusCode}");
-    print("productModel Data ${listServiceResponse.body}");
-    print(json.decode(listServiceResponse.body));
-    if (listServiceResponse.statusCode == 200 ||
-        listServiceResponse.statusCode == 201) {
-      ProductModel productModel =ProductModel.fromJson(json.decode(listServiceResponse.body));
-      //updateData(customerProfile);
-      print(productModel);
-      emit(ProductSuccessState(productModel)); // Emit success state with data
-    } else if (json.decode(listServiceResponse.body)['errorCode'] == "N404") {
-      emit(AccessTokenExpireState());
-    } else {
-      emit(ProductErrorState(AppUtils.convertString(
-          json.decode(listServiceResponse.body)['message'])));
+      print("productModel status Code ${listServiceResponse.statusCode}");
+      print("productModel Data ${listServiceResponse.body}");
       print(json.decode(listServiceResponse.body));
-    }
+      if (listServiceResponse.statusCode == 200 ||
+          listServiceResponse.statusCode == 201) {
+        ProductModel productModel =
+            ProductModel.fromJson(json.decode(listServiceResponse.body));
+        //updateData(customerProfile);
+        print(productModel);
+        emit(ProductSuccessState(productModel)); // Emit success state with data
+      } else if (json.decode(listServiceResponse.body)['errorCode'] == "N404") {
+        emit(AccessTokenExpireState());
+      } else {
+        emit(ProductErrorState(AppUtils.convertString(
+            json.decode(listServiceResponse.body)['message'])));
+        print(json.decode(listServiceResponse.body));
+      }
     } catch (e) {
       emit(ProductErrorState("An error occurred while fetching categories."));
       print(e);
     }
   }
 
-  FutureOr<void> verifyEntityNumberEvent(VerifyEntityNumberEvent event, Emitter<ProductState> emit)async  {
+  FutureOr<void> verifyEntityNumberEvent(
+      VerifyEntityNumberEvent event, Emitter<ProductState> emit) async {
     emit(EntityNumberLoadingState());
     AppRepository appRepository = AppRepository();
 
@@ -245,19 +252,22 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       AppRepository appRepository = AppRepository();
       String accessToken = await SharedPref.getString("access-token");
       // try {
-      Map<String,dynamic> data={
+      Map<String, dynamic> data = {
         "productId": event.producId,
         "entityNumber": event.entityNumber
       };
       print(data);
-      var entityNumberResponse = await appRepository.appPostRequest(data,
+      var entityNumberResponse = await appRepository.appPostRequest(
+        data,
         AppApis.verifyEntityNumber,
         accessToken: accessToken,
       );
       print(entityNumberResponse.body);
-      if (entityNumberResponse.statusCode == 200 || entityNumberResponse.statusCode == 201) {
+      if (entityNumberResponse.statusCode == 200 ||
+          entityNumberResponse.statusCode == 201) {
         ElectricityVerifiedData electricityVerifiedData =
-        ElectricityVerifiedData.fromJson(json.decode(entityNumberResponse.body)['data']);
+            ElectricityVerifiedData.fromJson(
+                json.decode(entityNumberResponse.body)['data']);
         // BillPaymentModel billPaymentModel = BillPaymentModel.fromJson(
         //     jsonDecode(response.body)['data']['data']);
 
@@ -265,19 +275,18 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         // ['customer_name'] ??
         //     "No user found";
 
-
         emit(EntityNumberSuccessState(electricityVerifiedData));
       } else {
-        emit(EntityNumberErrorState(
-            AppUtils.convertString(json.decode(entityNumberResponse.body)['message'])));
+        emit(EntityNumberErrorState(AppUtils.convertString(
+            json.decode(entityNumberResponse.body)['message'])));
       }
-    }  catch (e) {
-
+    } catch (e) {
       emit(EntityNumberErrorState(AppUtils.convertString(e.toString())));
     }
   }
 
-  FutureOr<void> getProductBeneficiaryEvent(GetProductBeneficiaryEvent event, Emitter<ProductState> emit) async {
+  FutureOr<void> getProductBeneficiaryEvent(
+      GetProductBeneficiaryEvent event, Emitter<ProductState> emit) async {
     emit(BeneficiaryLoadingState());
     AppRepository appRepository = AppRepository();
 
@@ -291,8 +300,48 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       print(response.body);
       print(json.decode(response.body));
       if (response.statusCode == 200 || response.statusCode == 201) {
+        BeneficiaryModel beneficiaryModel =
+            BeneficiaryModel.fromJson(json.decode(response.body)['data']);
 
-        BeneficiaryModel beneficiaryModel=BeneficiaryModel.fromJson(json.decode(response.body)['data']);
+        emit(GetBeneficiarySuccessState(beneficiaryModel));
+      } else {
+        emit(ErrorState(
+            AppUtils.convertString(json.decode(response.body)['message'])));
+      }
+    } on SocketException {
+      emit(ErrorState(
+          'Network error: Unable to connect. Please check your internet connection.'));
+    } on HttpException {
+      emit(ErrorState('Server error: Unable to communicate with the server.'));
+    } on FormatException {
+      emit(ErrorState('Data error: Received data is in an unexpected format.'));
+    } catch (e) {
+      emit(ErrorState(AppUtils.convertString(e.toString())));
+    }
+  }
+
+  FutureOr<void> deleteBeneficiaryEvent(
+      DeleteBeneficiaryEvent event, Emitter<ProductState> emit) async {
+    emit(BeneficiaryLoadingState());
+    AppRepository appRepository = AppRepository();
+
+    try {
+      String accessToken = await SharedPref.getString("access-token");
+
+      var response2 = await appRepository.appGetRequest(
+          accessToken: accessToken,
+          "${AppApis.deleteBeneficiary}/${event.beneficiaryId}");
+      var response = await appRepository.appGetRequest(
+          accessToken: accessToken,
+          "${AppApis.listBeneficiary}?productId=${event.productId}");
+      print(response2.statusCode);
+      print(response2.body);
+      print(response.statusCode);
+      print(response.body);
+      print(json.decode(response.body));
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        BeneficiaryModel beneficiaryModel =
+            BeneficiaryModel.fromJson(json.decode(response.body)['data']);
 
         emit(GetBeneficiarySuccessState(beneficiaryModel));
       } else {
