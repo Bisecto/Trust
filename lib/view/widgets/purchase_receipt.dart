@@ -5,9 +5,11 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:disk_space_update/disk_space_update.dart';
 import 'package:external_path/external_path.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
@@ -18,6 +20,7 @@ import 'package:teller_trust/view/widgets/show_toast.dart';
 
 import '../../res/app_colors.dart';
 import '../../utills/constants/loading_dialog.dart';
+import '../../utills/custom_theme.dart';
 import '../../utills/enums/toast_mesage.dart';
 import 'app_custom_text.dart';
 
@@ -34,21 +37,27 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
   bool isSharingPdf = false;
   ScreenshotController screenshotController = ScreenshotController();
   PdfDocument? document = PdfDocument();
-@override
+
+  @override
   void initState() {
     // TODO: implement initState
-  print(widget.transaction.toJson());
+    print(widget.transaction.toJson());
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+    ));
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return Scaffold(
       body: Screenshot(
         controller: screenshotController,
         child: Container(
-          height: AppUtils
-              .deviceScreenSize(context)
-              .height,
+          height: AppUtils.deviceScreenSize(context).height,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
@@ -66,7 +75,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
               child: Column(
                 children: [
                   const SizedBox(height: 50),
-                  buildHeader(context),
+                  buildHeader(context, theme),
                   const SizedBox(height: 20),
                   buildReceiptDetails(),
                   const SizedBox(height: 20),
@@ -83,7 +92,10 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
     );
   }
 
-  Widget buildHeader(BuildContext context) {
+  // AdaptiveThemeMode? adaptiveThemeMode =
+  //     await AdaptiveTheme.getThemeMode() ?? AdaptiveThemeMode.light;
+
+  Widget buildHeader(BuildContext context, theme) {
     return Container(
       alignment: Alignment.center,
       child: Column(
@@ -95,6 +107,11 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                 GestureDetector(
                   onTap: () {
                     Navigator.pop(context);
+                    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+                      statusBarColor: Colors.transparent,
+                      statusBarIconBrightness:
+                          theme.isDark ? Brightness.light : Brightness.dark,
+                    ));
                   },
                   child: Container(
                     height: 30,
@@ -140,39 +157,43 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                     : 'Debit'),
           ),
           buildDetailRow('Amount', 'N${widget.transaction.amount}'),
-          if(widget.transaction.order!=null)
-
-            const SizedBox(height: 12),
-          if(widget.transaction.order!=null)
-          buildDetailRow(
-              'To',
-              widget.transaction.order?.requiredFields.meterNumber ??
-                  widget.transaction.order?.requiredFields.cardNumber ??
-                  widget.transaction.order?.requiredFields.phoneNumber ??
-                  '',
-              true),
+          if (widget.transaction.order != null) const SizedBox(height: 12),
+          if (widget.transaction.order != null)
+            buildDetailRow(
+                'To',
+                widget.transaction.order?.requiredFields.meterNumber ??
+                    widget.transaction.order?.requiredFields.cardNumber ??
+                    widget.transaction.order?.requiredFields.phoneNumber ??
+                    '',
+                true),
           const SizedBox(height: 12),
           buildDetailRow('Description', widget.transaction.description),
           if (widget.transaction.order?.response?.utilityToken != null &&
               widget.transaction.order!.response!.utilityToken.isNotEmpty &&
-              widget.transaction.status.toLowerCase() == 'success')
-            ...[
-              const SizedBox(height: 12),
-              buildDetailRow(
-                'Utility Token',
-                widget.transaction.order!.response!.utilityToken,
-                true,
-              ),
-            ],
+              widget.transaction.status.toLowerCase() == 'success') ...[
+            const SizedBox(height: 12),
+            buildDetailRow(
+              'Utility Token',
+              widget.transaction.order!.response!.utilityToken,
+              true,
+            ),
+          ],
           const SizedBox(height: 12),
-          buildDetailRow('Date', AppUtils.formateSimpleDate(dateTime:widget.transaction.createdAt.toString())),
+          buildDetailRow(
+              'Date',
+              AppUtils.formateSimpleDate(
+                  dateTime: widget.transaction.createdAt.toString())),
           const SizedBox(height: 20),
           const Divider(),
           const SizedBox(height: 12),
           buildDetailRow(
               'Transaction Reference', widget.transaction.reference, true),
           const SizedBox(height: 12),
-          buildDetailRow('Status', widget.transaction.status.toLowerCase()=='success'?"SUCCESSFUL":widget.transaction.status.toUpperCase()),
+          buildDetailRow(
+              'Status',
+              widget.transaction.status.toLowerCase() == 'success'
+                  ? "SUCCESSFUL"
+                  : widget.transaction.status.toUpperCase()),
           const SizedBox(height: 20),
           Center(
             child: TextStyles.textHeadings(
@@ -187,38 +208,38 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
 
   Widget buildDetailRow(String label, String value, [bool isCopyable = false]) {
     return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
         CustomText(text: label, size: 12, color: AppColors.textColor2),
-    Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-    SizedBox(
-    width:
-    //isCopyable
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(
+              width:
+                  //isCopyable
 
-    // ?
-    AppUtils.deviceScreenSize(context).width / 1.5,
+                  // ?
+                  AppUtils.deviceScreenSize(context).width / 1.5,
 
-    //  : null,
-    child: CustomText(
-    text: value,
-    size: 14,
-    color: AppColors.black,
-    maxLines: 2,
-    ),
-    ),
-    if (isCopyable)
-    if (!isSharingPdf)
-    GestureDetector(
-    onTap: () {
-    AppUtils().copyToClipboard(value, context);
-    },
-    child: SvgPicture.asset(AppIcons.copy2),
-    ),
-    ],
-    ),
-    ],
+              //  : null,
+              child: CustomText(
+                text: value,
+                size: 14,
+                color: AppColors.black,
+                maxLines: 2,
+              ),
+            ),
+            if (isCopyable)
+              if (!isSharingPdf)
+                GestureDetector(
+                  onTap: () {
+                    AppUtils().copyToClipboard(value, context);
+                  },
+                  child: SvgPicture.asset(AppIcons.copy2),
+                ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -238,7 +259,106 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
           },
           child: buildActionButton('Download', AppIcons.download, pdfDownload),
         ),
-        buildActionButton('Repeat', AppIcons.reload, () {}),
+        if (widget.transaction.status.toLowerCase() == 'success')
+          buildActionButton('Repeat', AppIcons.reload, () {
+            // String selectedAction = '';
+            // setState(() {
+            //   selectedAction =
+            //       widget.transaction.typeitems[index].name.toLowerCase();
+            // });
+            // switch (selectedAction) {
+            //   case "airtime":
+            //     modalSheet.showMaterialModalBottomSheet(
+            //       backgroundColor: Colors.transparent,
+            //       shape: const RoundedRectangleBorder(
+            //         borderRadius:
+            //             BorderRadius.vertical(top: Radius.circular(20.0)),
+            //       ),
+            //       context: context,
+            //       builder: (context) => Padding(
+            //         padding: const EdgeInsets.only(top: 100.0),
+            //         child: AirtimePurchase(category: items[index]),
+            //       ),
+            //     );
+            //     // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
+            //     //     services: AppList().serviceItems[index]));
+            //     return;
+            //   case "data":
+            //     modalSheet.showMaterialModalBottomSheet(
+            //       backgroundColor: Colors.transparent,
+            //       shape: const RoundedRectangleBorder(
+            //         borderRadius:
+            //             BorderRadius.vertical(top: Radius.circular(20.0)),
+            //       ),
+            //       context: context,
+            //       builder: (context) => Padding(
+            //         padding: const EdgeInsets.only(top: 100.0),
+            //         child: DataPurchase(category: items[index]),
+            //       ),
+            //     );
+            //     // AppNavigator.pushAndStackPage(context, page: DataPurchase(
+            //     //     services: AppList().serviceItems[index]));
+            //     return;
+            //   case "electricity":
+            //     modalSheet.showMaterialModalBottomSheet(
+            //       backgroundColor: Colors.transparent,
+            //       shape: const RoundedRectangleBorder(
+            //         borderRadius:
+            //             BorderRadius.vertical(top: Radius.circular(20.0)),
+            //       ),
+            //       context: context,
+            //       builder: (context) => Padding(
+            //         padding: const EdgeInsets.only(top: 100.0),
+            //         child: ElectricityPurchase(category: items[index]),
+            //       ),
+            //     );
+            //     // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
+            //     //     services: AppList().serviceItems[index]));
+            //     return;
+            //   case 'cable tv':
+            //     modalSheet.showMaterialModalBottomSheet(
+            //       backgroundColor: Colors.transparent,
+            //       shape: const RoundedRectangleBorder(
+            //         borderRadius:
+            //             BorderRadius.vertical(top: Radius.circular(20.0)),
+            //       ),
+            //       context: context,
+            //       builder: (context) => Padding(
+            //         padding: const EdgeInsets.only(top: 100.0),
+            //         child: CablePurchase(category: items[index]),
+            //       ),
+            //     );
+            //     // AppNavigator.pushAndStackPage(context, page: InternetPurchase(
+            //     //     services: AppList().serviceItems[index]));
+            //     return;
+            //   // case 'Electricity':
+            //   //   modalSheet.showMaterialModalBottomSheet(
+            //   //     backgroundColor: Colors.transparent,
+            //   //     shape: const RoundedRectangleBorder(
+            //   //       borderRadius:
+            //   //           BorderRadius.vertical(top: Radius.circular(20.0)),
+            //   //     ),
+            //   //     context: context,
+            //   //     builder: (context) => Padding(
+            //   //       padding: const EdgeInsets.only(top: 100.0),
+            //   //       child: Electricity(
+            //   //           services: AppList().serviceItems[index]),
+            //   //     ),
+            //   //   );
+            //   //   // AppNavigator.pushAndStackPage(context, page: InternetPurchase(
+            //   //   //     services: AppList().serviceItems[index]));
+            //   //   return;
+            //   default:
+            //     showToast(
+            //         context: context,
+            //         title: 'Info',
+            //         subtitle:
+            //             'Oops! It looks like this service is still in the oven. We\'re baking up something great, so stay tuned! 🍰',
+            //         type: ToastMessageType.info);
+            // }
+
+            //showAirtimeModal(context, AppList().serviceItems[index]);
+          }),
         buildActionButton('Report', AppIcons.infoOutlined, () {}),
       ],
     );
@@ -272,30 +392,28 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
   Widget buildFooter() {
     return Column(
       children: [
-        if (!isSharingPdf) ...[
-          const CustomText(
-            text: 'Thank You!',
-            textAlign: TextAlign.center,
-            size: 14,
-          ),
-          const CustomText(
-            text: 'For Your Purchase',
-            textAlign: TextAlign.center,
-            size: 14,
-          ),
-          const SizedBox(height: 20),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.lock, color: AppColors.green),
-              CustomText(
-                text: 'Secured by TellaTrust',
-                textAlign: TextAlign.center,
-                size: 14,
-              ),
-            ],
-          ),
-        ],
+        const CustomText(
+          text: 'Thank You!',
+          textAlign: TextAlign.center,
+          size: 14,
+        ),
+        const CustomText(
+          text: 'For Your Purchase',
+          textAlign: TextAlign.center,
+          size: 14,
+        ),
+        const SizedBox(height: 20),
+        const Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.lock, color: AppColors.green),
+            CustomText(
+              text: 'Secured by TellaTrust',
+              textAlign: TextAlign.center,
+              size: 14,
+            ),
+          ],
+        ),
       ],
     );
   }
@@ -323,8 +441,9 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
 
       var freeSpace = await DiskSpace.getFreeDiskSpace;
       if (freeSpace != null && freeSpace > 10.00) {
-        await screenshotController.capture(
-            delay: const Duration(milliseconds: 5)).then((Uint8List? image) async {
+        await screenshotController
+            .capture(delay: const Duration(milliseconds: 5))
+            .then((Uint8List? image) async {
           if (image != null) {
             var path = await ExternalPath.getExternalStoragePublicDirectory(
                 ExternalPath.DIRECTORY_DOWNLOADS);
@@ -335,7 +454,9 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
               directory.createSync(recursive: true);
             }
 
-            final imagePath = await File('$path/${title + getCurrentDate()}.png').create(recursive: true);
+            final imagePath =
+                await File('$path/${title + getCurrentDate()}.png')
+                    .create(recursive: true);
             await imagePath.writeAsBytes(image);
 
             final Uint8List imageData = File(imagePath.path).readAsBytesSync();
@@ -344,7 +465,8 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
             final PdfDocument document = PdfDocument();
             final PdfPage page = document.pages.add();
             final Size pageSize = page.getClientSize();
-            page.graphics.drawImage(pdfBitmap, Rect.fromLTWH(0, 0, pageSize.width, pageSize.height));
+            page.graphics.drawImage(pdfBitmap,
+                Rect.fromLTWH(0, 0, pageSize.width, pageSize.height));
 
             var pdfPath = '$path/${title + getCurrentDate()}.pdf';
             await File(pdfPath).writeAsBytes(await document.save());
@@ -356,7 +478,9 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
             }
 
             await Share.shareXFiles([
-              XFile(pdfPath, mimeType: 'application/pdf', name: '${title + getCurrentDate()}.pdf')
+              XFile(pdfPath,
+                  mimeType: 'application/pdf',
+                  name: '${title + getCurrentDate()}.pdf')
             ]);
 
             final targetFile2 = File(pdfPath);
@@ -416,19 +540,19 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
 
         var freeSpace = await DiskSpace.getFreeDiskSpace;
         if (freeSpace != null && freeSpace > 10.00) {
-          await screenshotController.capture(
-              delay: const Duration(milliseconds: 5)).then((
-              Uint8List? image) async {
+          await screenshotController
+              .capture(delay: const Duration(milliseconds: 5))
+              .then((Uint8List? image) async {
             if (image != null) {
               var path = await ExternalPath.getExternalStoragePublicDirectory(
                   ExternalPath.DIRECTORY_DOWNLOADS);
 
-              final imagePath = await File(
-                  '$path/${title + getCurrentDate()}.png').create();
+              final imagePath =
+                  await File('$path/${title + getCurrentDate()}.png').create();
               await imagePath.writeAsBytes(image);
 
-              final Uint8List imageData = File(imagePath.path)
-                  .readAsBytesSync();
+              final Uint8List imageData =
+                  File(imagePath.path).readAsBytesSync();
               final PdfBitmap pdfBitmap = PdfBitmap(imageData);
 
               final PdfDocument document = PdfDocument();

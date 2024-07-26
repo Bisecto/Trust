@@ -5,6 +5,14 @@ abstract class ProductState {}
 
 final class ProductInitial extends ProductState {}
 
+final class BeneficiaryLoadingState extends ProductState {}
+
+final class GetBeneficiarySuccessState extends ProductState {
+  final BeneficiaryModel beneficiaryModel;
+  GetBeneficiarySuccessState(this.beneficiaryModel);
+}
+
+
 class CategoryLoadingState extends ProductState {}
 
 class ServiceLoadingState extends ProductState {}
@@ -37,9 +45,9 @@ class AccessTokenExpireState extends ProductState {}
 
 class EntityNumberLoadingState extends ProductState {}
 
-
 class PurchaseSuccess extends ProductState {
   Transaction transaction;
+
   PurchaseSuccess(this.transaction);
 }
 
@@ -68,7 +76,6 @@ class ProductLoadingState extends ProductState {
 class ProductSuccessState extends ProductState {
   final ProductModel productModel;
 
-
   //final String msg;
 
   ProductSuccessState(this.productModel);
@@ -81,7 +88,14 @@ class EntityNumberSuccessState extends ProductState {
 
   EntityNumberSuccessState(this.electricityVerifiedData);
 }
-class EntityNumberErrorState extends ProductState{
+
+class EntityNumberErrorState extends ProductState {
   final String error;
+
   EntityNumberErrorState(this.error);
+}
+class ErrorState extends ProductState {
+  final String error;
+
+  ErrorState(this.error);
 }

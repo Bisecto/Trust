@@ -6,28 +6,29 @@ import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:teller_trust/model/category_model.dart' as mainCategory;
 import 'package:teller_trust/view/important_pages/dialog_box.dart';
+import 'package:teller_trust/view/the_app_screens/sevices/product_beneficiary/product_beneficiary.dart';
 
-import '../../../bloc/product_bloc/product_bloc.dart';
-import '../../../model/service_model.dart';
-import '../../../res/app_colors.dart';
-import '../../../res/app_icons.dart';
-import '../../../utills/app_navigator.dart';
-import '../../../utills/app_utils.dart';
-import '../../../utills/app_validator.dart';
-import '../../../utills/custom_theme.dart';
-import '../../../utills/enums/toast_mesage.dart';
-import '../../../utills/shared_preferences.dart';
-import '../../auth/otp_pin_pages/confirm_with_otp.dart';
-import '../../auth/sign_in_with_access_pin_and_biometrics.dart';
-import '../../widgets/app_custom_text.dart';
-import '../../widgets/form_button.dart';
-import '../../widgets/form_input.dart';
+import '../../../../bloc/product_bloc/product_bloc.dart';
+import '../../../../model/service_model.dart';
+import '../../../../res/app_colors.dart';
+import '../../../../res/app_icons.dart';
+import '../../../../utills/app_navigator.dart';
+import '../../../../utills/app_utils.dart';
+import '../../../../utills/app_validator.dart';
+import '../../../../utills/custom_theme.dart';
+import '../../../../utills/enums/toast_mesage.dart';
+import '../../../../utills/shared_preferences.dart';
+import '../../../auth/otp_pin_pages/confirm_with_otp.dart';
+import '../../../auth/sign_in_with_access_pin_and_biometrics.dart';
+import '../../../widgets/app_custom_text.dart';
+import '../../../widgets/form_button.dart';
+import '../../../widgets/form_input.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
-import '../../widgets/purchase_receipt.dart';
-import '../../widgets/show_toast.dart';
-import 'build_payment_method.dart';
-import 'make_bank_transfer/bank_transfer.dart';
+import '../../../widgets/purchase_receipt.dart';
+import '../../../widgets/show_toast.dart';
+import '../payment_method/payment_method.dart';
+import '../make_bank_transfer/bank_transfer.dart';
 
 class DataPurchase extends StatefulWidget {
   final mainCategory.Category category;
@@ -43,6 +44,8 @@ class _DataPurchaseState extends State<DataPurchase> {
   ProductBloc purchaseProductBloc = ProductBloc();
   String selectedDataPlan = 'Choose Plan';
   String selectedDataPlanPrice = '';
+  bool isSaveAsBeneficiarySelected = false;
+  String beneficiaryName = '';
   String selectedDataPlanId = '';
   String selectedServiceId = '';
   bool isPaymentAllowed = false;
@@ -84,9 +87,12 @@ class _DataPurchaseState extends State<DataPurchase> {
                       print(state);
                       if (state is PurchaseSuccess) {
                         _beneficiaryController.clear();
-                        state.transaction.order!.product!.name== widget.category.name;
+                        state.transaction.order!.product!.name ==
+                            widget.category.name;
 
-                        AppNavigator.pushAndStackPage(context, page: TransactionReceipt(transaction: state.transaction));
+                        AppNavigator.pushAndStackPage(context,
+                            page: TransactionReceipt(
+                                transaction: state.transaction));
 
                         // showToast(
                         //     context: context,
@@ -100,14 +106,14 @@ class _DataPurchaseState extends State<DataPurchase> {
                         //     page: LandingPage(studentProfile: state.studentProfile));
                       } else if (state is QuickPayInitiated) {
                         String accessToken =
-                        await SharedPref.getString("access-token");
+                            await SharedPref.getString("access-token");
 
                         AppNavigator.pushAndStackPage(context,
                             page: MakePayment(
                               quickPayModel: state.quickPayModel,
                               accessToken: accessToken,
                             ));
-                      }  else if (state is AccessTokenExpireState) {
+                      } else if (state is AccessTokenExpireState) {
                         showToast(
                             context: context,
                             title: 'Info',
@@ -257,12 +263,7 @@ class _DataPurchaseState extends State<DataPurchase> {
                                     ),
                                   );
                                 } else {
-                                  return const CustomText(
-                                    text: "     Loading.....",
-                                    size: 15,
-                                    weight: FontWeight.bold,
-                                    color: AppColors.white,
-                                  ); // Show loading indicator or handle error state
+                                  return _loadingNetwork(); // Show loading indicator or handle error state
                                 }
                               },
                               listener: (BuildContext context,
@@ -316,7 +317,8 @@ class _DataPurchaseState extends State<DataPurchase> {
                                                 context); // Close modal
                                           },
                                           categoryId: widget.category.id,
-                                          serviceId: selectedServiceId, theme: theme,
+                                          serviceId: selectedServiceId,
+                                          theme: theme,
                                         ),
                                       ),
                                     );
@@ -382,13 +384,20 @@ class _DataPurchaseState extends State<DataPurchase> {
                                         textInputType: TextInputType.number,
                                         validator:
                                             AppValidator.validateTextfield,
-                                        widget: SvgPicture.asset(AppIcons.nigeriaLogo),
+                                        widget: SvgPicture.asset(
+                                            AppIcons.nigeriaLogo),
                                         //isMobileNumber: true,
                                         borderColor: _beneficiaryController
                                                 .text.isNotEmpty
                                             ? AppColors.green
                                             : AppColors.grey,
                                       ),
+                                      if(selectedDataPlanId.isNotEmpty)
+                                        SizedBox(height: 10,),
+                                      if(selectedDataPlanId.isNotEmpty)
+                                        BeneficiaryWidget(productId: selectedDataPlanId, beneficiaryNum: (value) { setState(() {
+                                          _beneficiaryController.text=value;
+                                        }); },),
                                       SizedBox(
                                         height: 310,
                                         child: PaymentMethodScreen(
@@ -403,7 +412,7 @@ class _DataPurchaseState extends State<DataPurchase> {
                                                 setState(() {
                                                   _selectedPaymentMethod =
                                                       method;
-                                                 // print(_selectedPaymentMethod);
+                                                  // print(_selectedPaymentMethod);
                                                 });
                                               }
                                             });
@@ -419,6 +428,31 @@ class _DataPurchaseState extends State<DataPurchase> {
                                               }
                                             });
                                           },
+                                          name: (value) {
+                                            print(value);
+                                            Future.microtask(() {
+                                              if (mounted) {
+                                                setState(() {
+                                                  beneficiaryName = value;
+                                                  // print(isPaymentAllowed);
+                                                });
+                                              }
+                                            });
+                                          },
+
+                                          isSaveAsBeneficiarySelected:
+                                              (value) {
+                                            print(value);
+                                            Future.microtask(() {
+                                              if (mounted) {
+                                                setState(() {
+                                                  isSaveAsBeneficiarySelected = value;
+                                                  // print(isPaymentAllowed);
+                                                });
+                                              }
+                                            });
+                                          },
+                                          number: _beneficiaryController.text,
                                         ),
                                       ),
                                       FormButton(
@@ -448,16 +482,15 @@ class _DataPurchaseState extends State<DataPurchase> {
                                                           .requiredFields,
                                                       selectedDataPlanId,
                                                       transactionPin,
-                                                      true));
+                                                      true,isSaveAsBeneficiarySelected,beneficiaryName));
                                             } else {
                                               var transactionPin = '';
                                               transactionPin = await modalSheet
                                                   .showMaterialModalBottomSheet(
                                                       backgroundColor:
                                                           Colors.transparent,
-                                                  isDismissible: true,
-
-                                                  shape:
+                                                      isDismissible: true,
+                                                      shape:
                                                           const RoundedRectangleBorder(
                                                         borderRadius:
                                                             BorderRadius.vertical(
@@ -498,21 +531,24 @@ class _DataPurchaseState extends State<DataPurchase> {
                                                             .requiredFields,
                                                         selectedDataPlanId,
                                                         transactionPin,
-                                                        false));
+                                                        false,isSaveAsBeneficiarySelected,beneficiaryName));
                                               }
                                             }
                                           }
                                         },
                                         disableButton: (!isPaymentAllowed ||
-                                            _beneficiaryController
-                                                .text.length<10 ),
+                                            _beneficiaryController.text.length <
+                                                10),
                                         text: 'Purchase Data',
                                         borderColor: AppColors.darkGreen,
                                         bgColor: AppColors.darkGreen,
                                         textColor: AppColors.white,
                                         borderRadius: 10,
                                       ),
-                                      const SizedBox(height: 20,)
+                                      const SizedBox(
+                                        height: 20,
+                                      )
+
                                       ///Remember to add beneficiary
                                       // FormButton(
                                       //   onPressed: () async {
@@ -584,11 +620,71 @@ class _DataPurchaseState extends State<DataPurchase> {
     );
   }
 
+  Widget _loadingNetwork() {
+    return SizedBox(
+      height: 90,
+      child: ListView.builder(
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        //physics: const NeverScrollableScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 0),
+        itemCount: 8,
+        itemBuilder: (BuildContext context, int index) {
+          return Padding(
+              padding: const EdgeInsets.only(right: 10.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.2),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(50)))),
+                  const SizedBox(height: 10),
+                  Shimmer(
+                    duration: const Duration(seconds: 1),
+                    interval: const Duration(milliseconds: 50),
+                    color: Colors.grey.withOpacity(0.5),
+                    colorOpacity: 0.5,
+                    enabled: true,
+                    direction: const ShimmerDirection.fromLTRB(),
+                    child: Container(
+                      height: 10,
+                      width: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Shimmer(
+                    duration: const Duration(seconds: 1),
+                    interval: const Duration(milliseconds: 50),
+                    color: Colors.grey.withOpacity(0.5),
+                    colorOpacity: 0.5,
+                    enabled: true,
+                    direction: ShimmerDirection.fromLTRB(),
+                    child: Container(
+                      height: 5,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.2),
+                      ),
+                    ),
+                  )
+                ],
+              ));
+        },
+      ),
+    );
+  }
+
   Widget amount(String amt) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
-
         child: Container(
           decoration: BoxDecoration(
               color: AppColors.white,
@@ -672,8 +768,6 @@ class _DataPurchaseState extends State<DataPurchase> {
 
   String selectedNetwork = "";
   final _beneficiaryController = TextEditingController();
-
-
 
   Widget networkProviderItem(String name, String image, String id, theme) {
     return Padding(
@@ -759,13 +853,13 @@ class DataPlan extends StatelessWidget {
   final AdaptiveThemeMode theme;
   final Function(String, String, String) onDataPlanSelected;
 
-  const DataPlan({
-    Key? key,
-    required this.serviceId,
-    required this.categoryId,
-    required this.onDataPlanSelected,
-    required this.theme
-  }) : super(key: key);
+  const DataPlan(
+      {Key? key,
+      required this.serviceId,
+      required this.categoryId,
+      required this.onDataPlanSelected,
+      required this.theme})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -806,8 +900,7 @@ class DataPlan extends StatelessWidget {
                               width: double.infinity,
                               color: Colors.grey[300],
                               child: const Center(
-                                  child:
-                                  CircularProgressIndicator()),
+                                  child: CircularProgressIndicator()),
                             );
                           },
                         ),
@@ -817,8 +910,7 @@ class DataPlan extends StatelessWidget {
                         left: 10,
                         right: 10,
                         child: Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             TextStyles.textHeadings(
                               textValue: 'Data Plans',
@@ -905,7 +997,7 @@ class _DataPlanListState extends State<DataPlanList> {
             label: '',
             controller: _searchController,
             validator: AppValidator.validateAccountNumberfield,
-            widget:const Icon( Icons.search),
+            widget: const Icon(Icons.search),
           ),
           Expanded(
             child: BlocBuilder<ProductBloc, ProductState>(
@@ -923,32 +1015,37 @@ class _DataPlanListState extends State<DataPlanList> {
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: ListTile(
-
-                          onTap: () {
-                            widget.onDataPlanSelected(
-                              singleProduct.name,
-                              singleProduct.buyerPrice.toString(),
-                              singleProduct.id,
-                            );
-                          },
-                          title: CustomText(
-                            text: singleProduct.name,
-                            size: 14,
-                            weight: FontWeight.w700,
-                          ),
-                          subtitle: Row(
-                            children: [
-                              SvgPicture.asset(AppIcons.naira,color: AppColors.green,),
-                              CustomText(
-                                text: singleProduct.buyerPrice.toString(),
-                                size: 14,
-                                weight: FontWeight.w400,
-                              ),
-                            ],
-                          ),
-                          shape:  RoundedRectangleBorder( side: const BorderSide(color: Colors.grey),borderRadius: BorderRadius.circular(5),)
-                          //shape: ShapeBorder(),
-                        ),
+                            onTap: () {
+                              widget.onDataPlanSelected(
+                                singleProduct.name,
+                                singleProduct.buyerPrice.toString(),
+                                singleProduct.id,
+                              );
+                            },
+                            title: CustomText(
+                              text: singleProduct.name,
+                              size: 14,
+                              weight: FontWeight.w700,
+                            ),
+                            subtitle: Row(
+                              children: [
+                                SvgPicture.asset(
+                                  AppIcons.naira,
+                                  color: AppColors.green,
+                                ),
+                                CustomText(
+                                  text: singleProduct.buyerPrice.toString(),
+                                  size: 14,
+                                  weight: FontWeight.w400,
+                                ),
+                              ],
+                            ),
+                            shape: RoundedRectangleBorder(
+                              side: const BorderSide(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(5),
+                            )
+                            //shape: ShapeBorder(),
+                            ),
                       );
                     },
                   );
