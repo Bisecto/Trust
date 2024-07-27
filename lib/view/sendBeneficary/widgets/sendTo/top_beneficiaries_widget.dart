@@ -19,33 +19,46 @@ class TopBeneficiariesWidget extends StatelessWidget {
         const Text(
           'Send to',
           style: TextStyle(
-            color: AppColors.black,
+            color: AppColors.sendToLabelColor,
+            fontSize: 16.0,
             fontWeight: FontWeight.bold,
           ),
         ),
         const AppSpacer(
-          height: 10.0,
+          height: 20.0,
         ),
         const Text(
           'Top Beneficiaries',
           style: TextStyle(
-            color: AppColors.grey,
+            color: AppColors.sendBodyTextColor,
+            fontSize: 15.0,
           ),
         ),
         const AppSpacer(
-          height: 3.0,
+          height: 5.0,
         ),
-        ListView.builder(
-          shrinkWrap: true,
+        SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          itemBuilder: (context, state) {
-            String beneficiaryFullname = '';
-            String beneficiaryImagePath = '';
-            return TopBeneficiariesItemWidget(
-              beneficiaryFullname: beneficiaryFullname,
-              beneficiaryImagePath: beneficiaryImagePath,
-            );
-          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ...List.generate(
+                beneficiaries.length,
+                (index) {
+                  String beneficiaryFullname = '';
+                  String beneficiaryImagePath = '';
+                  return TopBeneficiariesItemWidget(
+                    beneficiaryFullname: beneficiaryFullname,
+                    beneficiaryImagePath: beneficiaryImagePath,
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+        const AppSpacer(
+          height: 10.0,
         ),
         const Divider(),
       ],

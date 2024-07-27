@@ -24,20 +24,20 @@ class GeneralConstant {
   
   static OutlineInputBorder tellaSendSearchBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(
-      50.0,
+      10.0,
     ),
     borderSide: const BorderSide(
-      color: AppColors.white,
+      color: AppColors.sendFormBorderColor,
       width: 1.5,
     ),
   );
   
   static OutlineInputBorder bankSendSearchBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(
-      50.0,
+      10.0,
     ),
     borderSide: const BorderSide(
-      color: AppColors.white,
+      color: AppColors.sendFormBorderColor,
       width: 1.5,
     ),
   );
@@ -75,6 +75,8 @@ class GeneralConstant {
   static TextStyle normalTextStyle = const TextStyle(
     fontStyle: FontStyle.normal,
     color: AppColors.recentTxnTxtColor,
+    fontWeight: FontWeight.w400,
+    fontSize: 14.0,
   );
 
   static TextStyle italicTextStyle = const TextStyle(
@@ -85,12 +87,24 @@ class GeneralConstant {
   static TextStyle networkDefaultTextStyle = const TextStyle(
     color: AppColors.recentTxnAmountBgColor,
   );
+  
+  static TextStyle sendToDefaultTextStyle = const TextStyle(
+    color: AppColors.sendBodyTextColor,
+  );
 
   static EdgeInsetsDirectional networkSearchWidgetContentPadding =
       const EdgeInsetsDirectional.only(
     top: 10,
     bottom: 10,
     start: 30,
+    end: 1,
+  );
+  
+  static EdgeInsetsDirectional sendToFormWidgetContentPadding =
+      const EdgeInsetsDirectional.only(
+    top: 10,
+    bottom: 10,
+    start: 10,
     end: 1,
   );
   

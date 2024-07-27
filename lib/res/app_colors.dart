@@ -45,6 +45,7 @@ class AppColors {
 
   static const Color sendBodyTextColor = Color(0xff828DA9);
   static const Color sendKeyPadTextColor = Color(0xff050505);
+  static const Color sendToLabelColor = Color(0xff050505);
   static const Color nairaContainerColor = Color(0xffFFA02E);
 
   static const Color sendStrokeColor = Color(0xffE2E4EB);
@@ -86,6 +87,8 @@ class AppColors {
   static const Color sendToOptionTextColor = Color(0xff49526A);
 
   static const Color sendToTellaBorderColor = Color(0xff9BA4BA);
+
+  static const Color sendFormBorderColor = Color(0xffCCD0DC);
 
   static const Color sendToTellaColor = Color(0xff2FB763);
 
