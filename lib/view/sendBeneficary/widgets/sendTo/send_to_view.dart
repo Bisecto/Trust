@@ -26,6 +26,8 @@ class _SendToViewState extends State<SendToView> {
 
   bool isItForTellaTrust = false;
 
+  String transferredTo = 'Favour Sophia Okpara';
+
   @override
   void initState() {
     txnDetails = widget.txnDetails;
@@ -43,6 +45,7 @@ class _SendToViewState extends State<SendToView> {
           children: [
             SendToHeaderWidget(
               amountTransferred: txnDetails.amount,
+              txnMadeTo: transferredTo,
             ),
             Expanded(
               child: Container(

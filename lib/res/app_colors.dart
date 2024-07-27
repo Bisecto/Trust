@@ -58,9 +58,9 @@ class AppColors {
   static const Color recentTxnNameTxtColor = Color(0xff050505);
   static const Color recentTxnNameBorderColor = Color(0xff66C95B);
 
-  static const Color  recentTxnTxtColor = Color(0xff49526A);
+  static const Color recentTxnTxtColor = Color(0xff49526A);
 
-  static const Color  recentTxnAmountBgColor = Color(0xffF6F8FA);
+  static const Color recentTxnAmountBgColor = Color(0xffF6F8FA);
   static const Color recentTxnAmountTxtColor = Color(0xff050505);
   static const Color recentTxnAmountBorderColor = Color(0xffE2E4EB);
 
@@ -99,6 +99,10 @@ class AppColors {
 
   static const Color sendToRecentTransferTxtColor = Color(0xff828DA9);
   static const Color sendToRecentTransferBgColor = Color(0xffFBFBFB);
+
+  static const Color sendToDetailsBgColor = Color(0xffFFF3D5);
+  static const Color sendToDetailsLabelSendTxtColor = Color(0xff7A3108);
+  static const Color sendToDetailsLabelSendBgColor = Color(0xffFFC403);
 
   static const Color darkModeBackgroundColor = Color(0xff0D0D0D);
   static Color darkModeBackgroundMainTextColor =
