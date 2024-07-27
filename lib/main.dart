@@ -10,6 +10,7 @@ import 'package:teller_trust/res/app_router.dart';
 import 'package:teller_trust/utills/custom_theme.dart';
 import 'package:teller_trust/view/important_pages/no_internet.dart';
 import 'package:teller_trust/view/networkCenter/pages/network_center_main_page.dart';
+import 'package:teller_trust/view/sendBeneficary/pages/send_main_page.dart';
 import 'package:teller_trust/view/splash_screen.dart';
 import 'bloc/app_bloc/app_bloc.dart';
 
@@ -115,10 +116,10 @@ class _MyAppState extends State<MyApp> {
           onGenerateRoute: _appRoutes.onGenerateRoute,
           theme: theme,
           darkTheme: darkTheme,
-          // home: const NetworkCenterMainPage(),
-          home: _connected
-              ? const SplashScreen()
-              : No_internet_Page(onRetry: _checkConnectivity),
+          home: const SendMainPage(),
+          // home: _connected
+          //     ? const SplashScreen()
+          //     : No_internet_Page(onRetry: _checkConnectivity),
         ),
       ),
     );
