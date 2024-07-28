@@ -110,7 +110,7 @@ class _MyAppState extends State<MyApp> {
         ),
         initial: widget.adaptiveThemeMode!,
         builder: (theme, darkTheme) => MaterialApp(
-          title: 'Tellatrust',
+          title: 'TellaTrust',
           debugShowCheckedModeBanner: false,
           onGenerateRoute: _appRoutes.onGenerateRoute,
           theme: theme,

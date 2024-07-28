@@ -19,10 +19,12 @@ part 'app_state.dart';
 
 class AppBloc extends Bloc<AppEvent, AppState> {
   CustomerProfile? customerProfile; // Variable to store user data
-  TransactionHistoryModel? transactionHistoryModel; // Variable to store user data
+  TransactionHistoryModel?
+      transactionHistoryModel; // Variable to store user data
   AppBloc() : super(AppInitial()) {
     on<InitialEvent>(initialEvent);
     on<AddWithdrawalAccount>(addWithdrawalAccount);
+    on<GetAllTransactionHistoryEvent>(getAllTransactionHistoryEvent);
 
     // on<AppEvent>((event, emit) {
     //   // TODO: implement event handler
@@ -36,43 +38,46 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     AppRepository appRepository = AppRepository();
     String accessToken = await SharedPref.getString("access-token");
 
-   // try {
-      var profileResponse = await appRepository.appGetRequest(
-        AppApis.userProfile,
-        accessToken: accessToken,
-      );
-      var userTransactionList = await appRepository.appGetRequest(
-        "${AppApis.listTransaction}?page=1&pageSize=5",
-        accessToken: accessToken,
-      );
-      print(userTransactionList.body);
-      print("Profile status COde ${profileResponse.statusCode}");
-      print("Profile Data ${profileResponse.body}");
-      if (profileResponse.statusCode == 200 ||
-          profileResponse.statusCode == 201) {
-        CustomerProfile customerProfile =
-            CustomerProfile.fromJson(json.decode(profileResponse.body)['data']);
-       TransactionHistoryModel transactionHistoryModel = TransactionHistoryModel.fromJson(
-            json.decode(userTransactionList.body));
-        updateData(customerProfile,transactionHistoryModel);
-        emit(SuccessState(customerProfile,transactionHistoryModel)); // Emit success state with data
-      } else {
-        emit(ErrorState(AppUtils.convertString(
-            json.decode(profileResponse.body)['message'])));
-        print(json.decode(profileResponse.body));
-      }
+    // try {
+    var profileResponse = await appRepository.appGetRequest(
+      AppApis.userProfile,
+      accessToken: accessToken,
+    );
+    var userTransactionList = await appRepository.appGetRequest(
+      "${AppApis.listTransaction}?page=1&pageSize=5",
+      accessToken: accessToken,
+    );
+    print(userTransactionList.body);
+    print("Profile status COde ${profileResponse.statusCode}");
+    print("Profile Data ${profileResponse.body}");
+    if (profileResponse.statusCode == 200 ||
+        profileResponse.statusCode == 201) {
+      CustomerProfile customerProfile =
+          CustomerProfile.fromJson(json.decode(profileResponse.body)['data']);
+      TransactionHistoryModel transactionHistoryModel =
+          TransactionHistoryModel.fromJson(
+              json.decode(userTransactionList.body));
+      updateData(customerProfile, transactionHistoryModel);
+      emit(SuccessState(customerProfile,
+          transactionHistoryModel)); // Emit success state with data
+    } else {
+      emit(ErrorState(AppUtils.convertString(
+          json.decode(profileResponse.body)['message'])));
+      print(json.decode(profileResponse.body));
+    }
     // } catch (e) {
     //   emit(ErrorState("An error occurred while fetching user profile."));
     //   print(e);
     // }
   }
 
-  void updateData(CustomerProfile customerProfile,TransactionHistoryModel transactionHistoryModel) {
+  void updateData(CustomerProfile customerProfile,
+      TransactionHistoryModel transactionHistoryModel) {
     customerProfile = customerProfile;
     //print(customerProfile.customerAccount);
     transactionHistoryModel = transactionHistoryModel;
     //print(tr)
-    emit(SuccessState(customerProfile,transactionHistoryModel));
+    //emit(SuccessState(customerProfile,transactionHistoryModel));
   }
 
   Future<FutureOr<void>> addWithdrawalAccount(
@@ -86,7 +91,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     String accessToken = await SharedPref.getString("access-token");
 
     AppRepository appRepository = AppRepository();
-    Map<String,dynamic> data = {
+    Map<String, dynamic> data = {
       "accountNumber": event.accountNumber,
       "bvn": event.bvn,
       "bankCode": event.bankCode
@@ -116,12 +121,13 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             profileResponse.statusCode == 201) {
           CustomerProfile customerProfile = CustomerProfile.fromJson(
               json.decode(profileResponse.body)['data']);
-          TransactionHistoryModel transactionHistoryModel = TransactionHistoryModel.fromJson(
-              json.decode(userTransactionList.body));
-          updateData(customerProfile,transactionHistoryModel);
+          TransactionHistoryModel transactionHistoryModel =
+              TransactionHistoryModel.fromJson(
+                  json.decode(userTransactionList.body));
+          updateData(customerProfile, transactionHistoryModel);
           Navigator.pop(event.context);
           //event.context.read<AppBloc>().add(updateData( updatedProfile));
-          updateData(customerProfile,transactionHistoryModel);
+          updateData(customerProfile, transactionHistoryModel);
 
           emit(WirthdrawalAccountAdded(customerProfile));
         } else {
@@ -146,5 +152,42 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           AppUtils.convertString("There was a problem")));
       print(12345678);
     }
+  }
+
+  FutureOr<void> getAllTransactionHistoryEvent(
+      GetAllTransactionHistoryEvent event, Emitter<AppState> emit) async {
+    emit(LoadingState()); // Emit loading state at the start of the event
+
+    AppRepository appRepository = AppRepository();
+    String accessToken = await SharedPref.getString("access-token");
+
+    // try {
+
+    var userTransactionList = await appRepository.appGetRequest(
+      "${AppApis.listTransaction}?page=${event.page}&pageSize=${event.pageSize}"
+          "&search=${event.search}&status=${event.status}&type=${event.type}",
+      accessToken: accessToken,
+    );
+    print(userTransactionList.body);
+    print("userTransactionList status COde ${userTransactionList.statusCode}");
+    print("userTransactionList Data ${userTransactionList.body}");
+    if (userTransactionList.statusCode == 200 ||
+        userTransactionList.statusCode == 201) {
+      TransactionHistoryModel transactionHistoryModel =
+          TransactionHistoryModel.fromJson(
+              json.decode(userTransactionList.body));
+      emit(TransactionListSuccessState(
+          transactionHistoryModel)); // Emit success state with data
+    } else if (json.decode(userTransactionList.body)['errorCode'] == "N404") {
+      emit(AccessTokenExpireState());
+    }  else {
+      emit(TransactionErrorState(AppUtils.convertString(
+          json.decode(userTransactionList.body)['message'])));
+      print(json.decode(userTransactionList.body));
+    }
+    // } catch (e) {
+    //   emit(ErrorState("An error occurred while fetching user profile."));
+    //   print(e);
+    // }
   }
 }

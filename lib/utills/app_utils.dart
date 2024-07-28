@@ -115,9 +115,9 @@ class AppUtils {
   }
 
   static String formatComplexDate({required String dateTime}) {
-    DateTime parseDate = DateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(dateTime);
+    DateTime parseDate = DateFormat("dd-MM-yyyy").parse(dateTime);
     var inputDate = DateTime.parse(parseDate.toString());
-    var outputFormat = DateFormat('d MMM y hh:mm a');
+    var outputFormat = DateFormat('d MMMM, yyyy');
     var outputDate = outputFormat.format(inputDate);
 
     return outputDate;

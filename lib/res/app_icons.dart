@@ -54,6 +54,8 @@ class AppIcons {
   static const profiletext = '${_iconBaseUrl}profile_text.svg';
   static const purchaseReceipt = '${_iconBaseUrl}purchase_receipt.svg';
   static const cancel = '${_iconBaseUrl}cancel.svg';
+  static const cancel2 = '${_iconBaseUrl}cancel2.svg';
+  static const filter = '${_iconBaseUrl}filter.svg';
   static const biometric = '${_iconBaseUrl}biometric.svg';
   static const add = '${_iconBaseUrl}add.svg';
   static const switch1 = '${_iconBaseUrl}switch.svg';
