@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:teller_trust/bloc/sendBloc/send_bloc.dart';
 import 'package:teller_trust/view/sendBeneficary/widgets/sendMain/send_main_view.dart';
 
 class SendMainPage extends StatelessWidget {
@@ -6,12 +8,15 @@ class SendMainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SafeArea(
+    return SafeArea(
       top: false,
       bottom: false,
       left: false,
       right: false,
-      child: SendMainView(),
+      child: BlocProvider(
+        create: (context) => SendBloc(),
+        child: const SendMainView(),
+      ),
     );
   }
 }

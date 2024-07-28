@@ -22,6 +22,9 @@ class _SendMainViewState extends State<SendMainView> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const AppSpacer(
+              height: 10.0,
+            ),
             SendMainHeaderWidget(
               balance: balance,
             ),
