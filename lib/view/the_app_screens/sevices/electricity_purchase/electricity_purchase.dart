@@ -22,6 +22,7 @@ import '../../../../utills/custom_theme.dart';
 import '../../../../utills/enums/toast_mesage.dart';
 import '../../../../utills/shared_preferences.dart';
 import '../../../auth/otp_pin_pages/confirm_with_otp.dart';
+import '../../../auth/sign_in_with_access_pin_and_biometrics.dart';
 import '../../../widgets/app_custom_text.dart';
 import '../../../widgets/form_button.dart';
 import '../../../widgets/form_input.dart';
@@ -163,21 +164,16 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                               accessToken: accessToken,
                             ));
                       } else if (state is AccessTokenExpireState) {
-                        showToast(
-                            context: context,
-                            title: 'Info',
-                            subtitle: 'Incorrect Access Pin',
-                            type: ToastMessageType.error);
 
-                        //MSG.warningSnackBar(context, state.error);
 
-                        // String firstame =
-                        //     await SharedPref.getString('firstName');
-                        //
-                        // AppNavigator.pushAndRemovePreviousPages(context,
-                        //     page: SignInWIthAccessPinBiometrics(
-                        //       userName: firstame,
-                        //     ));
+
+                        String firstame =
+                            await SharedPref.getString('firstName');
+
+                        AppNavigator.pushAndRemovePreviousPages(context,
+                            page: SignInWIthAccessPinBiometrics(
+                              userName: firstame,
+                            ));
                       } else if (state is PurchaseErrorState) {
                         showToast(
                             context: context,

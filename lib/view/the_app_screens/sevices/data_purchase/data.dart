@@ -114,21 +114,14 @@ class _DataPurchaseState extends State<DataPurchase> {
                               accessToken: accessToken,
                             ));
                       } else if (state is AccessTokenExpireState) {
-                        showToast(
-                            context: context,
-                            title: 'Info',
-                            subtitle: 'Incorrect Access Pin',
-                            type: ToastMessageType.error);
 
-                        //MSG.warningSnackBar(context, state.error);
+                        String firstame =
+                            await SharedPref.getString('firstName');
 
-                        // String firstame =
-                        //     await SharedPref.getString('firstName');
-                        //
-                        // AppNavigator.pushAndRemovePreviousPages(context,
-                        //     page: SignInWIthAccessPinBiometrics(
-                        //       userName: firstame,
-                        //     ));
+                        AppNavigator.pushAndRemovePreviousPages(context,
+                            page: SignInWIthAccessPinBiometrics(
+                              userName: firstame,
+                            ));
                       } else if (state is PurchaseErrorState) {
                         showToast(
                             context: context,

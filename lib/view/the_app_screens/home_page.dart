@@ -14,6 +14,7 @@ import 'package:teller_trust/res/app_colors.dart';
 import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/utills/app_navigator.dart';
 import 'package:teller_trust/utills/app_utils.dart';
+import 'package:teller_trust/utills/constants/loading_dialog.dart';
 import 'package:teller_trust/utills/shared_preferences.dart';
 import 'package:teller_trust/view/networkCenter/pages/network_center_main_page.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/add_fundz.dart';
@@ -22,6 +23,7 @@ import 'package:teller_trust/view/the_app_screens/sevices/airtime_to_cash_purcha
 import 'package:teller_trust/view/the_app_screens/sevices/cable_purchase/cable_purchase.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/data_purchase/data.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/electricity_purchase/electricity_purchase.dart';
+import 'package:teller_trust/view/the_app_screens/transaction_history/transaction_history.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 import 'package:teller_trust/view/widgets/purchase_receipt.dart';
@@ -729,20 +731,20 @@ class _HomePageState extends State<HomePage> {
                                 width: 20,
                               ),
                               TextStyles.textHeadings(
-                                  textValue: '0',
+                                  textValue: 'Loading...',
                                   textSize: 28,
                                   textColor: AppColors.white),
-                              TextStyles.textHeadings(
-                                  textValue: ". 00",
-                                  //+walletInfo.balance.toString().split('.')[1],
-                                  textSize: 20,
-                                  textColor: AppColors.white)
-                              // const CustomText(
-                              //   text: "0.00",
-                              //   size: 25,
-                              //   weight: FontWeight.bold,
-                              //   color: AppColors.white,
-                              // )
+                              // TextStyles.textHeadings(
+                              //     textValue: "",
+                              //     //+walletInfo.balance.toString().split('.')[1],
+                              //     textSize: 20,
+                              //     textColor: AppColors.white)
+                              // // const CustomText(
+                              // //   text: "0.00",
+                              // //   size: 25,
+                              // //   weight: FontWeight.bold,
+                              // //   color: AppColors.white,
+                              // // )
                             ],
                           ); // Show loading indicator or handle error state
                         }
@@ -1107,7 +1109,7 @@ class _HomePageState extends State<HomePage> {
                     color: Colors.grey.withOpacity(0.5),
                     colorOpacity: 0.5,
                     enabled: true,
-                    direction: ShimmerDirection.fromLTRB(),
+                    direction: const ShimmerDirection.fromLTRB(),
                     child: Container(
                       height: 5,
                       width: 40,
@@ -1164,21 +1166,25 @@ class _HomePageState extends State<HomePage> {
                     size: 12,
                     weight: FontWeight.bold,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          //color: AppColors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: AppColors.textColor2)),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(8.0, 5, 8, 5),
-                        child: CustomText(
-                          text: "See All",
-                          size: 12,
-                          color: theme.isDark
-                              ? AppColors.darkModeBackgroundSubTextColor
-                              : AppColors.textColor2,
+                  GestureDetector(
+                    onTap: (){AppNavigator.pushAndStackPage(context, page: const TransactionHistory());},
+
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            //color: AppColors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: AppColors.textColor2)),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(8.0, 5, 8, 5),
+                          child: CustomText(
+                            text: "See All",
+                            size: 12,
+                            color: theme.isDark
+                                ? AppColors.darkModeBackgroundSubTextColor
+                                : AppColors.textColor2,
+                          ),
                         ),
                       ),
                     ),
@@ -1398,7 +1404,7 @@ class _HomePageState extends State<HomePage> {
                           )
                         : const SizedBox();
                   } else {
-                    return const SizedBox(); // Show loading indicator or handle error state
+                    return const LoadingDialog("Fetching recent transactions..."); // Show loading indicator or handle error state
                   }
                 },
               ),
