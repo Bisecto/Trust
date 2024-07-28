@@ -733,7 +733,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               TextStyles.textHeadings(
                                   textValue: 'Loading...',
-                                  textSize: 20,
+                                  textSize: 20.2,
                                   textColor: AppColors.white),
                               // TextStyles.textHeadings(
                               //     textValue: "",
