@@ -17,7 +17,9 @@ class SendBloc extends Bloc<SendEvent, SendState> {
         CurrentAmountEntered(
           mainValue: mainValueEntered,
           fractionValue:
-              fractionValueEntered.isNotEmpty ? fractionValueEntered : '.00',
+              fractionValueEntered.isNotEmpty && fractionValueEntered.length > 1
+                  ? fractionValueEntered
+                  : '.00',
         ),
       );
     });
@@ -35,7 +37,60 @@ class SendBloc extends Bloc<SendEvent, SendState> {
         CurrentAmountEntered(
           mainValue: mainValueEntered,
           fractionValue:
-              fractionValueEntered.isNotEmpty ? fractionValueEntered : '.00',
+              fractionValueEntered.isNotEmpty && fractionValueEntered.length > 1
+                  ? fractionValueEntered
+                  : '.00',
+        ),
+      );
+    });
+    on<LoadSendToDetailsInitialState>((event, emit) {
+      emit(const SendToDetailsInitialState());
+    });
+    on<SelectTxnOption>((event, emit) {
+      emit(
+        SelectedTxnOption(
+          isItForTellaTrust: event.isTxnForTellaTrust,
+        ),
+      );
+    });
+    on<LoadBanksToTxnWith>((event, emit) {
+      emit(
+        BanksToTxnWith(
+          banksReadyForUse: false,
+          loadingBanks: false,
+          banks: const [],
+        ),
+      );
+    });
+    on<LoadUserTransactions>((event, emit) {
+      emit(
+        UserTxns(
+          loadingTxns: false,
+          userTxnsReadyForUse: false,
+          forTxnSearch: false,
+          txns: const [],
+        ),
+      );
+    });
+    on<SearchUserTransactions>((event, emit) {
+      emit(
+        UserTxns(
+          loadingTxns: false,
+          userTxnsReadyForUse: true,
+          forTxnSearch: true,
+          txns: const [],
+        ),
+      );
+    });
+    on<EnterTellaTrustReceipentAcc>((event, emit) {
+      emit(
+        UserRecentTransfersAndAddedBeneficiaries(
+          loadRecentTransfers: false,
+          recentTransfersReadyForUse: false,
+          addedBeneficiariesReadyForUse: false,
+          loadAddedBeneficiaries: false,
+          recentTransfers: const [],
+          addedBeneficiaries: const [],
         ),
       );
     });

@@ -5,11 +5,17 @@ import 'package:teller_trust/res/app_spacer.dart';
 
 class SendToHeaderWidget extends StatelessWidget {
   final String amountTransferred;
-  final String txnMadeTo;
+  final String txnMadeToName;
+  final String txnMadeToImage;
+  final bool isTellaTrustTxn;
+  final bool userForTxnConfirmed;
   const SendToHeaderWidget({
     super.key,
     required this.amountTransferred,
-    required this.txnMadeTo,
+    required this.txnMadeToName,
+    required this.txnMadeToImage,
+    required this.isTellaTrustTxn,
+    required this.userForTxnConfirmed,
   });
 
   @override
@@ -118,91 +124,98 @@ class SendToHeaderWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const AppSpacer(
-                    height: 10.0,
-                  ),
-                  Align(
-                    alignment: AlignmentDirectional.topCenter,
-                    child: Container(
-                      height: 7,
-                      width: 80,
-                      decoration: BoxDecoration(
-                        color: AppColors.sendStrokeColor,
-                        borderRadius: BorderRadius.circular(
-                          5.0,
+              if (isTellaTrustTxn && userForTxnConfirmed)
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const AppSpacer(
+                      height: 10.0,
+                    ),
+                    Align(
+                      alignment: AlignmentDirectional.topCenter,
+                      child: Container(
+                        height: 7,
+                        width: 80,
+                        decoration: BoxDecoration(
+                          color: AppColors.sendStrokeColor,
+                          borderRadius: BorderRadius.circular(
+                            5.0,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  const AppSpacer(
-                    height: 30.0,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 15.0,
-                      vertical: 20.0,
+                    const AppSpacer(
+                      height: 30.0,
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10.0,
-                            vertical: 7.0,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(
-                              10.0,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 15.0,
+                        vertical: 20.0,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10.0,
+                              vertical: 7.0,
                             ),
-                            color: AppColors.sendToDetailsLabelSendBgColor,
-                          ),
-                          child: const Center(
-                            child: Text(
-                              'SEND TO',
-                              style: TextStyle(
-                                color: AppColors.sendToDetailsLabelSendTxtColor,
-                                fontWeight: FontWeight.bold,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(
+                                10.0,
                               ),
-                              textAlign: TextAlign.center,
+                              color: AppColors.sendToDetailsLabelSendBgColor,
+                            ),
+                            child: const Center(
+                              child: Text(
+                                'SEND TO',
+                                style: TextStyle(
+                                  color:
+                                      AppColors.sendToDetailsLabelSendTxtColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
                             ),
                           ),
-                        ),
-                        Expanded(
-                          child: Align(
-                            alignment: AlignmentDirectional.topEnd,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  height: 40,
-                                  width: 40,
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
+                          Expanded(
+                            child: Align(
+                              alignment: AlignmentDirectional.topEnd,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    height: 40,
+                                    width: 40,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      image: DecorationImage(
+                                        image: NetworkImage(
+                                          txnMadeToImage,
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  txnMadeTo,
-                                  style: const TextStyle(
-                                    color: AppColors.sendToAmountTxtColor,
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.bold,
+                                  Text(
+                                    txnMadeToName,
+                                    style: const TextStyle(
+                                      color: AppColors.sendToAmountTxtColor,
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
             ],
           ),
         ),

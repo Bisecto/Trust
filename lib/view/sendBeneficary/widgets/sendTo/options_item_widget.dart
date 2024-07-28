@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:teller_trust/res/app_colors.dart';
 import 'package:teller_trust/res/app_spacer.dart';
 
-class OptionsItemWidget extends StatefulWidget {
+class OptionsItemWidget extends StatelessWidget {
   final bool isItForTellaTrustTransferOption;
   final bool isOptionItemSelected;
   final VoidCallback selectedCallback;
@@ -13,22 +13,6 @@ class OptionsItemWidget extends StatefulWidget {
     this.isOptionItemSelected = false,
     required this.selectedCallback,
   });
-
-  @override
-  State<OptionsItemWidget> createState() => _OptionsItemWidgetState();
-}
-
-class _OptionsItemWidgetState extends State<OptionsItemWidget> {
-  bool isOptionItemSelected = false;
-
-  bool isItForTellaTrustTransferOption = false;
-
-  @override
-  void initState() {
-    isItForTellaTrustTransferOption = widget.isItForTellaTrustTransferOption;
-    isOptionItemSelected = widget.isOptionItemSelected;
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +42,7 @@ class _OptionsItemWidgetState extends State<OptionsItemWidget> {
             isItForTellaTrustTransferOption
                 ? 'assets/icons/sendBeneficiary/tellaTrustGreen.svg'
                 : 'assets/icons/sendBeneficiary/bank.svg',
-                height: 25.0,
+            height: 25.0,
           ),
           const AppSpacer(
             width: 3,
@@ -77,29 +61,32 @@ class _OptionsItemWidgetState extends State<OptionsItemWidget> {
           Expanded(
             child: Align(
               alignment: AlignmentDirectional.topEnd,
-              child: Container(
-                height: 20,
-                width: 20,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: isItForTellaTrustTransferOption
-                          ? AppColors.sendToBorderColor
-                          : AppColors.sendToBankBgColor,
-                      width: 1.5,
-                    )),
-                child: isOptionItemSelected
-                    ? Container(
-                        height: 20,
-                        width: 20,
-                        decoration: BoxDecoration(
-                          color: isItForTellaTrustTransferOption
-                              ? AppColors.sendToTellaColor
-                              : AppColors.sendToBankBgColor,
-                          shape: BoxShape.circle,
-                        ),
-                      )
-                    : Container(),
+              child: InkWell(
+                onTap: selectedCallback,
+                child: Container(
+                  height: 20,
+                  width: 20,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: isItForTellaTrustTransferOption
+                            ? AppColors.sendToBorderColor
+                            : AppColors.sendToBankBgColor,
+                        width: 1.5,
+                      )),
+                  child: isOptionItemSelected
+                      ? Container(
+                          height: 20,
+                          width: 20,
+                          decoration: BoxDecoration(
+                            color: isItForTellaTrustTransferOption
+                                ? AppColors.sendToTellaColor
+                                : AppColors.sendToBankBgColor,
+                            shape: BoxShape.circle,
+                          ),
+                        )
+                      : Container(),
+                ),
               ),
             ),
           ),

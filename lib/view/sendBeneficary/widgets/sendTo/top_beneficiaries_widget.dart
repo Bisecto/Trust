@@ -5,9 +5,11 @@ import 'package:teller_trust/view/sendBeneficary/widgets/sendTo/top_beneficiarie
 
 class TopBeneficiariesWidget extends StatelessWidget {
   final List beneficiaries;
+  final bool isItForTellaTrust;
   const TopBeneficiariesWidget({
     super.key,
     required this.beneficiaries,
+    required this.isItForTellaTrust,
   });
 
   @override
@@ -24,43 +26,50 @@ class TopBeneficiariesWidget extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const AppSpacer(
-          height: 20.0,
-        ),
-        const Text(
-          'Top Beneficiaries',
-          style: TextStyle(
-            color: AppColors.sendBodyTextColor,
-            fontSize: 15.0,
-          ),
-        ),
-        const AppSpacer(
-          height: 5.0,
-        ),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
+        if (isItForTellaTrust)
+          Column(
             mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ...List.generate(
-                beneficiaries.length,
-                (index) {
-                  String beneficiaryFullname = '';
-                  String beneficiaryImagePath = '';
-                  return TopBeneficiariesItemWidget(
-                    beneficiaryFullname: beneficiaryFullname,
-                    beneficiaryImagePath: beneficiaryImagePath,
-                  );
-                },
+              const AppSpacer(
+                height: 20.0,
               ),
+              const Text(
+                'Top Beneficiaries',
+                style: TextStyle(
+                  color: AppColors.sendBodyTextColor,
+                  fontSize: 15.0,
+                ),
+              ),
+              const AppSpacer(
+                height: 5.0,
+              ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    ...List.generate(
+                      beneficiaries.length,
+                      (index) {
+                        String beneficiaryFullname = '';
+                        String beneficiaryImagePath = '';
+                        return TopBeneficiariesItemWidget(
+                          beneficiaryFullname: beneficiaryFullname,
+                          beneficiaryImagePath: beneficiaryImagePath,
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              const AppSpacer(
+                height: 10.0,
+              ),
+              const Divider(),
             ],
           ),
-        ),
-        const AppSpacer(
-          height: 10.0,
-        ),
-        const Divider(),
       ],
     );
   }

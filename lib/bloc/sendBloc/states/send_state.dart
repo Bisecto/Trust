@@ -1,18 +1,18 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:equatable/equatable.dart';
 
-// ignore: must_be_immutable
 abstract class SendState extends Equatable {
   const SendState();
 }
 
 class InitialSendState extends SendState {
   const InitialSendState();
-  
+
   @override
   List<Object?> get props => [];
 }
 
-// ignore: must_be_immutable
 class CurrentAmountEntered extends SendState {
   String mainValue;
   String fractionValue;
@@ -28,3 +28,106 @@ class CurrentAmountEntered extends SendState {
       ];
 }
 
+class SendToDetailsInitialState extends SendState {
+  const SendToDetailsInitialState();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class SendToDetailsGivenState extends SendState {
+  const SendToDetailsGivenState();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class ListOfBeneficiariesToSendTo extends SendState {
+  List listOfBeneficiaries;
+  ListOfBeneficiariesToSendTo({
+    required this.listOfBeneficiaries,
+  });
+
+  @override
+  List<Object?> get props => [
+        listOfBeneficiaries,
+      ];
+}
+
+class UserRecentTransfersAndAddedBeneficiaries extends SendState {
+  List recentTransfers;
+  bool loadRecentTransfers;
+  bool recentTransfersReadyForUse;
+  List addedBeneficiaries;
+  bool loadAddedBeneficiaries;
+  bool addedBeneficiariesReadyForUse;
+  UserRecentTransfersAndAddedBeneficiaries({
+    required this.recentTransfers,
+    required this.loadRecentTransfers,
+    required this.recentTransfersReadyForUse,
+    required this.addedBeneficiaries,
+    required this.loadAddedBeneficiaries,
+    required this.addedBeneficiariesReadyForUse,
+  });
+
+  @override
+  List<Object?> get props => [
+        recentTransfers,
+        loadRecentTransfers,
+        recentTransfersReadyForUse,
+        addedBeneficiaries,
+        loadAddedBeneficiaries,
+        addedBeneficiariesReadyForUse,
+      ];
+}
+
+class BanksToTxnWith extends SendState {
+  bool loadingBanks;
+  bool banksReadyForUse;
+  List banks;
+  BanksToTxnWith({
+    required this.loadingBanks,
+    required this.banksReadyForUse,
+    required this.banks,
+  });
+
+  @override
+  List<Object?> get props => [
+        loadingBanks,
+        banksReadyForUse,
+        banks,
+      ];
+}
+
+class UserTxns extends SendState {
+  bool loadingTxns;
+  bool userTxnsReadyForUse;
+  bool forTxnSearch;
+  List txns;
+  UserTxns({
+    required this.loadingTxns,
+    required this.userTxnsReadyForUse,
+    required this.forTxnSearch,
+    required this.txns,
+  });
+
+  @override
+  List<Object?> get props => [
+        loadingTxns,
+        userTxnsReadyForUse,
+        forTxnSearch,
+        txns,
+      ];
+}
+
+class SelectedTxnOption extends SendState {
+  bool isItForTellaTrust;
+  SelectedTxnOption({
+    required this.isItForTellaTrust,
+  });
+
+  @override
+  List<Object?> get props => [
+        isItForTellaTrust,
+      ];
+}
