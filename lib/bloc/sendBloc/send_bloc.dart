@@ -1,6 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:teller_trust/bloc/sendBloc/event/send_event.dart';
 import 'package:teller_trust/bloc/sendBloc/states/send_state.dart';
+import 'package:teller_trust/model/customer_profile.dart';
+import 'package:teller_trust/repository/app_repository.dart';
+import 'package:teller_trust/res/apis.dart';
+import 'package:teller_trust/utills/app_utils.dart';
+import 'package:teller_trust/utills/shared_preferences.dart';
 
 class SendBloc extends Bloc<SendEvent, SendState> {
   String mainValueEntered = '';
@@ -9,13 +16,27 @@ class SendBloc extends Bloc<SendEvent, SendState> {
   SendBloc() : super(const InitialSendState()) {
     on<EnterAmountToSend>((event, emit) {
       if (event.isItForMainValue && !fractionValueEntered.contains('.')) {
-        mainValueEntered += event.value;
+        List mainValues = mainValueEntered.split('');
+        if (mainValues.isEmpty) {
+          if (event.value != '0' && event.value != '.') {
+            mainValueEntered += event.value;
+          }
+        } else {
+          mainValueEntered += event.value;
+        }
       } else {
-        fractionValueEntered += event.value;
+        List fractionValues = fractionValueEntered.split('');
+        if (fractionValues.isEmpty) {
+          fractionValueEntered += event.value;
+        } else {
+          if (event.value != '.') {
+            fractionValueEntered += event.value;
+          }
+        }
       }
       emit(
         CurrentAmountEntered(
-          mainValue: mainValueEntered,
+          mainValue: mainValueEntered.isNotEmpty ? mainValueEntered : '0',
           fractionValue:
               fractionValueEntered.isNotEmpty && fractionValueEntered.length > 1
                   ? fractionValueEntered
@@ -35,7 +56,7 @@ class SendBloc extends Bloc<SendEvent, SendState> {
       }
       emit(
         CurrentAmountEntered(
-          mainValue: mainValueEntered,
+          mainValue: mainValueEntered.isNotEmpty ? mainValueEntered : '0',
           fractionValue:
               fractionValueEntered.isNotEmpty && fractionValueEntered.length > 1
                   ? fractionValueEntered
@@ -45,6 +66,31 @@ class SendBloc extends Bloc<SendEvent, SendState> {
     });
     on<LoadSendToDetailsInitialState>((event, emit) {
       emit(const SendToDetailsInitialState());
+    });
+    on<LoadUserBalance>((event, emit) async {
+      AppRepository appRepository = AppRepository();
+      String accessToken = await SharedPref.getString("access-token");
+
+      var profileResponse = await appRepository.appGetRequest(
+        AppApis.userProfile,
+        accessToken: accessToken,
+      );
+      if (profileResponse.statusCode == 200 ||
+          profileResponse.statusCode == 201) {
+        CustomerProfile customerProfile =
+            CustomerProfile.fromJson(json.decode(profileResponse.body)['data']);
+        emit(
+          UserBalance(balance: '${customerProfile.walletInfo.balance}'),
+        );
+      } else {
+        emit(
+          ErrorStateForSendTo(
+            errorMessage: AppUtils.convertString(
+              json.decode(profileResponse.body)['message'],
+            ),
+          ),
+        );
+      }
     });
     on<SelectTxnOption>((event, emit) {
       emit(

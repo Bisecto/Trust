@@ -59,6 +59,13 @@ class LoadUserTransactions extends SendEvent {
   List<Object?> get props => [];
 }
 
+class LoadUserBalance extends SendEvent {
+  const LoadUserBalance() : super();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class SearchUserTransactions extends SendEvent {
   String searchValue;
   SearchUserTransactions({
