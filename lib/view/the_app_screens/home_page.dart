@@ -34,6 +34,7 @@ import '../../model/customer_account_model.dart';
 import '../../res/app_images.dart';
 import '../../utills/custom_theme.dart';
 import '../../utills/enums/toast_mesage.dart';
+import '../sendBeneficary/pages/send_main_page.dart';
 import '../widgets/show_toast.dart';
 import 'kyc_verification/kyc_intro_page.dart';
 
@@ -732,7 +733,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               TextStyles.textHeadings(
                                   textValue: 'Loading...',
-                                  textSize: 28,
+                                  textSize: 20,
                                   textColor: AppColors.white),
                               // TextStyles.textHeadings(
                               //     textValue: "",
@@ -813,15 +814,15 @@ class _HomePageState extends State<HomePage> {
                       ),
                       GestureDetector(
                           onTap: () {
-                            showToast(
-                                context: context,
-                                title: 'Info',
-                                subtitle:
-                                    'Oops! It looks like this service is still in the oven. We\'re baking up something great, so stay tuned! 🍰',
-                                type: ToastMessageType.info);
+                            // showToast(
+                            //     context: context,
+                            //     title: 'Info',
+                            //     subtitle:
+                            //         'Oops! It looks like this service is still in the oven. We\'re baking up something great, so stay tuned! 🍰',
+                            //     type: ToastMessageType.info);
 
-                            // AppNavigator.pushAndStackPage(context,
-                            //     page: const SendFunds());
+                            AppNavigator.pushAndStackPage(context,
+                                page:   const SendMainPage());
                             // Navigator.push(
                             //   context,
                             //   MaterialPageRoute(
