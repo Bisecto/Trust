@@ -822,35 +822,7 @@ class _HomePageState extends State<HomePage> {
                                 },
                               ),
                             );
-                            // showToast(
-                            //     context: context,
-                            //     title: 'Info',
-                            //     subtitle:
-                            //         'Oops! It looks like this service is still in the oven. We\'re baking up something great, so stay tuned! 🍰',
-                            //     type: ToastMessageType.info);
 
-                            // AppNavigator.pushAndStackPage(context,
-                            //     page: const SendFunds());
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) => PinAuthentication(
-                            //       onChanged: (v) {
-                            //         if (kDebugMode) {
-                            //           print(v);
-                            //         }
-                            //       },
-                            //       onSpecialKeyTap: () {},
-                            //       specialKey: const SizedBox(),
-                            //       useFingerprint: true,
-                            //       onbuttonClick: () {},
-                            //       submitLabel: const Text(
-                            //         'Submit',
-                            //         style: TextStyle(color: Colors.white, fontSize: 20),
-                            //       ),
-                            //     ),
-                            //   ),
-                            // );
                           },
                           child:
                               childBalanceCardContainer(AppIcons.send, "Send")),
