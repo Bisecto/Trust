@@ -814,6 +814,14 @@ class _HomePageState extends State<HomePage> {
                       ),
                       GestureDetector(
                           onTap: () {
+                            AppNavigator.pushAndStackPage(
+                              context,
+                              page: SendMainPage(
+                                backNavCallBack: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            );
                             // showToast(
                             //     context: context,
                             //     title: 'Info',
@@ -821,8 +829,8 @@ class _HomePageState extends State<HomePage> {
                             //         'Oops! It looks like this service is still in the oven. We\'re baking up something great, so stay tuned! 🍰',
                             //     type: ToastMessageType.info);
 
-                            AppNavigator.pushAndStackPage(context,
-                                page:   const SendMainPage());
+                            // AppNavigator.pushAndStackPage(context,
+                            //     page: const SendFunds());
                             // Navigator.push(
                             //   context,
                             //   MaterialPageRoute(
