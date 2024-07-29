@@ -9,17 +9,21 @@ import 'package:teller_trust/view/sendBeneficary/widgets/sendMain/send_main_head
 import 'package:teller_trust/view/sendBeneficary/widgets/send_beneficiary_app_logo_body_widget.dart';
 
 class SendMainView extends StatefulWidget {
-  const SendMainView({super.key});
+  final VoidCallback backNavCallBack;
+  const SendMainView({super.key, required this.backNavCallBack,});
 
   @override
   State<SendMainView> createState() => _SendMainViewState();
 }
 
 class _SendMainViewState extends State<SendMainView> {
-  String balance = '192,600.00';
+  String balance = '0.00';
+
+  late VoidCallback backNavCallBack;
 
   @override
   void initState() {
+    backNavCallBack = widget.backNavCallBack;
     BlocProvider.of<SendBloc>(context).add(
       const LoadUserBalance(),
     );
@@ -45,12 +49,15 @@ class _SendMainViewState extends State<SendMainView> {
                 ),
                 SendMainHeaderWidget(
                   balance: balance,
+                  backNavCallBack: backNavCallBack,
                 ),
                 const AppSpacer(
                   height: 30.0,
                 ),
                 const Expanded(
-                  child: SendMainFormWidget(),
+                  child: SingleChildScrollView(
+                    child: SendMainFormWidget(),
+                  ),
                 ),
               ],
             ),

@@ -15,12 +15,12 @@ class InitialSendState extends SendState {
 
 class ErrorStateForSendTo extends SendState {
   String errorMessage;
-  ErrorStateForSendTo({
-    required this.errorMessage
-  });
+  ErrorStateForSendTo({required this.errorMessage});
 
   @override
-  List<Object?> get props => [errorMessage,];
+  List<Object?> get props => [
+        errorMessage,
+      ];
 }
 
 class UserBalance extends SendState {
@@ -144,12 +144,15 @@ class UserTxns extends SendState {
 
 class SelectedTxnOption extends SendState {
   bool isItForTellaTrust;
+  bool toggleOn;
   SelectedTxnOption({
     required this.isItForTellaTrust,
+    required this.toggleOn,
   });
 
   @override
   List<Object?> get props => [
         isItForTellaTrust,
+        toggleOn,
       ];
 }

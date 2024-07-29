@@ -15,6 +15,7 @@ import 'package:teller_trust/utills/app_navigator.dart';
 import 'package:teller_trust/utills/app_utils.dart';
 import 'package:teller_trust/utills/shared_preferences.dart';
 import 'package:teller_trust/view/networkCenter/pages/network_center_main_page.dart';
+import 'package:teller_trust/view/sendBeneficary/pages/send_main_page.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/add_fundz.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/airtime.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/cable_purchase.dart';
@@ -808,12 +809,20 @@ class _HomePageState extends State<HomePage> {
                       ),
                       GestureDetector(
                           onTap: () {
-                            showToast(
-                                context: context,
-                                title: 'Info',
-                                subtitle:
-                                    'Oops! It looks like this service is still in the oven. We\'re baking up something great, so stay tuned! 🍰',
-                                type: ToastMessageType.info);
+                            AppNavigator.pushAndStackPage(
+                              context,
+                              page: SendMainPage(
+                                backNavCallBack: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            );
+                            // showToast(
+                            //     context: context,
+                            //     title: 'Info',
+                            //     subtitle:
+                            //         'Oops! It looks like this service is still in the oven. We\'re baking up something great, so stay tuned! 🍰',
+                            //     type: ToastMessageType.info);
 
                             // AppNavigator.pushAndStackPage(context,
                             //     page: const SendFunds());

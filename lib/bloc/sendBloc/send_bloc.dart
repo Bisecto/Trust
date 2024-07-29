@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:teller_trust/bloc/sendBloc/event/send_event.dart';
 import 'package:teller_trust/bloc/sendBloc/states/send_state.dart';
@@ -75,6 +76,8 @@ class SendBloc extends Bloc<SendEvent, SendState> {
         AppApis.userProfile,
         accessToken: accessToken,
       );
+      debugPrint(
+          'this is the balance of the user ${profileResponse.statusCode} ${profileResponse.body.toString()}');
       if (profileResponse.statusCode == 200 ||
           profileResponse.statusCode == 201) {
         CustomerProfile customerProfile =
@@ -82,7 +85,9 @@ class SendBloc extends Bloc<SendEvent, SendState> {
         emit(
           UserBalance(balance: '${customerProfile.walletInfo.balance}'),
         );
-      } else {
+      } else if(profileResponse.statusCode == 401){
+        // AppNavigator.pushAndReplacePage(context, page: page)
+      } else{
         emit(
           ErrorStateForSendTo(
             errorMessage: AppUtils.convertString(
@@ -96,6 +101,7 @@ class SendBloc extends Bloc<SendEvent, SendState> {
       emit(
         SelectedTxnOption(
           isItForTellaTrust: event.isTxnForTellaTrust,
+          toggleOn: true,
         ),
       );
     });
@@ -129,6 +135,12 @@ class SendBloc extends Bloc<SendEvent, SendState> {
       );
     });
     on<EnterTellaTrustReceipentAcc>((event, emit) {
+      String tellaTrustReceiptentAcc =  event.tellaTrustReceiptentAcc;
+      // if(tellaTrustReceiptentAcc.isNotEmpty && ){
+
+      // } else{
+
+      // }
       emit(
         UserRecentTransfersAndAddedBeneficiaries(
           loadRecentTransfers: false,

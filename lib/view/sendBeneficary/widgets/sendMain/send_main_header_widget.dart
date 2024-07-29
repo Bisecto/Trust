@@ -7,9 +7,11 @@ import 'package:teller_trust/view/sendBeneficary/pages/recent_transfer_list_page
 
 class SendMainHeaderWidget extends StatelessWidget {
   final String balance;
+  final VoidCallback backNavCallBack;
   const SendMainHeaderWidget({
     super.key,
     required this.balance,
+    required this.backNavCallBack,
   });
 
   @override
@@ -18,16 +20,19 @@ class SendMainHeaderWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Container(
-          width: 45,
-          height: 45,
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: AppColors.sendBackBtnColor,
-          ),
-          child: Center(
-            child: SvgPicture.asset(
-              'assets/icons/sendBeneficiary/back.svg',
+        InkWell(
+          onTap: backNavCallBack,
+          child: Container(
+            width: 45,
+            height: 45,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.sendBackBtnColor,
+            ),
+            child: Center(
+              child: SvgPicture.asset(
+                'assets/icons/sendBeneficiary/back.svg',
+              ),
             ),
           ),
         ),

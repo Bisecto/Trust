@@ -58,7 +58,8 @@ class _SendMainFormWidgetState extends State<SendMainFormWidget> {
                   ),
                   child: Center(
                     child: SvgPicture.asset(
-                        'assets/icons/sendBeneficiary/naria.svg'),
+                      'assets/icons/sendBeneficiary/naria.svg',
+                    ),
                   ),
                 ),
                 const AppSpacer(
@@ -164,10 +165,10 @@ class _SendMainFormWidgetState extends State<SendMainFormWidget> {
               },
             ),
             const AppSpacer(
-              height: 20.0,
+              height: 10.0,
             ),
             Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
+              padding: const EdgeInsets.only(bottom: 10.0),
               child: AppButton(
                 buttonBoxDecoration: BoxDecoration(
                   color: AppColors.green,
@@ -192,7 +193,7 @@ class _SendMainFormWidgetState extends State<SendMainFormWidget> {
                     fontSize: 16.0,
                   ),
                 ),
-                buttonHeight: 60,
+                buttonHeight: 50,
                 buttonWidth: double.infinity,
               ),
             )

@@ -116,10 +116,10 @@ class _MyAppState extends State<MyApp> {
           onGenerateRoute: _appRoutes.onGenerateRoute,
           theme: theme,
           darkTheme: darkTheme,
-          home: const SendMainPage(),
-          // home: _connected
-          //     ? const SplashScreen()
-          //     : No_internet_Page(onRetry: _checkConnectivity),
+          // home: const SendMainPage(),
+          home: _connected
+              ? const SplashScreen()
+              : No_internet_Page(onRetry: _checkConnectivity),
         ),
       ),
     );
