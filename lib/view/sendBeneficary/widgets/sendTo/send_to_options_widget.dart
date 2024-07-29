@@ -18,12 +18,15 @@ class SendToOptionsWidget extends StatefulWidget {
 class _SendToOptionsWidgetState extends State<SendToOptionsWidget> {
   bool tellaTrustSelected = false;
 
+  bool toggleOptionsOn = false;
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SendBloc, SendState>(
       builder: (context, state) {
         if (state is SelectedTxnOption) {
           tellaTrustSelected = state.isItForTellaTrust;
+          toggleOptionsOn = state.toggleOn;
         }
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -36,7 +39,8 @@ class _SendToOptionsWidgetState extends State<SendToOptionsWidget> {
                 Expanded(
                   child: OptionsItemWidget(
                     isItForTellaTrustTransferOption: true,
-                    isOptionItemSelected: tellaTrustSelected,
+                    isOptionItemSelected:
+                        toggleOptionsOn ? tellaTrustSelected : false,
                     selectedCallback: () {
                       BlocProvider.of<SendBloc>(context).add(
                         SelectTxnOption(
@@ -52,7 +56,8 @@ class _SendToOptionsWidgetState extends State<SendToOptionsWidget> {
                 Expanded(
                   child: OptionsItemWidget(
                     isItForTellaTrustTransferOption: false,
-                    isOptionItemSelected: !tellaTrustSelected,
+                    isOptionItemSelected:
+                        toggleOptionsOn ? !tellaTrustSelected : false,
                     selectedCallback: () {
                       BlocProvider.of<SendBloc>(context).add(
                         SelectTxnOption(

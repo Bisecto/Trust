@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:teller_trust/bloc/product_bloc/product_bloc.dart';
 import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/view/important_pages/no_internet.dart';
+import 'package:teller_trust/view/sendBeneficary/pages/send_main_page.dart';
 import 'package:teller_trust/view/the_app_screens/send_page.dart';
 
 import '../../bloc/app_bloc/app_bloc.dart';
@@ -46,7 +47,9 @@ class _LandingPageState extends State<LandingPage> {
 
     landPageScreens = [
       const HomePage(),
-      const SendPage(),
+      SendMainPage(
+        backNavCallBack: () {},
+      ),
       const BillsPage(),
       const CardPage(),
       const MorePage()

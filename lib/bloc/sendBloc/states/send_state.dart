@@ -13,6 +13,28 @@ class InitialSendState extends SendState {
   List<Object?> get props => [];
 }
 
+class ErrorStateForSendTo extends SendState {
+  String errorMessage;
+  ErrorStateForSendTo({required this.errorMessage});
+
+  @override
+  List<Object?> get props => [
+        errorMessage,
+      ];
+}
+
+class UserBalance extends SendState {
+  String balance;
+  UserBalance({
+    required this.balance,
+  });
+
+  @override
+  List<Object?> get props => [
+        balance,
+      ];
+}
+
 class CurrentAmountEntered extends SendState {
   String mainValue;
   String fractionValue;
@@ -122,12 +144,15 @@ class UserTxns extends SendState {
 
 class SelectedTxnOption extends SendState {
   bool isItForTellaTrust;
+  bool toggleOn;
   SelectedTxnOption({
     required this.isItForTellaTrust,
+    required this.toggleOn,
   });
 
   @override
   List<Object?> get props => [
         isItForTellaTrust,
+        toggleOn,
       ];
 }
