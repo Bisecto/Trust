@@ -83,6 +83,8 @@ class AppColors {
   static const Color sendToFormBorderColor = Color(0xff050505);
 
   static const Color sendToBankBgColor = Color(0xffFFA02E);
+  
+  static const Color searchHintLabelTextColor = Color(0xff828DA9);
 
   static const Color sendToOptionTextColor = Color(0xff49526A);
 
@@ -103,6 +105,12 @@ class AppColors {
   static const Color sendToDetailsBgColor = Color(0xffFFF3D5);
   static const Color sendToDetailsLabelSendTxtColor = Color(0xff7A3108);
   static const Color sendToDetailsLabelSendBgColor = Color(0xffFFC403);
+
+  static const Color bankSearchBgColor = Color(0xffF6F8FA);
+
+  static const Color bankSearchBorderColor = Color(0xff2FB763);
+  static const Color bankSearchIconColor = Color(0xff828DA9);
+  static const Color bankSearchLabelColor = Color(0xff828DA9);
 
   static const Color darkModeBackgroundColor = Color(0xff0D0D0D);
   static Color darkModeBackgroundMainTextColor =

@@ -1,6 +1,8 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:equatable/equatable.dart';
+import 'package:teller_trust/model/bank_model.dart';
+import 'package:teller_trust/model/tella_trust_customer_model.dart';
 
 abstract class SendState extends Equatable {
   const SendState();
@@ -103,10 +105,31 @@ class UserRecentTransfersAndAddedBeneficiaries extends SendState {
       ];
 }
 
+class TellaTrustCustomerVerification extends SendState {
+  TellaTrustCustomerModel? tellaTrustCustomerModel;
+  bool requestInProgress;
+  bool tellaTrustCustomerReceived;
+  String message;
+  TellaTrustCustomerVerification({
+    required this.requestInProgress,
+    this.tellaTrustCustomerReceived = false,
+    this.tellaTrustCustomerModel,
+    this.message = '',
+  });
+
+  @override
+  List<Object?> get props => [
+        requestInProgress,
+        tellaTrustCustomerReceived,
+        tellaTrustCustomerModel,
+        message,
+      ];
+}
+
 class BanksToTxnWith extends SendState {
   bool loadingBanks;
   bool banksReadyForUse;
-  List banks;
+  List<Bank> banks;
   BanksToTxnWith({
     required this.loadingBanks,
     required this.banksReadyForUse,
@@ -154,5 +177,51 @@ class SelectedTxnOption extends SendState {
   List<Object?> get props => [
         isItForTellaTrust,
         toggleOn,
+      ];
+}
+
+class SendFundToInternalOrExternalRecepitent extends SendState {
+  bool isPaymentSuccessful;
+  bool processingPayment;
+  String statusMessage;
+  SendFundToInternalOrExternalRecepitent({
+    required this.processingPayment,
+    required this.isPaymentSuccessful,
+    required this.statusMessage,
+  });
+
+  @override
+  List<Object?> get props => [
+        processingPayment,
+        isPaymentSuccessful,
+        statusMessage,
+      ];
+}
+
+class VerificationStateForBankAccountNumber extends SendState {
+  bool isRequestInProgress;
+  bool isDataReadyForUse;
+  String statusMessage;
+  VerificationStateForBankAccountNumber({
+    required this.isDataReadyForUse,
+    required this.isRequestInProgress,
+    required this.statusMessage,
+  });
+
+  @override
+  List<Object?> get props => [
+        isDataReadyForUse,
+        isRequestInProgress,
+        statusMessage,
+      ];
+}
+
+class PaymentNarration extends SendState {
+  String narration;
+  PaymentNarration({required this.narration});
+
+  @override
+  List<Object?> get props => [
+        narration,
       ];
 }

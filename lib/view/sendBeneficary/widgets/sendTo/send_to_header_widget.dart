@@ -192,11 +192,13 @@ class SendToHeaderWidget extends StatelessWidget {
                                     width: 40,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      image: DecorationImage(
-                                        image: NetworkImage(
-                                          txnMadeToImage,
-                                        ),
-                                      ),
+                                      image: txnMadeToImage.isNotEmpty
+                                          ? DecorationImage(
+                                              image: NetworkImage(
+                                                txnMadeToImage,
+                                              ),
+                                            )
+                                          : null,
                                     ),
                                   ),
                                   Text(
