@@ -328,7 +328,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     try {
       String accessToken = await SharedPref.getString("access-token");
 
-      var response2 = await appRepository.appGetRequest(
+      var response2 = await appRepository.appDeleteRequest(
           accessToken: accessToken,
           "${AppApis.deleteBeneficiary}/${event.beneficiaryId}");
       var response = await appRepository.appGetRequest(
