@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -18,10 +19,13 @@ import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/utills/app_utils.dart';
 import 'package:teller_trust/view/widgets/show_toast.dart';
 
+import '../../repository/app_repository.dart';
+import '../../res/apis.dart';
 import '../../res/app_colors.dart';
 import '../../utills/constants/loading_dialog.dart';
 import '../../utills/custom_theme.dart';
 import '../../utills/enums/toast_mesage.dart';
+import '../../utills/shared_preferences.dart';
 import 'app_custom_text.dart';
 
 class TransactionReceipt extends StatefulWidget {
@@ -260,105 +264,13 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
           child: buildActionButton('Download', AppIcons.download, pdfDownload),
         ),
         if (widget.transaction.status.toLowerCase() == 'success')
-          buildActionButton('Repeat', AppIcons.reload, () {
-            // String selectedAction = '';
-            // setState(() {
-            //   selectedAction =
-            //       widget.transaction.typeitems[index].name.toLowerCase();
-            // });
-            // switch (selectedAction) {
-            //   case "airtime":
-            //     modalSheet.showMaterialModalBottomSheet(
-            //       backgroundColor: Colors.transparent,
-            //       shape: const RoundedRectangleBorder(
-            //         borderRadius:
-            //             BorderRadius.vertical(top: Radius.circular(20.0)),
-            //       ),
-            //       context: context,
-            //       builder: (context) => Padding(
-            //         padding: const EdgeInsets.only(top: 100.0),
-            //         child: AirtimePurchase(category: items[index]),
-            //       ),
-            //     );
-            //     // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
-            //     //     services: AppList().serviceItems[index]));
-            //     return;
-            //   case "data":
-            //     modalSheet.showMaterialModalBottomSheet(
-            //       backgroundColor: Colors.transparent,
-            //       shape: const RoundedRectangleBorder(
-            //         borderRadius:
-            //             BorderRadius.vertical(top: Radius.circular(20.0)),
-            //       ),
-            //       context: context,
-            //       builder: (context) => Padding(
-            //         padding: const EdgeInsets.only(top: 100.0),
-            //         child: DataPurchase(category: items[index]),
-            //       ),
-            //     );
-            //     // AppNavigator.pushAndStackPage(context, page: DataPurchase(
-            //     //     services: AppList().serviceItems[index]));
-            //     return;
-            //   case "electricity":
-            //     modalSheet.showMaterialModalBottomSheet(
-            //       backgroundColor: Colors.transparent,
-            //       shape: const RoundedRectangleBorder(
-            //         borderRadius:
-            //             BorderRadius.vertical(top: Radius.circular(20.0)),
-            //       ),
-            //       context: context,
-            //       builder: (context) => Padding(
-            //         padding: const EdgeInsets.only(top: 100.0),
-            //         child: ElectricityPurchase(category: items[index]),
-            //       ),
-            //     );
-            //     // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
-            //     //     services: AppList().serviceItems[index]));
-            //     return;
-            //   case 'cable tv':
-            //     modalSheet.showMaterialModalBottomSheet(
-            //       backgroundColor: Colors.transparent,
-            //       shape: const RoundedRectangleBorder(
-            //         borderRadius:
-            //             BorderRadius.vertical(top: Radius.circular(20.0)),
-            //       ),
-            //       context: context,
-            //       builder: (context) => Padding(
-            //         padding: const EdgeInsets.only(top: 100.0),
-            //         child: CablePurchase(category: items[index]),
-            //       ),
-            //     );
-            //     // AppNavigator.pushAndStackPage(context, page: InternetPurchase(
-            //     //     services: AppList().serviceItems[index]));
-            //     return;
-            //   // case 'Electricity':
-            //   //   modalSheet.showMaterialModalBottomSheet(
-            //   //     backgroundColor: Colors.transparent,
-            //   //     shape: const RoundedRectangleBorder(
-            //   //       borderRadius:
-            //   //           BorderRadius.vertical(top: Radius.circular(20.0)),
-            //   //     ),
-            //   //     context: context,
-            //   //     builder: (context) => Padding(
-            //   //       padding: const EdgeInsets.only(top: 100.0),
-            //   //       child: Electricity(
-            //   //           services: AppList().serviceItems[index]),
-            //   //     ),
-            //   //   );
-            //   //   // AppNavigator.pushAndStackPage(context, page: InternetPurchase(
-            //   //   //     services: AppList().serviceItems[index]));
-            //   //   return;
-            //   default:
-            //     showToast(
-            //         context: context,
-            //         title: 'Info',
-            //         subtitle:
-            //             'Oops! It looks like this service is still in the oven. We\'re baking up something great, so stay tuned! 🍰',
-            //         type: ToastMessageType.info);
-            // }
-
-            //showAirtimeModal(context, AppList().serviceItems[index]);
-          }),
+          GestureDetector(
+            onTap: () {
+              repeatTransaction(context, widget.transaction.id);
+            },
+            child:
+                buildActionButton('Repeat', AppIcons.reload, repeatTransaction),
+          ),
         buildActionButton('Report', AppIcons.infoOutlined, () {}),
       ],
     );
@@ -516,6 +428,38 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
         title: "Permission required",
         subtitle: 'Permission was denied',
         type: ToastMessageType.info,
+      );
+    }
+  }
+
+  Future<void> repeatTransaction(
+      BuildContext context, String transactionId) async {
+    AppRepository appRepository = AppRepository();
+
+    try {
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (_) => const LoadingDialog('Preparing to repeat...'),
+      );
+      String accessToken = await SharedPref.getString("access-token");
+
+      var response = await appRepository.appGetRequest(
+          accessToken: accessToken,
+          "${AppApis.getOneTransactionDetails}/$transactionId");
+      print(response.statusCode);
+      print(response.body);
+      print(json.decode(response.body));
+    } catch (e) {
+      setState(() {
+        isSharingPdf = false;
+        Navigator.pop(context);
+      });
+      showToast(
+        context: context,
+        title: 'Error occurred',
+        subtitle: 'An unexpected error has occurred, try again later',
+        type: ToastMessageType.error,
       );
     }
   }

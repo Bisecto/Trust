@@ -1,6 +1,7 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:equatable/equatable.dart';
+import 'package:teller_trust/model/bank_model.dart';
 
 abstract class SendEvent extends Equatable {
   const SendEvent();
@@ -52,6 +53,21 @@ class LoadBanksToTxnWith extends SendEvent {
   List<Object?> get props => [];
 }
 
+class SearchForABank extends SendEvent {
+  String searchValue;
+  List<Bank> banks;
+  SearchForABank({
+    required this.searchValue,
+    required this.banks,
+  }) : super();
+
+  @override
+  List<Object?> get props => [
+    searchValue,
+    banks,
+  ];
+}
+
 class LoadUserTransactions extends SendEvent {
   const LoadUserTransactions() : super();
 
@@ -87,5 +103,75 @@ class EnterTellaTrustReceipentAcc extends SendEvent {
   @override
   List<Object?> get props => [
         tellaTrustReceiptentAcc,
+      ];
+}
+
+class SendInternalFundToReceiptent extends SendEvent {
+  String receiverId;
+  String narration;
+  num amount;
+  String accessPin;
+  SendInternalFundToReceiptent({
+    required this.receiverId,
+    required this.narration,
+    required this.amount,
+    required this.accessPin,
+  }) : super();
+
+  @override
+  List<Object?> get props => [
+        receiverId,
+        narration,
+        amount,
+      ];
+}
+
+class SendExternalFundToReceiptent extends SendEvent {
+  String bankCode;
+  String accountNumber;
+  String sessionId;
+  String narration;
+  num amount;
+  SendExternalFundToReceiptent({
+    required this.bankCode,
+    required this.accountNumber,
+    required this.sessionId,
+    required this.narration,
+    required this.amount,
+  }) : super();
+
+  @override
+  List<Object?> get props => [
+        bankCode,
+        accountNumber,
+        sessionId,
+        narration,
+        amount,
+      ];
+}
+
+class VerifyRecepitentAccountNumber extends SendEvent {
+  String bankCode;
+  String accountNumber;
+  VerifyRecepitentAccountNumber({
+    required this.bankCode,
+    required this.accountNumber,
+  }) : super();
+
+  @override
+  List<Object?> get props => [
+        bankCode,
+        accountNumber,
+      ];
+}
+
+
+class UserNarationForPayment extends SendEvent {
+  String narration;
+  UserNarationForPayment({required this.narration});
+
+  @override
+  List<Object?> get props => [
+        narration,
       ];
 }

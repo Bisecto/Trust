@@ -211,7 +211,10 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                                           ],
                                         ),
                                         CustomText(
-                                          text: item.status.toLowerCase() == "success" ? "SUCCESSFUL" : item.status.toUpperCase(),
+                                          text: item.status.toLowerCase() == "success" ? "SUCCESSFUL" :item.status
+                                              .toLowerCase() ==
+                                              "failure"
+                                              ? "FAILED" :item.status.toUpperCase(),
                                           color: item.status.toLowerCase() == 'success'
                                               ? AppColors.green
                                               : item.status.toLowerCase() == 'pending'

@@ -822,7 +822,6 @@ class _HomePageState extends State<HomePage> {
                                 },
                               ),
                             );
-
                           },
                           child:
                               childBalanceCardContainer(AppIcons.send, "Send")),
@@ -992,8 +991,13 @@ class _HomePageState extends State<HomePage> {
                     child: quickActionsItem(
                         items[index],
                         theme,
-                        ['airtime', 'data', 'electricity', 'cable tv','airtime to cash']
-                            .contains(items[index].name.toLowerCase())));
+                        [
+                          'airtime',
+                          'data',
+                          'electricity',
+                          'cable tv',
+                          'airtime to cash'
+                        ].contains(items[index].name.toLowerCase())));
               },
             ),
           );
@@ -1148,8 +1152,10 @@ class _HomePageState extends State<HomePage> {
                     weight: FontWeight.bold,
                   ),
                   GestureDetector(
-                    onTap: (){AppNavigator.pushAndStackPage(context, page: const TransactionHistory());},
-
+                    onTap: () {
+                      AppNavigator.pushAndStackPage(context,
+                          page: const TransactionHistory());
+                    },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
@@ -1361,7 +1367,11 @@ class _HomePageState extends State<HomePage> {
                                                       "success"
                                                   ? "SUCCESSFUL"
                                                   : transaction.status
-                                                      .toUpperCase(),
+                                                              .toLowerCase() ==
+                                                          "failure"
+                                                      ? "FAILED"
+                                                      : transaction.status
+                                                          .toUpperCase(),
                                               color: transaction.status
                                                           .toLowerCase() ==
                                                       'success'
@@ -1385,7 +1395,8 @@ class _HomePageState extends State<HomePage> {
                           )
                         : const SizedBox();
                   } else {
-                    return const LoadingDialog("Fetching recent transactions..."); // Show loading indicator or handle error state
+                    return const LoadingDialog(
+                        "Fetching recent transactions..."); // Show loading indicator or handle error state
                   }
                 },
               ),
