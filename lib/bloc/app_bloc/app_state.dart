@@ -6,6 +6,7 @@ abstract class AppState {}
 class AppInitial extends AppState {}
 
 class OnClickEventState extends AppState {}
+class AccessTokenExpireState extends AppState {}
 
 class LoadingState extends AppState {}
 
@@ -33,4 +34,14 @@ class SuccessState extends AppState {
 
   SuccessState(this.customerProfile,this.transactionHistoryModel);
 }
+class TransactionListSuccessState extends AppState {
+  final TransactionHistoryModel transactionHistoryModel;
 
+  TransactionListSuccessState(this.transactionHistoryModel);
+}
+
+class TransactionErrorState extends AppState {
+  final String error;
+
+  TransactionErrorState(this.error);
+}

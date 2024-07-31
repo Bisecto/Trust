@@ -2,6 +2,7 @@
 
 import 'package:equatable/equatable.dart';
 import 'package:teller_trust/model/bank_model.dart';
+import 'package:teller_trust/model/bank_verified_account_model.dart';
 import 'package:teller_trust/model/tella_trust_customer_model.dart';
 
 abstract class SendState extends Equatable {
@@ -129,10 +130,12 @@ class TellaTrustCustomerVerification extends SendState {
 class BanksToTxnWith extends SendState {
   bool loadingBanks;
   bool banksReadyForUse;
+  bool filteredAnyBank;
   List<Bank> banks;
   BanksToTxnWith({
     required this.loadingBanks,
     required this.banksReadyForUse,
+    required this.filteredAnyBank,
     required this.banks,
   });
 
@@ -140,6 +143,7 @@ class BanksToTxnWith extends SendState {
   List<Object?> get props => [
         loadingBanks,
         banksReadyForUse,
+        filteredAnyBank,
         banks,
       ];
 }
@@ -202,10 +206,12 @@ class VerificationStateForBankAccountNumber extends SendState {
   bool isRequestInProgress;
   bool isDataReadyForUse;
   String statusMessage;
+  BankVerifiedAccountModel? bankVerifiedAccount;
   VerificationStateForBankAccountNumber({
     required this.isDataReadyForUse,
     required this.isRequestInProgress,
     required this.statusMessage,
+    this.bankVerifiedAccount,
   });
 
   @override
@@ -213,6 +219,7 @@ class VerificationStateForBankAccountNumber extends SendState {
         isDataReadyForUse,
         isRequestInProgress,
         statusMessage,
+        bankVerifiedAccount,
       ];
 }
 

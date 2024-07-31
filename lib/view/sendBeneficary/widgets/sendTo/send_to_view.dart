@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:teller_trust/bloc/sendBloc/event/send_event.dart';
@@ -15,9 +17,13 @@ import 'package:teller_trust/view/sendBeneficary/widgets/sendTo/send_to_header_w
 import 'package:teller_trust/view/sendBeneficary/widgets/sendTo/send_to_options_widget.dart';
 import 'package:teller_trust/view/sendBeneficary/widgets/sendTo/top_beneficiaries_widget.dart';
 import 'package:teller_trust/view/widgets/show_toast.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modal_sheet;
+
+import '../../../auth/otp_pin_pages/confirm_with_otp.dart';
 
 class SendToView extends StatefulWidget {
   final TxnDetailsToSendOut txnDetails;
+
   const SendToView({
     super.key,
     required this.txnDetails,
@@ -49,6 +55,9 @@ class _SendToViewState extends State<SendToView> {
   String receiverId = '';
 
   String narration = '';
+  String verifiedAccountNumber = '';
+  String verifiedBankCode = '';
+  String txnSessionId = '';
 
   @override
   void initState() {
@@ -91,6 +100,12 @@ class _SendToViewState extends State<SendToView> {
             setState(() {
               verifyingUser = state.isRequestInProgress;
               isUserVerified = state.isDataReadyForUse;
+              if (isUserVerified) {
+                verifiedAccountNumber =
+                    state.bankVerifiedAccount!.accountNumber;
+                verifiedBankCode = state.bankVerifiedAccount!.bankCode;
+                txnSessionId = state.bankVerifiedAccount!.sessionId;
+              }
             });
           }
 
@@ -104,13 +119,14 @@ class _SendToViewState extends State<SendToView> {
                     ? ToastMessageType.success
                     : ToastMessageType.error,
               );
-              await Future.delayed(
-                const Duration(
-                  seconds: 10,
-                ),
-              ).then((value) {
-                Navigator.pop(context);
-              });
+              // await Future.delayed(
+              //   const Duration(
+              //     seconds: 10,
+              //   ),
+              // ).then((value) {
+              //   print(123);
+              //   Navigator.pop(context);
+              // });
             }
           }
 
@@ -176,46 +192,75 @@ class _SendToViewState extends State<SendToView> {
                       ),
                     ),
                     if (bottomViewInset == 0)
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: AppButton(
-                          buttonBoxDecoration: BoxDecoration(
-                            color: AppColors.green,
-                            borderRadius: BorderRadius.circular(
-                              10.0,
+                      if (isUserVerified || userForTxnConfirmed)
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: AppButton(
+                            buttonBoxDecoration: BoxDecoration(
+                              color: AppColors.green,
+                              borderRadius: BorderRadius.circular(
+                                10.0,
+                              ),
                             ),
-                          ),
-                          buttonHeight: 50.0,
-                          buttonChild: const Text(
-                            'Tap to Send',
-                            style: TextStyle(
-                              color: AppColors.white,
+                            buttonHeight: 50.0,
+                            buttonChild: const Text(
+                              'Tap to Send',
+                              style: TextStyle(
+                                color: AppColors.white,
+                              ),
                             ),
+                            buttonWidth: double.infinity,
+                            buttonCallback: () async {
+                              String transactionPin = await modal_sheet
+                                      .showMaterialModalBottomSheet(
+                                    backgroundColor: Colors.transparent,
+                                    isDismissible: true,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(
+                                          top: Radius.circular(20.0)),
+                                    ),
+                                    context: context,
+                                    builder: (context) => Padding(
+                                      padding:
+                                          const EdgeInsets.only(top: 200.0),
+                                      child: ConfirmWithPin(
+                                        context: context,
+                                        title:
+                                            'Input your transaction pin to continue',
+                                      ),
+                                    ),
+                                  ) ??
+                                  '';
+                              print(transactionPin);
+                              if (transactionPin != '') {
+                                print(txnDetails.amount);
+                                if (userForTxnConfirmed && isItForTellaTrust) {
+                                  BlocProvider.of<SendBloc>(context).add(
+                                    SendInternalFundToReceiptent(
+                                      amount: double.parse(txnDetails.amount
+                                          .replaceAll(',', '')),
+                                      narration: narration,
+                                      receiverId: receiverId,
+                                      accessPin: transactionPin,
+                                    ),
+                                  );
+                                } else {
+                                  BlocProvider.of<SendBloc>(context).add(
+                                    SendExternalFundToReceiptent(
+                                      amount: double.parse(txnDetails.amount
+                                          .replaceAll(',', '')),
+                                      narration: narration,
+                                      accountNumber: verifiedAccountNumber,
+                                      bankCode: verifiedBankCode,
+                                      sessionId: txnSessionId,
+                                      txnId: transactionPin,
+                                    ),
+                                  );
+                                }
+                              }
+                            },
                           ),
-                          buttonWidth: double.infinity,
-                          buttonCallback: () {
-                            if (userForTxnConfirmed && isItForTellaTrust) {
-                              BlocProvider.of<SendBloc>(context).add(
-                                SendInternalFundToReceiptent(
-                                  amount: double.parse(txnDetails.amount),
-                                  narration: narration,
-                                  receiverId: receiverId,
-                                ),
-                              );
-                            } else {
-                              // BlocProvider.of<SendBloc>(context).add(
-                              //   SendExternalFundToReceiptent(
-                              //     amount: double.parse(txnDetails.amount),
-                              //     narration: '',
-                              //     accountNumber: '',
-                              //     bankCode: '',
-                              //     sessionId: '',
-                              //   ),
-                              // );
-                            }
-                          },
                         ),
-                      ),
                   ],
                 ),
                 if (processingPayment || verifyingUser)

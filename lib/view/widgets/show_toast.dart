@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:teller_trust/res/app_images.dart';
 import '../../res/app_colors.dart';
 import '../../utills/custom_theme.dart';
 import '../../utills/enums/toast_mesage.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 
 import 'app_custom_text.dart';
 
 showToast(
     {required BuildContext context,
-    required String title,
-    required String subtitle,
-    required ToastMessageType type}) {
+      required String title,
+      required String subtitle,
+      required ToastMessageType type}) {
   if (type == ToastMessageType.success) {
     alert(
         context: context,
@@ -45,118 +45,92 @@ Future<bool?> alert({
 }) {
   final theme =
       Provider.of<CustomThemeState>(context, listen: false).adaptiveThemeMode;
-  return Alert(
+  return showDialog(
     context: context,
-    //title: title,
-    //desc: subtitle,
-    content: Container(
-      width: double.infinity,
-      height: 350,
-      decoration: BoxDecoration(
-          color: theme.isDark
-              ? AppColors.darkModeBackgroundContainerColor
-              : AppColors.white,
-          borderRadius: BorderRadius.circular(20),
-
-
-          image: const DecorationImage(
-              image: AssetImage(AppImages.modalBackground), fit: BoxFit.cover)),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Container(
-                  height: 50,
-                  width: 50,
-                  decoration: BoxDecoration(
-                      color: theme.isDark ? AppColors.red : Colors.transparent,
-                      border: Border.all(
-                          color:
-                              theme.isDark ? AppColors.red : AppColors.green),
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Center(
-                      child: Icon(
-                    Icons.arrow_back,
-                    color: theme.isDark ? AppColors.white : AppColors.black,
-                  )),
-                ),
-              ),
-            ),
-          ),
-          Column(
+    barrierDismissible: true,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        backgroundColor: Colors.transparent,
+        content: Container(
+          width: double.infinity,
+          height: 350,
+          decoration: BoxDecoration(
+              color: theme.isDark
+                  ? AppColors.darkModeBackgroundContainerColor
+                  : AppColors.white,
+              borderRadius: BorderRadius.circular(20),
+              image: const DecorationImage(
+                  image: AssetImage(AppImages.modalBackground),
+                  fit: BoxFit.cover)),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Lottie.asset(_getImage(alertType), height: 120, width: 120),
-              const SizedBox(
-                height: 5,
-              ),
-              TextStyles.textHeadings(
-                textValue: title,
-                textColor: theme.isDark ? AppColors.white : AppColors.black,
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CustomText(
-                    text: subtitle,
-                    color: theme.isDark ? AppColors.white : AppColors.black,
-                    size: 14,
-                    maxLines: 5,
-                    textAlign: TextAlign.center,
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                          color:
+                          theme.isDark ? AppColors.red : Colors.transparent,
+                          border: Border.all(
+                              color: theme.isDark
+                                  ? AppColors.red
+                                  : AppColors.green),
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Center(
+                          child: Icon(
+                            Icons.arrow_back,
+                            color:
+                            theme.isDark ? AppColors.white : AppColors.black,
+                          )),
+                    ),
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 20,
+              Column(
+                children: [
+                  Lottie.asset(_getImage(alertType), height: 120, width: 120),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  TextStyles.textHeadings(
+                    textValue: title,
+                    textColor: theme.isDark ? AppColors.white : AppColors.black,
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CustomText(
+                        text: subtitle,
+                        color:
+                        theme.isDark ? AppColors.white : AppColors.black,
+                        size: 14,
+                        maxLines: 5,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  )
+                ],
               )
             ],
-          )
-        ],
-      ),
-    ),
-    //
-    //padding: const EdgeInsets.all(20),
-    // closeIcon: Padding(
-    //     padding: const EdgeInsets.only(right: 10.0),
-    //     child: Container(
-    //       height: 40,
-    //       width: 40,
-    //       decoration: BoxDecoration(
-    //           shape: BoxShape.circle, color: Colors.black.withOpacity(0.07)),
-    //       child: const Icon(Icons.close, size: 24, color: Colors.black),
-    //     )),
-
-    style: AlertStyle(
-      backgroundColor: Colors.transparent,
-      overlayColor: Colors.black54,
-      isCloseButton: false,
-      isButtonVisible: false,
-      animationType: AnimationType.grow,
-      buttonAreaPadding: const EdgeInsets.all(0),
-      alertPadding: const EdgeInsets.all(20),
-      constraints: BoxConstraints(
-          minWidth: MediaQuery.of(context).size.width,
-          maxWidth: MediaQuery.of(context).size.width),
-
-
-      isOverlayTapDismiss: true,
-      //descTextAlign: TextAlign.center,
-      animationDuration: const Duration(milliseconds: 400),
-      alertBorder:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-      alertAlignment: Alignment.center,
-    ),
-    // type: alertType,
-  ).show();
+          ),
+        ),
+      );
+    },
+  );
 }
 
 Color getColor(AlertType type) {

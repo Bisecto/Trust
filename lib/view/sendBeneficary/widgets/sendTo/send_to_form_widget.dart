@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -9,8 +11,10 @@ import 'package:teller_trust/res/app_colors.dart';
 import 'package:teller_trust/res/app_spacer.dart';
 import 'package:teller_trust/utills/constants/general_constant.dart';
 import 'package:teller_trust/utills/enums/toast_mesage.dart';
+import 'package:teller_trust/view/auth/otp_pin_pages/confirm_with_otp.dart';
 import 'package:teller_trust/view/sendBeneficary/widgets/sendTo/bankModal/bank_view_widget.dart';
 import 'package:teller_trust/view/widgets/show_toast.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modal_sheet;
 
 class SendToFormWidget extends StatefulWidget {
   final bool isItForTellaTrust;
@@ -44,6 +48,8 @@ class _SendToFormWidgetState extends State<SendToFormWidget> {
 
   bool isUserVerified = false;
 
+  bool isAnyOptionsSelected = false;
+
   String verifiedUser = '';
 
   @override
@@ -75,6 +81,9 @@ class _SendToFormWidgetState extends State<SendToFormWidget> {
           setState(() {
             verifyingUserAccountNumber = state.isRequestInProgress;
             isUserVerified = state.isDataReadyForUse;
+            if (isUserVerified) {
+              verifiedUser = state.bankVerifiedAccount!.accountName;
+            }
           });
         }
         if (state is BanksToTxnWith) {
@@ -92,22 +101,37 @@ class _SendToFormWidgetState extends State<SendToFormWidget> {
 
         if (state is TellaTrustCustomerVerification) {
           if (!state.requestInProgress) {
-            showToast(
-              context: context,
-              title: state.tellaTrustCustomerReceived ? 'Successful' : 'Error',
-              subtitle: state.message,
-              type: state.tellaTrustCustomerReceived
-                  ? ToastMessageType.success
-                  : ToastMessageType.error,
-            );
-            await Future.delayed(
-              const Duration(
-                seconds: 10,
-              ),
-            ).then((value) {
-              Navigator.pop(context);
-            });
+            if (!state.tellaTrustCustomerReceived) {
+              showToast(
+                context: context,
+                title:
+                    state.tellaTrustCustomerReceived ? 'Successful' : 'Error',
+                subtitle: state.message,
+                type: state.tellaTrustCustomerReceived
+                    ? ToastMessageType.success
+                    : ToastMessageType.error,
+              );
+            }
           }
+        }
+
+        if (state is VerificationStateForBankAccountNumber) {
+          if (!state.isRequestInProgress) {
+            if (!state.isDataReadyForUse) {
+              showToast(
+                context: context,
+                title: state.isDataReadyForUse ? 'Successful' : 'Error',
+                subtitle: state.statusMessage,
+                type: state.isDataReadyForUse
+                    ? ToastMessageType.success
+                    : ToastMessageType.error,
+              );
+            }
+          }
+        }
+
+        if (state is SelectedTxnOption) {
+          isAnyOptionsSelected = state.toggleOn;
         }
       },
       builder: (context, state) {
@@ -118,28 +142,30 @@ class _SendToFormWidgetState extends State<SendToFormWidget> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (!isItForTellaTrust)
+            if (!isItForTellaTrust && isAnyOptionsSelected)
               SizedBox(
                 height: 45.0,
                 child: InkWell(
-                  onTap: () async {
-                    selectedBank = await showDialog(
-                      context: context,
-                      builder: (context) {
-                        return BankViewWidget(
-                          banks: banks,
-                        );
-                      },
-                    ).then((value) {
-                      if (value != null) {
-                        setState(() {
-                          selectedBank = value;
-                          bankNameController.text = selectedBank.bankName;
-                        });
-                      }
-                      return value;
-                    });
-                  },
+                  onTap: !isAnyOptionsSelected
+                      ? null
+                      : () async {
+                          selectedBank = await showDialog(
+                            context: context,
+                            builder: (context) {
+                              return BankViewWidget(
+                                banks: banks,
+                              );
+                            },
+                          ).then((value) {
+                            if (value != null) {
+                              setState(() {
+                                selectedBank = value;
+                                bankNameController.text = selectedBank.bankName;
+                              });
+                            }
+                            return value ?? '';
+                          });
+                        },
                   child: TextField(
                     controller: bankNameController,
                     textInputAction: TextInputAction.search,
@@ -173,85 +199,11 @@ class _SendToFormWidgetState extends State<SendToFormWidget> {
               ),
             isUserVerified && isItForTellaTrust
                 ? Container()
-                : SizedBox(
-                    height: 45.0,
-                    child: TextField(
-                      controller: accountNumberController,
-                      enabled: isUserVerified
-                          ? false
-                          : isItForTellaTrust
-                              ? !checkingUpTellaTrustUser
-                              : !verifyingUserAccountNumber,
-                      textInputAction: TextInputAction.done,
-                      cursorColor: isItForTellaTrust
-                          ? AppColors.sendToTellaColor
-                          : AppColors.sendToBankBgColor,
-                      style: GeneralConstant.sendToDefaultTextStyle,
-                      decoration: InputDecoration(
-                        hintText: isItForTellaTrust
-                            ? 'enter @tellaid or phone number here'
-                            : 'Account number here',
-                        hintStyle: GeneralConstant.normalTextStyle,
-                        prefixIcon: isItForTellaTrust
-                            ? Padding(
-                                padding: const EdgeInsets.only(
-                                  left: 15.0,
-                                  right: 5.0,
-                                ),
-                                child: SvgPicture.asset(
-                                  'assets/icons/sendBeneficiary/tellaTrustGrey.svg',
-                                ),
-                              )
-                            : null,
-                        // suffixIcon:
-                        //     checkingUpTellaTrustUser || verifyingUserAccountNumber
-                        //         ? const Padding(
-                        //             padding: EdgeInsets.only(
-                        //               right: 20.0,
-                        //             ),
-                        //             child: AppRequestLoaderWidget(
-                        //               checkPlatform: true,
-                        //               size: 20,
-                        //               alignWidgetTo: AlignmentDirectional.centerEnd,
-                        //             ),
-                        //           )
-                        //         : null,
-                        contentPadding:
-                            GeneralConstant.sendToFormWidgetContentPadding,
-                        border: isItForTellaTrust
-                            ? GeneralConstant.tellaSendSearchBorder
-                            : GeneralConstant.bankSendSearchBorder,
-                        errorBorder: isItForTellaTrust
-                            ? GeneralConstant.tellaSendSearchErrorBorder
-                            : GeneralConstant.bankSendSearchErrorBorder,
-                        disabledBorder: isItForTellaTrust
-                            ? GeneralConstant.tellaSendSearchBorder
-                            : GeneralConstant.bankSendSearchBorder,
-                        enabledBorder: isItForTellaTrust
-                            ? GeneralConstant.tellaSendSearchBorder
-                            : GeneralConstant.bankSendSearchBorder,
-                        focusedBorder: isItForTellaTrust
-                            ? GeneralConstant.tellaSendSearchBorder
-                            : GeneralConstant.bankSendSearchBorder,
-                      ),
-                      onSubmitted: (value) {
-                        if (isItForTellaTrust) {
-                          BlocProvider.of<SendBloc>(context).add(
-                            EnterTellaTrustReceipentAcc(
-                              tellaTrustReceiptentAcc: value,
-                            ),
-                          );
-                        } else {
-                          BlocProvider.of<SendBloc>(context).add(
-                            VerifyRecepitentAccountNumber(
-                              accountNumber: value,
-                              bankCode: selectedBank.bankCode,
-                            ),
-                          );
-                        }
-                      },
-                    ),
-                  ),
+                : isItForTellaTrust
+                    ? accountNumberFieldWidget(context)
+                    : bankNameController.text.isNotEmpty
+                        ? accountNumberFieldWidget(context)
+                        : Container(),
             if (isUserVerified && !isItForTellaTrust)
               displayVerifiedUser(
                 verifiedUser: verifiedUser,
@@ -264,10 +216,114 @@ class _SendToFormWidgetState extends State<SendToFormWidget> {
                 ? isReceiptentSelectedForTellaTrustTxn
                     ? txnDescription()
                     : Container()
-                : txnDescription(),
+                : isUserVerified
+                    ? txnDescription()
+                    : Container(),
           ],
         );
       },
+    );
+  }
+
+  SizedBox accountNumberFieldWidget(BuildContext context) {
+    return SizedBox(
+      height: 45.0,
+      child: TextField(
+        controller: accountNumberController,
+        enabled: isUserVerified
+            ? false
+            : isItForTellaTrust
+                ? !checkingUpTellaTrustUser
+                : !verifyingUserAccountNumber,
+        textInputAction: TextInputAction.done,
+        cursorColor: isItForTellaTrust
+            ? AppColors.sendToTellaColor
+            : AppColors.sendToBankBgColor,
+        style: GeneralConstant.sendToDefaultTextStyle,
+        decoration: InputDecoration(
+          hintText: isItForTellaTrust
+              ? 'enter @tellaid or phone number here'
+              : 'Account number here',
+          hintStyle: GeneralConstant.normalTextStyle,
+          prefixIcon: isItForTellaTrust
+              ? Padding(
+                  padding: const EdgeInsets.only(
+                    left: 15.0,
+                    right: 5.0,
+                  ),
+                  child: SvgPicture.asset(
+                    'assets/icons/sendBeneficiary/tellaTrustGrey.svg',
+                  ),
+                )
+              : null,
+          // suffixIcon:
+          //     checkingUpTellaTrustUser || verifyingUserAccountNumber
+          //         ? const Padding(
+          //             padding: EdgeInsets.only(
+          //               right: 20.0,
+          //             ),
+          //             child: AppRequestLoaderWidget(
+          //               checkPlatform: true,
+          //               size: 20,
+          //               alignWidgetTo: AlignmentDirectional.centerEnd,
+          //             ),
+          //           )
+          //         : null,
+          contentPadding: GeneralConstant.sendToFormWidgetContentPadding,
+          border: isItForTellaTrust
+              ? GeneralConstant.tellaSendSearchBorder
+              : GeneralConstant.bankSendSearchBorder,
+          errorBorder: isItForTellaTrust
+              ? GeneralConstant.tellaSendSearchErrorBorder
+              : GeneralConstant.bankSendSearchErrorBorder,
+          disabledBorder: isItForTellaTrust
+              ? GeneralConstant.tellaSendSearchBorder
+              : GeneralConstant.bankSendSearchBorder,
+          enabledBorder: isItForTellaTrust
+              ? GeneralConstant.tellaSendSearchBorder
+              : GeneralConstant.bankSendSearchBorder,
+          focusedBorder: isItForTellaTrust
+              ? GeneralConstant.tellaSendSearchBorder
+              : GeneralConstant.bankSendSearchBorder,
+        ),
+        onSubmitted: (value) async {
+          if (isItForTellaTrust) {
+            BlocProvider.of<SendBloc>(context).add(
+              EnterTellaTrustReceipentAcc(
+                tellaTrustReceiptentAcc: value,
+              ),
+            );
+          } else {
+            String transactionPin =
+                await modal_sheet.showMaterialModalBottomSheet(
+                      backgroundColor: Colors.transparent,
+                      isDismissible: true,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(20.0)),
+                      ),
+                      context: context,
+                      builder: (context) => Padding(
+                        padding: const EdgeInsets.only(top: 200.0),
+                        child: ConfirmWithPin(
+                          context: context,
+                          title: 'Input your transaction pin to continue',
+                        ),
+                      ),
+                    ) ??
+                    '';
+            if (transactionPin != '') {
+              BlocProvider.of<SendBloc>(context).add(
+                VerifyRecepitentAccountNumber(
+                  accountNumber: value,
+                  bankCode: selectedBank.bankCode,
+                  transactionPin: transactionPin,
+                ),
+              );
+            }
+          }
+        },
+      ),
     );
   }
 

@@ -28,15 +28,21 @@ class _BanksModalWidgetState extends State<BanksModalWidget> {
   @override
   void initState() {
     banks = widget.banks;
+    debugPrint('this is the state of the bank search ${banks.toString()}');
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SendBloc, SendState>(
       builder: (context, state) {
-        if(state is BanksToTxnWith){
-          banks = state.banks;
+        if (state is BanksToTxnWith) {
+          if (state.filteredAnyBank) {
+            banks = state.banks;
+            debugPrint('this is the state of the bank search filtered');
+          }
         }
+
         return AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(
@@ -155,8 +161,8 @@ class _BanksModalWidgetState extends State<BanksModalWidget> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          ...List.generate(widget.banks.length, (index) {
-                            Bank bank = widget.banks[index];
+                          ...List.generate(banks.length, (index) {
+                            Bank bank = banks[index];
                             return InkWell(
                               onTap: () {
                                 Navigator.pop(context, bank);

@@ -4,9 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/bloc/product_bloc/product_bloc.dart';
-import 'package:teller_trust/view/the_app_screens/sevices/airtime.dart';
-import 'package:teller_trust/view/the_app_screens/sevices/data.dart';
-import 'package:teller_trust/view/the_app_screens/sevices/electricity_purchase.dart';
+import 'package:teller_trust/view/the_app_screens/sevices/airtime_purchase/airtime.dart';
+import 'package:teller_trust/view/the_app_screens/sevices/data_purchase/data.dart';
+import 'package:teller_trust/view/the_app_screens/sevices/electricity_purchase/electricity_purchase.dart';
 
 import '../../model/category_model.dart';
 import '../../res/app_colors.dart';

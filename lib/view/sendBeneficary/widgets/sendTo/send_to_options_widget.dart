@@ -91,11 +91,11 @@ class _SendToOptionsWidgetState extends State<SendToOptionsWidget> {
                       ),
                     ],
                   ),
-                  if (!tellaTrustSelected)
+                  if (!tellaTrustSelected && toggleOptionsOn)
                     const AppSpacer(
                       height: 15.0,
                     ),
-                  if (!tellaTrustSelected)
+                  if (!tellaTrustSelected && toggleOptionsOn)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,

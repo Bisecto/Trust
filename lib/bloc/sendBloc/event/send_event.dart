@@ -110,10 +110,12 @@ class SendInternalFundToReceiptent extends SendEvent {
   String receiverId;
   String narration;
   num amount;
+  String accessPin;
   SendInternalFundToReceiptent({
     required this.receiverId,
     required this.narration,
     required this.amount,
+    required this.accessPin,
   }) : super();
 
   @override
@@ -129,6 +131,7 @@ class SendExternalFundToReceiptent extends SendEvent {
   String accountNumber;
   String sessionId;
   String narration;
+  String txnId;
   num amount;
   SendExternalFundToReceiptent({
     required this.bankCode,
@@ -136,6 +139,7 @@ class SendExternalFundToReceiptent extends SendEvent {
     required this.sessionId,
     required this.narration,
     required this.amount,
+    required this.txnId,
   }) : super();
 
   @override
@@ -145,21 +149,25 @@ class SendExternalFundToReceiptent extends SendEvent {
         sessionId,
         narration,
         amount,
+        txnId,
       ];
 }
 
 class VerifyRecepitentAccountNumber extends SendEvent {
   String bankCode;
   String accountNumber;
+  String transactionPin;
   VerifyRecepitentAccountNumber({
     required this.bankCode,
     required this.accountNumber,
+    required this.transactionPin,
   }) : super();
 
   @override
   List<Object?> get props => [
         bankCode,
         accountNumber,
+        transactionPin,
       ];
 }
 

@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_carousel_slider/carousel_slider.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:teller_trust/bloc/product_bloc/product_bloc.dart';
 import 'package:teller_trust/model/personal_profile.dart';
 import 'package:teller_trust/model/wallet_info.dart';
@@ -13,14 +14,16 @@ import 'package:teller_trust/res/app_colors.dart';
 import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/utills/app_navigator.dart';
 import 'package:teller_trust/utills/app_utils.dart';
+import 'package:teller_trust/utills/constants/loading_dialog.dart';
 import 'package:teller_trust/utills/shared_preferences.dart';
 import 'package:teller_trust/view/networkCenter/pages/network_center_main_page.dart';
-import 'package:teller_trust/view/sendBeneficary/pages/send_main_page.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/add_fundz.dart';
-import 'package:teller_trust/view/the_app_screens/sevices/airtime.dart';
-import 'package:teller_trust/view/the_app_screens/sevices/cable_purchase.dart';
-import 'package:teller_trust/view/the_app_screens/sevices/data.dart';
-import 'package:teller_trust/view/the_app_screens/sevices/electricity_purchase.dart';
+import 'package:teller_trust/view/the_app_screens/sevices/airtime_purchase/airtime.dart';
+import 'package:teller_trust/view/the_app_screens/sevices/airtime_to_cash_purchase/airtime_to_cash.dart';
+import 'package:teller_trust/view/the_app_screens/sevices/cable_purchase/cable_purchase.dart';
+import 'package:teller_trust/view/the_app_screens/sevices/data_purchase/data.dart';
+import 'package:teller_trust/view/the_app_screens/sevices/electricity_purchase/electricity_purchase.dart';
+import 'package:teller_trust/view/the_app_screens/transaction_history/transaction_history.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 import 'package:teller_trust/view/widgets/purchase_receipt.dart';
@@ -31,6 +34,7 @@ import '../../model/customer_account_model.dart';
 import '../../res/app_images.dart';
 import '../../utills/custom_theme.dart';
 import '../../utills/enums/toast_mesage.dart';
+import '../sendBeneficary/pages/send_main_page.dart';
 import '../widgets/show_toast.dart';
 import 'kyc_verification/kyc_intro_page.dart';
 
@@ -47,7 +51,8 @@ class _HomePageState extends State<HomePage> {
   bool selector = true;
   bool isMoneyBlocked = false;
   String firstname = "";
-  String lastname = "";
+
+  //String lastname = "";
 
   @override
   void initState() {
@@ -58,7 +63,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> getName() async {
     firstname = await SharedPref.getString('firstName');
-    lastname = await SharedPref.getString('lastName');
+    //lastname = await SharedPref.getString('lastName');
     isMoneyBlocked = await SharedPref.getBool('isMoneyBlocked') ?? false;
     print(isMoneyBlocked);
     print(isMoneyBlocked);
@@ -241,7 +246,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                           TextStyles.textHeadings(
                               textValue:
-                                  "${AppUtils.formatString(data: personalInfo.lastName)} ${AppUtils.formatString(data: personalInfo.firstName)}",
+                                  "${AppUtils.formatString(data: personalInfo.firstName)}",
                               textColor: theme.isDark
                                   ? AppColors.darkModeBackgroundMainTextColor
                                   : AppColors.textColor,
@@ -290,7 +295,7 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     CircleAvatar(
                       //backgroundImage: NetworkImage(),
-                      child: SvgPicture.network(
+                      child: SvgPicture.asset(
                         AppIcons.person,
                         height: 32,
                         width: 32,
@@ -311,7 +316,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         TextStyles.textHeadings(
                             textValue:
-                                "${AppUtils.formatString(data: lastname)} ${AppUtils.formatString(data: firstname)}",
+                                "${AppUtils.formatString(data: firstname)}",
                             textColor: theme.isDark
                                 ? AppColors.darkModeBackgroundMainTextColor
                                 : AppColors.textColor,
@@ -727,20 +732,20 @@ class _HomePageState extends State<HomePage> {
                                 width: 20,
                               ),
                               TextStyles.textHeadings(
-                                  textValue: '0',
-                                  textSize: 28,
+                                  textValue: 'Loading...',
+                                  textSize: 20.2,
                                   textColor: AppColors.white),
-                              TextStyles.textHeadings(
-                                  textValue: ". 00",
-                                  //+walletInfo.balance.toString().split('.')[1],
-                                  textSize: 20,
-                                  textColor: AppColors.white)
-                              // const CustomText(
-                              //   text: "0.00",
-                              //   size: 25,
-                              //   weight: FontWeight.bold,
-                              //   color: AppColors.white,
-                              // )
+                              // TextStyles.textHeadings(
+                              //     textValue: "",
+                              //     //+walletInfo.balance.toString().split('.')[1],
+                              //     textSize: 20,
+                              //     textColor: AppColors.white)
+                              // // const CustomText(
+                              // //   text: "0.00",
+                              // //   size: 25,
+                              // //   weight: FontWeight.bold,
+                              // //   color: AppColors.white,
+                              // // )
                             ],
                           ); // Show loading indicator or handle error state
                         }
@@ -817,35 +822,6 @@ class _HomePageState extends State<HomePage> {
                                 },
                               ),
                             );
-                            // showToast(
-                            //     context: context,
-                            //     title: 'Info',
-                            //     subtitle:
-                            //         'Oops! It looks like this service is still in the oven. We\'re baking up something great, so stay tuned! 🍰',
-                            //     type: ToastMessageType.info);
-
-                            // AppNavigator.pushAndStackPage(context,
-                            //     page: const SendFunds());
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) => PinAuthentication(
-                            //       onChanged: (v) {
-                            //         if (kDebugMode) {
-                            //           print(v);
-                            //         }
-                            //       },
-                            //       onSpecialKeyTap: () {},
-                            //       specialKey: const SizedBox(),
-                            //       useFingerprint: true,
-                            //       onbuttonClick: () {},
-                            //       submitLabel: const Text(
-                            //         'Submit',
-                            //         style: TextStyle(color: Colors.white, fontSize: 20),
-                            //       ),
-                            //     ),
-                            //   ),
-                            // );
                           },
                           child:
                               childBalanceCardContainer(AppIcons.send, "Send")),
@@ -914,6 +890,22 @@ class _HomePageState extends State<HomePage> {
                             builder: (context) => Padding(
                               padding: const EdgeInsets.only(top: 100.0),
                               child: AirtimePurchase(category: items[index]),
+                            ),
+                          );
+                          // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
+                          //     services: AppList().serviceItems[index]));
+                          return;
+                        case "airtime to cash":
+                          modalSheet.showMaterialModalBottomSheet(
+                            backgroundColor: Colors.transparent,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(20.0)),
+                            ),
+                            context: context,
+                            builder: (context) => Padding(
+                              padding: const EdgeInsets.only(top: 100.0),
+                              child: AirtimeToCash(category: items[index]),
                             ),
                           );
                           // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
@@ -999,24 +991,122 @@ class _HomePageState extends State<HomePage> {
                     child: quickActionsItem(
                         items[index],
                         theme,
-                        ['airtime', 'data', 'electricity', 'cable tv']
-                            .contains(items[index].name.toLowerCase())));
+                        [
+                          'airtime',
+                          'data',
+                          'electricity',
+                          'cable tv',
+                          'airtime to cash'
+                        ].contains(items[index].name.toLowerCase())));
               },
             ),
           );
         } else {
-          return Center(
-            child: CustomText(
-              text: "loading.....",
-              size: 15,
-              weight: FontWeight.bold,
-              color: theme.isDark
-                  ? AppColors.darkModeBackgroundSubTextColor
-                  : AppColors.textColor,
+          return SizedBox(
+            height: 160,
+            child: GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                crossAxisSpacing: 10.0,
+                mainAxisSpacing: 5.0,
+              ),
+              itemCount: 8, //AppList().serviceItems.length,
+              itemBuilder: (context, index) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                        height: 30,
+                        width: 30,
+                        decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(0.2),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(50)))),
+                    const SizedBox(height: 5),
+                    Shimmer(
+                      duration: const Duration(seconds: 1),
+                      interval: const Duration(milliseconds: 50),
+                      color: Colors.grey.withOpacity(0.5),
+                      colorOpacity: 0.5,
+                      enabled: true,
+                      direction: const ShimmerDirection.fromLTRB(),
+                      child: Container(
+                        height: 5,
+                        width: 30,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.2),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
           ); // Show loading indicator or handle error state
         }
       },
+    );
+  }
+
+  Widget _loadingNetwork() {
+    return SizedBox(
+      height: 90,
+      child: ListView.builder(
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        //physics: const NeverScrollableScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 0),
+        itemCount: 8,
+        itemBuilder: (BuildContext context, int index) {
+          return Padding(
+              padding: const EdgeInsets.only(right: 10.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.2),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(50)))),
+                  const SizedBox(height: 10),
+                  Shimmer(
+                    duration: const Duration(seconds: 1),
+                    interval: const Duration(milliseconds: 50),
+                    color: Colors.grey.withOpacity(0.5),
+                    colorOpacity: 0.5,
+                    enabled: true,
+                    direction: const ShimmerDirection.fromLTRB(),
+                    child: Container(
+                      height: 10,
+                      width: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Shimmer(
+                    duration: const Duration(seconds: 1),
+                    interval: const Duration(milliseconds: 50),
+                    color: Colors.grey.withOpacity(0.5),
+                    colorOpacity: 0.5,
+                    enabled: true,
+                    direction: const ShimmerDirection.fromLTRB(),
+                    child: Container(
+                      height: 5,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.2),
+                      ),
+                    ),
+                  )
+                ],
+              ));
+        },
+      ),
     );
   }
 
@@ -1061,21 +1151,27 @@ class _HomePageState extends State<HomePage> {
                     size: 12,
                     weight: FontWeight.bold,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          //color: AppColors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: AppColors.textColor2)),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(8.0, 5, 8, 5),
-                        child: CustomText(
-                          text: "See All",
-                          size: 12,
-                          color: theme.isDark
-                              ? AppColors.darkModeBackgroundSubTextColor
-                              : AppColors.textColor2,
+                  GestureDetector(
+                    onTap: () {
+                      AppNavigator.pushAndStackPage(context,
+                          page: const TransactionHistory());
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            //color: AppColors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: AppColors.textColor2)),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(8.0, 5, 8, 5),
+                          child: CustomText(
+                            text: "See All",
+                            size: 12,
+                            color: theme.isDark
+                                ? AppColors.darkModeBackgroundSubTextColor
+                                : AppColors.textColor2,
+                          ),
                         ),
                       ),
                     ),
@@ -1140,22 +1236,35 @@ class _HomePageState extends State<HomePage> {
                                             Row(
                                               children: [
                                                 CircleAvatar(
-                                                  backgroundImage: order
-                                                              ?.product !=
-                                                          null
+                                                  backgroundImage: order != null
                                                       ? NetworkImage(
-                                                          order!.product!.image)
+                                                          order.product!.image)
                                                       : null,
-                                                  child: order?.product ==
-                                                              null &&
+                                                  child: order == null &&
+                                                          (transaction.type
+                                                                  .toLowerCase()
+                                                                  .contains(
+                                                                      'credit') ||
+                                                              transaction.type
+                                                                  .toLowerCase()
+                                                                  .contains(
+                                                                      'debit'))
+                                                      ? Icon(
                                                           transaction.type
-                                                              .toLowerCase()
-                                                              .contains(
-                                                                  'credit')
-                                                      ? const Icon(
-                                                          Icons.arrow_downward,
-                                                          color:
-                                                              AppColors.green,
+                                                                  .toLowerCase()
+                                                                  .contains(
+                                                                      'credit')
+                                                              ? Icons
+                                                                  .arrow_downward
+                                                              : Icons
+                                                                  .arrow_upward,
+                                                          color: transaction
+                                                                  .type
+                                                                  .toLowerCase()
+                                                                  .contains(
+                                                                      'credit')
+                                                              ? AppColors.green
+                                                              : AppColors.red,
                                                         )
                                                       : const SizedBox(),
                                                 ),
@@ -1258,7 +1367,11 @@ class _HomePageState extends State<HomePage> {
                                                       "success"
                                                   ? "SUCCESSFUL"
                                                   : transaction.status
-                                                      .toUpperCase(),
+                                                              .toLowerCase() ==
+                                                          "failure"
+                                                      ? "FAILED"
+                                                      : transaction.status
+                                                          .toUpperCase(),
                                               color: transaction.status
                                                           .toLowerCase() ==
                                                       'success'
@@ -1282,7 +1395,8 @@ class _HomePageState extends State<HomePage> {
                           )
                         : const SizedBox();
                   } else {
-                    return const SizedBox(); // Show loading indicator or handle error state
+                    return const LoadingDialog(
+                        "Fetching recent transactions..."); // Show loading indicator or handle error state
                   }
                 },
               ),
@@ -1676,8 +1790,8 @@ class _HomePageState extends State<HomePage> {
                 ),
                 CustomText(
                   text: accNumber == '***'
-                      ? " Complete KYC to get TellaTrust Account Number"
-                      : " Tellatrust Account Number ",
+                      ? " Complete KYC to get Safe Haven Account Number"
+                      : " Safe Haven Account Number ",
                   color: AppColors.darkGreen,
                   size: 10,
                 ),

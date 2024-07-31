@@ -11,6 +11,19 @@ class ListCategoryEvent extends ProductEvent {
   ListCategoryEvent(this.page, this.pageSize);
 }
 
+class GetProductBeneficiaryEvent extends ProductEvent {
+  final String productId;
+
+  GetProductBeneficiaryEvent(this.productId);
+}
+
+class DeleteBeneficiaryEvent extends ProductEvent {
+  final String beneficiaryId;
+  final String productId;
+
+  DeleteBeneficiaryEvent(this.beneficiaryId,this.productId);
+}
+
 class ListServiceEvent extends ProductEvent {
   final String page;
   final String pageSize;
@@ -28,13 +41,13 @@ class FetchProduct extends ProductEvent {
 
   FetchProduct(
       this.query, this.page, this.pageSize, this.categoryId, this.serviceId);
-}class VerifyEntityNumberEvent extends ProductEvent {
+}
 
+class VerifyEntityNumberEvent extends ProductEvent {
   final String producId;
   final String entityNumber;
 
-  VerifyEntityNumberEvent(
-      this.producId, this.entityNumber);
+  VerifyEntityNumberEvent(this.producId, this.entityNumber);
 }
 
 class PurchaseProductEvent extends ProductEvent {
@@ -43,7 +56,15 @@ class PurchaseProductEvent extends ProductEvent {
   final String productId;
   final String accessPIN;
   final bool isQuickPay;
+  final bool isSaveAsBeneficiarySelected;
+  final String beneficiaryName;
 
-  PurchaseProductEvent(this.context, this.requiredFields, this.productId,
-      this.accessPIN, this.isQuickPay);
+  PurchaseProductEvent(
+      this.context,
+      this.requiredFields,
+      this.productId,
+      this.accessPIN,
+      this.isQuickPay,
+      this.isSaveAsBeneficiarySelected,
+      this.beneficiaryName);
 }

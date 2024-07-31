@@ -1,4 +1,3 @@
-
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,26 +6,28 @@ import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:teller_trust/model/category_model.dart' as mainCategory;
 import 'package:teller_trust/view/important_pages/dialog_box.dart';
+import 'package:teller_trust/view/the_app_screens/sevices/product_beneficiary/product_beneficiary.dart';
 
-import '../../../bloc/product_bloc/product_bloc.dart';
-import '../../../res/app_colors.dart';
-import '../../../res/app_icons.dart';
-import '../../../utills/app_navigator.dart';
-import '../../../utills/app_utils.dart';
-import '../../../utills/app_validator.dart';
-import '../../../utills/custom_theme.dart';
-import '../../../utills/enums/toast_mesage.dart';
-import '../../../utills/shared_preferences.dart';
-import '../../auth/otp_pin_pages/confirm_with_otp.dart';
-import '../../widgets/app_custom_text.dart';
-import '../../widgets/form_button.dart';
-import '../../widgets/form_input.dart';
+import '../../../../bloc/product_bloc/product_bloc.dart';
+import '../../../../res/app_colors.dart';
+import '../../../../res/app_icons.dart';
+import '../../../../utills/app_navigator.dart';
+import '../../../../utills/app_utils.dart';
+import '../../../../utills/app_validator.dart';
+import '../../../../utills/custom_theme.dart';
+import '../../../../utills/enums/toast_mesage.dart';
+import '../../../../utills/shared_preferences.dart';
+import '../../../auth/otp_pin_pages/confirm_with_otp.dart';
+import '../../../auth/sign_in_with_access_pin_and_biometrics.dart';
+import '../../../widgets/app_custom_text.dart';
+import '../../../widgets/form_button.dart';
+import '../../../widgets/form_input.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
-import '../../widgets/purchase_receipt.dart';
-import '../../widgets/show_toast.dart';
-import 'build_payment_method.dart';
-import 'make_bank_transfer/bank_transfer.dart';
+import '../../../widgets/purchase_receipt.dart';
+import '../../../widgets/show_toast.dart';
+import '../payment_method/payment_method.dart';
+import '../make_bank_transfer/bank_transfer.dart';
 
 class CablePurchase extends StatefulWidget {
   final mainCategory.Category category;
@@ -48,6 +49,10 @@ class _CablePurchaseState extends State<CablePurchase> {
   String serviceID = '';
   bool isPaymentAllowed = false;
   final _selectedAmtController = TextEditingController();
+  bool isSaveAsBeneficiarySelected = false;
+  String beneficiaryName = '';
+
+//bool isBeneficiaryAllowed=false;
   String selectedCablePlan = 'Choose Plan';
   String selectedCablePlanPrice = '';
   String selectedCablePlanId = '';
@@ -129,7 +134,8 @@ class _CablePurchaseState extends State<CablePurchase> {
                       if (state is PurchaseSuccess) {
                         _beneficiaryController.clear();
                         //_selectedAmtController.clear();
-                        state.transaction.order!.product!.name== widget.category.name;
+                        state.transaction.order!.product!.name ==
+                            widget.category.name;
 
                         AppNavigator.pushAndStackPage(context,
                             page: TransactionReceipt(
@@ -155,21 +161,15 @@ class _CablePurchaseState extends State<CablePurchase> {
                               accessToken: accessToken,
                             ));
                       } else if (state is AccessTokenExpireState) {
-                        showToast(
-                            context: context,
-                            title: 'Info',
-                            subtitle: 'Incorrect Access Pin',
-                            type: ToastMessageType.error);
 
-                        //MSG.warningSnackBar(context, state.error);
 
-                        // String firstame =
-                        //     await SharedPref.getString('firstName');
-                        //
-                        // AppNavigator.pushAndRemovePreviousPages(context,
-                        //     page: SignInWIthAccessPinBiometrics(
-                        //       userName: firstame,
-                        //     ));
+                        String firstame =
+                            await SharedPref.getString('firstName');
+
+                        AppNavigator.pushAndRemovePreviousPages(context,
+                            page: SignInWIthAccessPinBiometrics(
+                              userName: firstame,
+                            ));
                       } else if (state is PurchaseErrorState) {
                         showToast(
                             context: context,
@@ -534,6 +534,7 @@ class _CablePurchaseState extends State<CablePurchase> {
                                         label: 'Beneficiary',
                                         controller: _beneficiaryController,
                                         textInputType: TextInputType.number,
+                                        widget: const Icon(Icons.numbers),
                                         onChanged: (value) async {
                                           print(_beneficiaryController
                                               .text.length);
@@ -656,9 +657,9 @@ class _CablePurchaseState extends State<CablePurchase> {
                                                       ));
                                                 } else {
                                                   return Padding(
-                                                      padding:
-                                                          const EdgeInsets.fromLTRB(
-                                                              10, 10, 10, 25.0),
+                                                      padding: const EdgeInsets
+                                                          .fromLTRB(
+                                                          10, 10, 10, 25.0),
                                                       child: CustomText(
                                                         text:
                                                             "Verifying user.....",
@@ -680,6 +681,12 @@ class _CablePurchaseState extends State<CablePurchase> {
                                                     ));
                                               }
                                             }),
+                                      if(selectedCablePlanId.isNotEmpty)
+                                        SizedBox(height: 10,),
+                                      if(selectedCablePlanId.isNotEmpty)
+                                        BeneficiaryWidget(productId: selectedCablePlanId, beneficiaryNum: (value) { setState(() {
+                                          _beneficiaryController.text=value;
+                                        }); },),
                                       SizedBox(
                                         height: 310,
                                         child: PaymentMethodScreen(
@@ -710,6 +717,30 @@ class _CablePurchaseState extends State<CablePurchase> {
                                               }
                                             });
                                           },
+                                          name: (value) {
+                                            print(value);
+                                            Future.microtask(() {
+                                              if (mounted) {
+                                                setState(() {
+                                                  beneficiaryName = value;
+                                                  // print(isPaymentAllowed);
+                                                });
+                                              }
+                                            });
+                                          },
+                                          isSaveAsBeneficiarySelected: (value) {
+                                            print(value);
+                                            Future.microtask(() {
+                                              if (mounted) {
+                                                setState(() {
+                                                  isSaveAsBeneficiarySelected =
+                                                      value;
+                                                  // print(isPaymentAllowed);
+                                                });
+                                              }
+                                            });
+                                          },
+                                          number: _beneficiaryController.text,
                                         ),
                                       ),
                                       FormButton(
@@ -742,13 +773,14 @@ class _CablePurchaseState extends State<CablePurchase> {
                                                           .requiredFields,
                                                       selectedCablePlanId,
                                                       transactionPin,
-                                                      true));
+                                                      true,isSaveAsBeneficiarySelected,beneficiaryName));
                                             } else {
                                               var transactionPin = '';
                                               transactionPin = await modalSheet
                                                   .showMaterialModalBottomSheet(
                                                       backgroundColor:
                                                           Colors.transparent,
+                                                      isDismissible: true,
                                                       shape:
                                                           const RoundedRectangleBorder(
                                                         borderRadius:
@@ -791,7 +823,7 @@ class _CablePurchaseState extends State<CablePurchase> {
                                                             .requiredFields,
                                                         selectedCablePlanId,
                                                         transactionPin,
-                                                        false));
+                                                        false,isSaveAsBeneficiarySelected,beneficiaryName));
                                               }
                                             }
                                           }
@@ -964,6 +996,7 @@ class _CablePurchaseState extends State<CablePurchase> {
 
   final _formKey = GlobalKey<FormState>();
   final String _selectedProvider = '';
+  //final String beneficiaryName = '';
 
   final _beneficiaryController = TextEditingController();
 }
@@ -1023,7 +1056,8 @@ class CableProvider extends StatelessWidget {
                               height: 50,
                               width: double.infinity,
                               color: Colors.grey[300],
-                              child: const Center(child: CircularProgressIndicator()),
+                              child: const Center(
+                                  child: CircularProgressIndicator()),
                             );
                           },
                         ),
@@ -1135,7 +1169,8 @@ class _CableProviderListState extends State<CableProviderList> {
                 } else if (state is ServiceSuccessState) {
                   final ServiceSuccessState = state;
                   return GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3, // Number of items per row
                       crossAxisSpacing: 8.0, // Spacing between columns
                       mainAxisSpacing: 8.0, // Spacing between rows
@@ -1277,7 +1312,8 @@ class CablePlan extends StatelessWidget {
                               height: 50,
                               width: double.infinity,
                               color: Colors.grey[300],
-                              child: const Center(child: CircularProgressIndicator()),
+                              child: const Center(
+                                  child: CircularProgressIndicator()),
                             );
                           },
                         ),

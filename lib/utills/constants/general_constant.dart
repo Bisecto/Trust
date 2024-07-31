@@ -41,7 +41,7 @@ class GeneralConstant {
       width: 1.5,
     ),
   );
-  
+
   static OutlineInputBorder bankListSearchBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(
       30.0,
@@ -81,7 +81,7 @@ class GeneralConstant {
       width: 1.5,
     ),
   );
-  
+
   static OutlineInputBorder bankListSearchErrorBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(
       30.0,

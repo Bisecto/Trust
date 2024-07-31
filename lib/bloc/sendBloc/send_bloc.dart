@@ -9,6 +9,7 @@ import 'package:teller_trust/domain/request/send_internal_fund_request.dart';
 import 'package:teller_trust/domain/request/tella_trust_customer_request.dart';
 import 'package:teller_trust/domain/request/verify_receiptent_account_request.dart';
 import 'package:teller_trust/model/bank_model.dart';
+import 'package:teller_trust/model/bank_verified_account_model.dart';
 import 'package:teller_trust/model/customer_profile.dart';
 import 'package:teller_trust/model/success_model.dart';
 import 'package:teller_trust/model/tella_trust_customer_model.dart';
@@ -24,6 +25,8 @@ class SendBloc extends Bloc<SendEvent, SendState> {
   AppRepository appRepository = AppRepository();
 
   final numberFormat = NumberFormat("#,###", "en_US");
+
+  List<Bank> banks = [];
 
   SendBloc() : super(const InitialSendState()) {
     on<EnterAmountToSend>((event, emit) {
@@ -126,6 +129,7 @@ class SendBloc extends Bloc<SendEvent, SendState> {
         BanksToTxnWith(
           banksReadyForUse: false,
           loadingBanks: true,
+          filteredAnyBank: false,
           banks: const [],
         ),
       );
@@ -138,7 +142,7 @@ class SendBloc extends Bloc<SendEvent, SendState> {
         List remoteBanksData = SuccessModel.fromJson(
           jsonDecode(availableBanks.body),
         ).data['items'];
-        List<Bank> banks = List<Bank>.from(
+        banks = List<Bank>.from(
           remoteBanksData.map(
             (bank) {
               return Bank.fromJson(bank);
@@ -150,6 +154,7 @@ class SendBloc extends Bloc<SendEvent, SendState> {
             banksReadyForUse: true,
             loadingBanks: false,
             banks: banks,
+            filteredAnyBank: false,
           ),
         );
       } else {
@@ -164,19 +169,34 @@ class SendBloc extends Bloc<SendEvent, SendState> {
     });
     on<SearchForABank>((event, emit) {
       List<Bank> filteredSearchedBanks = [];
-      if (event.searchValue.isNotEmpty && event.banks.isNotEmpty) {
+      String searchValue = event.searchValue;
+      banks = event.banks;
+      if (searchValue.isNotEmpty) {
         filteredSearchedBanks.clear();
-        for (Bank bankElement in event.banks) {
-          if (bankElement.bankName.toLowerCase() ==
-              event.searchValue.toLowerCase()) {
+        for (Bank bankElement in banks) {
+          if (bankElement.bankName
+              .toLowerCase()
+              .contains(searchValue.toLowerCase())) {
             filteredSearchedBanks.add(bankElement);
           }
         }
         emit(
           BanksToTxnWith(
-            banksReadyForUse: true,
+            banksReadyForUse: false,
             loadingBanks: false,
+            filteredAnyBank: filteredSearchedBanks.isNotEmpty,
             banks: filteredSearchedBanks,
+          ),
+        );
+        debugPrint(
+            'this is the state of the bank search $state $searchValue $filteredSearchedBanks');
+      } else {
+        emit(
+          BanksToTxnWith(
+            banksReadyForUse: false,
+            loadingBanks: false,
+            filteredAnyBank: true,
+            banks: banks,
           ),
         );
       }
@@ -273,16 +293,15 @@ class SendBloc extends Bloc<SendEvent, SendState> {
         );
         String accessToken = await SharedPref.getString("access-token");
         var sendInternalFund = await appRepository.appPostRequest(
-          SendInternalFundRequest(
-            receiverId: event.receiverId,
-            narration: event.narration,
-            amount: event.amount,
-          ).toJson(),
-          AppApis.sendInternalFund,
-          accessToken: accessToken,
-        );
-        debugPrint(
-            'this is the state of the transfer ${sendInternalFund.statusCode} ${sendInternalFund.body.toString()}');
+            SendInternalFundRequest(
+              receiverId: event.receiverId,
+              narration: event.narration,
+              amount: event.amount,
+            ).toJson(),
+            AppApis.sendInternalFund,
+            accessToken: accessToken,
+            accessPIN: event.accessPin);
+
         if (sendInternalFund.statusCode == 200 ||
             sendInternalFund.statusCode == 201) {
           emit(
@@ -329,7 +348,7 @@ class SendBloc extends Bloc<SendEvent, SendState> {
           ),
         );
         String accessToken = await SharedPref.getString("access-token");
-        var sendInternalFund = await appRepository.appPostRequest(
+        var sendExternalFund = await appRepository.appPostRequest(
           SendExternalFundRequest(
             narration: event.narration,
             amount: event.amount,
@@ -338,39 +357,45 @@ class SendBloc extends Bloc<SendEvent, SendState> {
             sessionId: event.sessionId,
           ).toJson(),
           AppApis.sendExternalFund,
+          accessPIN: event.txnId,
           accessToken: accessToken,
         );
-        if (sendInternalFund.statusCode == 200) {
+        if (sendExternalFund.statusCode == 200 ||
+            sendExternalFund.statusCode == 201) {
           emit(
             SendFundToInternalOrExternalRecepitent(
               isPaymentSuccessful: true,
               processingPayment: false,
               statusMessage: SuccessModel.fromJson(
-                jsonDecode(sendInternalFund.body),
+                jsonDecode(sendExternalFund.body),
               ).message,
             ),
           );
         } else {
           emit(
-            ErrorStateForSendTo(
-              errorMessage: AppUtils.convertString(
-                json.decode(sendInternalFund.body)['message'],
-              ),
+            SendFundToInternalOrExternalRecepitent(
+              isPaymentSuccessful: false,
+              processingPayment: false,
+              statusMessage: SuccessModel.fromJson(
+                jsonDecode(sendExternalFund.body),
+              ).message,
             ),
           );
         }
       } else {
         emit(
-          ErrorStateForSendTo(
-            errorMessage: AppUtils.convertString(
-              'All fields are required',
-            ),
+          SendFundToInternalOrExternalRecepitent(
+            isPaymentSuccessful: false,
+            processingPayment: false,
+            statusMessage: 'All fields are required',
           ),
         );
       }
     });
     on<VerifyRecepitentAccountNumber>((event, emit) async {
-      if (event.accountNumber.isNotEmpty && event.bankCode.isNotEmpty) {
+      String accountNumber = event.accountNumber;
+      String bankCode = event.bankCode;
+      if (accountNumber.isNotEmpty && bankCode.isNotEmpty) {
         emit(
           VerificationStateForBankAccountNumber(
             isDataReadyForUse: false,
@@ -385,8 +410,11 @@ class SendBloc extends Bloc<SendEvent, SendState> {
             bankCode: event.bankCode,
           ).toJson(),
           AppApis.verifyAccount,
+          accessPIN: event.transactionPin,
           accessToken: accessToken,
         );
+        debugPrint(
+            'this is the state of the transfer ${verifyAccountNumber.statusCode} ${verifyAccountNumber.body.toString()}');
         if (verifyAccountNumber.statusCode == 200 ||
             verifyAccountNumber.statusCode == 201) {
           emit(
@@ -396,23 +424,35 @@ class SendBloc extends Bloc<SendEvent, SendState> {
               statusMessage: SuccessModel.fromJson(
                 jsonDecode(verifyAccountNumber.body),
               ).message,
+              bankVerifiedAccount: BankVerifiedAccountModel.fromJson(
+                SuccessModel.fromJson(
+                  jsonDecode(verifyAccountNumber.body),
+                ).data,
+              ),
             ),
           );
         } else {
           emit(
-            ErrorStateForSendTo(
-              errorMessage: AppUtils.convertString(
-                json.decode(verifyAccountNumber.body)['message'],
+            VerificationStateForBankAccountNumber(
+              isDataReadyForUse: false,
+              isRequestInProgress: false,
+              statusMessage: SuccessModel.fromJson(
+                jsonDecode(verifyAccountNumber.body),
+              ).message,
+              bankVerifiedAccount: BankVerifiedAccountModel.fromJson(
+                SuccessModel.fromJson(
+                  jsonDecode(verifyAccountNumber.body),
+                ).data,
               ),
             ),
           );
         }
       } else {
         emit(
-          ErrorStateForSendTo(
-            errorMessage: AppUtils.convertString(
-              'All fields are required',
-            ),
+          VerificationStateForBankAccountNumber(
+            isDataReadyForUse: false,
+            isRequestInProgress: false,
+            statusMessage: 'All fields are required',
           ),
         );
       }

@@ -17,6 +17,7 @@ class AppApis {
 
   static String addWithdrawalAccount = "$appBaseUrl/c/w/add-withdrawal-nuban";
   static String userProfile = "$appBaseUrl/user/c/profile";
+  static String getOneTransactionDetails = "$appBaseUrl/c/w/get-transaction";
   //static String userProfile = "$appBaseUrl/user/c/profile";
 
   ///PRODUCTS ENDPOINTS
@@ -24,6 +25,9 @@ class AppApis {
   static String listProduct = "$appBaseUrl/c/p/list-product";
   static String listService = "$appBaseUrl/c/p/list-service";
   static String purchaseProduct = "$appBaseUrl/c/pay/create-wallet-order";
+  static String createBeneficiary = "$appBaseUrl/user/c/create-beneficiary";
+  static String listBeneficiary = "$appBaseUrl/user/c/list-beneficiary";
+  static String deleteBeneficiary = "$appBaseUrl/user/c/delete-beneficiary";
   static String verifyEntityNumber = "$appBaseUrl/c/pay/verify-entity-number";
   static String quickPay = "$appBaseUrl/c/pay/initiate-checkout";
 

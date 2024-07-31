@@ -8,29 +8,31 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:teller_trust/model/category_model.dart' as mainCategory;
+import 'package:teller_trust/view/the_app_screens/sevices/product_beneficiary/product_beneficiary.dart';
 
-import '../../../bloc/product_bloc/product_bloc.dart';
-import '../../../repository/app_repository.dart';
-import '../../../res/apis.dart';
-import '../../../res/app_colors.dart';
-import '../../../res/app_icons.dart';
-import '../../../utills/app_navigator.dart';
-import '../../../utills/app_utils.dart';
-import '../../../utills/app_validator.dart';
-import '../../../utills/custom_theme.dart';
-import '../../../utills/enums/toast_mesage.dart';
-import '../../../utills/shared_preferences.dart';
-import '../../auth/otp_pin_pages/confirm_with_otp.dart';
-import '../../widgets/app_custom_text.dart';
-import '../../widgets/form_button.dart';
-import '../../widgets/form_input.dart';
+import '../../../../bloc/product_bloc/product_bloc.dart';
+import '../../../../repository/app_repository.dart';
+import '../../../../res/apis.dart';
+import '../../../../res/app_colors.dart';
+import '../../../../res/app_icons.dart';
+import '../../../../utills/app_navigator.dart';
+import '../../../../utills/app_utils.dart';
+import '../../../../utills/app_validator.dart';
+import '../../../../utills/custom_theme.dart';
+import '../../../../utills/enums/toast_mesage.dart';
+import '../../../../utills/shared_preferences.dart';
+import '../../../auth/otp_pin_pages/confirm_with_otp.dart';
+import '../../../auth/sign_in_with_access_pin_and_biometrics.dart';
+import '../../../widgets/app_custom_text.dart';
+import '../../../widgets/form_button.dart';
+import '../../../widgets/form_input.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
-import '../../widgets/purchase_receipt.dart';
-import '../../widgets/show_toast.dart';
-import 'build_payment_method.dart';
-import 'make_bank_transfer/bank_transfer.dart';
-import '../../../model/product_model.dart' as productMode;
+import '../../../widgets/purchase_receipt.dart';
+import '../../../widgets/show_toast.dart';
+import '../payment_method/payment_method.dart';
+import '../make_bank_transfer/bank_transfer.dart';
+import '../../../../model/product_model.dart' as productMode;
 
 class ElectricityPurchase extends StatefulWidget {
   final mainCategory.Category category;
@@ -52,7 +54,11 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
   String serviceID = '';
   bool isPaymentAllowed = false;
   final _selectedAmtController = TextEditingController();
-  bool isShow=false;
+  bool isSaveAsBeneficiarySelected = false;
+  String beneficiaryName = '';
+
+  bool isShow = false;
+
   Future<String> handleNetworkSelect(String? selectedServiceId) async {
     AppRepository appRepository = AppRepository();
     String accessToken = await SharedPref.getString("access-token");
@@ -129,10 +135,14 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                       if (state is PurchaseSuccess) {
                         _beneficiaryController.clear();
                         _selectedAmtController.clear();
-                        isShow=false;
-                        state.transaction.order!.product!.name== widget.category.name;
+                        isShow = false;
+                        state.transaction.order!.product!.name ==
+                            widget.category.name;
 
-                        AppNavigator.pushAndStackPage(context, page: TransactionReceipt(transaction: state.transaction,));
+                        AppNavigator.pushAndStackPage(context,
+                            page: TransactionReceipt(
+                              transaction: state.transaction,
+                            ));
 
                         // showToast(
                         //     context: context,
@@ -154,21 +164,16 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                               accessToken: accessToken,
                             ));
                       } else if (state is AccessTokenExpireState) {
-                        showToast(
-                            context: context,
-                            title: 'Info',
-                            subtitle: 'Incorrect Access Pin',
-                            type: ToastMessageType.error);
 
-                        //MSG.warningSnackBar(context, state.error);
 
-                        // String firstame =
-                        //     await SharedPref.getString('firstName');
-                        //
-                        // AppNavigator.pushAndRemovePreviousPages(context,
-                        //     page: SignInWIthAccessPinBiometrics(
-                        //       userName: firstame,
-                        //     ));
+
+                        String firstame =
+                            await SharedPref.getString('firstName');
+
+                        AppNavigator.pushAndRemovePreviousPages(context,
+                            page: SignInWIthAccessPinBiometrics(
+                              userName: firstame,
+                            ));
                       } else if (state is PurchaseErrorState) {
                         showToast(
                             context: context,
@@ -469,11 +474,11 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                             MainAxisAlignment.spaceEvenly,
                                         children: [
                                           //selectAmount("2000"),
-                                          //selectAmount("1000", theme),
+                                          selectAmount("1000", theme),
                                           selectAmount("2000", theme),
                                           selectAmount("3000", theme),
-                                          selectAmount("4000", theme),
                                           selectAmount("5000", theme),
+                                          //selectAmount("5000", theme),
                                         ],
                                       ),
                                       CustomTextFormField(
@@ -513,6 +518,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                                 .text.isNotEmpty
                                             ? AppColors.green
                                             : AppColors.grey,
+                                        widget: const Icon(Icons.numbers),
                                       ),
                                       if (_beneficiaryController.text.length >
                                               9 &&
@@ -568,7 +574,8 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                                                   child:
                                                                       CustomText(
                                                                     text: res
-                                                                        .electricityVerifiedData.name,
+                                                                        .electricityVerifiedData
+                                                                        .name,
                                                                     color: AppColors
                                                                         .green,
                                                                   ),
@@ -582,12 +589,12 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                                                     .center,
                                                             children: [
                                                               GestureDetector(
-                                                                onTap:(){
-                                                                  setState((){
-                                                                    isShow=!isShow;
+                                                                onTap: () {
+                                                                  setState(() {
+                                                                    isShow =
+                                                                        !isShow;
                                                                   });
-
-                                              },
+                                                                },
                                                                 child: Align(
                                                                   alignment:
                                                                       Alignment
@@ -600,271 +607,219 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                                                         borderRadius: BorderRadius.circular(10)),
                                                                     child:
                                                                         Padding(
-                                                                      padding:
-                                                                          const EdgeInsets
-                                                                              .all(
-                                                                              5.0),
-                                                                      child:isShow?const CustomText(
-                                                                        text:
-                                                                        "hide order review",
-                                                                        color: AppColors
-                                                                            .green,
-                                                                      ):
-                                                                          const CustomText(
-                                                                        text:
-                                                                            "show order review",
-                                                                        color: AppColors
-                                                                            .green,
-                                                                      ),
+                                                                      padding: const EdgeInsets
+                                                                          .all(
+                                                                          5.0),
+                                                                      child: isShow
+                                                                          ? const CustomText(
+                                                                              text: "hide order review",
+                                                                              color: AppColors.green,
+                                                                            )
+                                                                          : const CustomText(
+                                                                              text: "show order review",
+                                                                              color: AppColors.green,
+                                                                            ),
                                                                     ),
                                                                   ),
                                                                 ),
                                                               ),
                                                             ],
                                                           ),
-                                                          if(isShow)
-
-                                                            const SizedBox(height:10),
-                                                          if(isShow)
-                                                          DottedBorder(
-                                                            borderType:
-                                                                BorderType
-                                                                    .RRect,
-                                                            radius: const Radius
-                                                                .circular(10),
-                                                            dashPattern: const [
-                                                              10,
-                                                              10
-                                                            ],
-                                                            color: AppColors
-                                                                .lightgrey,
-                                                            strokeWidth: 2,
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(
-                                                                          10.0),
-                                                              child: Column(
-                                                                children: [
-                                                                  Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .spaceBetween,
-                                                                    children: [
-                                                                      const Column(
-                                                                        crossAxisAlignment:
-                                                                            CrossAxisAlignment.start,
-                                                                        children: [
-                                                                          CustomText(
-                                                                            text:
-                                                                                'Meter Number',
-                                                                            size:
-                                                                                10,
-                                                                            textAlign:
-                                                                                TextAlign.center,
-                                                                            color:
-                                                                                AppColors.lightgrey,
-                                                                            weight:
-                                                                                FontWeight.bold,
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                      Column(
-                                                                        crossAxisAlignment:
-                                                                            CrossAxisAlignment.end,
-                                                                        children: [
-                                                                          CustomText(
-                                                                            text:
-                                                                                res.electricityVerifiedData.meterNo,
-                                                                            size:
-                                                                                10,
-                                                                            textAlign:
-                                                                                TextAlign.center,
-                                                                            color:
-                                                                                AppColors.lightgrey,
-                                                                            weight:
-                                                                                FontWeight.bold,
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                  Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .spaceBetween,
-                                                                    children: [
-                                                                      const Column(
-                                                                        crossAxisAlignment:
-                                                                            CrossAxisAlignment.start,
-                                                                        children: [
-                                                                          CustomText(
-                                                                            text:
-                                                                                'Name',
-                                                                            size:
-                                                                                10,
-                                                                            textAlign:
-                                                                                TextAlign.center,
-                                                                            color:
-                                                                                AppColors.lightgrey,
-                                                                            weight:
-                                                                                FontWeight.bold,
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                      Column(
-                                                                        crossAxisAlignment:
-                                                                            CrossAxisAlignment.end,
-                                                                        children: [
-                                                                          CustomText(
-                                                                            text:
-                                                                               res.electricityVerifiedData.name,
-                                                                            size:
-                                                                                10,
-                                                                            textAlign:
-                                                                                TextAlign.center,
-                                                                            color:
-                                                                                AppColors.lightgrey,
-                                                                            weight:
-                                                                                FontWeight.bold,
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                  Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .spaceBetween,
-                                                                    children: [
-                                                                      const Column(
-                                                                        crossAxisAlignment:
-                                                                            CrossAxisAlignment.start,
-                                                                        children: [
-                                                                          CustomText(
-                                                                            text:
-                                                                                'Meter Type',
-                                                                            size:
-                                                                                10,
-                                                                            textAlign:
-                                                                                TextAlign.center,
-                                                                            color:
-                                                                                AppColors.lightgrey,
-                                                                            weight:
-                                                                                FontWeight.bold,
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                      Column(
-                                                                        crossAxisAlignment:
-                                                                            CrossAxisAlignment.end,
-                                                                        children: [
-                                                                          CustomText(
-                                                                            text:
-                                                                                res.electricityVerifiedData.vendType,
-                                                                            size:
-                                                                                10,
-                                                                            textAlign:
-                                                                                TextAlign.center,
-                                                                            color:
-                                                                                AppColors.lightgrey,
-                                                                            weight:
-                                                                                FontWeight.bold,
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                  Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .spaceBetween,
-                                                                    children: [
-                                                                      const Column(
-                                                                        crossAxisAlignment:
-                                                                            CrossAxisAlignment.start,
-                                                                        children: [
-                                                                          CustomText(
-                                                                            text:
-                                                                                'Outstanding',
-                                                                            size:
-                                                                                10,
-                                                                            textAlign:
-                                                                                TextAlign.center,
-                                                                            color:
-                                                                                AppColors.lightgrey,
-                                                                            weight:
-                                                                                FontWeight.bold,
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                      Column(
-                                                                        crossAxisAlignment:
-                                                                            CrossAxisAlignment.end,
-                                                                        children: [
-                                                                          CustomText(
-                                                                            text:
-                                                                                res.electricityVerifiedData.outstanding.toString(),
-                                                                            size:
-                                                                                10,
-                                                                            textAlign:
-                                                                                TextAlign.center,
-                                                                            color:
-                                                                                AppColors.lightgrey,
-                                                                            weight:
-                                                                                FontWeight.bold,
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                  Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .spaceBetween,
-                                                                    children: [
-                                                                      const Column(
-                                                                        crossAxisAlignment:
-                                                                            CrossAxisAlignment.start,
-                                                                        children: [
-                                                                          CustomText(
-                                                                            text:
-                                                                                'Address',
-                                                                            size:
-                                                                                10,
-                                                                            textAlign:
-                                                                                TextAlign.center,
-                                                                            color:
-                                                                                AppColors.lightgrey,
-                                                                            weight:
-                                                                                FontWeight.bold,
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                      Column(
-                                                                        crossAxisAlignment:
-                                                                            CrossAxisAlignment.end,
-                                                                        children: [
-                                                                          CustomText(
-                                                                            text:
-                                                                                res.electricityVerifiedData.address.toString(),
-                                                                            size:
-                                                                                10,
-                                                                            textAlign:
-                                                                                TextAlign.center,
-                                                                            color:
-                                                                                AppColors.lightgrey,
-                                                                            weight:
-                                                                                FontWeight.bold,
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ],
+                                                          if (isShow)
+                                                            const SizedBox(
+                                                                height: 10),
+                                                          if (isShow)
+                                                            DottedBorder(
+                                                              borderType:
+                                                                  BorderType
+                                                                      .RRect,
+                                                              radius:
+                                                                  const Radius
+                                                                      .circular(
+                                                                      10),
+                                                              dashPattern: const [
+                                                                10,
+                                                                10
+                                                              ],
+                                                              color: AppColors
+                                                                  .lightgrey,
+                                                              strokeWidth: 2,
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .all(
+                                                                        10.0),
+                                                                child: Column(
+                                                                  children: [
+                                                                    Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceBetween,
+                                                                      children: [
+                                                                        const Column(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            CustomText(
+                                                                              text: 'Meter Number',
+                                                                              size: 10,
+                                                                              textAlign: TextAlign.center,
+                                                                              color: AppColors.lightgrey,
+                                                                              weight: FontWeight.bold,
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        Column(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.end,
+                                                                          children: [
+                                                                            CustomText(
+                                                                              text: res.electricityVerifiedData.meterNo,
+                                                                              size: 10,
+                                                                              textAlign: TextAlign.center,
+                                                                              color: AppColors.lightgrey,
+                                                                              weight: FontWeight.bold,
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceBetween,
+                                                                      children: [
+                                                                        const Column(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            CustomText(
+                                                                              text: 'Name',
+                                                                              size: 10,
+                                                                              textAlign: TextAlign.center,
+                                                                              color: AppColors.lightgrey,
+                                                                              weight: FontWeight.bold,
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        Column(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.end,
+                                                                          children: [
+                                                                            CustomText(
+                                                                              text: res.electricityVerifiedData.name,
+                                                                              size: 10,
+                                                                              textAlign: TextAlign.center,
+                                                                              color: AppColors.lightgrey,
+                                                                              weight: FontWeight.bold,
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceBetween,
+                                                                      children: [
+                                                                        const Column(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            CustomText(
+                                                                              text: 'Meter Type',
+                                                                              size: 10,
+                                                                              textAlign: TextAlign.center,
+                                                                              color: AppColors.lightgrey,
+                                                                              weight: FontWeight.bold,
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        Column(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.end,
+                                                                          children: [
+                                                                            CustomText(
+                                                                              text: res.electricityVerifiedData.vendType,
+                                                                              size: 10,
+                                                                              textAlign: TextAlign.center,
+                                                                              color: AppColors.lightgrey,
+                                                                              weight: FontWeight.bold,
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceBetween,
+                                                                      children: [
+                                                                        const Column(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            CustomText(
+                                                                              text: 'Outstanding',
+                                                                              size: 10,
+                                                                              textAlign: TextAlign.center,
+                                                                              color: AppColors.lightgrey,
+                                                                              weight: FontWeight.bold,
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        Column(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.end,
+                                                                          children: [
+                                                                            CustomText(
+                                                                              text: res.electricityVerifiedData.outstanding.toString(),
+                                                                              size: 10,
+                                                                              textAlign: TextAlign.center,
+                                                                              color: AppColors.lightgrey,
+                                                                              weight: FontWeight.bold,
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceBetween,
+                                                                      children: [
+                                                                        const Column(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            CustomText(
+                                                                              text: 'Address',
+                                                                              size: 10,
+                                                                              textAlign: TextAlign.center,
+                                                                              color: AppColors.lightgrey,
+                                                                              weight: FontWeight.bold,
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        Column(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.end,
+                                                                          children: [
+                                                                            CustomText(
+                                                                              text: res.electricityVerifiedData.address.toString(),
+                                                                              size: 10,
+                                                                              textAlign: TextAlign.center,
+                                                                              color: AppColors.lightgrey,
+                                                                              weight: FontWeight.bold,
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                ),
                                                               ),
                                                             ),
-                                                          ),
                                                         ],
                                                       ));
                                                 } else if (state
@@ -881,9 +836,9 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                                       ));
                                                 } else {
                                                   return Padding(
-                                                      padding:
-                                                          const EdgeInsets.fromLTRB(
-                                                              10, 10, 10, 25.0),
+                                                      padding: const EdgeInsets
+                                                          .fromLTRB(
+                                                          10, 10, 10, 25.0),
                                                       child: CustomText(
                                                         text:
                                                             "Verifying user.....",
@@ -905,6 +860,12 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                                     ));
                                               }
                                             }),
+                                      if(serviceID.isNotEmpty)
+                                        SizedBox(height: 10,),
+                                      if(serviceID.isNotEmpty)
+                                        BeneficiaryWidget(productId: serviceID, beneficiaryNum: (value) { setState(() {
+                                          _beneficiaryController.text=value;
+                                        }); },),
                                       SizedBox(
                                         height: 310,
                                         child: PaymentMethodScreen(
@@ -935,6 +896,30 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                               }
                                             });
                                           },
+                                          name: (value) {
+                                            print(value);
+                                            Future.microtask(() {
+                                              if (mounted) {
+                                                setState(() {
+                                                  beneficiaryName = value;
+                                                  // print(isPaymentAllowed);
+                                                });
+                                              }
+                                            });
+                                          },
+                                          isSaveAsBeneficiarySelected: (value) {
+                                            print(value);
+                                            Future.microtask(() {
+                                              if (mounted) {
+                                                setState(() {
+                                                  isSaveAsBeneficiarySelected =
+                                                      value;
+                                                  // print(isPaymentAllowed);
+                                                });
+                                              }
+                                            });
+                                          },
+                                          number: _beneficiaryController.text,
                                         ),
                                       ),
                                       FormButton(
@@ -967,13 +952,14 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                                           .requiredFields,
                                                       serviceID,
                                                       transactionPin,
-                                                      true));
+                                                      true,isSaveAsBeneficiarySelected,beneficiaryName));
                                             } else {
                                               var transactionPin = '';
                                               transactionPin = await modalSheet
                                                   .showMaterialModalBottomSheet(
                                                       backgroundColor:
                                                           Colors.transparent,
+                                                      isDismissible: true,
                                                       shape:
                                                           const RoundedRectangleBorder(
                                                         borderRadius:
@@ -1014,9 +1000,10 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                                         context,
                                                         widget.category
                                                             .requiredFields,
-                                                        serviceID, //selectedElectricityProviderId,
+                                                        serviceID,
+                                                        //selectedElectricityProviderId,
                                                         transactionPin,
-                                                        false));
+                                                        false,isSaveAsBeneficiarySelected,beneficiaryName));
                                               }
                                             }
                                           }
@@ -1253,7 +1240,8 @@ class ElectricityProvider extends StatelessWidget {
                               height: 50,
                               width: double.infinity,
                               color: Colors.grey[300],
-                              child: const Center(child: CircularProgressIndicator()),
+                              child: const Center(
+                                  child: CircularProgressIndicator()),
                             );
                           },
                         ),
@@ -1366,7 +1354,8 @@ class _ElectricityProviderListState extends State<ElectricityProviderList> {
                 } else if (state is ServiceSuccessState) {
                   final ServiceSuccessState = state;
                   return GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3, // Number of items per row
                       crossAxisSpacing: 8.0, // Spacing between columns
                       mainAxisSpacing: 8.0, // Spacing between rows
