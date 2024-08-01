@@ -13,6 +13,7 @@ import 'package:teller_trust/model/bank_verified_account_model.dart';
 import 'package:teller_trust/model/customer_profile.dart';
 import 'package:teller_trust/model/success_model.dart';
 import 'package:teller_trust/model/tella_trust_customer_model.dart';
+import 'package:teller_trust/model/transactionHistory.dart';
 import 'package:teller_trust/repository/app_repository.dart';
 import 'package:teller_trust/res/apis.dart';
 import 'package:teller_trust/utills/app_utils.dart';
@@ -304,6 +305,7 @@ class SendBloc extends Bloc<SendEvent, SendState> {
 
         if (sendInternalFund.statusCode == 200 ||
             sendInternalFund.statusCode == 201) {
+          print(jsonDecode(sendInternalFund.body));
           emit(
             SendFundToInternalOrExternalRecepitent(
               isPaymentSuccessful: true,
@@ -311,6 +313,7 @@ class SendBloc extends Bloc<SendEvent, SendState> {
               statusMessage: SuccessModel.fromJson(
                 jsonDecode(sendInternalFund.body),
               ).message,
+              transaction: Transaction.fromJson(jsonDecode(sendInternalFund.body)['data'])
             ),
           );
         } else {
@@ -362,6 +365,7 @@ class SendBloc extends Bloc<SendEvent, SendState> {
         );
         if (sendExternalFund.statusCode == 200 ||
             sendExternalFund.statusCode == 201) {
+
           emit(
             SendFundToInternalOrExternalRecepitent(
               isPaymentSuccessful: true,
@@ -369,6 +373,7 @@ class SendBloc extends Bloc<SendEvent, SendState> {
               statusMessage: SuccessModel.fromJson(
                 jsonDecode(sendExternalFund.body),
               ).message,
+              transaction: Transaction.fromJson(jsonDecode(sendExternalFund.body)['data']),
             ),
           );
         } else {

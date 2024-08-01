@@ -16,7 +16,9 @@ import 'package:share_plus/share_plus.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:teller_trust/model/transactionHistory.dart';
 import 'package:teller_trust/res/app_icons.dart';
+import 'package:teller_trust/utills/app_navigator.dart';
 import 'package:teller_trust/utills/app_utils.dart';
+import 'package:teller_trust/view/the_app_screens/landing_page.dart';
 import 'package:teller_trust/view/widgets/show_toast.dart';
 
 import '../../repository/app_repository.dart';
@@ -30,8 +32,9 @@ import 'app_custom_text.dart';
 
 class TransactionReceipt extends StatefulWidget {
   final Transaction transaction;
+  bool isHome;
 
-  const TransactionReceipt({super.key, required this.transaction});
+   TransactionReceipt({super.key, required this.transaction,this.isHome=false});
 
   @override
   State<TransactionReceipt> createState() => _TransactionReceiptState();
@@ -110,7 +113,12 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
               if (!isSharingPdf)
                 GestureDetector(
                   onTap: () {
-                    Navigator.pop(context);
+                    if(widget.isHome){
+                      AppNavigator.pushAndRemovePreviousPages(context, page: LandingPage());
+                    }else{
+                      Navigator.pop(context);
+
+                    }
                     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
                       statusBarColor: Colors.transparent,
                       statusBarIconBrightness:

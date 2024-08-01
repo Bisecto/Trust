@@ -16,9 +16,12 @@ import 'package:teller_trust/view/sendBeneficary/widgets/sendTo/send_to_form_wid
 import 'package:teller_trust/view/sendBeneficary/widgets/sendTo/send_to_header_widget.dart';
 import 'package:teller_trust/view/sendBeneficary/widgets/sendTo/send_to_options_widget.dart';
 import 'package:teller_trust/view/sendBeneficary/widgets/sendTo/top_beneficiaries_widget.dart';
+import 'package:teller_trust/view/the_app_screens/transaction_history/transaction_history.dart';
+import 'package:teller_trust/view/widgets/purchase_receipt.dart';
 import 'package:teller_trust/view/widgets/show_toast.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modal_sheet;
 
+import '../../../../utills/app_navigator.dart';
 import '../../../auth/otp_pin_pages/confirm_with_otp.dart';
 
 class SendToView extends StatefulWidget {
@@ -111,14 +114,20 @@ class _SendToViewState extends State<SendToView> {
 
           if (state is SendFundToInternalOrExternalRecepitent) {
             if (!state.processingPayment) {
-              showToast(
-                context: context,
-                title: state.isPaymentSuccessful ? 'Successful' : 'Error',
-                subtitle: state.statusMessage,
-                type: state.isPaymentSuccessful
-                    ? ToastMessageType.success
-                    : ToastMessageType.error,
-              );
+              if (state.isPaymentSuccessful) {
+
+                AppNavigator.pushAndStackPage(context,
+                    page: TransactionReceipt(transaction: state.transaction!));
+              } else {
+                showToast(
+                  context: context,
+                  title: state.isPaymentSuccessful ? 'Successful' : 'Error',
+                  subtitle: state.statusMessage,
+                  type: state.isPaymentSuccessful
+                      ? ToastMessageType.success
+                      : ToastMessageType.error,
+                );
+              }
               // await Future.delayed(
               //   const Duration(
               //     seconds: 10,

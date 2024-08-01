@@ -13,7 +13,9 @@ import 'package:teller_trust/view/sendBeneficary/pages/send_to_page.dart';
 import 'package:teller_trust/view/sendBeneficary/widgets/sendMain/custom_key_pad_widget.dart';
 
 class SendMainFormWidget extends StatefulWidget {
-  const SendMainFormWidget({super.key});
+  String balance;
+
+  SendMainFormWidget({super.key, required this.balance});
 
   @override
   State<SendMainFormWidget> createState() => _SendMainFormWidgetState();
@@ -171,20 +173,36 @@ class _SendMainFormWidgetState extends State<SendMainFormWidget> {
               padding: const EdgeInsets.only(bottom: 10.0),
               child: AppButton(
                 buttonBoxDecoration: BoxDecoration(
-                  color: AppColors.green,
+                  color: (widget.balance == '0.00' ||
+                          (double.parse(widget.balance.replaceAll(',', '')) <
+                              double.parse((mainValue + fractionValue)
+                                  .replaceAll(',', ''))))
+                      ? AppColors.grey
+                      : AppColors.green,
                   borderRadius: BorderRadius.circular(
                     20.0,
                   ),
                 ),
                 buttonCallback: () {
-                  AppNavigator.pushAndStackPage(
-                    context,
-                    page: SendToPage(
-                      txnDetails: TxnDetailsToSendOut(
-                        amount: '$mainValue$fractionValue',
-                      ),
-                    ),
-                  );
+                  if (widget.balance != '0.00') {
+                    print(widget.balance);
+                    print(mainValue);
+                    print(fractionValue);
+                    if (double.parse(widget.balance.replaceAll(',', '')) <
+                        double.parse(
+                            (mainValue + fractionValue).replaceAll(',', ''))) {
+                      //print('SPmething');
+                    } else {
+                      AppNavigator.pushAndStackPage(
+                        context,
+                        page: SendToPage(
+                          txnDetails: TxnDetailsToSendOut(
+                            amount: '$mainValue$fractionValue',
+                          ),
+                        ),
+                      );
+                    }
+                  }
                 },
                 buttonChild: const Text(
                   'Continue',

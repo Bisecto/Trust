@@ -54,9 +54,9 @@ class _SendMainViewState extends State<SendMainView> {
                 const AppSpacer(
                   height: 30.0,
                 ),
-                const Expanded(
+                 Expanded(
                   child: SingleChildScrollView(
-                    child: SendMainFormWidget(),
+                    child: SendMainFormWidget(balance: balance,),
                   ),
                 ),
               ],

@@ -5,6 +5,8 @@ import 'package:teller_trust/model/bank_model.dart';
 import 'package:teller_trust/model/bank_verified_account_model.dart';
 import 'package:teller_trust/model/tella_trust_customer_model.dart';
 
+import '../../../model/transactionHistory.dart';
+
 abstract class SendState extends Equatable {
   const SendState();
 }
@@ -188,10 +190,12 @@ class SendFundToInternalOrExternalRecepitent extends SendState {
   bool isPaymentSuccessful;
   bool processingPayment;
   String statusMessage;
+  Transaction? transaction;
   SendFundToInternalOrExternalRecepitent({
     required this.processingPayment,
     required this.isPaymentSuccessful,
     required this.statusMessage,
+     this.transaction
   });
 
   @override
