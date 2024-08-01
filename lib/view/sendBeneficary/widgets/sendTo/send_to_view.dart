@@ -116,7 +116,7 @@ class _SendToViewState extends State<SendToView> {
             if (!state.processingPayment) {
               if (state.isPaymentSuccessful) {
 
-                AppNavigator.pushAndStackPage(context,
+                AppNavigator.pushAndReplacePage(context,
                     page: TransactionReceipt(transaction: state.transaction!));
               } else {
                 showToast(
@@ -181,7 +181,8 @@ class _SendToViewState extends State<SendToView> {
                               TopBeneficiariesWidget(
                                 beneficiaries: listOfBeneficiaries,
                                 isItForTellaTrust: isItForTellaTrust,
-                                isUserVerified: userForTxnConfirmed,
+                                isUserVerified: userForTxnConfirmed, transferredToName: transferredToName,
+
                               ),
                               const AppSpacer(
                                 height: 10,

@@ -19,6 +19,7 @@ import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/utills/app_navigator.dart';
 import 'package:teller_trust/utills/app_utils.dart';
 import 'package:teller_trust/view/the_app_screens/landing_page.dart';
+import 'package:teller_trust/view/widgets/form_button.dart';
 import 'package:teller_trust/view/widgets/show_toast.dart';
 
 import '../../repository/app_repository.dart';
@@ -34,7 +35,8 @@ class TransactionReceipt extends StatefulWidget {
   final Transaction transaction;
   bool isHome;
 
-   TransactionReceipt({super.key, required this.transaction,this.isHome=false});
+  TransactionReceipt(
+      {super.key, required this.transaction, this.isHome = false});
 
   @override
   State<TransactionReceipt> createState() => _TransactionReceiptState();
@@ -88,6 +90,19 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                   const SizedBox(height: 20),
                   if (!isSharingPdf)
                     buildActionButtons(widget.transaction.description),
+                  if (!isSharingPdf&&widget.isHome)
+                    FormButton(
+                      onPressed: () {
+                        AppNavigator.pushAndRemovePreviousPages(context, page: LandingPage());
+                      },
+                      width: AppUtils.deviceScreenSize(context).width/2,
+                      text: 'Homepage',
+                      iconWidget: Icons.arrow_forward,
+                      textColor: AppColors.white,
+                      isIcon: true,
+                      borderRadius: 20,
+                      bgColor: AppColors.green,
+                    ),
                   const SizedBox(height: 50),
                   buildFooter(),
                 ],
@@ -113,11 +128,11 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
               if (!isSharingPdf)
                 GestureDetector(
                   onTap: () {
-                    if(widget.isHome){
-                      AppNavigator.pushAndRemovePreviousPages(context, page: LandingPage());
-                    }else{
+                    if (widget.isHome) {
+                      AppNavigator.pushAndRemovePreviousPages(context,
+                          page: LandingPage());
+                    } else {
                       Navigator.pop(context);
-
                     }
                     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
                       statusBarColor: Colors.transparent,

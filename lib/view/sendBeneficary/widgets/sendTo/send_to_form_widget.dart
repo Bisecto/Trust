@@ -15,6 +15,7 @@ import 'package:teller_trust/view/auth/otp_pin_pages/confirm_with_otp.dart';
 import 'package:teller_trust/view/sendBeneficary/widgets/sendTo/bankModal/bank_view_widget.dart';
 import 'package:teller_trust/view/widgets/show_toast.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modal_sheet;
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
 class SendToFormWidget extends StatefulWidget {
   final bool isItForTellaTrust;
@@ -149,22 +150,44 @@ class _SendToFormWidgetState extends State<SendToFormWidget> {
                   onTap: !isAnyOptionsSelected
                       ? null
                       : () async {
-                          selectedBank = await showDialog(
-                            context: context,
-                            builder: (context) {
-                              return BankViewWidget(
-                                banks: banks,
-                              );
-                            },
-                          ).then((value) {
-                            if (value != null) {
-                              setState(() {
-                                selectedBank = value;
-                                bankNameController.text = selectedBank.bankName;
-                              });
-                            }
-                            return value ?? '';
-                          });
+                  selectedBank=await  modalSheet.showMaterialModalBottomSheet(
+                      backgroundColor: Colors.transparent,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(20.0)),
+                      ),
+                      context: context,
+                      builder: (context) => Padding(
+                        padding: const EdgeInsets.only(top: 100.0),
+                        child: BankViewWidget(
+                          banks: banks,
+                        ),
+                      ),
+                    ).then((value) {
+                    if (value != null) {
+                      setState(() {
+                        selectedBank = value;
+                        bankNameController.text = selectedBank.bankName;
+                      });
+                    }
+                    return value ?? '';
+                  });
+                          // selectedBank = await showDialog(
+                          //   context: context,
+                          //   builder: (context) {
+                          //     return BankViewWidget(
+                          //       banks: banks,
+                          //     );
+                          //   },
+                          // ).then((value) {
+                          //   if (value != null) {
+                          //     setState(() {
+                          //       selectedBank = value;
+                          //       bankNameController.text = selectedBank.bankName;
+                          //     });
+                          //   }
+                          //   return value ?? '';
+                          // });
                         },
                   child: TextField(
                     controller: bankNameController,
@@ -175,6 +198,7 @@ class _SendToFormWidgetState extends State<SendToFormWidget> {
                     decoration: InputDecoration(
                       hintText: '',
                       hintStyle: GeneralConstant.normalTextStyle,
+
                       suffixIcon: const Padding(
                         padding: EdgeInsets.only(
                           right: 15.0,

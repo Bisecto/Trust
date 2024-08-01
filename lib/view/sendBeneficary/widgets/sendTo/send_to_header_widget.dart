@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:teller_trust/res/app_colors.dart';
 import 'package:teller_trust/res/app_spacer.dart';
+
+import '../../../../utills/custom_theme.dart';
 
 class SendToHeaderWidget extends StatelessWidget {
   final String amountTransferred;
@@ -9,6 +12,7 @@ class SendToHeaderWidget extends StatelessWidget {
   final String txnMadeToImage;
   final bool isTellaTrustTxn;
   final bool userForTxnConfirmed;
+
   const SendToHeaderWidget({
     super.key,
     required this.amountTransferred,
@@ -20,13 +24,17 @@ class SendToHeaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          decoration: const BoxDecoration(
-            color: AppColors.sendToDetailsBgColor,
+          decoration: BoxDecoration(
+            color: theme.isDark
+                ? AppColors.darkModeBackgroundColor
+                : AppColors.white,
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -46,13 +54,18 @@ class SendToHeaderWidget extends StatelessWidget {
                   margin: const EdgeInsets.only(
                     bottom: 9.0,
                   ),
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage(
-                        'assets/images/sendToBgHeader.png',
+                        theme.isDark?
+                        'assets/images/sendToBgHeader.png':
+                        'assets/images/sendToBgHeaderLightMode.png',
                       ),
                       fit: BoxFit.cover,
                     ),
+                    color: theme.isDark
+                        ? AppColors.darkModeBackgroundColor
+                        : AppColors.white,
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -65,13 +78,16 @@ class SendToHeaderWidget extends StatelessWidget {
                         child: Container(
                           width: 40,
                           height: 40,
-                          decoration: const BoxDecoration(
-                            color: AppColors.white,
+                          decoration: BoxDecoration(
+                            color: theme.isDark
+                                ? AppColors.darkModeBackgroundColor
+                                : AppColors.white,
                             shape: BoxShape.circle,
                           ),
                           child: Center(
                             child: SvgPicture.asset(
                               'assets/icons/sendBeneficiary/back.svg',
+                              color: theme.isDark ? AppColors.white : null,
                             ),
                           ),
                         ),
@@ -92,13 +108,18 @@ class SendToHeaderWidget extends StatelessWidget {
                               borderRadius: BorderRadius.circular(
                                 10.0,
                               ),
-                              color: AppColors.sendToAmountBgColor,
+                              color: theme.isDark
+                                  ? AppColors.darkModeBackgroundContainerColor
+                                  : AppColors.sendToAmountBgColor,
                             ),
-                            child: const Center(
+                            child: Center(
                               child: Text(
                                 'AMOUNT',
                                 style: TextStyle(
-                                  color: AppColors.sendToAmountTxtColor,
+                                  color: theme.isDark
+                                      ? AppColors
+                                          .darkModeBackgroundMainTextColor
+                                      : AppColors.sendToAmountTxtColor,
                                   fontWeight: FontWeight.bold,
                                 ),
                                 textAlign: TextAlign.center,
@@ -110,8 +131,11 @@ class SendToHeaderWidget extends StatelessWidget {
                               alignment: AlignmentDirectional.topEnd,
                               child: Text(
                                 amountTransferred,
-                                style: const TextStyle(
-                                  color: AppColors.sendToAmountTxtColor,
+                                style: TextStyle(
+                                  color: theme.isDark
+                                      ? AppColors
+                                          .darkModeBackgroundMainTextColor
+                                      : AppColors.sendToAmountTxtColor,
                                   fontSize: 24.0,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -124,100 +148,102 @@ class SendToHeaderWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              if (isTellaTrustTxn && userForTxnConfirmed)
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const AppSpacer(
-                      height: 10.0,
-                    ),
-                    Align(
-                      alignment: AlignmentDirectional.topCenter,
-                      child: Container(
-                        height: 7,
-                        width: 80,
-                        decoration: BoxDecoration(
-                          color: AppColors.sendStrokeColor,
-                          borderRadius: BorderRadius.circular(
-                            5.0,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const AppSpacer(
-                      height: 30.0,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 15.0,
-                        vertical: 20.0,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10.0,
-                              vertical: 7.0,
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(
-                                10.0,
-                              ),
-                              color: AppColors.sendToDetailsLabelSendBgColor,
-                            ),
-                            child: const Center(
-                              child: Text(
-                                'SEND TO',
-                                style: TextStyle(
-                                  color:
-                                      AppColors.sendToDetailsLabelSendTxtColor,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Align(
-                              alignment: AlignmentDirectional.topEnd,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    height: 40,
-                                    width: 40,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      image: txnMadeToImage.isNotEmpty
-                                          ? DecorationImage(
-                                              image: NetworkImage(
-                                                txnMadeToImage,
-                                              ),
-                                            )
-                                          : null,
-                                    ),
-                                  ),
-                                  Text(
-                                    txnMadeToName,
-                                    style: const TextStyle(
-                                      color: AppColors.sendToAmountTxtColor,
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
+              // if (isTellaTrustTxn && userForTxnConfirmed)
+              //   Column(
+              //     mainAxisAlignment: MainAxisAlignment.start,
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: [
+              //       const AppSpacer(
+              //         height: 10.0,
+              //       ),
+              //       Align(
+              //         alignment: AlignmentDirectional.topCenter,
+              //         child: Container(
+              //           height: 7,
+              //           width: 80,
+              //           decoration: BoxDecoration(
+              //             color:theme.isDark?AppColors.darkModeBackgroundContainerColor:  AppColors.sendStrokeColor,
+              //             borderRadius: BorderRadius.circular(
+              //               5.0,
+              //             ),
+              //           ),
+              //         ),
+              //       ),
+              //       const AppSpacer(
+              //         height: 30.0,
+              //       ),
+              //       Padding(
+              //         padding: const EdgeInsets.symmetric(
+              //           horizontal: 15.0,
+              //           vertical: 20.0,
+              //         ),
+              //         child: Row(
+              //           mainAxisAlignment: MainAxisAlignment.start,
+              //           crossAxisAlignment: CrossAxisAlignment.center,
+              //           children: [
+              //             Container(
+              //               padding: const EdgeInsets.symmetric(
+              //                 horizontal: 10.0,
+              //                 vertical: 7.0,
+              //               ),
+              //               decoration: BoxDecoration(
+              //                 borderRadius: BorderRadius.circular(
+              //                   10.0,
+              //                 ),
+              //                 color: AppColors.sendToDetailsLabelSendBgColor,
+              //               ),
+              //               child:  Center(
+              //                 child: Text(
+              //                   'SEND TO',
+              //                   style: TextStyle(
+              //                     color:
+              //                     theme.isDark?AppColors.darkModeBackgroundMainTextColor: AppColors.sendToDetailsLabelSendTxtColor,
+              //                     fontWeight: FontWeight.bold,
+              //                   ),
+              //                   textAlign: TextAlign.center,
+              //                 ),
+              //               ),
+              //             ),
+              //             Expanded(
+              //               child: Align(
+              //                 alignment: AlignmentDirectional.topEnd,
+              //                 child: Row(
+              //                   mainAxisAlignment: MainAxisAlignment.end,
+              //                   crossAxisAlignment: CrossAxisAlignment.center,
+              //                   children: [
+              //                     Container(
+              //                       height: 40,
+              //                       width: 40,
+              //                       decoration: BoxDecoration(
+              //                         shape: BoxShape.circle,
+              //                         image: txnMadeToImage.isNotEmpty
+              //                             ? DecorationImage(
+              //                                 image: NetworkImage(
+              //                                   txnMadeToImage,
+              //                                 ),
+              //                               )
+              //                             : null,
+              //                       ),
+              //                     ),
+              //                     Text(
+              //                       txnMadeToName,
+              //                       style:  TextStyle(
+              //                         color:
+              //                         theme.isDark?AppColors.darkModeBackgroundMainTextColor: AppColors.sendToAmountTxtColor,
+              //
+              //                         fontSize: 16.0,
+              //                         fontWeight: FontWeight.bold,
+              //                       ),
+              //                     ),
+              //                   ],
+              //                 ),
+              //               ),
+              //             ),
+              //           ],
+              //         ),
+              //       )
+              //     ],
+              //   ),
             ],
           ),
         ),

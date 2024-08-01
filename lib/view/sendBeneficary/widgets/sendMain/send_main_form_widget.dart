@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:teller_trust/bloc/sendBloc/event/send_event.dart';
 import 'package:teller_trust/bloc/sendBloc/send_bloc.dart';
 import 'package:teller_trust/bloc/sendBloc/states/send_state.dart';
@@ -11,6 +12,9 @@ import 'package:teller_trust/res/app_spacer.dart';
 import 'package:teller_trust/utills/app_navigator.dart';
 import 'package:teller_trust/view/sendBeneficary/pages/send_to_page.dart';
 import 'package:teller_trust/view/sendBeneficary/widgets/sendMain/custom_key_pad_widget.dart';
+
+import '../../../../utills/custom_theme.dart';
+import '../../../widgets/app_custom_text.dart';
 
 class SendMainFormWidget extends StatefulWidget {
   String balance;
@@ -34,6 +38,8 @@ class _SendMainFormWidgetState extends State<SendMainFormWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return BlocConsumer<SendBloc, SendState>(
       listener: (context, state) {},
       builder: (context, state) {
@@ -73,9 +79,9 @@ class _SendMainFormWidgetState extends State<SendMainFormWidget> {
                   children: [
                     Text(
                       mainValue,
-                      style: const TextStyle(
-                        fontSize: 28.0,
-                        color: AppColors.amountMainValueColor,
+                      style:  TextStyle(
+                        fontSize: 25.0,
+                        color:theme.isDark?AppColors.darkModeBackgroundMainTextColor: AppColors.amountMainValueColor,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -94,6 +100,29 @@ class _SendMainFormWidgetState extends State<SendMainFormWidget> {
                 ),
               ],
             ),
+            if ((widget.balance == '0.0' ||
+                (double.parse(widget.balance.replaceAll(',', '')) <
+                    double.parse(
+                        (mainValue + fractionValue).replaceAll(',', ''))))) ...[
+              const AppSpacer(
+                height: 20.0,
+              ),
+              Align(
+                alignment: AlignmentDirectional.topCenter,
+                child: CustomText(
+                  text:
+                      'The amount you entered exceeds the maximum allowed limit.'
+                          ' Please enter an amount less than '
+                          'or equal to ${widget.balance}',
+
+                  weight: FontWeight.bold,
+                  size: 14,
+                  color: AppColors.orange,
+                  maxLines: 4,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
             const AppSpacer(
               height: 30.0,
             ),
@@ -101,13 +130,13 @@ class _SendMainFormWidgetState extends State<SendMainFormWidget> {
             const AppSpacer(
               height: 20.0,
             ),
-            const Align(
+             Align(
               alignment: AlignmentDirectional.topCenter,
               child: Text(
                 'Enter Amount with keypad',
                 style: TextStyle(
                   fontSize: 15.0,
-                  color: AppColors.sendBodyTextColor,
+                  color:theme.isDark?AppColors.darkModeBackgroundMainTextColor: AppColors.sendBodyTextColor,
                 ),
               ),
             ),
@@ -173,7 +202,7 @@ class _SendMainFormWidgetState extends State<SendMainFormWidget> {
               padding: const EdgeInsets.only(bottom: 10.0),
               child: AppButton(
                 buttonBoxDecoration: BoxDecoration(
-                  color: (widget.balance == '0.00' ||
+                  color: (mainValue + fractionValue == '0.00' ||
                           (double.parse(widget.balance.replaceAll(',', '')) <
                               double.parse((mainValue + fractionValue)
                                   .replaceAll(',', ''))))
@@ -184,7 +213,7 @@ class _SendMainFormWidgetState extends State<SendMainFormWidget> {
                   ),
                 ),
                 buttonCallback: () {
-                  if (widget.balance != '0.00') {
+                  if (mainValue + fractionValue != '0.00') {
                     print(widget.balance);
                     print(mainValue);
                     print(fractionValue);
@@ -201,6 +230,8 @@ class _SendMainFormWidgetState extends State<SendMainFormWidget> {
                           ),
                         ),
                       );
+
+
                     }
                   }
                 },

@@ -1,34 +1,62 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:teller_trust/res/app_colors.dart';
 import 'package:teller_trust/res/app_spacer.dart';
 import 'package:teller_trust/view/sendBeneficary/widgets/sendTo/top_beneficiaries_item_widget.dart';
+
+import '../../../../utills/custom_theme.dart';
 
 class TopBeneficiariesWidget extends StatelessWidget {
   final List beneficiaries;
   final bool isItForTellaTrust;
   final bool isUserVerified;
+  final String transferredToName;
+
   const TopBeneficiariesWidget({
     super.key,
     required this.beneficiaries,
     required this.isItForTellaTrust,
     required this.isUserVerified,
+    required this.transferredToName,
   });
 
   @override
   Widget build(BuildContext context) {
-    return isUserVerified && isItForTellaTrust
-        ? Container()
-        : Column(
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
+    return
+      // isUserVerified && isItForTellaTrust
+      //   ? Container()
+      //   :
+    Column(
+
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Send to',
-                style: TextStyle(
-                  color: AppColors.sendToLabelColor,
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Send to',
+                    style: TextStyle(
+                      color: theme.isDark
+                          ? AppColors.darkModeBackgroundMainTextColor
+                          : AppColors.sendToLabelColor,
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    transferredToName,
+                    style: TextStyle(
+                      color: theme.isDark
+                          ? AppColors.darkModeBackgroundMainTextColor
+                          : AppColors.sendToLabelColor,
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
               if (isItForTellaTrust)
                 Column(
@@ -38,10 +66,10 @@ class TopBeneficiariesWidget extends StatelessWidget {
                     const AppSpacer(
                       height: 20.0,
                     ),
-                    const Text(
+                     Text(
                       'Top Beneficiaries',
                       style: TextStyle(
-                        color: AppColors.sendBodyTextColor,
+                        color:theme.isDark?AppColors.darkModeBackgroundMainTextColor: AppColors.sendBodyTextColor,
                         fontSize: 15.0,
                       ),
                     ),
@@ -71,7 +99,7 @@ class TopBeneficiariesWidget extends StatelessWidget {
                     const AppSpacer(
                       height: 10.0,
                     ),
-                    const Divider(),
+                     Divider(color: theme.isDark?AppColors.darkModeBackgroundMainTextColor: null,),
                   ],
                 ),
             ],
