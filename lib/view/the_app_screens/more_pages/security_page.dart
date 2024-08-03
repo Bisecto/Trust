@@ -32,13 +32,13 @@ class _SecurityState extends State<Security> {
                 const CustomContainerFirTitleDesc(
                     title: "Transaction PIN",
                     description: "Secure all transactions"),
-                CustomContainerForToggle(
-                  title: "Face ID",
-                  description:
-                  "Account name, email, phone",
-                  isSwitched: isSwitched,
-                  toggleSwitch: _toggleSwitch,
-                ),
+                // CustomContainerForToggle(
+                //   title: "Face ID",
+                //   description:
+                //   "Account name, email, phone",
+                //   isSwitched: isSwitched,
+                //   toggleSwitch: _toggleSwitch,
+                // ),
 
               ],
             ),
