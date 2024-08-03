@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
@@ -48,7 +49,8 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
   ProductBloc purchaseProductBloc = ProductBloc();
   String _selectedPaymentMethod = 'wallet';
   bool isPaymentAllowed = false;
-
+  final FlutterContactPicker _contactPicker =  FlutterContactPicker();
+  Contact? contacts;
   @override
   void initState() {
     // TODO: implement initState
@@ -424,18 +426,48 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                             AppValidator.validateTextfield,
                                         widget: SvgPicture.asset(
                                             AppIcons.nigeriaLogo),
+                                        suffixIcon: GestureDetector(
+                                          onTap: ()async {
+                                            //contacts.clear();
+                                            Contact? contact =
+                                                await _contactPicker
+                                                    .selectContact();
+                                            setState(() {
+                                              // contacts = contact!.fullName==null
+                                              //     ? null
+                                              //     : contact;
+                                              // print(contacts);
+                                              _beneficiaryController.text=contact!.phoneNumbers!.first;
+
+                                            });
+                                          },
+                                          child: Icon(
+                                              Icons.contact_page_outlined,
+                                              color: _beneficiaryController
+                                                      .text.isNotEmpty
+                                                  ? AppColors.green
+                                                  : AppColors.grey),
+                                        ),
                                         //isMobileNumber: true,
                                         borderColor: _beneficiaryController
                                                 .text.isNotEmpty
                                             ? AppColors.green
                                             : AppColors.grey,
                                       ),
-                                      if(productId.isNotEmpty)
-                                        SizedBox(height: 10,),
-                                      if(productId.isNotEmpty)
-                                        BeneficiaryWidget(productId: productId, beneficiaryNum: (value) { setState(() {
-                                          _beneficiaryController.text=value;
-                                        }); },),
+                                      if (productId.isNotEmpty)
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                      if (productId.isNotEmpty)
+                                        BeneficiaryWidget(
+                                          productId: productId,
+                                          beneficiaryNum: (value) {
+                                            setState(() {
+                                              _beneficiaryController.text =
+                                                  value;
+                                            });
+                                          },
+                                        ),
                                       SizedBox(
                                         height: 310,
                                         child: PaymentMethodScreen(
@@ -525,7 +557,8 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                                         productId,
                                                         transactionPin,
                                                         true,
-                                                        isSaveAsBeneficiarySelected,beneficiaryName));
+                                                        isSaveAsBeneficiarySelected,
+                                                        beneficiaryName));
                                               } else {
                                                 var transactionPin = '';
                                                 transactionPin = await modalSheet
@@ -581,7 +614,9 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                                               .requiredFields,
                                                           productId,
                                                           transactionPin,
-                                                          false,isSaveAsBeneficiarySelected,beneficiaryName));
+                                                          false,
+                                                          isSaveAsBeneficiarySelected,
+                                                          beneficiaryName));
                                                 }
                                               }
                                             } else {

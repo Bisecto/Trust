@@ -1,6 +1,7 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
@@ -49,6 +50,8 @@ class _DataPurchaseState extends State<DataPurchase> {
   String selectedDataPlanId = '';
   String selectedServiceId = '';
   bool isPaymentAllowed = false;
+  final FlutterContactPicker _contactPicker = FlutterContactPicker();
+  Contact? contacts;
 
   @override
   void initState() {
@@ -114,7 +117,6 @@ class _DataPurchaseState extends State<DataPurchase> {
                               accessToken: accessToken,
                             ));
                       } else if (state is AccessTokenExpireState) {
-
                         String firstame =
                             await SharedPref.getString('firstName');
 
@@ -380,17 +382,48 @@ class _DataPurchaseState extends State<DataPurchase> {
                                         widget: SvgPicture.asset(
                                             AppIcons.nigeriaLogo),
                                         //isMobileNumber: true,
+                                        suffixIcon: GestureDetector(
+                                          onTap: () async {
+                                            //contacts.clear();
+                                            Contact? contact =
+                                                await _contactPicker
+                                                    .selectContact();
+                                            setState(() {
+                                              // contacts = contact!.fullName==null
+                                              //     ? null
+                                              //     : contact;
+                                              // print(contacts);
+                                              _beneficiaryController.text =
+                                                  contact!.phoneNumbers!.first;
+                                            });
+                                          },
+                                          child: Icon(
+                                              Icons.contact_page_outlined,
+                                              color: _beneficiaryController
+                                                      .text.isNotEmpty
+                                                  ? AppColors.green
+                                                  : AppColors.grey),
+                                        ),
+
                                         borderColor: _beneficiaryController
                                                 .text.isNotEmpty
                                             ? AppColors.green
                                             : AppColors.grey,
                                       ),
-                                      if(selectedDataPlanId.isNotEmpty)
-                                        SizedBox(height: 10,),
-                                      if(selectedDataPlanId.isNotEmpty)
-                                        BeneficiaryWidget(productId: selectedDataPlanId, beneficiaryNum: (value) { setState(() {
-                                          _beneficiaryController.text=value;
-                                        }); },),
+                                      if (selectedDataPlanId.isNotEmpty)
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                      if (selectedDataPlanId.isNotEmpty)
+                                        BeneficiaryWidget(
+                                          productId: selectedDataPlanId,
+                                          beneficiaryNum: (value) {
+                                            setState(() {
+                                              _beneficiaryController.text =
+                                                  value;
+                                            });
+                                          },
+                                        ),
                                       SizedBox(
                                         height: 310,
                                         child: PaymentMethodScreen(
@@ -432,14 +465,13 @@ class _DataPurchaseState extends State<DataPurchase> {
                                               }
                                             });
                                           },
-
-                                          isSaveAsBeneficiarySelected:
-                                              (value) {
+                                          isSaveAsBeneficiarySelected: (value) {
                                             print(value);
                                             Future.microtask(() {
                                               if (mounted) {
                                                 setState(() {
-                                                  isSaveAsBeneficiarySelected = value;
+                                                  isSaveAsBeneficiarySelected =
+                                                      value;
                                                   // print(isPaymentAllowed);
                                                 });
                                               }
@@ -475,7 +507,9 @@ class _DataPurchaseState extends State<DataPurchase> {
                                                           .requiredFields,
                                                       selectedDataPlanId,
                                                       transactionPin,
-                                                      true,isSaveAsBeneficiarySelected,beneficiaryName));
+                                                      true,
+                                                      isSaveAsBeneficiarySelected,
+                                                      beneficiaryName));
                                             } else {
                                               var transactionPin = '';
                                               transactionPin = await modalSheet
@@ -524,7 +558,9 @@ class _DataPurchaseState extends State<DataPurchase> {
                                                             .requiredFields,
                                                         selectedDataPlanId,
                                                         transactionPin,
-                                                        false,isSaveAsBeneficiarySelected,beneficiaryName));
+                                                        false,
+                                                        isSaveAsBeneficiarySelected,
+                                                        beneficiaryName));
                                               }
                                             }
                                           }
