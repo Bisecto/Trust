@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/res/app_icons.dart';
+import 'package:teller_trust/res/app_images.dart';
 import 'package:teller_trust/utills/app_navigator.dart';
 import 'package:teller_trust/utills/app_utils.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
@@ -149,6 +150,42 @@ class _KYCIntroState extends State<KYCIntro> {
                         size: 12,
                         textAlign: TextAlign.center,
                         color: AppColors.textColor,
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        width: AppUtils.deviceScreenSize(context).width,
+                        height: 70,
+                        decoration: BoxDecoration(
+                          color: theme.isDark?null:AppColors.lightgreen2,
+                          border: Border.all(color: AppColors.darkGreen),
+                          borderRadius: BorderRadius.circular(10)
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Row(
+                            children: [
+                              Image.asset(AppImages.coatOfArm,height: 25,width: 25,),
+                              const SizedBox(width: 10,),
+                              Container(
+                                width: AppUtils.deviceScreenSize(context).width /
+                                    1.4,
+                                height: 50,
+                                child: const CustomText(
+                                  text:
+                                      'We are required by the CBN to ensure you '
+                                      'complete your profile set-up to gain'
+                                      ' full access to all Tella Bank services.',
+                                  maxLines: 3,
+                                  color: AppColors.darkGreen,
+                                  size:12,
+                                  weight: FontWeight.w800,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
                       ),
                       const SizedBox(
                         height: 20,
