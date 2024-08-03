@@ -63,20 +63,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> getName() async {
-    firstname = await SharedPref.getString('firstName');
-    //lastname = await SharedPref.getString('lastName');
+    firstname = await SharedPref.getString('firstName') ?? "";
     isMoneyBlocked = await SharedPref.getBool('isMoneyBlocked') ?? false;
-    print(isMoneyBlocked);
-    print(isMoneyBlocked);
-    print(isMoneyBlocked);
-    print(isMoneyBlocked);
-    print(isMoneyBlocked);
-    print(isMoneyBlocked);
-    print(isMoneyBlocked);
-    print(isMoneyBlocked);
-    print(isMoneyBlocked);
-    print(isMoneyBlocked);
-    print(isMoneyBlocked);
+    print('Initial isMoneyBlocked: $isMoneyBlocked');
+    setState(() {});
   }
 
   Future<void> _handleRefresh() async {
@@ -650,25 +640,24 @@ class _HomePageState extends State<HomePage> {
           )),
           // Positioned(child: SvgPicture.asset(AppIcons.looper2)),
           Positioned(
-              child: SizedBox(
-            height: 210,
-            // color: AppColors.red,
-            child: Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Column(
-                children: [
-                  GestureDetector(
-                    onTap: () async {
-                      setState(() {
-                        isMoneyBlocked = !isMoneyBlocked;
-                        SharedPref.putBool('isMoneyBlocked', !isMoneyBlocked);
-                        //isMoneyBlocked = await SharedPref.getBool('isMoneyBlocked') ?? false;
-                      });
-                      //await SharedPref.putBool("isMoneyblocked",!isMoneyBlocked);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Align(
+            child: SizedBox(
+              height: 210,
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () async {
+                        setState(() {
+                          isMoneyBlocked = !isMoneyBlocked;
+                        });
+                        await SharedPref.putBool(
+                            'isMoneyBlocked', isMoneyBlocked);
+                        print('Saved isMoneyBlocked: $isMoneyBlocked');
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Align(
                           alignment: Alignment.topRight,
                           child: Icon(
                             isMoneyBlocked
@@ -676,121 +665,105 @@ class _HomePageState extends State<HomePage> {
                                 : Icons.visibility,
                             color: AppColors.white,
                             size: 16,
-                          )),
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                  if (!isMoneyBlocked)
-                    BlocBuilder<AppBloc, AppState>(
-                      builder: (context, state) {
-                        if (state is SuccessState) {
-                          WalletInfo walletInfo =
-                              state.customerProfile.walletInfo;
-                          // Use user data here
-                          return Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Column(
-                                  children: [
-                                    SvgPicture.asset(
-                                      AppIcons.naira,
-                                      height: 22,
-                                      width: 22,
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    )
-                                  ],
-                                ),
-                                TextStyles.textHeadings(
-                                    textValue: // "196,000.",
+                    if (!isMoneyBlocked)
+                      BlocBuilder<AppBloc, AppState>(
+                        builder: (context, state) {
+                          if (state is SuccessState) {
+                            WalletInfo walletInfo =
+                                state.customerProfile.walletInfo;
+                            return Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Column(
+                                    children: [
+                                      SvgPicture.asset(
+                                        AppIcons.naira,
+                                        height: 22,
+                                        width: 22,
+                                      ),
+                                      const SizedBox(height: 10),
+                                    ],
+                                  ),
+                                  TextStyles.textHeadings(
+                                    textValue:
                                         "${AppUtils.convertPrice(walletInfo.balance.toString()).split('.')[0]}.",
                                     textSize: 28,
-                                    textColor: AppColors.white),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                Column(
-                                  //mainAxisAlignment: MainAxisAlignment.,
-                                  children: [
-                                    TextStyles.textHeadings(
+                                    textColor: AppColors.white,
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Column(
+                                    children: [
+                                      TextStyles.textHeadings(
                                         textValue: AppUtils.convertPrice(
                                                 walletInfo.balance.toString())
                                             .split('.')[1],
                                         textSize: 18,
-                                        textColor: AppColors.white),
-                                    const SizedBox(
-                                      height: 5,
-                                    )
-                                  ],
-                                ),
-                              ],
-                            ),
-                          );
-                        } else {
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                AppIcons.naira,
-                                height: 20,
-                                width: 20,
+                                        textColor: AppColors.white,
+                                      ),
+                                      const SizedBox(height: 5),
+                                    ],
+                                  ),
+                                ],
                               ),
-                              TextStyles.textHeadings(
+                            );
+                          } else {
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                  AppIcons.naira,
+                                  height: 20,
+                                  width: 20,
+                                ),
+                                TextStyles.textHeadings(
                                   textValue: 'Loading...',
                                   textSize: 20.2,
-                                  textColor: AppColors.white),
-                              // TextStyles.textHeadings(
-                              //     textValue: "",
-                              //     //+walletInfo.balance.toString().split('.')[1],
-                              //     textSize: 20,
-                              //     textColor: AppColors.white)
-                              // // const CustomText(
-                              // //   text: "0.00",
-                              // //   size: 25,
-                              // //   weight: FontWeight.bold,
-                              // //   color: AppColors.white,
-                              // // )
-                            ],
-                          ); // Show loading indicator or handle error state
-                        }
-                      },
-                    ),
-                  if (isMoneyBlocked)
-                    const CustomText(
-                      text: "*******",
-                      size: 22,
-                      weight: FontWeight.bold,
-                      color: AppColors.white,
-                    ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      BlocBuilder<AppBloc, AppState>(
-                        builder: (context, state) {
-                          if (state is SuccessState) {
-                            CustomerAccountModel? customerAccount =
-                                state.customerProfile.customerAccount;
-                            //print(customerAccount!.id);
-                            if (customerAccount == null) {
-                              return GestureDetector(
+                                  textColor: AppColors.white,
+                                ),
+                              ],
+                            );
+                          }
+                        },
+                      ),
+                    if (isMoneyBlocked)
+                      const CustomText(
+                        text: "*******",
+                        size: 22,
+                        weight: FontWeight.bold,
+                        color: AppColors.white,
+                      ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        BlocBuilder<AppBloc, AppState>(
+                          builder: (context, state) {
+                            if (state is SuccessState) {
+                              CustomerAccountModel? customerAccount =
+                                  state.customerProfile.customerAccount;
+                              if (customerAccount == null) {
+                                return GestureDetector(
                                   onTap: () {
                                     showToast(
-                                        context: context,
-                                        title: 'Info',
-                                        subtitle:
-                                            'Oops! It looks like you have not done your KYC yet.',
-                                        type: ToastMessageType.info);
+                                      context: context,
+                                      title: 'Info',
+                                      subtitle:
+                                          'Oops! It looks like you have not done your KYC yet.',
+                                      type: ToastMessageType.info,
+                                    );
                                   },
                                   child: childBalanceCardContainer(
-                                      AppIcons.add, "Add Funds"));
-                            } else {
-                              return GestureDetector(
+                                      AppIcons.add, "Add Funds"),
+                                );
+                              } else {
+                                return GestureDetector(
                                   onTap: () {
                                     modalSheet.showMaterialModalBottomSheet(
                                       backgroundColor: Colors.transparent,
@@ -803,23 +776,25 @@ class _HomePageState extends State<HomePage> {
                                         padding:
                                             const EdgeInsets.only(top: 100.0),
                                         child: AddFunds(
-                                          customerAccountModel: customerAccount,
-                                        ),
+                                            customerAccountModel:
+                                                customerAccount),
                                       ),
                                     );
                                   },
                                   child: childBalanceCardContainer(
-                                      AppIcons.add, "Add Funds"));
-                            }
-                          } else {
-                            return GestureDetector(
+                                      AppIcons.add, "Add Funds"),
+                                );
+                              }
+                            } else {
+                              return GestureDetector(
                                 onTap: () {},
                                 child: childBalanceCardContainer(
-                                    AppIcons.add, "Add Funds"));
-                          }
-                        },
-                      ),
-                      GestureDetector(
+                                    AppIcons.add, "Add Funds"),
+                              );
+                            }
+                          },
+                        ),
+                        GestureDetector(
                           onTap: () {
                             AppNavigator.pushAndStackPage(
                               context,
@@ -831,30 +806,31 @@ class _HomePageState extends State<HomePage> {
                             );
                           },
                           child:
-                              childBalanceCardContainer(AppIcons.send, "Send")),
-                      childBalanceCardContainer(AppIcons.switch1, "Withdraw"),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  BlocBuilder<AppBloc, AppState>(
-                    builder: (context, state) {
-                      if (state is SuccessState) {
-                        var customerAccount =
-                            state.customerProfile.customerAccount;
-                        // Use user data here
-                        return customerAccount == null
-                            ? accountNumberContainer("***")
-                            : accountNumberContainer(
-                                " ${customerAccount.nuban}");
-                      } else {
-                        return const SizedBox(); // Show loading indicator or handle error state
-                      }
-                    },
-                  ),
-                ],
+                              childBalanceCardContainer(AppIcons.send, "Send"),
+                        ),
+                        childBalanceCardContainer(AppIcons.switch1, "Withdraw"),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    BlocBuilder<AppBloc, AppState>(
+                      builder: (context, state) {
+                        if (state is SuccessState) {
+                          var customerAccount =
+                              state.customerProfile.customerAccount;
+                          return customerAccount == null
+                              ? accountNumberContainer("***")
+                              : accountNumberContainer(
+                                  " ${customerAccount.nuban}");
+                        } else {
+                          return const SizedBox(); // Show loading indicator or handle error state
+                        }
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
-          ))
+          ),
         ],
       ),
     );
