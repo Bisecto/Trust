@@ -13,10 +13,10 @@ class BankVerifiedAccountModel {
 
   factory BankVerifiedAccountModel.fromJson(Map<String, dynamic> json) =>
       BankVerifiedAccountModel(
-        accountName: json["accountName"],
-        accountNumber: json["accountNumber"],
-        sessionId: json["sessionId"],
-        bankCode: json["bankCode"],
+        accountName: json["accountName"]??'Invalid account numner',
+        accountNumber: json["accountNumber"]??'',
+        sessionId: json["sessionId"]??'',
+        bankCode: json["bankCode"]??'',
       );
 
   Map<String, dynamic> toJson() => {
