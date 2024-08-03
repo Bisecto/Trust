@@ -85,6 +85,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
 
     return Scaffold(
       body: Column(
+        //crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           const TransactionHistoryCustomAppBar(
             title: 'Transactions',
@@ -122,12 +123,15 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                         itemBuilder: (context, item, index) {
                           if (item is String) {
                             // This is a date heading
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8.0),
-                              child: CustomText(
-                                text: AppUtils.formatComplexDate(dateTime: item),
-                                size: 14,
-                                weight: FontWeight.bold,
+                            return Align(
+                              alignment: Alignment.topLeft,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                child: CustomText(
+                                  text: AppUtils.formatComplexDate(dateTime: item),
+                                  size: 14,
+                                  weight: FontWeight.bold,
+                                ),
                               ),
                             );
                           } else if (item is Transaction) {
