@@ -224,6 +224,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
                                                 .darkModeBackgroundSubTextColor
                                             : AppColors.textColor,
                                         size: 16,
+                                        maxLines: 2,
                                       ),
                                       const SizedBox(
                                         height: 10,
