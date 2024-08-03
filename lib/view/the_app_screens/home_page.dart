@@ -17,6 +17,7 @@ import 'package:teller_trust/utills/app_utils.dart';
 import 'package:teller_trust/utills/constants/loading_dialog.dart';
 import 'package:teller_trust/utills/shared_preferences.dart';
 import 'package:teller_trust/view/networkCenter/pages/network_center_main_page.dart';
+import 'package:teller_trust/view/the_app_screens/beneficiaries/beneficiaries.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/add_fundz.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/airtime_purchase/airtime.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/airtime_to_cash_purchase/airtime_to_cash.dart';
@@ -128,25 +129,31 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(
                       width: 10,
                     ),
-                    Container(
-                        //height: 40,
-                        //width: AppUtils.deviceScreenSize(context).width / 2,
-                        decoration: BoxDecoration(
+                    GestureDetector(
+                      onTap: () {
+                        AppNavigator.pushAndStackPage(context,
+                            page: const Beneficiaries());
+                      },
+                      child: Container(
+                          //height: 40,
+                          //width: AppUtils.deviceScreenSize(context).width / 2,
+                          decoration: BoxDecoration(
 
-                            ///color: AppColors.darkGreen,
-                            border: Border.all(color: AppColors.textColor2),
-                            borderRadius: BorderRadius.circular(8.0)),
-                        child: Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: CustomText(
-                            text: "Beneficiaries",
-                            weight: FontWeight.normal,
-                            size: 12,
-                            color: theme.isDark
-                                ? AppColors.darkModeBackgroundMainTextColor
-                                : AppColors.textColor,
-                          ),
-                        )),
+                              ///color: AppColors.darkGreen,
+                              border: Border.all(color: AppColors.textColor2),
+                              borderRadius: BorderRadius.circular(8.0)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: CustomText(
+                              text: "Beneficiaries",
+                              weight: FontWeight.normal,
+                              size: 12,
+                              color: theme.isDark
+                                  ? AppColors.darkModeBackgroundMainTextColor
+                                  : AppColors.textColor,
+                            ),
+                          )),
+                    ),
                   ],
                 ),
                 homeBalance(theme),

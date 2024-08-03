@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:teller_trust/model/required_field_model.dart';
+import 'package:teller_trust/utills/constants/loading_dialog.dart';
 
 import '../../../../bloc/product_bloc/product_bloc.dart';
 import '../../../../model/beneficiary_model.dart';
@@ -21,9 +22,13 @@ import '../../../widgets/show_toast.dart';
 class BeneficiaryWidget extends StatefulWidget {
   String productId;
   final ValueChanged<String> beneficiaryNum;
+  final bool isProductBeneficiary;
 
   BeneficiaryWidget(
-      {super.key, required this.productId, required this.beneficiaryNum});
+      {super.key,
+      required this.productId,
+      required this.beneficiaryNum,
+      this.isProductBeneficiary = true});
 
   @override
   State<BeneficiaryWidget> createState() => _BeneficiaryWidgetState();
@@ -74,6 +79,7 @@ class _BeneficiaryWidgetState extends State<BeneficiaryWidget> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          if(widget.isProductBeneficiary)
                           Padding(
                             padding: const EdgeInsets.only(bottom: 10),
                             child: CustomText(
@@ -84,35 +90,60 @@ class _BeneficiaryWidgetState extends State<BeneficiaryWidget> {
                                   : AppColors.lightPrimary,
                             ),
                           ),
-                          Container(
-                            height: 70,
-                            child: ListView.builder(
-                              itemCount: getBeneficiarySuccessState
-                                  .beneficiaryModel.items.length,
-                              padding: EdgeInsets.zero,
-                              //controller: ScrollController(),
-                              addAutomaticKeepAlives: true,
-                              shrinkWrap: true,
-                              physics: const ScrollPhysics(),
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: (BuildContext context, int index) {
-                                return serviceItem(
-                                    getBeneficiarySuccessState
-                                        .beneficiaryModel.items[index],
-                                    theme,
-                                    context);
-                              },
-                            ),
-                          ),
+                         if (!widget.isProductBeneficiary)
+                           const SizedBox(height: 10,),
+                          widget.isProductBeneficiary
+                              ? Container(
+                                  height: 70,
+                                  child: ListView.builder(
+                                    itemCount: getBeneficiarySuccessState
+                                        .beneficiaryModel.items.length,
+                                    padding: EdgeInsets.zero,
+                                    //controller: ScrollController(),
+                                    addAutomaticKeepAlives: true,
+                                    shrinkWrap: true,
+                                    physics: const ScrollPhysics(),
+                                    scrollDirection: Axis.horizontal,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return serviceItem(
+                                          getBeneficiarySuccessState
+                                              .beneficiaryModel.items[index],
+                                          theme,
+                                          context);
+                                    },
+                                  ),
+                                )
+                              : ListView.builder(
+                                  itemCount: getBeneficiarySuccessState
+                                      .beneficiaryModel.items.length,
+                                  padding: EdgeInsets.zero,
+                                  //controller: ScrollController(),
+                                  addAutomaticKeepAlives: true,
+                                  shrinkWrap: true,
+                                  physics: const ScrollPhysics(),
+                                  scrollDirection: Axis.vertical,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return serviceItem2(
+                                        getBeneficiarySuccessState
+                                            .beneficiaryModel.items[index],
+                                        theme,
+                                        context);
+                                  },
+                                ),
                         ],
                       ),
                     )
-                  : SizedBox();
+                  : const SizedBox();
             case BeneficiaryLoadingState:
-              return _loadingBeneficiaries();
+              return widget.isProductBeneficiary
+                  ? _loadingBeneficiaries()
+                  : const LoadingDialog('Getting Beneficiaries');
             default:
-              return _loadingBeneficiaries();
-          }
+              return widget.isProductBeneficiary
+                  ? _loadingBeneficiaries()
+                  : const LoadingDialog('Getting Beneficiaries');          }
         });
   }
 
@@ -164,6 +195,104 @@ class _BeneficiaryWidgetState extends State<BeneficiaryWidget> {
     );
   }
 
+  Widget serviceItem2(Item item, AdaptiveThemeMode theme, context) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CustomText(
+            text: item.product.name.split(' ')[0],
+            size: 10,
+            color: theme.isDark
+                ? AppColors.darkModeBackgroundMainTextColor
+                : AppColors.textColor,
+          ),
+          SizedBox(height: 5,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    radius: 15,
+                    backgroundColor:
+                        AppColors.appBarMainColor.withOpacity(0.1),
+                    child: Image.network(item.product.image),
+                  ),
+                  const SizedBox(height: 15),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: theme.isDark
+                                ? AppColors.darkGreen
+                                : AppColors.lightShadowGreenColor,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: AppColors.green),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: CustomText(
+                              text: item.fullName,
+                              size: 10,
+                              color: theme.isDark
+                                  ? AppColors.darkModeBackgroundMainTextColor
+                                  : AppColors.textColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: theme.isDark
+                                ? AppColors.darkModeBackgroundContainerColor
+                                : AppColors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: AppColors.grey),
+                          ),
+
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: CustomText(
+                              text: item.requiredFields.meterNumber ??
+                                  item.requiredFields.cardNumber ??
+                                  item.requiredFields.phoneNumber ??
+                                  '',
+                              size: 10,
+                              color: theme.isDark
+                                  ? AppColors.darkModeBackgroundMainTextColor
+                                  : AppColors.textColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+              GestureDetector(
+                  onTap: () {
+                    showDeleteModal(context: context, beneficiaryId: item.id);
+                  },
+                  child: const Icon(Icons.delete))
+            ],
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          const Divider()
+        ],
+      ),
+    );
+  }
+
   Widget _loadingBeneficiaries() {
     return SizedBox(
       height: 90,
@@ -193,7 +322,7 @@ class _BeneficiaryWidgetState extends State<BeneficiaryWidget> {
                     color: Colors.grey.withOpacity(0.5),
                     colorOpacity: 0.5,
                     enabled: true,
-                    direction: ShimmerDirection.fromLTRB(),
+                    direction: const ShimmerDirection.fromLTRB(),
                     child: Container(
                       height: 5,
                       width: 40,
@@ -301,7 +430,7 @@ class _BeneficiaryWidgetState extends State<BeneficiaryWidget> {
                       ),
                     ),
                   ),
-                  CustomText(
+                  const CustomText(
                     text: 'Are you sure you want to delete this beneficiary?',
                     maxLines: 3,
                   ),
@@ -320,8 +449,8 @@ class _BeneficiaryWidgetState extends State<BeneficiaryWidget> {
                       FormButton(
                         onPressed: () {
                           Navigator.pop(context);
-                          productBloc
-                              .add(DeleteBeneficiaryEvent(beneficiaryId,widget.productId));
+                          productBloc.add(DeleteBeneficiaryEvent(
+                              beneficiaryId, widget.productId));
                         },
                         width: 100,
                         bgColor: AppColors.green,
