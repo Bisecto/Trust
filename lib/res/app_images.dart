@@ -23,6 +23,7 @@ class AppImages {
   static const virtualCardStraight = '${_imageBaseUrl}virtual_card_straight.png';
   static const splashLogo = '${_imageBaseUrl}splash_logo.png';
   static const kycBackgroundImage = '${_imageBaseUrl}kyc_bacground_image.png';
+  static const coatOfArm = '${_imageBaseUrl}coat_of_arm.png';
   static const advertCard1 = '${_imageBaseUrl}advert_card1.png';
   static const advertCard2 = '${_imageBaseUrl}advert_card2.png';
   static const advertCard3 = '${_imageBaseUrl}advert_card3.png';
