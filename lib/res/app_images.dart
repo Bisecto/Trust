@@ -3,6 +3,7 @@ class AppImages {
   static const logo = '${_imageBaseUrl}logo.png';
   static const fullLogo = '${_imageBaseUrl}full_logo.png';
   static const apple = '${_imageBaseUrl}Apple.png';
+  static const tellaPointBannerBackground = '${_imageBaseUrl}tella_point_banner_background.png';
   static const Google = '${_imageBaseUrl}Google.png';
   static const authAppLogoImage = '${_imageBaseUrl}auth_screen_image_1.png';
   static const welcomeImage = '${_imageBaseUrl}welcome_image.png';

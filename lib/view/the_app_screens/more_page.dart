@@ -12,6 +12,8 @@ import 'package:teller_trust/view/the_app_screens/more_pages/get_help.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/legal.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/notification.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/security_page.dart';
+import 'package:teller_trust/view/the_app_screens/more_pages/tella_rewards/tella_manage_point.dart';
+import 'package:teller_trust/view/the_app_screens/more_pages/tella_rewards/tella_reward_main.dart';
 
 import '../../bloc/app_bloc/app_bloc.dart';
 import '../../model/personal_profile.dart';
@@ -76,8 +78,8 @@ class _MorePageState extends State<MorePage> {
                         color: theme.isDark
                             ? AppColors.darkModeBackgroundColor
                             : const Color.fromRGBO(227, 255, 214, 100),
-                        borderRadius:
-                            const BorderRadius.vertical(bottom: Radius.circular(30))),
+                        borderRadius: const BorderRadius.vertical(
+                            bottom: Radius.circular(30))),
                     child: SafeArea(
                       child: Column(
                         children: [
@@ -154,11 +156,28 @@ class _MorePageState extends State<MorePage> {
                               ),
                               Row(
                                 children: [
-                                  SvgPicture.asset(AppIcons.naira,color:AppColors.lightGreen),
-                                  TextStyles.textHeadings(textValue: "0.00 ",textSize: 16,textColor: theme.isDark?AppColors.white:AppColors.black),
-                                  TextStyles.textHeadings(textValue: "/",textSize: 16,textColor: AppColors.lightGreen),
-                                  SvgPicture.asset(AppIcons.naira,color:theme.isDark? AppColors.white:AppColors.textColor2),
-                                  CustomText(text: "0.00",size: 16,color: theme.isDark?AppColors.white:AppColors.textColor2),
+                                  SvgPicture.asset(AppIcons.naira,
+                                      color: AppColors.lightGreen),
+                                  TextStyles.textHeadings(
+                                      textValue: "0.00 ",
+                                      textSize: 16,
+                                      textColor: theme.isDark
+                                          ? AppColors.white
+                                          : AppColors.black),
+                                  TextStyles.textHeadings(
+                                      textValue: "/",
+                                      textSize: 16,
+                                      textColor: AppColors.lightGreen),
+                                  SvgPicture.asset(AppIcons.naira,
+                                      color: theme.isDark
+                                          ? AppColors.white
+                                          : AppColors.textColor2),
+                                  CustomText(
+                                      text: "0.00",
+                                      size: 16,
+                                      color: theme.isDark
+                                          ? AppColors.white
+                                          : AppColors.textColor2),
 
                                   // TextStyle.(
                                   //   text: "Daily Transaction Limit",
@@ -188,7 +207,12 @@ class _MorePageState extends State<MorePage> {
                 const SizedBox(
                   height: 10,
                 ),
-                SvgPicture.asset(AppIcons.tellaRewards),
+                GestureDetector(
+                    onTap: () {
+                      AppNavigator.pushAndStackPage(context,
+                          page: TellaPointMainPage());
+                    },
+                    child: SvgPicture.asset(AppIcons.tellaRewards)),
                 const SizedBox(
                   height: 10,
                 ),
@@ -202,7 +226,8 @@ class _MorePageState extends State<MorePage> {
                 // SvgPicture.asset(AppIcons.accounsetting)),
                 InkWell(
                     onTap: () {
-                      AppNavigator.pushAndStackPage(context, page: const Security());
+                      AppNavigator.pushAndStackPage(context,
+                          page: const Security());
                     },
                     child: itemContainer(AppIcons.security, 'Security', theme)),
                 itemContainer(AppIcons.statement, 'Statement', theme),
@@ -219,12 +244,14 @@ class _MorePageState extends State<MorePage> {
                 ),
                 InkWell(
                     onTap: () {
-                      AppNavigator.pushAndStackPage(context, page: const GetHelp());
+                      AppNavigator.pushAndStackPage(context,
+                          page: const GetHelp());
                     },
                     child: itemContainer(AppIcons.getHelp, 'Get Help', theme)),
                 InkWell(
                     onTap: () {
-                      AppNavigator.pushAndStackPage(context, page: const Legal());
+                      AppNavigator.pushAndStackPage(context,
+                          page: const Legal());
                     },
                     child: itemContainer(AppIcons.legal, 'Legal', theme)),
                 itemContainer(
@@ -323,7 +350,7 @@ class _MorePageState extends State<MorePage> {
                         children: [
                           CustomText(
                             text:
-                                "${AppUtils.formatString(data:personalInfo.lastName)} ${AppUtils.formatString(data:personalInfo.firstName)}",
+                                "${AppUtils.formatString(data: personalInfo.lastName)} ${AppUtils.formatString(data: personalInfo.firstName)}",
                             weight: FontWeight.bold,
                             color: theme.isDark
                                 ? AppColors.darkModeBackgroundMainTextColor

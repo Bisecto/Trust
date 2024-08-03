@@ -13,6 +13,7 @@ import '../../../../bloc/product_bloc/product_bloc.dart';
 import '../../../../model/service_model.dart';
 import '../../../../res/app_colors.dart';
 import '../../../../res/app_icons.dart';
+import '../../../../res/app_images.dart';
 import '../../../../utills/app_navigator.dart';
 import '../../../../utills/app_utils.dart';
 import '../../../../utills/app_validator.dart';
@@ -218,6 +219,41 @@ class _DataPurchaseState extends State<DataPurchase> {
                             // const SizedBox(
                             //   height: 10,
                             // ),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Container(
+                                height: 70,
+                                width: AppUtils.deviceScreenSize(context).width,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(color: AppColors.lightGreen),
+                                    color: AppColors.lightgreen2,
+                                    image: DecorationImage(
+                                        image: AssetImage(AppImages.tellaPointBannerBackground),
+                                        fit: BoxFit.cover)),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    CircleAvatar(
+                                      backgroundColor: AppColors.lightPrimary,
+                                      child: SvgPicture.asset(AppIcons.badge),
+                                    ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        CustomText(
+                                          text: "Tella Point: 231",
+                                        ),
+                                        TextStyles.textHeadings(
+                                            textValue: 'Cash value: N231.00', textSize: 13,textColor: Colors.grey)
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+
                             BlocConsumer<ProductBloc, ProductState>(
                               bloc: productBloc,
                               builder: (context, state) {
