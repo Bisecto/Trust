@@ -175,6 +175,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         String deviceID = await AppUtils.getId();
         String userData=await SharedPref.getString('userData');
         String password=await SharedPref.getString('password');
+        String hashedAccessPin=await AppUtils().encryptData(event.accessPin);
+        await SharedPref.putString('hashedAccessPin',hashedAccessPin);
+
         Map<String, dynamic> loginData = {
           "userData": userData,
           "password": password,
@@ -360,6 +363,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         await SharedPref.putString("lastName", userData.lastName);
         await SharedPref.putString(
             "access-token", response.headers['access-token']!);
+        String hashedAccessPin=await AppUtils().encryptData(event.accessPin);
+        await SharedPref.putString('hashedAccessPin',hashedAccessPin);
 
         // String? cookie = response.headers['set-cookie'];
         // print(response.headers.values);
@@ -440,7 +445,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         //   print('$name: $values');
         // });
         //await SharedPref.putString("lastName", userData.lastName);
-        await SharedPref.putString("accessPin", event.accessPin);
+        String hashedAccessPin=await AppUtils().encryptData(event.accessPin);
+        await SharedPref.putString('hashedAccessPin',hashedAccessPin);
         Navigator.pop(event.context);
 
         emit(SuccessState(userData,
