@@ -489,6 +489,9 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
 
   Future<void> pdfDownload(BuildContext context, String title) async {
     try {
+      setState(() {
+        isSharingPdf = true;
+      });
       showDialog(
         barrierDismissible: false,
         context: context,

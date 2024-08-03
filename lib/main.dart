@@ -4,9 +4,11 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/bloc/product_bloc/product_bloc.dart';
 import 'package:teller_trust/res/app_router.dart';
+import 'package:teller_trust/utills/app_utils.dart';
 import 'package:teller_trust/utills/custom_theme.dart';
 import 'package:teller_trust/view/important_pages/no_internet.dart';
 import 'package:teller_trust/view/networkCenter/pages/network_center_main_page.dart';
@@ -16,10 +18,16 @@ import 'bloc/app_bloc/app_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
 
   AdaptiveThemeMode? adaptiveThemeMode =
       await AdaptiveTheme.getThemeMode() ?? AdaptiveThemeMode.light;
-
+  try {
+    AppUtils.crypt();
+    // Use encrypter for encryption/decryption
+  } catch (e) {
+    print('Error: $e');
+  }
   runApp(
     MultiBlocProvider(
       providers: [
