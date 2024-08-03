@@ -1,8 +1,12 @@
 import 'dart:io';
+import 'package:encrypt/encrypt.dart' as prefix0;
 
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:encrypt/encrypt.dart';
+import 'package:flutter/src/foundation/key.dart'as kk;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:teller_trust/utills/shared_preferences.dart';
@@ -12,10 +16,46 @@ import 'package:teller_trust/view/auth/sign_in_with_access_pin_and_biometrics.da
 import '../res/app_router.dart';
 import 'app_navigator.dart';
 
+String? env(name) {
+  return dotenv.env[name];
+}
+
 class AppUtils {
   static Color hexToColor(String code) {
     return Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
   }
+
+  //final IV iv = IV.fromLength(16);
+  final iv = IV.allZerosOfLength(16);
+
+  static Encrypter crypt() {
+    final appKey = env('APP_KEY')!;
+    try {
+      final key =prefix0.Key.fromBase64(appKey);
+      return Encrypter(AES(key, mode: AESMode.cbc));
+    } catch (e) {
+      throw FormatException('Invalid Base64 encoding in APP_KEY');
+    }
+  }
+
+  dynamic encryptData(dynamic data) {
+    try {
+      return crypt().encrypt(data, iv: iv).base64;
+    } catch (e) {
+      print("Encryption error: $e");
+      return null;
+    }
+  }
+
+  dynamic decryptData(dynamic data) {
+    try {
+      return crypt().decrypt64(data, iv: iv);
+    } catch (e) {
+      print("Decryption error: $e");
+      return null;
+    }
+  }
+
   openApp(context) async {
     bool isFirstOpen = (await SharedPref.getBool('isFirstOpen')) ?? true;
     String userData = await SharedPref.getString('userData');
@@ -31,13 +71,15 @@ class AppUtils {
         print(3);
 
         Future.delayed(const Duration(seconds: 3), () {
-          AppNavigator.pushAndRemovePreviousPages(context, page: SignInWIthAccessPinBiometrics(userName: firstame));
+          AppNavigator.pushAndRemovePreviousPages(context,
+              page: SignInWIthAccessPinBiometrics(userName: firstame));
         });
       } else {
         print(4);
 
         Future.delayed(const Duration(seconds: 3), () {
-          AppNavigator.pushAndRemovePreviousPages(context, page: const SignInScreen());
+          AppNavigator.pushAndRemovePreviousPages(context,
+              page: const SignInScreen());
         });
       }
     } else {
@@ -61,13 +103,16 @@ class AppUtils {
       }
     }
   }
+
   static Future<bool> biometrics(String localizedReason) async {
     final LocalAuthentication auth = LocalAuthentication();
     final bool didAuthenticate = await auth.authenticate(
-        localizedReason: localizedReason, options: const AuthenticationOptions(biometricOnly: true));
+        localizedReason: localizedReason,
+        options: const AuthenticationOptions(biometricOnly: true));
 
     return didAuthenticate;
   }
+
   ///Future<String?>
   static getId() async {
     var deviceInfo = DeviceInfoPlugin();
@@ -105,6 +150,7 @@ class AppUtils {
     return DateTime(
         newDate.year, newDate.month, newDate.day, time.hour, time.minute);
   }
+
   static String formatString({required String data}) {
     if (data.isEmpty) return data;
 

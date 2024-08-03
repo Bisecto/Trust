@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/view/the_app_screens/kyc_verification/kyc_intro_page.dart';
@@ -13,6 +14,7 @@ import '../../../res/app_router.dart';
 import '../../../utills/app_navigator.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/custom_theme.dart';
+import '../../../utills/shared_preferences.dart';
 import '../../widgets/appBar_widget.dart';
 import '../../widgets/custom_container.dart';
 
@@ -34,6 +36,36 @@ class _AccountSettingState extends State<AccountSetting> {
     });
   }
 
+  bool isBiometricEnabled = false;
+  bool canUseBiometrics = false;
+  final LocalAuthentication auth = LocalAuthentication();
+
+  @override
+  void initState() {
+    super.initState();
+    getCanUseBiometrics();
+    getCanUseBiometrics2();
+  }
+
+  Future<void> getCanUseBiometrics2() async {
+    var availableBiometrics = await auth.getAvailableBiometrics();
+    bool canCheckBiometrics = await auth.canCheckBiometrics;
+    bool isDeviceSupported = await auth.isDeviceSupported();
+    setState(() {
+      // Ensure each condition evaluates to a boolean
+      canUseBiometrics = canCheckBiometrics && // Note the function call
+          isDeviceSupported &&
+          availableBiometrics.isNotEmpty;
+    });
+  }
+
+  Future<void> getCanUseBiometrics() async {
+    bool biometricEnabled = await SharedPref.getBool('biometric') ?? false;
+    setState(() {
+      isBiometricEnabled = biometricEnabled;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeContext = Provider.of<CustomThemeState>(context);
@@ -48,14 +80,17 @@ class _AccountSettingState extends State<AccountSetting> {
             themeContext.changeTheme(context);
           });
     }
+
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      statusBarIconBrightness:theme.isDark? Brightness
-          .light:Brightness.dark, // Brightness.light for white icons, Brightness.dark for dark icons
+      statusBarIconBrightness: theme.isDark
+          ? Brightness.light
+          : Brightness
+              .dark, // Brightness.light for white icons, Brightness.dark for dark icons
     ));
     return Scaffold(
       backgroundColor:
-      theme.isDark ? AppColors.darkModeBackgroundColor : AppColors.white,
+          theme.isDark ? AppColors.darkModeBackgroundColor : AppColors.white,
       //appBar: CustomAppBar(title: 'Account Setting',),
       body: SingleChildScrollView(
         child: Column(
@@ -70,7 +105,8 @@ class _AccountSettingState extends State<AccountSetting> {
                   children: [
                     InkWell(
                       onTap: () {
-                        AppNavigator.pushAndStackNamed(context, name: AppRouter.profileDetailsPage);
+                        AppNavigator.pushAndStackNamed(context,
+                            name: AppRouter.profileDetailsPage);
                         // AppNavigator.pushAndStackPage(context,
                         //     page: ProfileDetails());
                       },
@@ -114,13 +150,46 @@ class _AccountSettingState extends State<AccountSetting> {
                           description:
                               "Secure alternative account\nAccess account"),
                     ),
-                    CustomContainerForToggle(
-                      title: "Use 4-Digit Access Pin",
-                      description:
-                          "If you disable this, you will be\nrequired to login using your\npassword on every entry",
-                      isSwitched: isSwitched,
-                      toggleSwitch: _toggleSwitch,
-                    ),
+                    // CustomContainerForToggle(
+                    //   title: "Use 4-Digit Access Pin",
+                    //   description:
+                    //       "If you disable this, you will be\nrequired to login using your\npassword on every entry",
+                    //   isSwitched: isSwitched,
+                    //   toggleSwitch: _toggleSwitch,
+                    // ),
+                    canUseBiometrics
+                        ? BuildListTile(
+                            icon: AppIcons.darkMode,
+                            title: "Enable Biometrics",
+                            onPressed: () {},
+                            trailingWidget: CupertinoSwitch(
+                              value: isBiometricEnabled,
+                              onChanged: (value) {
+                                setState(() {
+                                  isBiometricEnabled = value;
+                                  SharedPref.putBool('biometric', value);
+                                });
+                              },
+                              activeColor: AppColors.darkGreen,
+                            ),
+                          )
+                        : SizedBox(),
+                    // BuildListTile(
+                    //   icon: AppIcons.darkMode,
+                    //   title: "Enable Biometrics",
+                    //   onPressed: () {},
+                    //   trailingWidget: CupertinoSwitch(
+                    //     value: isBiometricEnabled,
+                    //     onChanged: (value) {
+                    //       setState(() {
+                    //         isBiometricEnabled = value;
+                    //         SharedPref.putBool('biometric', value);
+                    //       });
+                    //     },
+                    //     activeColor: AppColors.green,
+                    //   ),
+                    // ),
+
                     const SizedBox(
                       height: 10,
                     ),
