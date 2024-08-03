@@ -156,18 +156,15 @@ class SendExternalFundToReceiptent extends SendEvent {
 class VerifyRecepitentAccountNumber extends SendEvent {
   String bankCode;
   String accountNumber;
-  String transactionPin;
   VerifyRecepitentAccountNumber({
     required this.bankCode,
     required this.accountNumber,
-    required this.transactionPin,
   }) : super();
 
   @override
   List<Object?> get props => [
         bankCode,
         accountNumber,
-        transactionPin,
       ];
 }
 

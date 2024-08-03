@@ -318,33 +318,33 @@ class _SendToFormWidgetState extends State<SendToFormWidget> {
               ),
             );
           } else {
-            String transactionPin =
-                await modal_sheet.showMaterialModalBottomSheet(
-                      backgroundColor: Colors.transparent,
-                      isDismissible: true,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(20.0)),
-                      ),
-                      context: context,
-                      builder: (context) => Padding(
-                        padding: const EdgeInsets.only(top: 200.0),
-                        child: ConfirmWithPin(
-                          context: context,
-                          title: 'Input your transaction pin to continue',
-                        ),
-                      ),
-                    ) ??
-                    '';
-            if (transactionPin != '') {
+            //String transactionPin =
+                // await modal_sheet.showMaterialModalBottomSheet(
+                //       backgroundColor: Colors.transparent,
+                //       isDismissible: true,
+                //       shape: const RoundedRectangleBorder(
+                //         borderRadius:
+                //             BorderRadius.vertical(top: Radius.circular(20.0)),
+                //       ),
+                //       context: context,
+                //       builder: (context) => Padding(
+                //         padding: const EdgeInsets.only(top: 200.0),
+                //         child: ConfirmWithPin(
+                //           context: context,
+                //           title: 'Input your transaction pin to continue',
+                //         ),
+                //       ),
+                //     ) ??
+                //     '';
+            //if (transactionPin != '') {
               BlocProvider.of<SendBloc>(context).add(
                 VerifyRecepitentAccountNumber(
                   accountNumber: value,
                   bankCode: selectedBank.bankCode,
-                  transactionPin: transactionPin,
+                 // transactionPin: transactionPin,
                 ),
               );
-            }
+           // }
           }
         },
       ),

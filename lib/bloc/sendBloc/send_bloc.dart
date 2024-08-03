@@ -69,20 +69,32 @@ class SendBloc extends Bloc<SendEvent, SendState> {
         fractionValueEntered = fractionValues.join('');
       } else {
         mainValueEntered = mainValueEntered.replaceAll(',', '');
-        List<String> mainValues = mainValueEntered.split('');
-        mainValues.removeLast();
-        mainValueEntered = mainValues.join('');
+        if (mainValueEntered.isNotEmpty) {
+          List<String> mainValues = mainValueEntered.split('');
+          if (mainValues.isNotEmpty) {
+            mainValues.removeLast();
+            mainValueEntered = mainValues.join('');
+          }
+        }
       }
 
-      mainValueEntered = numberFormat.format(int.parse(mainValueEntered));
+      if (mainValueEntered.isNotEmpty && RegExp(r'^-?[0-9]+$').hasMatch(mainValueEntered)) {
+        try {
+          mainValueEntered = numberFormat.format(int.parse(mainValueEntered));
+        } catch (e) {
+          // Handle parsing error if needed
+          mainValueEntered = '0';
+        }
+      } else {
+        mainValueEntered = '0';
+      }
 
       emit(
         CurrentAmountEntered(
           mainValue: mainValueEntered.isNotEmpty ? mainValueEntered : '0',
-          fractionValue:
-              fractionValueEntered.isNotEmpty && fractionValueEntered.length > 1
-                  ? fractionValueEntered
-                  : '.00',
+          fractionValue: fractionValueEntered.isNotEmpty && fractionValueEntered.length > 1
+              ? fractionValueEntered
+              : '.00',
         ),
       );
     });
@@ -415,7 +427,6 @@ class SendBloc extends Bloc<SendEvent, SendState> {
             bankCode: event.bankCode,
           ).toJson(),
           AppApis.verifyAccount,
-          accessPIN: event.transactionPin,
           accessToken: accessToken,
         );
         debugPrint(
@@ -447,7 +458,7 @@ class SendBloc extends Bloc<SendEvent, SendState> {
               bankVerifiedAccount: BankVerifiedAccountModel.fromJson(
                 SuccessModel.fromJson(
                   jsonDecode(verifyAccountNumber.body),
-                ).data,
+                ).data??{},
               ),
             ),
           );
