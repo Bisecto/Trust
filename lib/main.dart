@@ -125,9 +125,9 @@ class _MyAppState extends State<MyApp> {
           theme: theme,
           darkTheme: darkTheme,
           // home: const SendMainPage(),
-          home: _connected
-              ? const SplashScreen()
-              : No_internet_Page(onRetry: _checkConnectivity),
+          // home: _connected
+          //     ? const SplashScreen()
+          //     : No_internet_Page(onRetry: _checkConnectivity),
         ),
       ),
     );

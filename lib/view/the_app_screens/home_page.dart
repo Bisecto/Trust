@@ -37,6 +37,7 @@ import '../../utills/custom_theme.dart';
 import '../../utills/enums/toast_mesage.dart';
 import '../sendBeneficary/pages/send_main_page.dart';
 import '../widgets/show_toast.dart';
+import '../widgets/transaction_receipt.dart';
 import 'kyc_verification/kyc_intro_page.dart';
 
 class HomePage extends StatefulWidget {

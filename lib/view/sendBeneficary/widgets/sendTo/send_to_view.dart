@@ -23,6 +23,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modal_sheet;
 
 import '../../../../utills/app_navigator.dart';
 import '../../../auth/otp_pin_pages/confirm_with_otp.dart';
+import '../../../widgets/transaction_receipt.dart';
 
 class SendToView extends StatefulWidget {
   final TxnDetailsToSendOut txnDetails;

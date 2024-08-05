@@ -17,6 +17,7 @@ import '../../auth/sign_in_with_access_pin_and_biometrics.dart';
 import '../../widgets/app_custom_text.dart';
 import '../../widgets/purchase_receipt.dart';
 import '../../widgets/show_toast.dart';
+import '../../widgets/transaction_receipt.dart';
 
 class TransactionHistory extends StatefulWidget {
   const TransactionHistory({super.key});

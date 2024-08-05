@@ -29,6 +29,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
 import '../../../widgets/purchase_receipt.dart';
 import '../../../widgets/show_toast.dart';
+import '../../../widgets/transaction_receipt.dart';
 import '../payment_method/payment_method.dart';
 import '../make_bank_transfer/bank_transfer.dart';
 
