@@ -166,9 +166,6 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                               accessToken: accessToken,
                             ));
                       } else if (state is AccessTokenExpireState) {
-
-
-
                         String firstame =
                             await SharedPref.getString('firstName');
 
@@ -273,10 +270,12 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                 width: AppUtils.deviceScreenSize(context).width,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(color: AppColors.lightGreen),
+                                    border:
+                                        Border.all(color: AppColors.lightGreen),
                                     color: AppColors.lightgreen2,
                                     image: DecorationImage(
-                                        image: AssetImage(AppImages.tellaPointBannerBackground),
+                                        image: AssetImage(AppImages
+                                            .tellaPointBannerBackground),
                                         fit: BoxFit.cover)),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -286,14 +285,18 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                       child: SvgPicture.asset(AppIcons.badge),
                                     ),
                                     Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         CustomText(
                                           text: "Tella Point: 231",
                                         ),
                                         TextStyles.textHeadings(
-                                            textValue: 'Cash value: N231.00', textSize: 13,textColor: Colors.grey)
+                                            textValue: 'Cash value: N231.00',
+                                            textSize: 13,
+                                            textColor: Colors.grey)
                                       ],
                                     )
                                   ],
@@ -896,12 +899,20 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                                     ));
                                               }
                                             }),
-                                      if(serviceID.isNotEmpty)
-                                        SizedBox(height: 10,),
-                                      if(serviceID.isNotEmpty)
-                                        BeneficiaryWidget(productId: serviceID, beneficiaryNum: (value) { setState(() {
-                                          _beneficiaryController.text=value;
-                                        }); },),
+                                      if (serviceID.isNotEmpty)
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                      if (serviceID.isNotEmpty)
+                                        BeneficiaryWidget(
+                                          productId: serviceID,
+                                          beneficiaryNum: (value) {
+                                            setState(() {
+                                              _beneficiaryController.text =
+                                                  value;
+                                            });
+                                          },
+                                        ),
                                       SizedBox(
                                         height: 310,
                                         child: PaymentMethodScreen(
@@ -958,103 +969,8 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                           number: _beneficiaryController.text,
                                         ),
                                       ),
-                                      FormButton(
-                                        onPressed: () async {
-                                          print(_selectedPaymentMethod);
-                                          //print(selectedElectricityProviderPrice);
-                                          print(_beneficiaryController
-                                              .text.isNotEmpty);
-                                          print(!isPaymentAllowed);
-
-                                          if (_formKey.currentState!
-                                              .validate()) {
-                                            if (_selectedPaymentMethod !=
-                                                'wallet') {
-                                              var transactionPin = '';
-                                              widget.category.requiredFields
-                                                      .amount =
-                                                  _selectedAmtController.text;
-                                              widget.category.requiredFields
-                                                      .meterNumber =
-                                                  _beneficiaryController.text;
-                                              widget.category.requiredFields
-                                                      .phoneNumber =
-                                                  _beneficiaryController.text;
-
-                                              purchaseProductBloc.add(
-                                                  PurchaseProductEvent(
-                                                      context,
-                                                      widget.category
-                                                          .requiredFields,
-                                                      serviceID,
-                                                      transactionPin,
-                                                      true,isSaveAsBeneficiarySelected,beneficiaryName));
-                                            } else {
-                                              var transactionPin = '';
-                                              transactionPin = await modalSheet
-                                                  .showMaterialModalBottomSheet(
-                                                      backgroundColor:
-                                                          Colors.transparent,
-                                                      isDismissible: true,
-                                                      shape:
-                                                          const RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.vertical(
-                                                                top: Radius
-                                                                    .circular(
-                                                                        20.0)),
-                                                      ),
-                                                      context: context,
-                                                      builder: (context) =>
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .only(
-                                                                    top: 200.0),
-                                                            child:
-                                                                ConfirmWithPin(
-                                                              context: context,
-                                                              title:
-                                                                  'Input your transaction pin to continue',
-                                                            ),
-                                                          ));
-                                              print(transactionPin);
-                                              if (transactionPin != '') {
-                                                setState(() {
-                                                  widget.category.requiredFields
-                                                          .amount =
-                                                      _selectedAmtController
-                                                          .text;
-                                                  widget.category.requiredFields
-                                                          .meterNumber =
-                                                      _beneficiaryController
-                                                          .text;
-                                                });
-
-                                                purchaseProductBloc.add(
-                                                    PurchaseProductEvent(
-                                                        context,
-                                                        widget.category
-                                                            .requiredFields,
-                                                        serviceID,
-                                                        //selectedElectricityProviderId,
-                                                        transactionPin,
-                                                        false,isSaveAsBeneficiarySelected,beneficiaryName));
-                                              }
-                                            }
-                                          }
-                                        },
-                                        disableButton: (!isPaymentAllowed ||
-                                            _beneficiaryController.text.length <
-                                                10),
-                                        text: 'Purchase Electricity',
-                                        borderColor: AppColors.darkGreen,
-                                        bgColor: AppColors.darkGreen,
-                                        textColor: AppColors.white,
-                                        borderRadius: 10,
-                                      ),
                                       const SizedBox(
-                                        height: 20,
+                                        height: 200,
                                       )
 
                                       ///Remember to add beneficiary
@@ -1123,6 +1039,81 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
               ],
             ),
           ),
+        ),
+      ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(left:30.0),
+        child: FormButton(
+          onPressed: () async {
+            print(_selectedPaymentMethod);
+            //print(selectedElectricityProviderPrice);
+            print(_beneficiaryController.text.isNotEmpty);
+            print(!isPaymentAllowed);
+
+            if (_formKey.currentState!.validate()) {
+              if (_selectedPaymentMethod != 'wallet') {
+                var transactionPin = '';
+                widget.category.requiredFields.amount =
+                    _selectedAmtController.text;
+                widget.category.requiredFields.meterNumber =
+                    _beneficiaryController.text;
+                widget.category.requiredFields.phoneNumber =
+                    _beneficiaryController.text;
+
+                purchaseProductBloc.add(PurchaseProductEvent(
+                    context,
+                    widget.category.requiredFields,
+                    serviceID,
+                    transactionPin,
+                    true,
+                    isSaveAsBeneficiarySelected,
+                    beneficiaryName));
+              } else {
+                var transactionPin = '';
+                transactionPin = await modalSheet.showMaterialModalBottomSheet(
+                    backgroundColor: Colors.transparent,
+                    isDismissible: true,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(20.0)),
+                    ),
+                    context: context,
+                    builder: (context) => Padding(
+                          padding: const EdgeInsets.only(top: 200.0),
+                          child: ConfirmWithPin(
+                            context: context,
+                            title: 'Input your transaction pin to continue',
+                          ),
+                        ));
+                print(transactionPin);
+                if (transactionPin != '') {
+                  setState(() {
+                    widget.category.requiredFields.amount =
+                        _selectedAmtController.text;
+                    widget.category.requiredFields.meterNumber =
+                        _beneficiaryController.text;
+                  });
+
+                  purchaseProductBloc.add(PurchaseProductEvent(
+                      context,
+                      widget.category.requiredFields,
+                      serviceID,
+                      //selectedElectricityProviderId,
+                      transactionPin,
+                      false,
+                      isSaveAsBeneficiarySelected,
+                      beneficiaryName));
+                }
+              }
+            }
+          },
+          disableButton:
+              (!isPaymentAllowed || _beneficiaryController.text.length < 10),
+          text: 'Purchase Electricity',
+          borderColor: AppColors.darkGreen,
+          bgColor: AppColors.darkGreen,
+          textColor: AppColors.white,
+          borderRadius: 10,
         ),
       ),
     );

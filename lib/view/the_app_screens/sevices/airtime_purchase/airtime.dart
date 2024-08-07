@@ -51,8 +51,9 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
   ProductBloc purchaseProductBloc = ProductBloc();
   String _selectedPaymentMethod = 'wallet';
   bool isPaymentAllowed = false;
-  final FlutterContactPicker _contactPicker =  FlutterContactPicker();
+  final FlutterContactPicker _contactPicker = FlutterContactPicker();
   Contact? contacts;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -280,10 +281,12 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                 width: AppUtils.deviceScreenSize(context).width,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(color: AppColors.lightGreen),
+                                    border:
+                                        Border.all(color: AppColors.lightGreen),
                                     color: AppColors.lightgreen2,
                                     image: DecorationImage(
-                                        image: AssetImage(AppImages.tellaPointBannerBackground),
+                                        image: AssetImage(AppImages
+                                            .tellaPointBannerBackground),
                                         fit: BoxFit.cover)),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -293,14 +296,18 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                       child: SvgPicture.asset(AppIcons.badge),
                                     ),
                                     Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         CustomText(
                                           text: "Tella Point: 231",
                                         ),
                                         TextStyles.textHeadings(
-                                            textValue: 'Cash value: N231.00', textSize: 13,textColor: Colors.grey)
+                                            textValue: 'Cash value: N231.00',
+                                            textSize: 13,
+                                            textColor: Colors.grey)
                                       ],
                                     )
                                   ],
@@ -464,7 +471,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                         widget: SvgPicture.asset(
                                             AppIcons.nigeriaLogo),
                                         suffixIcon: GestureDetector(
-                                          onTap: ()async {
+                                          onTap: () async {
                                             //contacts.clear();
                                             Contact? contact =
                                                 await _contactPicker
@@ -474,8 +481,8 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                               //     ? null
                                               //     : contact;
                                               // print(contacts);
-                                              _beneficiaryController.text=contact!.phoneNumbers!.first;
-
+                                              _beneficiaryController.text =
+                                                  contact!.phoneNumbers!.first;
                                             });
                                           },
                                           child: Icon(
@@ -483,7 +490,9 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                               color: _beneficiaryController
                                                       .text.isNotEmpty
                                                   ? AppColors.green
-                                                  : theme.isDark?AppColors.white:AppColors.black),
+                                                  : theme.isDark
+                                                      ? AppColors.white
+                                                      : AppColors.black),
                                         ),
                                         //isMobileNumber: true,
                                         borderColor: _beneficiaryController
@@ -562,119 +571,11 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                           },
                                         ),
                                       ),
+                                      SizedBox(
+                                        height: 200,
+                                      )
 
                                       ///Remember to add beneficiary
-                                      FormButton(
-                                        onPressed: () async {
-                                          print(beneficiaryName);
-                                          print(isSaveAsBeneficiarySelected);
-                                          print(_selectedPaymentMethod);
-                                          print(_beneficiaryController
-                                              .text.isNotEmpty);
-                                          print(!isPaymentAllowed);
-
-                                          if (_formKey.currentState!
-                                              .validate()) {
-                                            if (productId != '') {
-                                              if (_selectedPaymentMethod !=
-                                                  'wallet') {
-                                                var transactionPin = '';
-                                                widget.category.requiredFields
-                                                        .amount =
-                                                    _selectedAmtController.text;
-                                                widget.category.requiredFields
-                                                        .phoneNumber =
-                                                    _beneficiaryController.text;
-
-                                                purchaseProductBloc.add(
-                                                    PurchaseProductEvent(
-                                                        context,
-                                                        widget.category
-                                                            .requiredFields,
-                                                        productId,
-                                                        transactionPin,
-                                                        true,
-                                                        isSaveAsBeneficiarySelected,
-                                                        beneficiaryName));
-                                              } else {
-                                                var transactionPin = '';
-                                                transactionPin = await modalSheet
-                                                    .showMaterialModalBottomSheet(
-                                                        backgroundColor:
-                                                            Colors.transparent,
-                                                        isDismissible: true,
-                                                        shape:
-                                                            const RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius.vertical(
-                                                                  top: Radius
-                                                                      .circular(
-                                                                          20.0)),
-                                                        ),
-                                                        context: context,
-                                                        builder: (context) =>
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .only(
-                                                                      top:
-                                                                          200.0),
-                                                              child:
-                                                                  ConfirmWithPin(
-                                                                context:
-                                                                    context,
-                                                                title:
-                                                                    'Input your transaction pin to continue',
-                                                              ),
-                                                            ));
-                                                print(transactionPin);
-                                                if (transactionPin != '') {
-                                                  setState(() {
-                                                    widget
-                                                            .category
-                                                            .requiredFields
-                                                            .amount =
-                                                        _selectedAmtController
-                                                            .text;
-                                                    widget
-                                                            .category
-                                                            .requiredFields
-                                                            .phoneNumber =
-                                                        _beneficiaryController
-                                                            .text;
-                                                  });
-
-                                                  purchaseProductBloc.add(
-                                                      PurchaseProductEvent(
-                                                          context,
-                                                          widget.category
-                                                              .requiredFields,
-                                                          productId,
-                                                          transactionPin,
-                                                          false,
-                                                          isSaveAsBeneficiarySelected,
-                                                          beneficiaryName));
-                                                }
-                                              }
-                                            } else {
-                                              showToast(
-                                                  context: context,
-                                                  title: 'Info',
-                                                  subtitle:
-                                                      'Please select a network provider',
-                                                  type: ToastMessageType.info);
-                                            }
-                                          }
-                                        },
-                                        disableButton: (!isPaymentAllowed ||
-                                            !_beneficiaryController
-                                                .text.isNotEmpty),
-                                        text: 'Purchase Airtime',
-                                        borderColor: AppColors.darkGreen,
-                                        bgColor: AppColors.darkGreen,
-                                        textColor: AppColors.white,
-                                        borderRadius: 10,
-                                      )
                                     ],
                                   )),
                             ),
@@ -685,6 +586,90 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
               ],
             ),
           ),
+        ),
+      ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.fromLTRB(30, 0.0, 0, 0),
+        child: FormButton(
+          onPressed: () async {
+            print(beneficiaryName);
+            print(isSaveAsBeneficiarySelected);
+            print(_selectedPaymentMethod);
+            print(_beneficiaryController.text.isNotEmpty);
+            print(!isPaymentAllowed);
+
+            if (_formKey.currentState!.validate()) {
+              if (productId != '') {
+                if (_selectedPaymentMethod != 'wallet') {
+                  var transactionPin = '';
+                  widget.category.requiredFields.amount =
+                      _selectedAmtController.text;
+                  widget.category.requiredFields.phoneNumber =
+                      _beneficiaryController.text;
+
+                  purchaseProductBloc.add(PurchaseProductEvent(
+                      context,
+                      widget.category.requiredFields,
+                      productId,
+                      transactionPin,
+                      true,
+                      isSaveAsBeneficiarySelected,
+                      beneficiaryName));
+                } else {
+                  var transactionPin = '';
+                  transactionPin =
+                      await modalSheet.showMaterialModalBottomSheet(
+                          backgroundColor: Colors.transparent,
+                          isDismissible: true,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(20.0)),
+                          ),
+                          context: context,
+                          builder: (context) => Padding(
+                                padding: const EdgeInsets.only(top: 200.0),
+                                child: ConfirmWithPin(
+                                  context: context,
+                                  title:
+                                      'Input your transaction pin to continue',
+                                ),
+                              ));
+                  print(transactionPin);
+                  if (transactionPin != '') {
+                    setState(() {
+                      widget.category.requiredFields.amount =
+                          _selectedAmtController.text;
+                      widget.category.requiredFields.phoneNumber =
+                          _beneficiaryController.text;
+                    });
+
+                    purchaseProductBloc.add(PurchaseProductEvent(
+                        context,
+                        widget.category.requiredFields,
+                        productId,
+                        transactionPin,
+                        false,
+                        isSaveAsBeneficiarySelected,
+                        beneficiaryName));
+                  }
+                }
+              } else {
+                showToast(
+                    context: context,
+                    title: 'Info',
+                    subtitle: 'Please select a network provider',
+                    type: ToastMessageType.info);
+              }
+            }
+          },
+          disableButton:
+              (!isPaymentAllowed || !_beneficiaryController.text.isNotEmpty),
+          text: 'Purchase Airtime',
+          borderColor: AppColors.darkGreen,
+          bgColor: AppColors.darkGreen,
+          textColor: AppColors.white,
+          borderRadius: 10,
+          width: AppUtils.deviceScreenSize(context).width,
         ),
       ),
     );

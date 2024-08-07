@@ -91,10 +91,12 @@ class _SignInWIthAccessPinBiometricsState
             buildWhen: (previous, current) => current is AuthInitial,
             listener: (context, state) async {
               if (state is ErrorState) {
-                setState(() {
-                  pinInputController.text = '    ';
-                });
+                // setState(() {
+                //   pinInputController.text = '    ';
+                // });
 
+
+                AppNavigator.pushAndRemovePreviousPages(context, page: SignInWIthAccessPinBiometrics(userName: widget.userName,));
                 showToast(
                     context: context,
                     title: 'Error',
@@ -135,35 +137,35 @@ class _SignInWIthAccessPinBiometricsState
                                   fit: BoxFit.fill,
                                 ),
                               ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(20.0),
-                                child: Align(
-                                  alignment: Alignment.topLeft,
-                                  child: SafeArea(
-                                    child: Column(
-                                      children: [
-                                        if (Navigator.canPop(context))
-                                          GestureDetector(
-                                            onTap: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: Container(
-                                              height: 50,
-                                              width: 50,
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(5),
-                                                  border: Border.all(
-                                                      color: AppColors.green)),
-                                              child:
-                                                  const Icon(Icons.arrow_back),
-                                            ),
-                                          ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
+                              // child: Padding(
+                              //   padding: const EdgeInsets.all(20.0),
+                              //   child: Align(
+                              //     alignment: Alignment.topLeft,
+                              //     child: SafeArea(
+                              //       child: Column(
+                              //         children: [
+                              //           if (Navigator.canPop(context))
+                              //             GestureDetector(
+                              //               onTap: () {
+                              //                 Navigator.pop(context);
+                              //               },
+                              //               child: Container(
+                              //                 height: 50,
+                              //                 width: 50,
+                              //                 decoration: BoxDecoration(
+                              //                     borderRadius:
+                              //                         BorderRadius.circular(5),
+                              //                     border: Border.all(
+                              //                         color: AppColors.green)),
+                              //                 child:
+                              //                     const Icon(Icons.arrow_back),
+                              //               ),
+                              //             ),
+                              //         ],
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
                             ),
                           ),
                           Positioned.fill(

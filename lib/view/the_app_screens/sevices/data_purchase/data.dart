@@ -517,101 +517,9 @@ class _DataPurchaseState extends State<DataPurchase> {
                                           number: _beneficiaryController.text,
                                         ),
                                       ),
-                                      FormButton(
-                                        onPressed: () async {
-                                          print(_selectedPaymentMethod);
-                                          print(selectedDataPlanPrice);
-                                          print(_beneficiaryController
-                                              .text.isNotEmpty);
-                                          print(!isPaymentAllowed);
+                                      SizedBox(height: 200,)
 
-                                          if (_formKey.currentState!
-                                              .validate()) {
-                                            if (_selectedPaymentMethod !=
-                                                'wallet') {
-                                              var transactionPin = '';
-                                              widget.category.requiredFields
-                                                      .amount =
-                                                  selectedDataPlanPrice;
-                                              widget.category.requiredFields
-                                                      .phoneNumber =
-                                                  _beneficiaryController.text;
-
-                                              purchaseProductBloc.add(
-                                                  PurchaseProductEvent(
-                                                      context,
-                                                      widget.category
-                                                          .requiredFields,
-                                                      selectedDataPlanId,
-                                                      transactionPin,
-                                                      true,
-                                                      isSaveAsBeneficiarySelected,
-                                                      beneficiaryName));
-                                            } else {
-                                              var transactionPin = '';
-                                              transactionPin = await modalSheet
-                                                  .showMaterialModalBottomSheet(
-                                                      backgroundColor:
-                                                          Colors.transparent,
-                                                      isDismissible: true,
-                                                      shape:
-                                                          const RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.vertical(
-                                                                top: Radius
-                                                                    .circular(
-                                                                        20.0)),
-                                                      ),
-                                                      context: context,
-                                                      builder: (context) =>
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .only(
-                                                                    top: 200.0),
-                                                            child:
-                                                                ConfirmWithPin(
-                                                              context: context,
-                                                              title:
-                                                                  'Input your transaction pin to continue',
-                                                            ),
-                                                          ));
-                                              print(transactionPin);
-                                              if (transactionPin != '') {
-                                                setState(() {
-                                                  widget.category.requiredFields
-                                                          .amount =
-                                                      selectedDataPlanPrice;
-                                                  widget.category.requiredFields
-                                                          .phoneNumber =
-                                                      _beneficiaryController
-                                                          .text;
-                                                });
-
-                                                purchaseProductBloc.add(
-                                                    PurchaseProductEvent(
-                                                        context,
-                                                        widget.category
-                                                            .requiredFields,
-                                                        selectedDataPlanId,
-                                                        transactionPin,
-                                                        false,
-                                                        isSaveAsBeneficiarySelected,
-                                                        beneficiaryName));
-                                              }
-                                            }
-                                          }
-                                        },
-                                        disableButton: (!isPaymentAllowed ||
-                                            _beneficiaryController.text.length <
-                                                10),
-                                        text: 'Purchase Data',
-                                        borderColor: AppColors.darkGreen,
-                                        bgColor: AppColors.darkGreen,
-                                        textColor: AppColors.white,
-                                        borderRadius: 10,
-                                      ),
-                                      const SizedBox(
+,                                      const SizedBox(
                                         height: 20,
                                       )
 
@@ -683,6 +591,104 @@ class _DataPurchaseState extends State<DataPurchase> {
           ),
         ),
       ),
+      floatingActionButton:                                       Padding(
+        padding: const EdgeInsets.only(left: 30.0),
+        child: FormButton(
+          onPressed: () async {
+            print(_selectedPaymentMethod);
+            print(selectedDataPlanPrice);
+            print(_beneficiaryController
+                .text.isNotEmpty);
+            print(!isPaymentAllowed);
+
+            if (_formKey.currentState!
+                .validate()) {
+              if (_selectedPaymentMethod !=
+                  'wallet') {
+                var transactionPin = '';
+                widget.category.requiredFields
+                    .amount =
+                    selectedDataPlanPrice;
+                widget.category.requiredFields
+                    .phoneNumber =
+                    _beneficiaryController.text;
+
+                purchaseProductBloc.add(
+                    PurchaseProductEvent(
+                        context,
+                        widget.category
+                            .requiredFields,
+                        selectedDataPlanId,
+                        transactionPin,
+                        true,
+                        isSaveAsBeneficiarySelected,
+                        beneficiaryName));
+              } else {
+                var transactionPin = '';
+                transactionPin = await modalSheet
+                    .showMaterialModalBottomSheet(
+                    backgroundColor:
+                    Colors.transparent,
+                    isDismissible: true,
+                    shape:
+                    const RoundedRectangleBorder(
+                      borderRadius:
+                      BorderRadius.vertical(
+                          top: Radius
+                              .circular(
+                              20.0)),
+                    ),
+                    context: context,
+                    builder: (context) =>
+                        Padding(
+                          padding:
+                          const EdgeInsets
+                              .only(
+                              top: 200.0),
+                          child:
+                          ConfirmWithPin(
+                            context: context,
+                            title:
+                            'Input your transaction pin to continue',
+                          ),
+                        ));
+                print(transactionPin);
+                if (transactionPin != '') {
+                  setState(() {
+                    widget.category.requiredFields
+                        .amount =
+                        selectedDataPlanPrice;
+                    widget.category.requiredFields
+                        .phoneNumber =
+                        _beneficiaryController
+                            .text;
+                  });
+
+                  purchaseProductBloc.add(
+                      PurchaseProductEvent(
+                          context,
+                          widget.category
+                              .requiredFields,
+                          selectedDataPlanId,
+                          transactionPin,
+                          false,
+                          isSaveAsBeneficiarySelected,
+                          beneficiaryName));
+                }
+              }
+            }
+          },
+          disableButton: (!isPaymentAllowed ||
+              _beneficiaryController.text.length <
+                  10),
+          text: 'Purchase Data',
+          borderColor: AppColors.darkGreen,
+          bgColor: AppColors.darkGreen,
+          textColor: AppColors.white,
+          borderRadius: 10,
+        ),
+      ),
+
     );
   }
 
