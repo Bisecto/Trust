@@ -7,16 +7,35 @@ import 'package:teller_trust/utills/app_navigator.dart';
 import 'package:teller_trust/view/sendBeneficary/pages/recent_transfer_list_page.dart';
 
 import '../../../../utills/custom_theme.dart';
+import '../../../../utills/shared_preferences.dart';
 
-class SendMainHeaderWidget extends StatelessWidget {
+class SendMainHeaderWidget extends StatefulWidget {
   final String balance;
   final VoidCallback backNavCallBack;
+
   const SendMainHeaderWidget({
     super.key,
     required this.balance,
     required this.backNavCallBack,
   });
 
+  @override
+  State<SendMainHeaderWidget> createState() => _SendMainHeaderWidgetState();
+}
+
+class _SendMainHeaderWidgetState extends State<SendMainHeaderWidget> {
+  bool isMoneyBlocked = false;
+  Future<void> getName() async {
+    isMoneyBlocked = await SharedPref.getBool('isMoneyBlocked') ?? false;
+    print('Initial isMoneyBlocked: $isMoneyBlocked');
+    setState(() {});
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    getName();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
@@ -25,7 +44,7 @@ class SendMainHeaderWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         InkWell(
-          onTap: backNavCallBack,
+          onTap: widget.backNavCallBack,
           child: Container(
             width: 45,
             height: 45,
@@ -74,7 +93,7 @@ class SendMainHeaderWidget extends StatelessWidget {
               width: 10.0,
             ),
             Text(
-              balance,
+              !isMoneyBlocked?widget.balance:'*****',
               style:  TextStyle(
                 color:theme.isDark?AppColors.white:  AppColors.sendToBalanceValueColor,
                 fontSize: 18.0,
@@ -82,6 +101,33 @@ class SendMainHeaderWidget extends StatelessWidget {
               ),
               textAlign: TextAlign.start,
             ),
+            const AppSpacer(
+              width: 10.0,
+            ),
+            GestureDetector(
+              onTap: () async {
+                setState(() {
+                  isMoneyBlocked = !isMoneyBlocked;
+                });
+                await SharedPref.putBool(
+                    'isMoneyBlocked', isMoneyBlocked);
+                print('Saved isMoneyBlocked: $isMoneyBlocked');
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: Icon(
+                    isMoneyBlocked
+                        ? Icons.visibility_off
+                        : Icons.visibility,
+                    color: AppColors.white,
+                    size: 16,
+                  ),
+                ),
+              ),
+            ),
+
           ],
         ),
         InkWell(
