@@ -94,11 +94,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     Map<String, dynamic> data = {
       "token": event.token,
-      "phone": await SharedPref.getString("phone"),
+      "phone": await SharedPref.getString("userData"),
     };
     Map<String, dynamic> deviceData = {
       "token": event.token,
-      "userData": await SharedPref.getString("phone"),
+      "userData": await SharedPref.getString("userData"),
       "deviceId": deviceId
     };
     print(data);
@@ -303,12 +303,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       SharedPref.putString('temUserPassword', event.password);
 
       await SharedPref.putString(
-          "phone", json.decode(response.body)['data']['phone']);
+          "userData", event.userData,);
       Navigator.pop(event.context);
 
       emit(AuthChangeDeviceOtpRequestState(
           AppUtils.convertString(json.decode(response.body)['message']),
-          json.decode(response.body)['data']['phone'],
+          event.userData,//json.decode(response.body)['data']['phone'],
           true));
       emit(AuthInitial());
     } else {

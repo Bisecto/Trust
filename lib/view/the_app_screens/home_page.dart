@@ -843,10 +843,11 @@ class _HomePageState extends State<HomePage> {
         if (state is CategorySuccessState) {
           CategoryModel categoryModel = state.categoryModel;
           List<Category> items = categoryModel.data.categories;
+
           // items.sort((a, b) => a.name.compareTo(b.name));
           //Use user data here
           return SizedBox(
-            height: items.length > 4 ? 160 : 80,
+            height: items.length > 4 ? 170 : 80,
             child: GridView.builder(
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
