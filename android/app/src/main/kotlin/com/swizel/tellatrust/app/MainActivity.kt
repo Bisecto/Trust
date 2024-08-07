@@ -1,4 +1,4 @@
-package com.teller_trust.teller_trust
+package com.swizel.tellatrust.app
 
 import io.flutter.embedding.android.FlutterActivity
 
