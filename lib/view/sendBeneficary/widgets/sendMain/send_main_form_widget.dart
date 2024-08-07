@@ -103,7 +103,11 @@ class _SendMainFormWidgetState extends State<SendMainFormWidget> {
             if ((widget.balance == '0.0' ||
                 (double.parse(widget.balance.replaceAll(',', '')) <
                     double.parse(
-                        (mainValue + fractionValue).replaceAll(',', ''))))) ...[
+                        (mainValue + fractionValue).replaceAll(',', '')))))
+              if(mainValue!='0')
+
+              ...[
+
               const AppSpacer(
                 height: 20.0,
               ),
