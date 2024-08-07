@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/bloc/product_bloc/product_bloc.dart';
+import 'package:teller_trust/model/transactionHistory.dart';
 import 'package:teller_trust/res/app_router.dart';
 import 'package:teller_trust/utills/app_utils.dart';
 import 'package:teller_trust/utills/custom_theme.dart';
@@ -14,6 +16,7 @@ import 'package:teller_trust/view/important_pages/no_internet.dart';
 import 'package:teller_trust/view/networkCenter/pages/network_center_main_page.dart';
 import 'package:teller_trust/view/sendBeneficary/pages/send_main_page.dart';
 import 'package:teller_trust/view/splash_screen.dart';
+import 'package:teller_trust/view/widgets/transaction_receipt.dart';
 import 'bloc/app_bloc/app_bloc.dart';
 
 void main() async {
@@ -124,10 +127,45 @@ class _MyAppState extends State<MyApp> {
           onGenerateRoute: _appRoutes.onGenerateRoute,
           theme: theme,
           darkTheme: darkTheme,
-          // home: const SendMainPage(),
-          // home: _connected
-          //     ? const SplashScreen()
-          //     : No_internet_Page(onRetry: _checkConnectivity),
+          // home: TransactionReceipt(
+          //     transaction: Transaction.fromJson(json.decode(jsonEncode({
+          //   "id": "99603552-e705-4186-9ab0-474936d78814",
+          //   "amount": 100,
+          //   "description": "MTN Airtime",
+          //   "type": "debit",
+          //   "reference": "11134b627f574e64a34178f9ff917eaa",
+          //   "status": "success",
+          //   "createdAt": "2024-08-05T03:56:21.715Z",
+          //   "order": {
+          //     "id": "e737cdc1-72a4-4ec7-bbe9-5eb091167041",
+          //     "status": "complete",
+          //     "providerOrderId": "11134b627f574e64a34178f9ff917eaa",
+          //     "requiredFields": {
+          //       "phoneNumber": "08100204570",
+          //       "amount": 100,
+          //       "cardNumber": null,
+          //       "meterNumber": null
+          //     },
+          //     "response": {
+          //       "clientId": "66158f7a13bea00024201371",
+          //       "serviceCategoryId": "61efacbcda92348f9dde5f92",
+          //       "reference": "11134b627f574e64a34178f9ff917eaa",
+          //       "status": "successful",
+          //       "amount": 100,
+          //       "id": "66b04d68591dfb1faea0246c"
+          //     },
+          //     "product": {
+          //       "image":
+          //           "https://tellatrust-assets.s3.eu-west-2.amazonaws.com/product/items/660bbd40-35c5-42c7-83b6-63f55e179e7d.png",
+          //       "id": "660bbd40-35c5-42c7-83b6-63f55e179e7d",
+          //       "name": "MTN Airtime",
+          //       "description": "MTN Airtime"
+          //     }
+          //   }
+          // })))),
+          home: _connected
+              ? const SplashScreen()
+              : No_internet_Page(onRetry: _checkConnectivity),
         ),
       ),
     );

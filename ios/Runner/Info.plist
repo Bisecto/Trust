@@ -34,6 +34,10 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSFaceIDUsageDescription</key>
+    <string>Your Face ID will be used for authentication purposes to enhance security and provide a seamless login experience.</string>
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>We need your permission to save photos.</string>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

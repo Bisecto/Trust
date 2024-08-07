@@ -56,7 +56,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             AppUtils.convertString(json.decode(response.body)['message']),
             event.data["email"]!));
         emit(AuthInitial());
-
       } else {
         Navigator.pop(event.context);
 
@@ -127,7 +126,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             AppUtils.convertString(json.decode(response.body)['message']),
             user));
         emit(AuthInitial());
-
       } else {
         Navigator.pop(event.context);
 
@@ -173,10 +171,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         String deviceID = await AppUtils.getId();
-        String userData=await SharedPref.getString('userData');
-        String password=await SharedPref.getString('password');
-        String hashedAccessPin=await AppUtils().encryptData(event.accessPin);
-        await SharedPref.putString('hashedAccessPin',hashedAccessPin);
+        String userData = await SharedPref.getString('userData');
+        String password = await SharedPref.getString('password');
+        String hashedAccessPin = await AppUtils().encryptData(event.accessPin);
+        await SharedPref.putString('hashedAccessPin', hashedAccessPin);
 
         Map<String, dynamic> loginData = {
           "userData": userData,
@@ -193,7 +191,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         print(loginResponse.statusCode);
 
         print(loginResponse.body);
-        if (loginResponse.statusCode == 200 || loginResponse.statusCode == 201) {
+        if (loginResponse.statusCode == 200 ||
+            loginResponse.statusCode == 201) {
           await SharedPref.putString("userData", userData);
           await SharedPref.putString("password", password);
           User user = User.fromJson(jsonDecode(loginResponse.body)['data']);
@@ -209,11 +208,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             AppUtils.convertString(json.decode(loginResponse.body)['message']),
           ));
           emit(AuthInitial());
-        }else{
+        } else {
           Navigator.pop(event.context);
 
-          emit(ErrorState(
-              AppUtils.convertString(json.decode(loginResponse.body)['message'])));
+          emit(ErrorState(AppUtils.convertString(
+              json.decode(loginResponse.body)['message'])));
           //print(event.password);
           print(json.decode(loginResponse.body));
           emit(AuthInitial());
@@ -256,72 +255,71 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       "deviceId": deviceID
     };
     //try {
-      var response = await authRepository.appPostRequest(data, AppApis.login);
+    var response = await authRepository.appPostRequest(data, AppApis.login);
 
-      print(response.statusCode);
-      print(response.body);
-      print(response.headers.values);
-      print(response.headers.entries);
-      response.headers.forEach((name, values) {
-        print('$name: $values');
-      });
+    print(response.statusCode);
+    print(response.body);
+    print(response.headers.values);
+    print(response.headers.entries);
+    response.headers.forEach((name, values) {
+      print('$name: $values');
+    });
 
-      print(response.body);
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        await SharedPref.putString("userData", event.userData);
-        await SharedPref.putString("password", event.password);
-        User userData = User.fromJson(jsonDecode(response.body)['data']);
-        await SharedPref.putString("firstName", userData.firstName);
-        await SharedPref.putString("lastName", userData.lastName);
-        await SharedPref.putString("userId", userData.userId);
-        print(response.headers['refresh-token']);
-        await SharedPref.putString(
-            "refresh-token", response.headers['refresh-token']!);
-        Navigator.pop(event.context);
+    print(response.body);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      await SharedPref.putString("userData", event.userData);
+      await SharedPref.putString("password", event.password);
+      User userData = User.fromJson(jsonDecode(response.body)['data']);
+      await SharedPref.putString("firstName", userData.firstName);
+      await SharedPref.putString("lastName", userData.lastName);
+      await SharedPref.putString("userId", userData.userId);
+      print(response.headers['refresh-token']);
+      await SharedPref.putString(
+          "refresh-token", response.headers['refresh-token']!);
+      Navigator.pop(event.context);
 
-        emit(InitiatedLoginState(
-            //userData,
-            AppUtils.convertString(json.decode(response.body)['message']),
-            userData.firstName,jsonDecode(response.body)['data']['isAccessPinSet']??true));
-        emit(AuthInitial());
+      emit(InitiatedLoginState(
+          //userData,
+          AppUtils.convertString(json.decode(response.body)['message']),
+          userData.firstName,
+          jsonDecode(response.body)['data']['isAccessPinSet'] ?? true));
+      emit(AuthInitial());
+    } else if (response.statusCode == 400 &&
+        json.decode(response.body)['errorCode'] == 'E302') {
+      SharedPref.putString('temUserData', event.userData);
+      SharedPref.putString('temUserPassword', event.password);
+      Navigator.pop(event.context);
 
-      } else if (response.statusCode == 400 &&
-          json.decode(response.body)['errorCode'] == 'E302') {
-        SharedPref.putString('temUserData', event.userData);
-        SharedPref.putString('temUserPassword', event.password);
-        Navigator.pop(event.context);
+      await SharedPref.putString(
+          "phone", json.decode(response.body)['data']['phone']);
+      emit(AuthOtpRequestState(
+          AppUtils.convertString(json.decode(response.body)['message']),
+          event.userData));
+      emit(AuthInitial());
+    } else if (response.statusCode == 400 &&
+        (json.decode(response.body)['errorCode'] == 'E301' ||
+            json.decode(response.body)['errorCode'] == 'N429')) {
+      SharedPref.putString('temUserData', event.userData);
+      SharedPref.putString('temUserPassword', event.password);
 
-        await SharedPref.putString(
-            "phone", json.decode(response.body)['data']['phone']);
-        emit(AuthOtpRequestState(
-            AppUtils.convertString(json.decode(response.body)['message'] ),
-            event.userData));
-        emit(AuthInitial());
+      await SharedPref.putString(
+          "phone", json.decode(response.body)['data']['phone']);
+      Navigator.pop(event.context);
 
-      } else if (response.statusCode == 400 &&
-          json.decode(response.body)['errorCode'] == 'E301') {
-        SharedPref.putString('temUserData', event.userData);
-        SharedPref.putString('temUserPassword', event.password);
+      emit(AuthChangeDeviceOtpRequestState(
+          AppUtils.convertString(json.decode(response.body)['message']),
+          json.decode(response.body)['data']['phone'],
+          true));
+      emit(AuthInitial());
+    } else {
+      Navigator.pop(event.context);
 
-        await SharedPref.putString(
-            "phone", json.decode(response.body)['data']['phone']);
-        Navigator.pop(event.context);
-
-        emit(AuthChangeDeviceOtpRequestState(
-            AppUtils.convertString(json.decode(response.body)['message'] ),
-            json.decode(response.body)['data']['phone'],
-            true));
-        emit(AuthInitial());
-
-      } else {
-        Navigator.pop(event.context);
-
-        emit(ErrorState(
-            AppUtils.convertString(json.decode(response.body)['message'])));
-        print(event.password);
-        print(json.decode(response.body));
-        emit(AuthInitial());
-      }
+      emit(ErrorState(
+          AppUtils.convertString(json.decode(response.body)['message'])));
+      print(event.password);
+      print(json.decode(response.body));
+      emit(AuthInitial());
+    }
     // } catch (e) {
     //   print(e);
     //   Navigator.pop(event.context);
@@ -363,8 +361,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         await SharedPref.putString("lastName", userData.lastName);
         await SharedPref.putString(
             "access-token", response.headers['access-token']!);
-        String hashedAccessPin=await AppUtils().encryptData(event.accessPin);
-        await SharedPref.putString('hashedAccessPin',hashedAccessPin);
+        String hashedAccessPin = await AppUtils().encryptData(event.accessPin);
+        await SharedPref.putString('hashedAccessPin', hashedAccessPin);
 
         // String? cookie = response.headers['set-cookie'];
         // print(response.headers.values);
@@ -378,7 +376,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(SuccessState(userData,
             AppUtils.convertString(json.decode(response.body)['message'])));
         emit(AuthInitial());
-
       } else {
         Navigator.pop(event.context);
 
@@ -445,15 +442,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         //   print('$name: $values');
         // });
         //await SharedPref.putString("lastName", userData.lastName);
-        String hashedAccessPin=await AppUtils().encryptData(event.accessPin);
-        await SharedPref.putString('hashedAccessPin',hashedAccessPin);
+        String hashedAccessPin = await AppUtils().encryptData(event.accessPin);
+        await SharedPref.putString('hashedAccessPin', hashedAccessPin);
         Navigator.pop(event.context);
 
         emit(SuccessState(userData,
             AppUtils.convertString(json.decode(response.body)['message'])));
         emit(AuthInitial());
-
-      }else if (response.statusCode == 401) {
+      } else if (response.statusCode == 401) {
         emit(AccessTokenExpireState());
       } else {
         Navigator.pop(event.context);
@@ -495,7 +491,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           accessToken: accessToken, accessPIN: event.pin);
       print(response.statusCode);
 
-     // print(response.body);
+      // print(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
         // await SharedPref.putString("userData", event.userData);
         await SharedPref.putString("password", event.data['newPassword']!);
@@ -517,10 +513,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(SuccessState(userData,
             AppUtils.convertString(json.decode(response.body)['message'])));
         emit(AuthInitial());
-
       } else if (response.statusCode == 401) {
         emit(AccessTokenExpireState());
-      }else {
+      } else {
         Navigator.pop(event.context);
 
         emit(ErrorState(
@@ -530,7 +525,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthInitial());
       }
     } catch (e) {
-
       //Navigator.pop(event.context);
 
       print(e);
@@ -571,10 +565,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         //     "access-token", response.headers['access-token']!);
         Navigator.pop(event.context);
 
-        emit(OTPRequestSuccessState(AppUtils.convertString(
-            json.decode(response.body)['message'])));
+        emit(OTPRequestSuccessState(
+            AppUtils.convertString(json.decode(response.body)['message'])));
         emit(AuthInitial());
-
       } else {
         Navigator.pop(event.context);
 
@@ -627,7 +620,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(PasswordResetSuccessState(
             AppUtils.convertString(json.decode(response.body)['message'])));
         emit(AuthInitial());
-
       } else {
         Navigator.pop(event.context);
         emit(ErrorState(

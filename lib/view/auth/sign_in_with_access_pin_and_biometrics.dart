@@ -47,16 +47,22 @@ class _SignInWIthAccessPinBiometricsState
     authBloc.add(InitialEvent());
     super.initState();
     getCanUseBiometrics();
+    //getCanUseBiometrics2();
   }
 
-  getCanUseBiometrics() async {
+  Future<void> getCanUseBiometrics() async {
     bool isBiometricsEnabled = await SharedPref.getBool('biometric') ?? false;
     var availableBiometrics = await auth.getAvailableBiometrics();
-    canUseBiometrics = await auth.canCheckBiometrics &&
-        await auth.isDeviceSupported() &&
-        availableBiometrics.isNotEmpty &&
-        isBiometricsEnabled;
+    bool canCheck = await auth.canCheckBiometrics;
+    bool isSupported = await auth.isDeviceSupported();
+
+    // Update the state using setState
+    setState(() {
+      canUseBiometrics = canCheck && isSupported && availableBiometrics.isNotEmpty && isBiometricsEnabled;
+    });
+    print(canUseBiometrics);
   }
+
 
   Future<void> getCanUseBiometrics2() async {
     var availableBiometrics = await auth.getAvailableBiometrics();

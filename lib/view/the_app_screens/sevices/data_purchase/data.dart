@@ -439,7 +439,7 @@ class _DataPurchaseState extends State<DataPurchase> {
                                               color: _beneficiaryController
                                                       .text.isNotEmpty
                                                   ? AppColors.green
-                                                  : AppColors.lightDivider),
+                                                  : theme.isDark?AppColors.white:AppColors.black),
                                         ),
 
                                         borderColor: _beneficiaryController

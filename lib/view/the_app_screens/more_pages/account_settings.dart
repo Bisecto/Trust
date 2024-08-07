@@ -49,8 +49,11 @@ class _AccountSettingState extends State<AccountSetting> {
 
   Future<void> getCanUseBiometrics2() async {
     var availableBiometrics = await auth.getAvailableBiometrics();
+    print(availableBiometrics);
     bool canCheckBiometrics = await auth.canCheckBiometrics;
+    print(canCheckBiometrics);
     bool isDeviceSupported = await auth.isDeviceSupported();
+    print(isDeviceSupported);
     setState(() {
       // Ensure each condition evaluates to a boolean
       canUseBiometrics = canCheckBiometrics && // Note the function call

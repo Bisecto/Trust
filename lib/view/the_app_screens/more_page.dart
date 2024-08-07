@@ -62,7 +62,7 @@ class _MorePageState extends State<MorePage> {
         child: Column(
           children: [
             Container(
-              height: 220,
+              height: 225,
               decoration: BoxDecoration(
                   color: theme.isDark
                       ? AppColors.darkGreen
@@ -72,7 +72,7 @@ class _MorePageState extends State<MorePage> {
               child: Column(
                 children: [
                   Container(
-                    height: 150,
+                    height: 160,
                     width: AppUtils.deviceScreenSize(context).width,
                     decoration: BoxDecoration(
                         color: theme.isDark

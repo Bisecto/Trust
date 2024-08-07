@@ -112,7 +112,7 @@ class _SignInScreenState extends State<SignInScreen> {
               //MSG.warningSnackBar(context, state.error);
               AppNavigator.pushAndStackPage(context,
                   page: VerifyOtp(
-                    email: state.email,
+                    phone: state.phone,
                     isRegister: false,
                   ));
               showToast(
@@ -136,7 +136,7 @@ class _SignInScreenState extends State<SignInScreen> {
             } else if (state is VerificationContinueState) {
               AppNavigator.pushAndStackPage(context,
                   page: VerifyOtp(
-                    email: _emailController.text,
+                    phone: _emailController.text,
                     isRegister: true,
                   ));
               // AppNavigator.pushAndStackNamed(context,

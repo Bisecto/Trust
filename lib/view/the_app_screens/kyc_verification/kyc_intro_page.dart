@@ -176,7 +176,7 @@ class _KYCIntroState extends State<KYCIntro> {
                                   text:
                                       'We are required by the CBN to ensure you '
                                       'complete your profile set-up to gain'
-                                      ' full access to all Tella Bank services.',
+                                      ' full access to all TellaTrust services.',
                                   maxLines: 3,
                                   color: AppColors.darkGreen,
                                   size:12,

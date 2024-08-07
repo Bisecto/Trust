@@ -483,7 +483,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                               color: _beneficiaryController
                                                       .text.isNotEmpty
                                                   ? AppColors.green
-                                                  : AppColors.lightDivider),
+                                                  : theme.isDark?AppColors.white:AppColors.black),
                                         ),
                                         //isMobileNumber: true,
                                         borderColor: _beneficiaryController

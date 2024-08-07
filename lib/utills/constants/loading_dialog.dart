@@ -38,21 +38,21 @@ class LoadingDialog extends StatelessWidget {
               ),
               const SizedBox(height: 10),
 
-              DefaultTextStyle(
-                style:  TextStyle(
-                    color: !theme.isDark?Colors.black:Colors.white,
-                    fontFamily: 'Roboto',
-                    backgroundColor: Colors.transparent,
-                    fontSize: 15
-                ),
-                child: Text(
-                  title,
-                  softWrap: true,
-                  textAlign: TextAlign.center,
-
-
-                ),
-              )
+              // DefaultTextStyle(
+              //   style:  TextStyle(
+              //       color: !theme.isDark?Colors.black:Colors.white,
+              //       fontFamily: 'Roboto',
+              //       backgroundColor: Colors.transparent,
+              //       fontSize: 15
+              //   ),
+              //   child: Text(
+              //     title,
+              //     softWrap: true,
+              //     textAlign: TextAlign.center,
+              //
+              //
+              //   ),
+              // )
             ],
           ),
         ),
