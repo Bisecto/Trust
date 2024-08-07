@@ -20,6 +20,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 class SendToFormWidget extends StatefulWidget {
   final bool isItForTellaTrust;
   final bool isReceiptentSelectedForTellaTrustTxn;
+
   const SendToFormWidget({
     super.key,
     required this.isItForTellaTrust,
@@ -150,28 +151,30 @@ class _SendToFormWidgetState extends State<SendToFormWidget> {
                   onTap: !isAnyOptionsSelected
                       ? null
                       : () async {
-                  selectedBank=await  modalSheet.showMaterialModalBottomSheet(
-                      backgroundColor: Colors.transparent,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(20.0)),
-                      ),
-                      context: context,
-                      builder: (context) => Padding(
-                        padding: const EdgeInsets.only(top: 100.0),
-                        child: BankViewWidget(
-                          banks: banks,
-                        ),
-                      ),
-                    ).then((value) {
-                    if (value != null) {
-                      setState(() {
-                        selectedBank = value;
-                        bankNameController.text = selectedBank.bankName;
-                      });
-                    }
-                    return value ?? '';
-                  });
+                          selectedBank = await modalSheet
+                              .showMaterialModalBottomSheet(
+                            backgroundColor: Colors.transparent,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(20.0)),
+                            ),
+                            context: context,
+                            builder: (context) => Padding(
+                              padding: const EdgeInsets.only(top: 100.0),
+                              child: BankViewWidget(
+                                banks: banks,
+                              ),
+                            ),
+                          )
+                              .then((value) {
+                            if (value != null) {
+                              setState(() {
+                                selectedBank = value;
+                                bankNameController.text = selectedBank.bankName;
+                              });
+                            }
+                            return value ?? '';
+                          });
                           // selectedBank = await showDialog(
                           //   context: context,
                           //   builder: (context) {
@@ -198,7 +201,6 @@ class _SendToFormWidgetState extends State<SendToFormWidget> {
                     decoration: InputDecoration(
                       hintText: '',
                       hintStyle: GeneralConstant.normalTextStyle,
-
                       suffixIcon: const Padding(
                         padding: EdgeInsets.only(
                           right: 15.0,
@@ -260,6 +262,7 @@ class _SendToFormWidgetState extends State<SendToFormWidget> {
                 ? !checkingUpTellaTrustUser
                 : !verifyingUserAccountNumber,
         textInputAction: TextInputAction.done,
+        //maxLength: isItForTellaTrust?null:10,
         cursorColor: isItForTellaTrust
             ? AppColors.sendToTellaColor
             : AppColors.sendToBankBgColor,
@@ -319,32 +322,46 @@ class _SendToFormWidgetState extends State<SendToFormWidget> {
             );
           } else {
             //String transactionPin =
-                // await modal_sheet.showMaterialModalBottomSheet(
-                //       backgroundColor: Colors.transparent,
-                //       isDismissible: true,
-                //       shape: const RoundedRectangleBorder(
-                //         borderRadius:
-                //             BorderRadius.vertical(top: Radius.circular(20.0)),
-                //       ),
-                //       context: context,
-                //       builder: (context) => Padding(
-                //         padding: const EdgeInsets.only(top: 200.0),
-                //         child: ConfirmWithPin(
-                //           context: context,
-                //           title: 'Input your transaction pin to continue',
-                //         ),
-                //       ),
-                //     ) ??
-                //     '';
+            // await modal_sheet.showMaterialModalBottomSheet(
+            //       backgroundColor: Colors.transparent,
+            //       isDismissible: true,
+            //       shape: const RoundedRectangleBorder(
+            //         borderRadius:
+            //             BorderRadius.vertical(top: Radius.circular(20.0)),
+            //       ),
+            //       context: context,
+            //       builder: (context) => Padding(
+            //         padding: const EdgeInsets.only(top: 200.0),
+            //         child: ConfirmWithPin(
+            //           context: context,
+            //           title: 'Input your transaction pin to continue',
+            //         ),
+            //       ),
+            //     ) ??
+            //     '';
             //if (transactionPin != '') {
+            ///Commented out this section and moved it to on change
+            // BlocProvider.of<SendBloc>(context).add(
+            //   VerifyRecepitentAccountNumber(
+            //     accountNumber: value,
+            //     bankCode: selectedBank.bankCode,
+            //     // transactionPin: transactionPin,
+            //   ),
+            // );
+            // }
+          }
+        },
+        onChanged: (value) {
+          if (!isItForTellaTrust) {
+            if (value.length == 10) {
               BlocProvider.of<SendBloc>(context).add(
                 VerifyRecepitentAccountNumber(
                   accountNumber: value,
                   bankCode: selectedBank.bankCode,
-                 // transactionPin: transactionPin,
+                  // transactionPin: transactionPin,
                 ),
               );
-           // }
+            }
           }
         },
       ),

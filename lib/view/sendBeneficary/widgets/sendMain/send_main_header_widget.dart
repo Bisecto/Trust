@@ -24,6 +24,23 @@ class SendMainHeaderWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        InkWell(
+          onTap: backNavCallBack,
+          child: Container(
+            width: 45,
+            height: 45,
+            decoration:  BoxDecoration(
+              shape: BoxShape.circle,
+              color:theme.isDark?AppColors.darkModeBackgroundContainerColor: AppColors.sendBackBtnColor,
+            ),
+            child: Center(
+              child: SvgPicture.asset(
+                'assets/icons/sendBeneficiary/back.svg',
+                color: theme.isDark?AppColors.white:null,
+              ),
+            ),
+          ),
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,

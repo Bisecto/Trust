@@ -116,7 +116,7 @@ class _SendToOptionsWidgetState extends State<SendToOptionsWidget> {
                                 width: 90,
                                 padding: const EdgeInsets.only(
                                   left: 10.0,
-                                  right: 2.0,
+                                  right: 1.0,
                                   top: 3.0,
                                   bottom: 5.0,
                                 ),
