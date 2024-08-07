@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/res/app_icons.dart';
+import 'package:teller_trust/res/app_spacer.dart';
 import 'package:teller_trust/view/the_app_screens/kyc_verification/kyc_intro_page.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/change_password.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/change_pin/old_pin.dart';
@@ -160,9 +161,10 @@ class _AccountSettingState extends State<AccountSetting> {
                     //   isSwitched: isSwitched,
                     //   toggleSwitch: _toggleSwitch,
                     // ),
-                    canUseBiometrics
+                    AppSpacer(height: 15,),
+                    !canUseBiometrics
                         ? BuildListTile(
-                            icon: AppIcons.darkMode,
+                            icon: AppIcons.biometric,
                             title: "Enable Biometrics",
                             onPressed: () {},
                             trailingWidget: CupertinoSwitch(
@@ -193,9 +195,9 @@ class _AccountSettingState extends State<AccountSetting> {
                     //   ),
                     // ),
 
-                    const SizedBox(
-                      height: 10,
-                    ),
+                    // const SizedBox(
+                    //   height: 10,
+                    // ),
                     BuildListTile(
                       icon: AppIcons.darkMode,
                       title: "Enable Dark Mode",
