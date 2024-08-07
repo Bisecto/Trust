@@ -200,7 +200,7 @@ class _DataPurchaseState extends State<DataPurchase> {
                                           //     fontSize: 18,
                                           //   ),
                                           // ),
-                                          GestureDetector(
+                                          InkWell(
                                             onTap: () {
                                               Navigator.pop(context);
                                             },
@@ -992,7 +992,7 @@ class DataPlan extends StatelessWidget {
                             //     fontSize: 18,
                             //   ),
                             // ),
-                            GestureDetector(
+                            InkWell(
                               onTap: () {
                                 Navigator.pop(context);
                               },
@@ -1054,78 +1054,88 @@ class _DataPlanListState extends State<DataPlanList> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15.0),
-      child: Column(
-        children: [
-          CustomTextFormField(
-            hint: 'Search Data plan',
-            label: '',
-            controller: _searchController,
-            validator: AppValidator.validateAccountNumberfield,
-            widget: const Icon(Icons.search),
-          ),
-          Expanded(
-            child: BlocBuilder<ProductBloc, ProductState>(
-              bloc: productListBloc,
-              builder: (context, state) {
-                if (state is ProductLoadingState) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state is ProductSuccessState) {
-                  final product = state;
-                  return ListView.builder(
-                    itemCount: product.productModel.data.items.length,
-                    itemBuilder: (context, index) {
-                      final singleProduct =
-                          product.productModel.data.items[index];
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ListTile(
-                            onTap: () {
-                              widget.onDataPlanSelected(
-                                singleProduct.name,
-                                singleProduct.buyerPrice.toString(),
-                                singleProduct.id,
-                              );
-                            },
-                            title: CustomText(
-                              text: singleProduct.name,
-                              size: 14,
-                              weight: FontWeight.w700,
-                            ),
-                            subtitle: Row(
-                              children: [
-                                SvgPicture.asset(
-                                  AppIcons.naira,
-                                  color: AppColors.green,
-                                ),
-                                CustomText(
-                                  text: singleProduct.buyerPrice.toString(),
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
+    return Container(
+      color: theme.isDark
+          ? AppColors.darkModeBackgroundColor
+          : AppColors.white,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: Container(
+
+          child: Column(
+            children: [
+              CustomTextFormField(
+                hint: 'Search Data plan',
+                label: '',
+                controller: _searchController,
+                validator: AppValidator.validateAccountNumberfield,
+                widget: const Icon(Icons.search),
+              ),
+              Expanded(
+                child: BlocBuilder<ProductBloc, ProductState>(
+                  bloc: productListBloc,
+                  builder: (context, state) {
+                    if (state is ProductLoadingState) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state is ProductSuccessState) {
+                      final product = state;
+                      return ListView.builder(
+                        itemCount: product.productModel.data.items.length,
+                        itemBuilder: (context, index) {
+                          final singleProduct =
+                              product.productModel.data.items[index];
+                          return Padding(
+                            padding: const EdgeInsets.all(0),
+                            child: ListTile(
+                                onTap: () {
+                                  widget.onDataPlanSelected(
+                                    singleProduct.name,
+                                    singleProduct.buyerPrice.toString(),
+                                    singleProduct.id,
+                                  );
+                                },
+                                title: CustomText(
+                                  text: singleProduct.name,
                                   size: 14,
-                                  weight: FontWeight.w400,
+                                  weight: FontWeight.w700,
                                 ),
-                              ],
-                            ),
-                            shape: RoundedRectangleBorder(
-                              side: const BorderSide(color: Colors.grey),
-                              borderRadius: BorderRadius.circular(5),
-                            )
-                            //shape: ShapeBorder(),
-                            ),
+                                subtitle: Row(
+                                  children: [
+                                    SvgPicture.asset(
+                                      AppIcons.naira,
+                                      color: AppColors.green,
+                                    ),
+                                    CustomText(
+                                      text: singleProduct.buyerPrice.toString(),
+                                      size: 14,
+                                      weight: FontWeight.w400,
+                                    ),
+                                  ],
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  side:  BorderSide( color: Colors.grey,),
+                                  borderRadius: BorderRadius.circular(5),
+                                )
+                                //shape: ShapeBorder(),
+                                ),
+                          );
+                        },
                       );
-                    },
-                  );
-                } else if (state is ProductErrorState) {
-                  final error = state;
-                  return Center(
-                    child: Text(error.error),
-                  );
-                }
-                return Container(); // Placeholder, should never be reached
-              },
-            ),
+                    } else if (state is ProductErrorState) {
+                      final error = state;
+                      return Center(
+                        child: Text(error.error),
+                      );
+                    }
+                    return Container(); // Placeholder, should never be reached
+                  },
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

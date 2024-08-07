@@ -162,7 +162,7 @@ class _AccountSettingState extends State<AccountSetting> {
                     //   toggleSwitch: _toggleSwitch,
                     // ),
                     AppSpacer(height: 15,),
-                    !canUseBiometrics
+                    canUseBiometrics
                         ? BuildListTile(
                             icon: AppIcons.biometric,
                             title: "Enable Biometrics",
