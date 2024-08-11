@@ -241,7 +241,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                             : AppColors.textColor,
                                       ),
                                       CustomText(
-                                        text: "See who is back",
+                                        text: "Welcome back",
                                         //weight: FontWeight.bold,
                                         size: 16,
                                         color: theme.isDark

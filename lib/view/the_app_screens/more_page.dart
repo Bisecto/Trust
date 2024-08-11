@@ -319,6 +319,9 @@ class _MorePageState extends State<MorePage> {
       builder: (context, state) {
         if (state is SuccessState) {
           PersonalInfo personalInfo = state.customerProfile.personalInfo;
+          var customerAccount =
+              state.customerProfile.customerAccount;
+
           print(json.encode(state.customerProfile));
           // Use user data here
           return InkWell(
@@ -357,6 +360,7 @@ class _MorePageState extends State<MorePage> {
                                 : AppColors.textColor,
                             size: 14,
                           ),
+                          if(customerAccount != null)
                           Row(
                             children: [
                               TextStyles.textHeadings(
@@ -366,8 +370,9 @@ class _MorePageState extends State<MorePage> {
                                     : AppColors.textColor2,
                                 textSize: 12,
                               ),
+
                               CustomText(
-                                text: "*********",
+                                text: "${customerAccount.nuban}",
                                 color: theme.isDark
                                     ? AppColors.darkModeBackgroundSubTextColor
                                     : AppColors.textColor2,

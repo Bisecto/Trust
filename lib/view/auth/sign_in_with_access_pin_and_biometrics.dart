@@ -211,7 +211,7 @@ class _SignInWIthAccessPinBiometricsState
                                         ),
                                         CustomText(
                                           text:
-                                              "Please confirm your pin to access you Trust",
+                                              "Please confirm your pin to access your TellaTrust account.",
                                           //weight: FontWeight.bold,
                                           size: 12,
                                           color: theme.isDark

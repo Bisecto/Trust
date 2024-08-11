@@ -111,14 +111,14 @@ class _ChangePasswordState extends State<ChangePassword> {
                                               weight: FontWeight.w600,
                                             ),
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: CustomContainerWithIcon(
-                                              title: 'Cprecious0310@gmail.com',
-                                              iconData: SvgPicture.asset(
-                                                  AppIcons.email),
-                                            ),
-                                          ),
+                                          // Padding(
+                                          //   padding: const EdgeInsets.all(10.0),
+                                          //   child: CustomContainerWithIcon(
+                                          //     title: 'Cprecious0310@gmail.com',
+                                          //     iconData: SvgPicture.asset(
+                                          //         AppIcons.email),
+                                          //   ),
+                                          // ),
                                           CustomTextFormField(
                                             label: '',
                                             isPasswordField: true,

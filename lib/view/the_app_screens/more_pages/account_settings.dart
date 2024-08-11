@@ -133,27 +133,9 @@ class _AccountSettingState extends State<AccountSetting> {
                             page: const KYCIntro());
                       },
                       child: const CustomContainerFirTitleDesc(
-                          title: "KYC", description: "Identification document"),
+                          title: "KYC", description: "Complete this to unlock features"),
                     ),
-                    InkWell(
-                      onTap: () {
-                        AppNavigator.pushAndStackPage(context,
-                            page: const ChangePassword());
-                      },
-                      child: const CustomContainerFirTitleDesc(
-                          title: "Change Password",
-                          description: "Secure access to your account"),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        AppNavigator.pushAndStackPage(context,
-                            page: const OldPin());
-                      },
-                      child: const CustomContainerFirTitleDesc(
-                          title: "Change 4-Digit Access PIN",
-                          description:
-                              "Secure alternative account\nAccess account"),
-                    ),
+
                     // CustomContainerForToggle(
                     //   title: "Use 4-Digit Access Pin",
                     //   description:
