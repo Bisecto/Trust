@@ -24,16 +24,16 @@ class SendMainHeaderWidget extends StatefulWidget {
 }
 
 class _SendMainHeaderWidgetState extends State<SendMainHeaderWidget> {
-  bool isMoneyBlocked = false;
-  Future<void> getName() async {
-    isMoneyBlocked = await SharedPref.getBool('isMoneyBlocked') ?? false;
-    print('Initial isMoneyBlocked: $isMoneyBlocked');
-    setState(() {});
-  }
+  // bool isMoneyBlocked = false;
+  // Future<void> getIfMoneyIsBlocked() async {
+  //   isMoneyBlocked = await SharedPref.getBool('isMoneyBlocked') ?? false;
+  //   print('Initial isMoneyBlocked: $isMoneyBlocked');
+  //   setState(() {});
+  // }
   @override
   void initState() {
     // TODO: implement initState
-    getName();
+    //getIfMoneyIsBlocked();
     super.initState();
   }
   @override
@@ -43,8 +43,13 @@ class _SendMainHeaderWidgetState extends State<SendMainHeaderWidget> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        if(!Navigator.canPop(context))
+          SizedBox(),
+        if(Navigator.canPop(context))
         InkWell(
-          onTap: widget.backNavCallBack,
+          onTap: (){
+            Navigator.pop(context);
+          },
           child: Container(
             width: 45,
             height: 45,
@@ -60,76 +65,76 @@ class _SendMainHeaderWidgetState extends State<SendMainHeaderWidget> {
             ),
           ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 10.0,
-                vertical: 3.5,
-              ),
-              decoration: BoxDecoration(
-                color:theme.isDark?Colors.transparent:  AppColors.sendBackBalanceBgColor,
-                borderRadius: BorderRadius.circular(
-                  10.0,
-                ),
-                border: Border.all(
-                  color:theme.isDark?AppColors.white:  AppColors.sendBackBalanceBorderColor,
-                ),
-              ),
-              child:  Center(
-                child: Text(
-                  'Balance',
-                  style: TextStyle(
-                    color:theme.isDark?AppColors.darkModeBackgroundMainTextColor: AppColors.sendToBalanceColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-            const AppSpacer(
-              width: 10.0,
-            ),
-            Text(
-              !isMoneyBlocked?widget.balance:'*****',
-              style:  TextStyle(
-                color:theme.isDark?AppColors.white:  AppColors.sendToBalanceValueColor,
-                fontSize: 18.0,
-                fontWeight: FontWeight.w600,
-              ),
-              textAlign: TextAlign.start,
-            ),
-            const AppSpacer(
-              width: 10.0,
-            ),
-            GestureDetector(
-              onTap: () async {
-                setState(() {
-                  isMoneyBlocked = !isMoneyBlocked;
-                });
-                await SharedPref.putBool(
-                    'isMoneyBlocked', isMoneyBlocked);
-                print('Saved isMoneyBlocked: $isMoneyBlocked');
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: Icon(
-                    isMoneyBlocked
-                        ? Icons.visibility_off
-                        : Icons.visibility,
-                    color: AppColors.white,
-                    size: 16,
-                  ),
-                ),
-              ),
-            ),
-
-          ],
-        ),
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.start,
+        //   crossAxisAlignment: CrossAxisAlignment.center,
+        //   children: [
+        //     Container(
+        //       padding: const EdgeInsets.symmetric(
+        //         horizontal: 10.0,
+        //         vertical: 3.5,
+        //       ),
+        //       decoration: BoxDecoration(
+        //         color:theme.isDark?Colors.transparent:  AppColors.sendBackBalanceBgColor,
+        //         borderRadius: BorderRadius.circular(
+        //           10.0,
+        //         ),
+        //         border: Border.all(
+        //           color:theme.isDark?AppColors.white:  AppColors.sendBackBalanceBorderColor,
+        //         ),
+        //       ),
+        //       child:  Center(
+        //         child: Text(
+        //           'Balance',
+        //           style: TextStyle(
+        //             color:theme.isDark?AppColors.darkModeBackgroundMainTextColor: AppColors.sendToBalanceColor,
+        //             fontWeight: FontWeight.bold,
+        //           ),
+        //           textAlign: TextAlign.center,
+        //         ),
+        //       ),
+        //     ),
+        //     const AppSpacer(
+        //       width: 10.0,
+        //     ),
+        //     Text(
+        //       !isMoneyBlocked?widget.balance:'*****',
+        //       style:  TextStyle(
+        //         color:theme.isDark?AppColors.white:  AppColors.sendToBalanceValueColor,
+        //         fontSize: 18.0,
+        //         fontWeight: FontWeight.w600,
+        //       ),
+        //       textAlign: TextAlign.start,
+        //     ),
+        //     const AppSpacer(
+        //       width: 10.0,
+        //     ),
+        //     GestureDetector(
+        //       onTap: () async {
+        //         setState(() {
+        //           isMoneyBlocked = !isMoneyBlocked;
+        //         });
+        //         await SharedPref.putBool(
+        //             'isMoneyBlocked', isMoneyBlocked);
+        //         print('Saved isMoneyBlocked: $isMoneyBlocked');
+        //       },
+        //       child: Padding(
+        //         padding: const EdgeInsets.all(10.0),
+        //         child: Align(
+        //           alignment: Alignment.topRight,
+        //           child: Icon(
+        //             isMoneyBlocked
+        //                 ? Icons.visibility_off
+        //                 : Icons.visibility,
+        //             color: AppColors.white,
+        //             size: 16,
+        //           ),
+        //         ),
+        //       ),
+        //     ),
+        //
+        //   ],
+        // ),
         InkWell(
           onTap: () {
             AppNavigator.pushAndStackPage(

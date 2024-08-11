@@ -69,7 +69,7 @@ class _SendMainViewState extends State<SendMainView> {
                 Expanded(
                   child: SingleChildScrollView(
                     child: SendMainFormWidget(
-                      balance: balance,
+                      balance: balance, previousAmtInputed: '0.00',
                     ),
                   ),
                 ),

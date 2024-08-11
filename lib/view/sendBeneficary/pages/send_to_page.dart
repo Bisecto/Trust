@@ -5,10 +5,10 @@ import 'package:teller_trust/domain/txn/txn_details_to_send_out.dart';
 import 'package:teller_trust/view/sendBeneficary/widgets/sendTo/send_to_view.dart';
 
 class SendToPage extends StatelessWidget {
-  final TxnDetailsToSendOut txnDetails;
+  //final TxnDetailsToSendOut txnDetails;
   const SendToPage({
     super.key,
-    required this.txnDetails,
+    //required this.txnDetails,
   });
 
   @override
@@ -21,7 +21,7 @@ class SendToPage extends StatelessWidget {
       child: BlocProvider(
         create: (context) => SendBloc(),
         child: SendToView(
-          txnDetails: txnDetails,
+          //txnDetails: txnDetails,
         ),
       ),
     );

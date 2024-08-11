@@ -18,7 +18,7 @@ class TellaTrustCustomerModel {
   });
 
   factory TellaTrustCustomerModel.fromJson(Map<String, dynamic> json) => TellaTrustCustomerModel(
-    imageUrl: json["imageUrl"],
+    imageUrl: json["imageUrl"]??'',
     id: json["id"],
     firstName: json["firstName"],
     lastName: json["lastName"],

@@ -42,16 +42,13 @@ class UserBalance extends SendState {
 
 class CurrentAmountEntered extends SendState {
   String mainValue;
-  String fractionValue;
   CurrentAmountEntered({
     required this.mainValue,
-    required this.fractionValue,
   }) : super();
 
   @override
   List<Object?> get props => [
         mainValue,
-        fractionValue,
       ];
 }
 
