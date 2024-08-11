@@ -15,6 +15,7 @@ import 'package:teller_trust/view/widgets/purchase_receipt.dart';
 import '../../../../bloc/product_bloc/product_bloc.dart';
 import '../../../../model/category_model.dart' as categoryModel;
 import '../../../../model/product_model.dart' as productMode;
+import '../../../../model/wallet_info.dart';
 import '../../../../repository/app_repository.dart';
 import '../../../../res/apis.dart';
 import '../../../../res/app_colors.dart';
@@ -38,8 +39,10 @@ import '../payment_method/payment_method.dart';
 
 class AirtimeToCash extends StatefulWidget {
   final categoryModel.Category category;
+  final WalletInfo walletInfo;
 
-  const AirtimeToCash({super.key, required this.category});
+
+  const AirtimeToCash({super.key, required this.category, required this.walletInfo});
 
   @override
   State<AirtimeToCash> createState() => _AirtimeToCashState();

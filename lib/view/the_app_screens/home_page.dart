@@ -45,10 +45,7 @@ import 'kyc_verification/kyc_intro_page.dart';
 class HomePage extends StatefulWidget {
   final Function(int) onPageChanged;
 
-  const HomePage({
-    super.key,
-    required this.onPageChanged
-  });
+  const HomePage({super.key, required this.onPageChanged});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -504,9 +501,9 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             GestureDetector(
-              onTap: (){
-                widget.onPageChanged(2); // Change to the desired index, e.g., 1 for Send page
-
+              onTap: () {
+                widget.onPageChanged(
+                    2); // Change to the desired index, e.g., 1 for Send page
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -533,7 +530,57 @@ class _HomePageState extends State<HomePage> {
         const SizedBox(
           height: 10,
         ),
-        quickActionsWidget(theme),
+        BlocBuilder<AppBloc, AppState>(
+          builder: (context, state) {
+            if (state is SuccessState) {
+              var walletInfo = state.customerProfile.walletInfo;
+              return quickActionsWidget(theme, walletInfo);
+            } else {
+              return SizedBox(
+                height: 160,
+                child: GridView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4,
+                    crossAxisSpacing: 10.0,
+                    mainAxisSpacing: 5.0,
+                  ),
+                  itemCount: 8, //AppList().serviceItems.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                            height: 30,
+                            width: 30,
+                            decoration: BoxDecoration(
+                                color: Colors.grey.withOpacity(0.2),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(50)))),
+                        const SizedBox(height: 5),
+                        Shimmer(
+                          duration: const Duration(seconds: 1),
+                          interval: const Duration(milliseconds: 50),
+                          color: Colors.grey.withOpacity(0.5),
+                          colorOpacity: 0.5,
+                          enabled: true,
+                          direction: const ShimmerDirection.fromLTRB(),
+                          child: Container(
+                            height: 5,
+                            width: 30,
+                            decoration: BoxDecoration(
+                              color: Colors.grey.withOpacity(0.2),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ); // Show loading indicator or handle error state
+            }
+          },
+        ),
         const SizedBox(
           height: 10,
         ),
@@ -808,11 +855,10 @@ class _HomePageState extends State<HomePage> {
                         ),
                         GestureDetector(
                           onTap: () {
-                                      AppNavigator.pushAndStackPage(
-                                        context,
-                                        page: SendToPage(
-                                        ),
-                                      );
+                            AppNavigator.pushAndStackPage(
+                              context,
+                              page: SendToPage(),
+                            );
                             // AppNavigator.pushAndStackPage(
                             //   context,
                             //   page: SendMainPage(
@@ -853,7 +899,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget quickActionsWidget(AdaptiveThemeMode theme) {
+  Widget quickActionsWidget(AdaptiveThemeMode theme, WalletInfo walletInfo) {
     return BlocBuilder<ProductBloc, ProductState>(
       builder: (context, state) {
         if (state is CategorySuccessState) {
@@ -890,7 +936,10 @@ class _HomePageState extends State<HomePage> {
                             context: context,
                             builder: (context) => Padding(
                               padding: const EdgeInsets.only(top: 100.0),
-                              child: AirtimePurchase(category: items[index]),
+                              child: AirtimePurchase(
+                                category: items[index],
+                                walletInfo: walletInfo,
+                              ),
                             ),
                           );
                           // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
@@ -906,7 +955,10 @@ class _HomePageState extends State<HomePage> {
                             context: context,
                             builder: (context) => Padding(
                               padding: const EdgeInsets.only(top: 100.0),
-                              child: AirtimeToCash(category: items[index]),
+                              child: AirtimeToCash(
+                                category: items[index],
+                                walletInfo: walletInfo,
+                              ),
                             ),
                           );
                           // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
@@ -922,7 +974,10 @@ class _HomePageState extends State<HomePage> {
                             context: context,
                             builder: (context) => Padding(
                               padding: const EdgeInsets.only(top: 100.0),
-                              child: DataPurchase(category: items[index]),
+                              child: DataPurchase(
+                                category: items[index],
+                                walletInfo: walletInfo,
+                              ),
                             ),
                           );
                           // AppNavigator.pushAndStackPage(context, page: DataPurchase(
@@ -938,8 +993,10 @@ class _HomePageState extends State<HomePage> {
                             context: context,
                             builder: (context) => Padding(
                               padding: const EdgeInsets.only(top: 100.0),
-                              child:
-                                  ElectricityPurchase(category: items[index]),
+                              child: ElectricityPurchase(
+                                category: items[index],
+                                walletInfo: walletInfo,
+                              ),
                             ),
                           );
                           // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
@@ -955,7 +1012,10 @@ class _HomePageState extends State<HomePage> {
                             context: context,
                             builder: (context) => Padding(
                               padding: const EdgeInsets.only(top: 100.0),
-                              child: CablePurchase(category: items[index]),
+                              child: CablePurchase(
+                                category: items[index],
+                                walletInfo: walletInfo,
+                              ),
                             ),
                           );
                           // AppNavigator.pushAndStackPage(context, page: InternetPurchase(

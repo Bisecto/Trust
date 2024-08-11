@@ -16,6 +16,7 @@ import 'package:teller_trust/view/widgets/purchase_receipt.dart';
 import '../../../../bloc/product_bloc/product_bloc.dart';
 import '../../../../model/category_model.dart' as categoryModel;
 import '../../../../model/product_model.dart' as productMode;
+import '../../../../model/wallet_info.dart';
 import '../../../../repository/app_repository.dart';
 import '../../../../res/apis.dart';
 import '../../../../res/app_colors.dart';
@@ -35,12 +36,14 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
 import '../../../widgets/show_toast.dart';
 import '../../../widgets/transaction_receipt.dart';
+import '../../more_pages/tella_rewards/tella_point_product_container.dart';
 import '../payment_method/payment_method.dart';
 
 class AirtimePurchase extends StatefulWidget {
   final categoryModel.Category category;
+  final WalletInfo? walletInfo;
 
-  const AirtimePurchase({super.key, required this.category});
+  const AirtimePurchase({super.key, required this.category, required this.walletInfo});
 
   @override
   State<AirtimePurchase> createState() => _AirtimePurchaseState();
@@ -277,47 +280,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                   //         });
                                   //       },
                                   //     )),
-                                  Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Container(
-                                      height: 70,
-                                      width: AppUtils.deviceScreenSize(context).width,
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(10),
-                                          border:
-                                              Border.all(color: AppColors.lightGreen),
-                                          color: AppColors.lightgreen2,
-                                          image: DecorationImage(
-                                              image: AssetImage(AppImages
-                                                  .tellaPointBannerBackground),
-                                              fit: BoxFit.cover)),
-                                      child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          CircleAvatar(
-                                            backgroundColor: AppColors.lightPrimary,
-                                            child: SvgPicture.asset(AppIcons.badge),
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              CustomText(
-                                                text: "Tella Point: 231",
-                                              ),
-                                              TextStyles.textHeadings(
-                                                  textValue: 'Cash value: N231.00',
-                                                  textSize: 13,
-                                                  textColor: Colors.grey)
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-
+                                  TellaPointProductContainer(),
                                   BlocConsumer<ProductBloc, ProductState>(
                                     bloc: productBloc,
                                     builder: (context, state) {

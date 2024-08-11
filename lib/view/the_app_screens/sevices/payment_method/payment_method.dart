@@ -148,16 +148,14 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                               });
                               if (value) {
                                 showInputField(context: context);
-                              }else{
+                              } else {
                                 Future.microtask(() {
                                   if (mounted) {
-
                                     setState(() {
                                       _saveAsBeneficiary = false;
                                       widget.isSaveAsBeneficiarySelected(false);
                                       widget.name('');
                                     });
-
                                   }
                                 });
                               }
@@ -321,13 +319,12 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                                     Navigator.pop(context);
                                     Future.microtask(() {
                                       if (mounted) {
-
                                         setState(() {
                                           _saveAsBeneficiary = false;
-                                          widget.isSaveAsBeneficiarySelected(false);
+                                          widget.isSaveAsBeneficiarySelected(
+                                              false);
                                           widget.name('');
                                         });
-
                                       }
                                     });
                                   },
@@ -390,26 +387,20 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                           if (_nameController.text.isNotEmpty) {
                             Future.microtask(() {
                               if (mounted) {
-
-                                  widget.isSaveAsBeneficiarySelected(true);
-                                  widget.name(_nameController.text);
-
+                                widget.isSaveAsBeneficiarySelected(true);
+                                widget.name(_nameController.text);
                               }
                             });
-
-                          }else{
+                          } else {
                             Future.microtask(() {
                               if (mounted) {
-
                                 setState(() {
                                   _saveAsBeneficiary = false;
                                   widget.isSaveAsBeneficiarySelected(false);
                                   widget.name('');
                                 });
-
                               }
                             });
-
                           }
                           Navigator.pop(context);
                         },

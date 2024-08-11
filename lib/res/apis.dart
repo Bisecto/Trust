@@ -28,6 +28,7 @@ class AppApis {
   static String createBeneficiary = "$appBaseUrl/user/c/create-beneficiary";
   static String listBeneficiary = "$appBaseUrl/user/c/list-beneficiary";
   static String deleteBeneficiary = "$appBaseUrl/user/c/delete-beneficiary";
+  static String listPointHistory = "$appBaseUrl/user/c/list-point-history";
   static String verifyEntityNumber = "$appBaseUrl/c/pay/verify-entity-number";
   static String quickPay = "$appBaseUrl/c/pay/initiate-checkout";
 
