@@ -25,6 +25,7 @@ import 'package:teller_trust/view/the_app_screens/sevices/cable_purchase/cable_p
 import 'package:teller_trust/view/the_app_screens/sevices/data_purchase/data.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/electricity_purchase/electricity_purchase.dart';
 import 'package:teller_trust/view/the_app_screens/transaction_history/transaction_history.dart';
+import 'package:teller_trust/view/the_app_screens/transaction_history/wallet_history.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 import 'package:teller_trust/view/widgets/purchase_receipt.dart';
@@ -728,77 +729,86 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                    if (!isMoneyBlocked)
-                      BlocBuilder<AppBloc, AppState>(
-                        builder: (context, state) {
-                          if (state is SuccessState) {
-                            WalletInfo walletInfo =
-                                state.customerProfile.walletInfo;
-                            return Container(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Column(
+                    GestureDetector(
+                      onTap: () {
+                        AppNavigator.pushAndStackPage(context,
+                            page: WalletHistory());
+                      },
+                      child: Column(children: [
+                        if (!isMoneyBlocked)
+                          BlocBuilder<AppBloc, AppState>(
+                            builder: (context, state) {
+                              if (state is SuccessState) {
+                                WalletInfo walletInfo =
+                                    state.customerProfile.walletInfo;
+                                return Container(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
-                                      SvgPicture.asset(
-                                        AppIcons.naira,
-                                        height: 22,
-                                        width: 22,
+                                      Column(
+                                        children: [
+                                          SvgPicture.asset(
+                                            AppIcons.naira,
+                                            height: 22,
+                                            width: 22,
+                                          ),
+                                          const SizedBox(height: 10),
+                                        ],
                                       ),
-                                      const SizedBox(height: 10),
-                                    ],
-                                  ),
-                                  TextStyles.textHeadings(
-                                    textValue:
-                                        "${AppUtils.convertPrice(walletInfo.balance.toString()).split('.')[0]}.",
-                                    textSize: 28,
-                                    textColor: AppColors.white,
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Column(
-                                    children: [
                                       TextStyles.textHeadings(
-                                        textValue: AppUtils.convertPrice(
-                                                walletInfo.balance.toString())
-                                            .split('.')[1],
-                                        textSize: 18,
+                                        textValue:
+                                            "${AppUtils.convertPrice(walletInfo.balance.toString()).split('.')[0]}.",
+                                        textSize: 28,
                                         textColor: AppColors.white,
                                       ),
-                                      const SizedBox(height: 5),
+                                      const SizedBox(width: 5),
+                                      Column(
+                                        children: [
+                                          TextStyles.textHeadings(
+                                            textValue: AppUtils.convertPrice(
+                                                    walletInfo.balance
+                                                        .toString())
+                                                .split('.')[1],
+                                            textSize: 18,
+                                            textColor: AppColors.white,
+                                          ),
+                                          const SizedBox(height: 5),
+                                        ],
+                                      ),
                                     ],
                                   ),
-                                ],
-                              ),
-                            );
-                          } else {
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SvgPicture.asset(
-                                  AppIcons.naira,
-                                  height: 20,
-                                  width: 20,
-                                ),
-                                TextStyles.textHeadings(
-                                  textValue: 'Loading...',
-                                  textSize: 20.2,
-                                  textColor: AppColors.white,
-                                ),
-                              ],
-                            );
-                          }
-                        },
-                      ),
-                    if (isMoneyBlocked)
-                      const CustomText(
-                        text: "*******",
-                        size: 22,
-                        weight: FontWeight.bold,
-                        color: AppColors.white,
-                      ),
-                    const SizedBox(height: 10),
+                                );
+                              } else {
+                                return Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    SvgPicture.asset(
+                                      AppIcons.naira,
+                                      height: 20,
+                                      width: 20,
+                                    ),
+                                    TextStyles.textHeadings(
+                                      textValue: 'Loading...',
+                                      textSize: 20.2,
+                                      textColor: AppColors.white,
+                                    ),
+                                  ],
+                                );
+                              }
+                            },
+                          ),
+                        if (isMoneyBlocked)
+                          const CustomText(
+                            text: "*******",
+                            size: 22,
+                            weight: FontWeight.bold,
+                            color: AppColors.white,
+                          ),
+                        const SizedBox(height: 10),
+                      ]),
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
