@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:teller_trust/bloc/sendBloc/event/send_event.dart';
 import 'package:teller_trust/bloc/sendBloc/send_bloc.dart';
 import 'package:teller_trust/bloc/sendBloc/states/send_state.dart';
@@ -12,8 +13,13 @@ import 'package:teller_trust/utills/app_navigator.dart';
 import 'package:teller_trust/view/sendBeneficary/pages/send_to_page.dart';
 import 'package:teller_trust/view/sendBeneficary/widgets/sendMain/custom_key_pad_widget.dart';
 
+import '../../../../utills/custom_theme.dart';
+import '../../../widgets/app_custom_text.dart';
+
 class SendMainFormWidget extends StatefulWidget {
-  const SendMainFormWidget({super.key});
+  String balance;
+
+  SendMainFormWidget({super.key, required this.balance});
 
   @override
   State<SendMainFormWidget> createState() => _SendMainFormWidgetState();
@@ -32,6 +38,8 @@ class _SendMainFormWidgetState extends State<SendMainFormWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return BlocConsumer<SendBloc, SendState>(
       listener: (context, state) {},
       builder: (context, state) {
@@ -58,7 +66,8 @@ class _SendMainFormWidgetState extends State<SendMainFormWidget> {
                   ),
                   child: Center(
                     child: SvgPicture.asset(
-                        'assets/icons/sendBeneficiary/naria.svg'),
+                      'assets/icons/sendBeneficiary/naria.svg',
+                    ),
                   ),
                 ),
                 const AppSpacer(
@@ -70,9 +79,9 @@ class _SendMainFormWidgetState extends State<SendMainFormWidget> {
                   children: [
                     Text(
                       mainValue,
-                      style: const TextStyle(
-                        fontSize: 28.0,
-                        color: AppColors.amountMainValueColor,
+                      style:  TextStyle(
+                        fontSize: 25.0,
+                        color:theme.isDark?AppColors.darkModeBackgroundMainTextColor: AppColors.amountMainValueColor,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -91,6 +100,33 @@ class _SendMainFormWidgetState extends State<SendMainFormWidget> {
                 ),
               ],
             ),
+            if ((widget.balance == '0.0' ||
+                (double.parse(widget.balance.replaceAll(',', '')) <
+                    double.parse(
+                        (mainValue + fractionValue).replaceAll(',', '')))))
+              if(mainValue!='0')
+
+              ...[
+
+              const AppSpacer(
+                height: 20.0,
+              ),
+              Align(
+                alignment: AlignmentDirectional.topCenter,
+                child: CustomText(
+                  text:
+                      'The amount you entered exceeds the maximum allowed limit.'
+                          ' Please enter an amount less than '
+                          'or equal to ${widget.balance}',
+
+                  weight: FontWeight.bold,
+                  size: 14,
+                  color: AppColors.orange,
+                  maxLines: 4,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
             const AppSpacer(
               height: 30.0,
             ),
@@ -98,13 +134,13 @@ class _SendMainFormWidgetState extends State<SendMainFormWidget> {
             const AppSpacer(
               height: 20.0,
             ),
-            const Align(
+             Align(
               alignment: AlignmentDirectional.topCenter,
               child: Text(
                 'Enter Amount with keypad',
                 style: TextStyle(
                   fontSize: 15.0,
-                  color: AppColors.sendBodyTextColor,
+                  color:theme.isDark?AppColors.darkModeBackgroundMainTextColor: AppColors.sendBodyTextColor,
                 ),
               ),
             ),
@@ -164,26 +200,44 @@ class _SendMainFormWidgetState extends State<SendMainFormWidget> {
               },
             ),
             const AppSpacer(
-              height: 20.0,
+              height: 10.0,
             ),
             Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
+              padding: const EdgeInsets.only(bottom: 10.0),
               child: AppButton(
                 buttonBoxDecoration: BoxDecoration(
-                  color: AppColors.green,
+                  color: (mainValue + fractionValue == '0.00' ||
+                          (double.parse(widget.balance.replaceAll(',', '')) <
+                              double.parse((mainValue + fractionValue)
+                                  .replaceAll(',', ''))))
+                      ? AppColors.grey
+                      : AppColors.green,
                   borderRadius: BorderRadius.circular(
                     20.0,
                   ),
                 ),
                 buttonCallback: () {
-                  AppNavigator.pushAndStackPage(
-                    context,
-                    page: SendToPage(
-                      txnDetails: TxnDetailsToSendOut(
-                        amount: '$mainValue$fractionValue',
-                      ),
-                    ),
-                  );
+                  if (mainValue + fractionValue != '0.00') {
+                    print(widget.balance);
+                    print(mainValue);
+                    print(fractionValue);
+                    if (double.parse(widget.balance.replaceAll(',', '')) <
+                        double.parse(
+                            (mainValue + fractionValue).replaceAll(',', ''))) {
+                      //print('SPmething');
+                    } else {
+                      AppNavigator.pushAndStackPage(
+                        context,
+                        page: SendToPage(
+                          txnDetails: TxnDetailsToSendOut(
+                            amount: '$mainValue$fractionValue',
+                          ),
+                        ),
+                      );
+
+
+                    }
+                  }
                 },
                 buttonChild: const Text(
                   'Continue',
@@ -192,7 +246,7 @@ class _SendMainFormWidgetState extends State<SendMainFormWidget> {
                     fontSize: 16.0,
                   ),
                 ),
-                buttonHeight: 60,
+                buttonHeight: 50,
                 buttonWidth: double.infinity,
               ),
             )

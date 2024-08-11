@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:teller_trust/bloc/sendBloc/event/send_event.dart';
 import 'package:teller_trust/bloc/sendBloc/send_bloc.dart';
+import 'package:teller_trust/bloc/sendBloc/states/send_state.dart';
 import 'package:teller_trust/view/sendBeneficary/widgets/recentTransfer/recent_tranfer_details_widget.dart';
 import 'package:teller_trust/view/sendBeneficary/widgets/recentTransfer/recent_transfer_header_widget.dart';
 
@@ -26,7 +27,7 @@ class _RecentTransferViewState extends State<RecentTransferView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocConsumer(
+      body: BlocConsumer<SendBloc, SendState>(
         listener: (context, state) {},
         builder: (context, state) {
           return Column(

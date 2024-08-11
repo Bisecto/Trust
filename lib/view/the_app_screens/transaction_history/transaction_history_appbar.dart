@@ -49,14 +49,7 @@ class TransactionHistoryCustomAppBar extends StatelessWidget {
               height: 5,
             ),
 
-            const CustomText(
-              text: 'Showing',
-              color: AppColors.white,
-              size: 12,
-            ),
-            const SizedBox(
-              height: 5,
-            ),
+
             Container(
               height: 40,
               decoration: BoxDecoration(

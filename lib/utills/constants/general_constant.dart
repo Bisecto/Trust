@@ -42,6 +42,16 @@ class GeneralConstant {
     ),
   );
 
+  static OutlineInputBorder bankListSearchBorder = OutlineInputBorder(
+    borderRadius: BorderRadius.circular(
+      30.0,
+    ),
+    borderSide: const BorderSide(
+      color: AppColors.bankSearchBorderColor,
+      width: 1.5,
+    ),
+  );
+
   static OutlineInputBorder networkSearchErrorBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(
       50.0,
@@ -54,7 +64,7 @@ class GeneralConstant {
   
   static OutlineInputBorder tellaSendSearchErrorBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(
-      50.0,
+      10.0,
     ),
     borderSide: const BorderSide(
       color: AppColors.red,
@@ -64,7 +74,17 @@ class GeneralConstant {
 
   static OutlineInputBorder bankSendSearchErrorBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(
-      50.0,
+      10.0,
+    ),
+    borderSide: const BorderSide(
+      color: AppColors.red,
+      width: 1.5,
+    ),
+  );
+
+  static OutlineInputBorder bankListSearchErrorBorder = OutlineInputBorder(
+    borderRadius: BorderRadius.circular(
+      30.0,
     ),
     borderSide: const BorderSide(
       color: AppColors.red,

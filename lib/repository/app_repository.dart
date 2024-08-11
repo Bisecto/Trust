@@ -50,4 +50,25 @@ class AppRepository {
     print(response);
     return response;
   }
+  Future<http.Response> appDeleteRequest(String apiUrl,
+      {String accessToken = '',
+      String accessPIN = '',
+      String refreshToken = ''}) async {
+    //print(98765456789);
+    var headers = {
+      'x-access-token': accessToken,
+      'x-access-pin': accessPIN,
+      'x-refresh-token': refreshToken,
+      'Content-Type': 'application/json'
+    };
+    print(headers);
+    print(apiUrl);
+    final response = await http.delete(
+      Uri.parse(apiUrl),
+      headers: headers,
+    );
+    print(apiUrl);
+    print(response);
+    return response;
+  }
 }

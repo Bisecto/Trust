@@ -57,10 +57,10 @@ class AuthOtpRequestState extends AuthState {
 
 class AuthChangeDeviceOtpRequestState extends AuthState {
   final String msg;
-  final String email;
+  final String phone;
   final bool isChnageDevice;
 
-  AuthChangeDeviceOtpRequestState(this.msg, this.email, this.isChnageDevice);
+  AuthChangeDeviceOtpRequestState(this.msg, this.phone, this.isChnageDevice);
 }
 
 class AuthOtpVerifySucess extends AuthState {

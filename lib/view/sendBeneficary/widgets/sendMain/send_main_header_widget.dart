@@ -1,33 +1,62 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:teller_trust/res/app_colors.dart';
 import 'package:teller_trust/res/app_spacer.dart';
 import 'package:teller_trust/utills/app_navigator.dart';
 import 'package:teller_trust/view/sendBeneficary/pages/recent_transfer_list_page.dart';
 
-class SendMainHeaderWidget extends StatelessWidget {
+import '../../../../utills/custom_theme.dart';
+import '../../../../utills/shared_preferences.dart';
+
+class SendMainHeaderWidget extends StatefulWidget {
   final String balance;
+  final VoidCallback backNavCallBack;
+
   const SendMainHeaderWidget({
     super.key,
     required this.balance,
+    required this.backNavCallBack,
   });
 
   @override
+  State<SendMainHeaderWidget> createState() => _SendMainHeaderWidgetState();
+}
+
+class _SendMainHeaderWidgetState extends State<SendMainHeaderWidget> {
+  bool isMoneyBlocked = false;
+  Future<void> getName() async {
+    isMoneyBlocked = await SharedPref.getBool('isMoneyBlocked') ?? false;
+    print('Initial isMoneyBlocked: $isMoneyBlocked');
+    setState(() {});
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    getName();
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Container(
-          width: 45,
-          height: 45,
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: AppColors.sendBackBtnColor,
-          ),
-          child: Center(
-            child: SvgPicture.asset(
-              'assets/icons/sendBeneficiary/back.svg',
+        InkWell(
+          onTap: widget.backNavCallBack,
+          child: Container(
+            width: 45,
+            height: 45,
+            decoration:  BoxDecoration(
+              shape: BoxShape.circle,
+              color:theme.isDark?AppColors.darkModeBackgroundContainerColor: AppColors.sendBackBtnColor,
+            ),
+            child: Center(
+              child: SvgPicture.asset(
+                'assets/icons/sendBeneficiary/back.svg',
+                color: theme.isDark?AppColors.white:null,
+              ),
             ),
           ),
         ),
@@ -41,19 +70,19 @@ class SendMainHeaderWidget extends StatelessWidget {
                 vertical: 3.5,
               ),
               decoration: BoxDecoration(
-                color: AppColors.sendBackBalanceBgColor,
+                color:theme.isDark?Colors.transparent:  AppColors.sendBackBalanceBgColor,
                 borderRadius: BorderRadius.circular(
                   10.0,
                 ),
                 border: Border.all(
-                  color: AppColors.sendBackBalanceBorderColor,
+                  color:theme.isDark?AppColors.white:  AppColors.sendBackBalanceBorderColor,
                 ),
               ),
-              child: const Center(
+              child:  Center(
                 child: Text(
                   'Balance',
                   style: TextStyle(
-                    color: AppColors.sendToBalanceColor,
+                    color:theme.isDark?AppColors.darkModeBackgroundMainTextColor: AppColors.sendToBalanceColor,
                     fontWeight: FontWeight.bold,
                   ),
                   textAlign: TextAlign.center,
@@ -64,14 +93,41 @@ class SendMainHeaderWidget extends StatelessWidget {
               width: 10.0,
             ),
             Text(
-              balance,
-              style: const TextStyle(
-                color: AppColors.sendToBalanceValueColor,
+              !isMoneyBlocked?widget.balance:'*****',
+              style:  TextStyle(
+                color:theme.isDark?AppColors.white:  AppColors.sendToBalanceValueColor,
                 fontSize: 18.0,
                 fontWeight: FontWeight.w600,
               ),
               textAlign: TextAlign.start,
             ),
+            const AppSpacer(
+              width: 10.0,
+            ),
+            GestureDetector(
+              onTap: () async {
+                setState(() {
+                  isMoneyBlocked = !isMoneyBlocked;
+                });
+                await SharedPref.putBool(
+                    'isMoneyBlocked', isMoneyBlocked);
+                print('Saved isMoneyBlocked: $isMoneyBlocked');
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: Icon(
+                    isMoneyBlocked
+                        ? Icons.visibility_off
+                        : Icons.visibility,
+                    color: AppColors.white,
+                    size: 16,
+                  ),
+                ),
+              ),
+            ),
+
           ],
         ),
         InkWell(
@@ -84,13 +140,13 @@ class SendMainHeaderWidget extends StatelessWidget {
           child: Container(
             width: 45,
             height: 45,
-            decoration: const BoxDecoration(
+            decoration:  BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.recentTxnBtnColor,
+              color:theme.isDark?AppColors.darkModeBackgroundContainerColor: AppColors.recentTxnBtnColor,
             ),
             child: Card(
               elevation: 2.0,
-              color: AppColors.white,
+              color:theme.isDark?AppColors.darkModeBackgroundContainerColor: AppColors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadiusDirectional.circular(
                   17.0,

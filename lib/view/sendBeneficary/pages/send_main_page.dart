@@ -4,7 +4,8 @@ import 'package:teller_trust/bloc/sendBloc/send_bloc.dart';
 import 'package:teller_trust/view/sendBeneficary/widgets/sendMain/send_main_view.dart';
 
 class SendMainPage extends StatelessWidget {
-  const SendMainPage({super.key});
+  final VoidCallback backNavCallBack;
+  const SendMainPage({super.key, required this.backNavCallBack});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,9 @@ class SendMainPage extends StatelessWidget {
       right: false,
       child: BlocProvider(
         create: (context) => SendBloc(),
-        child: const SendMainView(),
+        child: SendMainView(
+          backNavCallBack: backNavCallBack,
+        ),
       ),
     );
   }

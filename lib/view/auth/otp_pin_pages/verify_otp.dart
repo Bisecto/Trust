@@ -24,10 +24,10 @@ import '../../widgets/show_toast.dart';
 import '../sign_in_with_access_pin_and_biometrics.dart';
 
 class VerifyOtp extends StatefulWidget {
-  String email;
+  String phone;
   bool isRegister;
 
-  VerifyOtp({super.key, required this.email, required this.isRegister});
+  VerifyOtp({super.key, required this.phone, required this.isRegister});
 
   @override
   State<VerifyOtp> createState() => _VerifyOtpState();
@@ -95,14 +95,14 @@ class _VerifyOtpState extends State<VerifyOtp> {
                   ));
               // AppNavigator.pushAndStackPage(context,
               // page: UserProfilePage(
-              // email: state.userEmail,
+              // phone: state.userphone,
               // ));
               // }
             } else if (state is AuthChangeDeviceOtpRequestState) {
               // MSG.warningSnackBar(context, state.msg);
               AppNavigator.pushAndStackPage(context,
                   page: VerifyOtp(
-                    email: state.email,
+                    phone: state.phone,
                     isRegister: false,
                   ));
               showToast(
@@ -217,13 +217,14 @@ class _VerifyOtpState extends State<VerifyOtp> {
                                       ),
                                       CustomText(
                                         text:
-                                            "Input 5 digit code sent to ${widget.email}",
+                                            "Input 5 digit code sent to ${widget.phone}",
                                         //weight: FontWeight.bold,
                                         color: theme.isDark
                                             ? AppColors
                                                 .darkModeBackgroundSubTextColor
                                             : AppColors.textColor,
                                         size: 16,
+                                        maxLines: 2,
                                       ),
                                       const SizedBox(
                                         height: 10,
@@ -317,10 +318,10 @@ class _VerifyOtpState extends State<VerifyOtp> {
                                               onPress1: () {
                                                 if (_start == 0) {
                                                   // authBloc.add(RequestResetPasswordEventClick(
-                                                  //     widget.email,false));
+                                                  //     widget.phone,false));
                                                   authBloc.add(
                                                       PasswordResetRequestOtpEventCLick(
-                                                          widget.email,
+                                                          widget.phone,
                                                           context));
                                                   setState(() {
                                                     _start = 59;
@@ -336,10 +337,10 @@ class _VerifyOtpState extends State<VerifyOtp> {
                                               onPress2: () {
                                                 if (_start == 0) {
                                                   // authBloc.add(RequestResetPasswordEventClick(
-                                                  //     widget.email,false));
+                                                  //     widget.phone,false));
                                                   authBloc.add(
                                                       PasswordResetRequestOtpEventCLick(
-                                                          widget.email,
+                                                          widget.phone,
                                                           context));
                                                   setState(() {
                                                     _start = 59;

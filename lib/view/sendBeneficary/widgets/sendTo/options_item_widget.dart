@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:teller_trust/res/app_colors.dart';
 import 'package:teller_trust/res/app_spacer.dart';
+
+import '../../../../utills/custom_theme.dart';
 
 class OptionsItemWidget extends StatelessWidget {
   final bool isItForTellaTrustTransferOption;
@@ -16,6 +19,8 @@ class OptionsItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: 5.0,
@@ -23,14 +28,14 @@ class OptionsItemWidget extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: isItForTellaTrustTransferOption
-            ? AppColors.white
+            ? theme.isDark?Colors.transparent: AppColors.white
             : AppColors.sendToBankBgColor.withOpacity(0.4),
         borderRadius: BorderRadius.circular(
           10.0,
         ),
         border: Border.all(
           color: isItForTellaTrustTransferOption
-              ? AppColors.sendToTellaBorderColor
+              ? theme.isDark?AppColors.white:AppColors.sendToTellaBorderColor
               : AppColors.sendToBankBgColor,
         ),
       ),
@@ -52,8 +57,8 @@ class OptionsItemWidget extends StatelessWidget {
               isItForTellaTrustTransferOption
                   ? 'Tella Trust Transfer'
                   : 'Bank Transfer',
-              style: const TextStyle(
-                color: AppColors.sendBodyTextColor,
+              style:  TextStyle(
+                color: theme.isDark?AppColors.darkModeBackgroundMainTextColor:AppColors.sendBodyTextColor,
                 fontSize: 12.0,
               ),
             ),

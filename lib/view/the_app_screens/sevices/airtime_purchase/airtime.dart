@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
@@ -18,6 +19,7 @@ import '../../../../model/product_model.dart' as productMode;
 import '../../../../repository/app_repository.dart';
 import '../../../../res/apis.dart';
 import '../../../../res/app_colors.dart';
+import '../../../../res/app_images.dart';
 import '../../../../utills/app_navigator.dart';
 import '../../../../utills/app_utils.dart';
 import '../../../../utills/app_validator.dart';
@@ -32,6 +34,7 @@ import '../../../widgets/form_input.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
 import '../../../widgets/show_toast.dart';
+import '../../../widgets/transaction_receipt.dart';
 import '../payment_method/payment_method.dart';
 
 class AirtimePurchase extends StatefulWidget {
@@ -48,6 +51,8 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
   ProductBloc purchaseProductBloc = ProductBloc();
   String _selectedPaymentMethod = 'wallet';
   bool isPaymentAllowed = false;
+  final FlutterContactPicker _contactPicker = FlutterContactPicker();
+  Contact? contacts;
 
   @override
   void initState() {
@@ -100,522 +105,579 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
   Widget build(BuildContext context) {
     final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
 
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Container(
-        height: AppUtils.deviceScreenSize(context).height,
+    return Container(
+        height: AppUtils.deviceScreenSize(context).height/ 1.1,
         decoration: BoxDecoration(
             color: theme.isDark
                 ? AppColors.darkModeBackgroundColor
                 : AppColors.white,
             borderRadius: const BorderRadius.only(
                 topRight: Radius.circular(10), topLeft: Radius.circular(10))),
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(0.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                BlocConsumer<ProductBloc, ProductState>(
-                    bloc: purchaseProductBloc,
-                    listenWhen: (previous, current) =>
-                        current is! ProductInitial,
-                    listener: (context, state) async {
-                      print(state);
-                      if (state is PurchaseSuccess) {
-                        _beneficiaryController.clear();
-                        _selectedAmtController.clear();
-                        state.transaction.order!.product!.name ==
-                            widget.category.name;
-                        AppNavigator.pushAndStackPage(context,
-                            page: TransactionReceipt(
-                                transaction: state.transaction));
+        child: Column(
+          children: [
+            Container(
+              height: (AppUtils.deviceScreenSize(context).height/ 1.2)-50,
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(0.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      BlocConsumer<ProductBloc, ProductState>(
+                          bloc: purchaseProductBloc,
+                          listenWhen: (previous, current) =>
+                              current is! ProductInitial,
+                          listener: (context, state) async {
+                            print(state);
+                            if (state is PurchaseSuccess) {
+                              _beneficiaryController.clear();
+                              _selectedAmtController.clear();
+                              state.transaction.order!.product!.name ==
+                                  widget.category.name;
+                              AppNavigator.pushAndStackPage(context,
+                                  page: TransactionReceipt(
+                                      transaction: state.transaction));
 
-                        // showToast(
-                        //     context: context,
-                        //     title: 'Success',
-                        //     subtitle: 'Purchase was successful',
-                        //     type: ToastMessageType.info);
-                        //refresh();
-                        //MSG.snackBar(context, state.msg);
+                              // showToast(
+                              //     context: context,
+                              //     title: 'Success',
+                              //     subtitle: 'Purchase was successful',
+                              //     type: ToastMessageType.info);
+                              //refresh();
+                              //MSG.snackBar(context, state.msg);
 
-                        // AppNavigator.pushAndRemovePreviousPages(context,
-                        //     page: LandingPage(studentProfile: state.studentProfile));
-                      } else if (state is QuickPayInitiated) {
-                        String accessToken =
-                            await SharedPref.getString("access-token");
+                              // AppNavigator.pushAndRemovePreviousPages(context,
+                              //     page: LandingPage(studentProfile: state.studentProfile));
+                            } else if (state is QuickPayInitiated) {
+                              String accessToken =
+                                  await SharedPref.getString("access-token");
 
-                        AppNavigator.pushAndStackPage(context,
-                            page: MakePayment(
-                              quickPayModel: state.quickPayModel,
-                              accessToken: accessToken,
-                            ));
-                      } else if (state is AccessTokenExpireState) {
-                        // showToast(
-                        //     context: context,
-                        //     title: 'Token expired',
-                        //     subtitle: 'Login again.',
-                        //     type: ToastMessageType.error);
+                              AppNavigator.pushAndStackPage(context,
+                                  page: MakePayment(
+                                    quickPayModel: state.quickPayModel,
+                                    accessToken: accessToken,
+                                  ));
+                            } else if (state is AccessTokenExpireState) {
+                              // showToast(
+                              //     context: context,
+                              //     title: 'Token expired',
+                              //     subtitle: 'Login again.',
+                              //     type: ToastMessageType.error);
 
-                        //MSG.warningSnackBar(context, state.error);
+                              //MSG.warningSnackBar(context, state.error);
 
-                        String firstame =
-                            await SharedPref.getString('firstName');
+                              String firstame =
+                                  await SharedPref.getString('firstName');
 
-                        AppNavigator.pushAndRemovePreviousPages(context,
-                            page: SignInWIthAccessPinBiometrics(
-                              userName: firstame,
-                            ));
-                      } else if (state is PurchaseErrorState) {
-                        showToast(
-                            context: context,
-                            title: 'Info',
-                            subtitle: state.error,
-                            type: ToastMessageType.error);
+                              AppNavigator.pushAndRemovePreviousPages(context,
+                                  page: SignInWIthAccessPinBiometrics(
+                                    userName: firstame,
+                                  ));
+                            } else if (state is PurchaseErrorState) {
+                              showToast(
+                                  context: context,
+                                  title: 'Info',
+                                  subtitle: state.error,
+                                  type: ToastMessageType.error);
 
-                        //MSG.warningSnackBar(context, state.error);
-                      }
-                    },
-                    builder: (context, state) {
-                      return SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            Container(
-                              height: 60,
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                  color: theme.isDark
-                                      ? AppColors.darkModeBackgroundColor
-                                      : AppColors.white,
-                                  borderRadius: const BorderRadius.only(
-                                      topRight: Radius.circular(10),
-                                      topLeft: Radius.circular(10))),
-                              child: Padding(
-                                padding: const EdgeInsets.all(0.0),
-                                child: Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    Positioned(
-                                      top: 0, // Adjust position as needed
-                                      left: 0,
-                                      right: 0,
-                                      child: SvgPicture.asset(
-                                        AppIcons.billTopBackground,
-                                        height: 60,
-                                        // Increase height to fit the text
-                                        width:
-                                            AppUtils.deviceScreenSize(context)
-                                                .width,
-                                        color: AppColors.darkGreen,
-                                        // Set the color if needed
-                                        placeholderBuilder: (context) {
-                                          return Container(
-                                            height: 50,
-                                            width: double.infinity,
-                                            color: Colors.grey[300],
-                                            child: const Center(
-                                                child:
-                                                    CircularProgressIndicator()),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    Positioned(
-                                      top: 10, // Adjust position as needed
-                                      left: 10,
-                                      right: 10,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                              //MSG.warningSnackBar(context, state.error);
+                            }
+                          },
+                          builder: (context, state) {
+                            return SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  Container(
+                                    height: 60,
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                        color: theme.isDark
+                                            ? AppColors.darkModeBackgroundColor
+                                            : AppColors.white,
+                                        borderRadius: const BorderRadius.only(
+                                            topRight: Radius.circular(10),
+                                            topLeft: Radius.circular(10))),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(0.0),
+                                      child: Stack(
+                                        alignment: Alignment.center,
                                         children: [
-                                          TextStyles.textHeadings(
-                                            textValue: 'Airtime',
-                                            textColor: AppColors.darkGreen,
-                                            // w: FontWeight.w600,
-                                            textSize: 14,
+                                          Positioned(
+                                            top: 0, // Adjust position as needed
+                                            left: 0,
+                                            right: 0,
+                                            child: SvgPicture.asset(
+                                              AppIcons.billTopBackground,
+                                              height: 60,
+                                              // Increase height to fit the text
+                                              width:
+                                                  AppUtils.deviceScreenSize(context)
+                                                      .width,
+                                              color: AppColors.darkGreen,
+                                              // Set the color if needed
+                                              placeholderBuilder: (context) {
+                                                return Container(
+                                                  height: 50,
+                                                  width: double.infinity,
+                                                  color: Colors.grey[300],
+                                                  child: const Center(
+                                                      child:
+                                                          CircularProgressIndicator()),
+                                                );
+                                              },
+                                            ),
                                           ),
-                                          // Text(
-                                          //   "Airtime purchase",
-                                          //   style: TextStyle(
-                                          //     color: AppColors.darkGreen,
-                                          //     fontWeight: FontWeight.w600,
-                                          //     fontSize: 18,
-                                          //   ),
-                                          // ),
-                                          GestureDetector(
-                                            onTap: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: const Icon(
-                                              Icons.cancel,
-                                              color: Colors.grey,
+                                          Positioned(
+                                            top: 10, // Adjust position as needed
+                                            left: 10,
+                                            right: 10,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                TextStyles.textHeadings(
+                                                  textValue: 'Airtime',
+                                                  textColor: AppColors.darkGreen,
+                                                  // w: FontWeight.w600,
+                                                  textSize: 14,
+                                                ),
+                                                // Text(
+                                                //   "Airtime purchase",
+                                                //   style: TextStyle(
+                                                //     color: AppColors.darkGreen,
+                                                //     fontWeight: FontWeight.w600,
+                                                //     fontSize: 18,
+                                                //   ),
+                                                // ),
+                                                InkWell(
+                                                  onTap: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: const Icon(
+                                                    Icons.cancel,
+                                                    color: Colors.grey,
+                                                    size: 30,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ],
                                       ),
                                     ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            // Padding(
-                            //     padding: const EdgeInsets.all(15.0),
-                            //     child: Beneficiary(
-                            //       billType: 'airtime',
-                            //       onBeneficiarySelected: (phone) {
-                            //         setState(() {
-                            //           numberTextEditingControlller.text =
-                            //               phone; // Update the selected beneficiary's phone number
-                            //         });
-                            //       },
-                            //     )),
-                            BlocConsumer<ProductBloc, ProductState>(
-                              bloc: productBloc,
-                              builder: (context, state) {
-                                if (state is ServiceSuccessState) {
-                                  serviceModel.ServiceModel serviceItem =
-                                      state.serviceModel;
-                                  List<serviceModel.Service> services =
-                                      serviceItem.data.services;
-                                  if (isInitial) {
-                                    // _handleNetworkSelect(services
-                                    //     .firstWhere(
-                                    //         (service) =>
-                                    //             service.name.toLowerCase() ==
-                                    //             'mtn'.toLowerCase(),
-                                    //         orElse: () => serviceModel.Service(
-                                    //             image: '',
-                                    //             id: '',
-                                    //             name: '',
-                                    //             slug: '',
-                                    //             category: serviceModel.Category(
-                                    //                 id: '',
-                                    //                 name: '',
-                                    //                 slug: '')))
-                                    //     .id);
-                                  }
-                                  //Use user data here
-                                  return SizedBox(
-                                    height: 90,
-                                    child: ListView.builder(
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      scrollDirection: Axis.horizontal,
-                                      // gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                      //   crossAxisCount: 4,
-                                      //   crossAxisSpacing: 8.0,
-                                      //   mainAxisSpacing: 8.0,
-                                      // ),
-                                      itemCount: services.length,
-                                      //AppList().serviceItems.length,
-                                      itemBuilder: (context, index) {
-                                        return GestureDetector(
-                                            onTap: () {
-                                              String selectedAction = '';
-                                              setState(() {
-                                                //selectedAction=services[index].name;
-                                              });
-
-                                              //showAirtimeModal(context, AppList().serviceItems[index]);
-                                            },
-                                            child: networkProviderItem(
-                                                services[index].name,
-                                                services[index].image,
-                                                theme,
-                                                () => _handleNetworkSelect(services
-                                                    .firstWhere(
-                                                        (service) =>
-                                                            service.name
-                                                                .toLowerCase() ==
-                                                            services[index]
-                                                                .name
-                                                                .toLowerCase(),
-                                                        orElse: () =>
-                                                            serviceModel.Service(
-                                                                image: '',
-                                                                id: '',
-                                                                name: '',
-                                                                slug: '',
-                                                                category: serviceModel
-                                                                    .Category(
-                                                                        id: '',
-                                                                        name:
-                                                                            '',
-                                                                        slug:
-                                                                            '')))
-                                                    .id)));
-                                      },
-                                    ),
-                                  );
-                                } else {
-                                  return _loadingNetwork(); // Show loading indicator or handle error state
-                                }
-                              },
-                              listener: (BuildContext context,
-                                  ProductState state) async {
-                                if (state is AccessTokenExpireState) {
-                                  String firstame =
-                                      await SharedPref.getString('firstName');
-
-                                  AppNavigator.pushAndRemovePreviousPages(
-                                      context,
-                                      page: SignInWIthAccessPinBiometrics(
-                                        userName: firstame,
-                                      ));
-                                }
-                              },
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.fromLTRB(10.0, 0, 10, 10),
-                              child: Form(
-                                  key: _formKey,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      CustomTextFormField(
-                                        hint: '0.00',
-                                        label: 'Select Amount',
-                                        controller: _selectedAmtController,
-                                        textInputType: TextInputType.number,
-                                        validator:
-                                            AppValidator.validateTextfield,
-                                        widget: SvgPicture.asset(
-                                          AppIcons.naira,
-                                          color: _selectedAmtController
-                                                  .text.isNotEmpty
-                                              ? AppColors.darkGreen
-                                              : AppColors.grey,
-                                          height: 22,
-                                          width: 22,
-                                        ),
-                                        borderColor: _selectedAmtController
-                                                .text.isNotEmpty
-                                            ? AppColors.green
-                                            : AppColors.grey,
-                                      ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
+                                  ),
+                                  // Padding(
+                                  //     padding: const EdgeInsets.all(15.0),
+                                  //     child: Beneficiary(
+                                  //       billType: 'airtime',
+                                  //       onBeneficiarySelected: (phone) {
+                                  //         setState(() {
+                                  //           numberTextEditingControlller.text =
+                                  //               phone; // Update the selected beneficiary's phone number
+                                  //         });
+                                  //       },
+                                  //     )),
+                                  Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Container(
+                                      height: 70,
+                                      width: AppUtils.deviceScreenSize(context).width,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10),
+                                          border:
+                                              Border.all(color: AppColors.lightGreen),
+                                          color: AppColors.lightgreen2,
+                                          image: DecorationImage(
+                                              image: AssetImage(AppImages
+                                                  .tellaPointBannerBackground),
+                                              fit: BoxFit.cover)),
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
-                                          //selectAmount("2000"),
-                                          selectAmount("200", theme),
-                                          selectAmount("500", theme),
-                                          selectAmount("1000", theme),
-                                          selectAmount("1500", theme),
-                                          selectAmount("2000", theme),
+                                          CircleAvatar(
+                                            backgroundColor: AppColors.lightPrimary,
+                                            child: SvgPicture.asset(AppIcons.badge),
+                                          ),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              CustomText(
+                                                text: "Tella Point: 231",
+                                              ),
+                                              TextStyles.textHeadings(
+                                                  textValue: 'Cash value: N231.00',
+                                                  textSize: 13,
+                                                  textColor: Colors.grey)
+                                            ],
+                                          )
                                         ],
                                       ),
+                                    ),
+                                  ),
 
-                                      CustomTextFormField(
-                                        hint: 'Input number here',
-                                        label: 'Beneficiary',
+                                  BlocConsumer<ProductBloc, ProductState>(
+                                    bloc: productBloc,
+                                    builder: (context, state) {
+                                      if (state is ServiceSuccessState) {
+                                        serviceModel.ServiceModel serviceItem =
+                                            state.serviceModel;
+                                        List<serviceModel.Service> services =
+                                            serviceItem.data.services;
+                                        if (isInitial) {
+                                          // _handleNetworkSelect(services
+                                          //     .firstWhere(
+                                          //         (service) =>
+                                          //             service.name.toLowerCase() ==
+                                          //             'mtn'.toLowerCase(),
+                                          //         orElse: () => serviceModel.Service(
+                                          //             image: '',
+                                          //             id: '',
+                                          //             name: '',
+                                          //             slug: '',
+                                          //             category: serviceModel.Category(
+                                          //                 id: '',
+                                          //                 name: '',
+                                          //                 slug: '')))
+                                          //     .id);
+                                        }
+                                        //Use user data here
+                                        return SizedBox(
+                                          height: 90,
+                                          child: ListView.builder(
+                                            physics:
+                                                const NeverScrollableScrollPhysics(),
+                                            scrollDirection: Axis.horizontal,
+                                            // gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                            //   crossAxisCount: 4,
+                                            //   crossAxisSpacing: 8.0,
+                                            //   mainAxisSpacing: 8.0,
+                                            // ),
+                                            itemCount: services.length,
+                                            //AppList().serviceItems.length,
+                                            itemBuilder: (context, index) {
+                                              return GestureDetector(
+                                                  onTap: () {
+                                                    String selectedAction = '';
+                                                    setState(() {
+                                                      //selectedAction=services[index].name;
+                                                    });
 
-                                        controller: _beneficiaryController,
-                                        textInputType: TextInputType.number,
-                                        validator:
-                                            AppValidator.validateTextfield,
-                                        widget: SvgPicture.asset(
-                                            AppIcons.nigeriaLogo),
-                                        //isMobileNumber: true,
-                                        borderColor: _beneficiaryController
-                                                .text.isNotEmpty
-                                            ? AppColors.green
-                                            : AppColors.grey,
-                                      ),
-                                      if(productId.isNotEmpty)
-                                        SizedBox(height: 10,),
-                                      if(productId.isNotEmpty)
-                                        BeneficiaryWidget(productId: productId, beneficiaryNum: (value) { setState(() {
-                                          _beneficiaryController.text=value;
-                                        }); },),
-                                      SizedBox(
-                                        height: 310,
-                                        child: PaymentMethodScreen(
-                                          amtToPay: _selectedAmtController
-                                                  .text.isEmpty
-                                              ? '0'
-                                              : _selectedAmtController.text,
-                                          onPaymentMethodSelected: (method) {
-                                            // No need to use setState here directly as it might be called during the build phase
-                                            Future.microtask(() {
-                                              if (mounted) {
-                                                setState(() {
-                                                  _selectedPaymentMethod =
-                                                      method;
-                                                  //print(_selectedPaymentMethod);
-                                                });
-                                              }
-                                            });
-                                          },
-                                          ispaymentAllowed: (allowed) {
-                                            // Deferred update to avoid issues during the build phase
-                                            Future.microtask(() {
-                                              if (mounted) {
-                                                setState(() {
-                                                  isPaymentAllowed = allowed;
-                                                  // print(isPaymentAllowed);
-                                                });
-                                              }
-                                            });
-                                          },
-                                          number: _beneficiaryController.text,
-                                          name: (value) {
-                                            print(value);
-                                            Future.microtask(() {
-                                              if (mounted) {
-                                                setState(() {
-                                                  print(value);
-                                                  beneficiaryName = value;
-                                                  // print(isPaymentAllowed);
-                                                });
-                                              }
-                                            });
-                                          },
-                                          isSaveAsBeneficiarySelected: (value) {
-                                            print(value);
-                                            Future.microtask(() {
-                                              if (mounted) {
-                                                setState(() {
-                                                  isSaveAsBeneficiarySelected =
-                                                      value;
-                                                  // print(isPaymentAllowed);
-                                                });
-                                              }
-                                            });
-                                          },
-                                        ),
-                                      ),
+                                                    //showAirtimeModal(context, AppList().serviceItems[index]);
+                                                  },
+                                                  child: networkProviderItem(
+                                                      services[index].name,
+                                                      services[index].image,
+                                                      theme,
+                                                      () => _handleNetworkSelect(services
+                                                          .firstWhere(
+                                                              (service) =>
+                                                                  service.name
+                                                                      .toLowerCase() ==
+                                                                  services[index]
+                                                                      .name
+                                                                      .toLowerCase(),
+                                                              orElse: () =>
+                                                                  serviceModel.Service(
+                                                                      image: '',
+                                                                      id: '',
+                                                                      name: '',
+                                                                      slug: '',
+                                                                      category: serviceModel
+                                                                          .Category(
+                                                                              id: '',
+                                                                              name:
+                                                                                  '',
+                                                                              slug:
+                                                                                  '')))
+                                                          .id)));
+                                            },
+                                          ),
+                                        );
+                                      } else {
+                                        return _loadingNetwork(); // Show loading indicator or handle error state
+                                      }
+                                    },
+                                    listener: (BuildContext context,
+                                        ProductState state) async {
+                                      if (state is AccessTokenExpireState) {
+                                        String firstame =
+                                            await SharedPref.getString('firstName');
 
-                                      ///Remember to add beneficiary
-                                      FormButton(
-                                        onPressed: () async {
-                                          print(beneficiaryName);
-                                          print(isSaveAsBeneficiarySelected);
-                                          print(_selectedPaymentMethod);
-                                          print(_beneficiaryController
-                                              .text.isNotEmpty);
-                                          print(!isPaymentAllowed);
+                                        AppNavigator.pushAndRemovePreviousPages(
+                                            context,
+                                            page: SignInWIthAccessPinBiometrics(
+                                              userName: firstame,
+                                            ));
+                                      }
+                                    },
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(10.0, 0, 10, 10),
+                                    child: Form(
+                                        key: _formKey,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            CustomTextFormField(
+                                              hint: '0.00',
+                                              label: 'Select Amount',
+                                              controller: _selectedAmtController,
+                                              textInputType: TextInputType.number,
+                                              validator:
+                                                  AppValidator.validateTextfield,
+                                              widget: SvgPicture.asset(
+                                                AppIcons.naira,
+                                                color: _selectedAmtController
+                                                        .text.isNotEmpty
+                                                    ? AppColors.darkGreen
+                                                    : AppColors.grey,
+                                                height: 22,
+                                                width: 22,
+                                              ),
+                                              borderColor: _selectedAmtController
+                                                      .text.isNotEmpty
+                                                  ? AppColors.green
+                                                  : AppColors.grey,
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                //selectAmount("2000"),
+                                                selectAmount("200", theme),
+                                                selectAmount("500", theme),
+                                                selectAmount("1000", theme),
+                                                selectAmount("1500", theme),
+                                                selectAmount("2000", theme),
+                                              ],
+                                            ),
 
-                                          if (_formKey.currentState!
-                                              .validate()) {
-                                            if (productId != '') {
-                                              if (_selectedPaymentMethod !=
-                                                  'wallet') {
-                                                var transactionPin = '';
-                                                widget.category.requiredFields
-                                                        .amount =
-                                                    _selectedAmtController.text;
-                                                widget.category.requiredFields
-                                                        .phoneNumber =
-                                                    _beneficiaryController.text;
+                                            CustomTextFormField(
+                                              hint: 'Input number here',
+                                              label: 'Beneficiary',
 
-                                                purchaseProductBloc.add(
-                                                    PurchaseProductEvent(
-                                                        context,
-                                                        widget.category
-                                                            .requiredFields,
-                                                        productId,
-                                                        transactionPin,
-                                                        true,
-                                                        isSaveAsBeneficiarySelected,beneficiaryName));
-                                              } else {
-                                                var transactionPin = '';
-                                                transactionPin = await modalSheet
-                                                    .showMaterialModalBottomSheet(
-                                                        backgroundColor:
-                                                            Colors.transparent,
-                                                        isDismissible: true,
-                                                        shape:
-                                                            const RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius.vertical(
-                                                                  top: Radius
-                                                                      .circular(
-                                                                          20.0)),
-                                                        ),
-                                                        context: context,
-                                                        builder: (context) =>
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .only(
-                                                                      top:
-                                                                          200.0),
-                                                              child:
-                                                                  ConfirmWithPin(
-                                                                context:
-                                                                    context,
-                                                                title:
-                                                                    'Input your transaction pin to continue',
-                                                              ),
-                                                            ));
-                                                print(transactionPin);
-                                                if (transactionPin != '') {
+                                              controller: _beneficiaryController,
+                                              textInputType: TextInputType.number,
+                                              validator:
+                                                  AppValidator.validateTextfield,
+                                              widget: SvgPicture.asset(
+                                                  AppIcons.nigeriaLogo),
+                                              suffixIcon: GestureDetector(
+                                                onTap: () async {
+                                                  //contacts.clear();
+                                                  Contact? contact =
+                                                      await _contactPicker
+                                                          .selectContact();
                                                   setState(() {
-                                                    widget
-                                                            .category
-                                                            .requiredFields
-                                                            .amount =
-                                                        _selectedAmtController
-                                                            .text;
-                                                    widget
-                                                            .category
-                                                            .requiredFields
-                                                            .phoneNumber =
-                                                        _beneficiaryController
-                                                            .text;
+                                                    // contacts = contact!.fullName==null
+                                                    //     ? null
+                                                    //     : contact;
+                                                    // print(contacts);
+                                                    _beneficiaryController.text =
+                                                        contact!.phoneNumbers!.first;
                                                   });
+                                                },
+                                                child: Icon(
+                                                    Icons.contact_page_outlined,
+                                                    color: _beneficiaryController
+                                                            .text.isNotEmpty
+                                                        ? AppColors.green
+                                                        : theme.isDark
+                                                            ? AppColors.white
+                                                            : AppColors.black),
+                                              ),
+                                              //isMobileNumber: true,
+                                              borderColor: _beneficiaryController
+                                                      .text.isNotEmpty
+                                                  ? AppColors.green
+                                                  : AppColors.grey,
+                                            ),
+                                            if (productId.isNotEmpty)
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                            if (productId.isNotEmpty)
+                                              BeneficiaryWidget(
+                                                productId: productId,
+                                                beneficiaryNum: (value) {
+                                                  setState(() {
+                                                    _beneficiaryController.text =
+                                                        value;
+                                                  });
+                                                },
+                                              ),
+                                            SizedBox(
+                                              height: 310,
+                                              child: PaymentMethodScreen(
+                                                amtToPay: _selectedAmtController
+                                                        .text.isEmpty
+                                                    ? '0'
+                                                    : _selectedAmtController.text,
+                                                onPaymentMethodSelected: (method) {
+                                                  // No need to use setState here directly as it might be called during the build phase
+                                                  Future.microtask(() {
+                                                    if (mounted) {
+                                                      setState(() {
+                                                        _selectedPaymentMethod =
+                                                            method;
+                                                        //print(_selectedPaymentMethod);
+                                                      });
+                                                    }
+                                                  });
+                                                },
+                                                ispaymentAllowed: (allowed) {
+                                                  // Deferred update to avoid issues during the build phase
+                                                  Future.microtask(() {
+                                                    if (mounted) {
+                                                      setState(() {
+                                                        isPaymentAllowed = allowed;
+                                                        // print(isPaymentAllowed);
+                                                      });
+                                                    }
+                                                  });
+                                                },
+                                                number: _beneficiaryController.text,
+                                                name: (value) {
+                                                  print(value);
+                                                  Future.microtask(() {
+                                                    if (mounted) {
+                                                      setState(() {
+                                                        print(value);
+                                                        beneficiaryName = value;
+                                                        // print(isPaymentAllowed);
+                                                      });
+                                                    }
+                                                  });
+                                                },
+                                                isSaveAsBeneficiarySelected: (value) {
+                                                  print(value);
+                                                  Future.microtask(() {
+                                                    if (mounted) {
+                                                      setState(() {
+                                                        isSaveAsBeneficiarySelected =
+                                                            value;
+                                                        // print(isPaymentAllowed);
+                                                      });
+                                                    }
+                                                  });
+                                                },
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 0,
+                                            )
 
-                                                  purchaseProductBloc.add(
-                                                      PurchaseProductEvent(
-                                                          context,
-                                                          widget.category
-                                                              .requiredFields,
-                                                          productId,
-                                                          transactionPin,
-                                                          false,isSaveAsBeneficiarySelected,beneficiaryName));
-                                                }
-                                              }
-                                            } else {
-                                              showToast(
-                                                  context: context,
-                                                  title: 'Info',
-                                                  subtitle:
-                                                      'Please select a network provider',
-                                                  type: ToastMessageType.info);
-                                            }
-                                          }
-                                        },
-                                        disableButton: (!isPaymentAllowed ||
-                                            !_beneficiaryController
-                                                .text.isNotEmpty),
-                                        text: 'Purchase Airtime',
-                                        borderColor: AppColors.darkGreen,
-                                        bgColor: AppColors.darkGreen,
-                                        textColor: AppColors.white,
-                                        borderRadius: 10,
-                                      )
-                                    ],
-                                  )),
-                            ),
-                          ],
-                        ),
-                      );
-                    }),
-              ],
+                                            ///Remember to add beneficiary
+                                          ],
+                                        )),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }),
+                    ],
+                  ),
+                ),
+              ),
             ),
-          ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20,left: 20,right: 20),
+              child: FormButton(
+                onPressed: () async {
+                  print(beneficiaryName);
+                  print(isSaveAsBeneficiarySelected);
+                  print(_selectedPaymentMethod);
+                  print(_beneficiaryController.text.isNotEmpty);
+                  print(!isPaymentAllowed);
+
+                  if (_formKey.currentState!.validate()) {
+                    if (productId != '') {
+                      if (_selectedPaymentMethod != 'wallet') {
+                        var transactionPin = '';
+                        widget.category.requiredFields.amount =
+                            _selectedAmtController.text;
+                        widget.category.requiredFields.phoneNumber =
+                            _beneficiaryController.text;
+
+                        purchaseProductBloc.add(PurchaseProductEvent(
+                            context,
+                            widget.category.requiredFields,
+                            productId,
+                            transactionPin,
+                            true,
+                            isSaveAsBeneficiarySelected,
+                            beneficiaryName));
+                      } else {
+                        var transactionPin = '';
+                        transactionPin =
+                        await modalSheet.showMaterialModalBottomSheet(
+                            backgroundColor: Colors.transparent,
+                            isDismissible: true,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(20.0)),
+                            ),
+                            context: context,
+                            builder: (context) => Padding(
+                              padding: const EdgeInsets.only(top: 200.0),
+                              child: ConfirmWithPin(
+                                context: context,
+                                title:
+                                'Input your transaction pin to continue',
+                              ),
+                            ));
+                        print(transactionPin);
+                        if (transactionPin != '') {
+                          setState(() {
+                            widget.category.requiredFields.amount =
+                                _selectedAmtController.text;
+                            widget.category.requiredFields.phoneNumber =
+                                _beneficiaryController.text;
+                          });
+
+                          purchaseProductBloc.add(PurchaseProductEvent(
+                              context,
+                              widget.category.requiredFields,
+                              productId,
+                              transactionPin,
+                              false,
+                              isSaveAsBeneficiarySelected,
+                              beneficiaryName));
+                        }
+                      }
+                    } else {
+                      showToast(
+                          context: context,
+                          title: 'Info',
+                          subtitle: 'Please select a network provider',
+                          type: ToastMessageType.info);
+                    }
+                  }
+                },
+                disableButton:
+                (!isPaymentAllowed || !_beneficiaryController.text.isNotEmpty),
+                text: 'Purchase Airtime',
+                borderColor: AppColors.darkGreen,
+                bgColor: AppColors.darkGreen,
+                textColor: AppColors.white,
+                borderRadius: 10,
+                width: AppUtils.deviceScreenSize(context).width,
+              ),
+            )
+          ],
         ),
-      ),
-    );
+      );
   }
 
   final _formKey = GlobalKey<FormState>();

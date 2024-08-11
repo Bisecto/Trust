@@ -39,7 +39,9 @@ class AppIcons {
   static const more = '${_iconBaseUrl}more.svg';
   static const send = '${_iconBaseUrl}send.svg';
   static const notification = '${_iconBaseUrl}notification.svg';
+  static const badge = '${_iconBaseUrl}badge.svg';
   static const qrCode = '${_iconBaseUrl}qr_code.svg';
+  static const appQrCode = '${_iconBaseUrl}app_qr_code.svg';
   static const network = '${_iconBaseUrl}network.svg';
   static const looper1 = '${_iconBaseUrl}looper_1.svg';
   static const naira = '${_iconBaseUrl}naira.svg';

@@ -295,7 +295,8 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
                                       hint: selectedString == 'NIN'
                                           ? 'Enter your NIN (11 digits)'
                                           : 'Enter your BVN (11 digits)',
-                                      widget: const Icon(Icons.verified_outlined),
+                                      widget:
+                                          const Icon(Icons.verified_outlined),
                                       textInputType: TextInputType.number,
                                       borderColor:
                                           _numberController.text.isNotEmpty
@@ -324,19 +325,16 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
                                       child: CustomTextFormField(
                                         controller: dob,
                                         enabled: false,
-                                        hint:'Date of Birth',
-                                        widget: const Icon(Icons.calendar_month),
-
+                                        hint: 'Date of Birth',
+                                        widget:
+                                            const Icon(Icons.calendar_month),
                                         validator:
-                                        AppValidator.validateTextfield,
-                                        borderColor:
-                                        dob.text.isNotEmpty
+                                            AppValidator.validateTextfield,
+                                        borderColor: dob.text.isNotEmpty
                                             ? AppColors.green
-                                            : AppColors.grey, label: '',
-
+                                            : AppColors.grey,
+                                        label: '',
                                       ),
-
-
 
                                       // _buildTF(
                                       //     enabled: false,
@@ -350,7 +348,8 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
                                       onPressed: () {
                                         kycBloc.add(InitiateVerification(
                                             selectedString,
-                                            _numberController.text,dob.text,
+                                            _numberController.text,
+                                            dob.text,
                                             context));
                                       },
                                       text: 'Save Details',
@@ -475,20 +474,25 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
                                   mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    const CustomText(
+                                    CustomText(
                                       text: 'KYC LEVEL 1 DONE!!!',
                                       size: 20,
                                       weight: FontWeight.bold,
                                       textAlign: TextAlign.center,
-                                      color: AppColors.black,
+                                      //color: AppColors.black,
+                                      color: theme.isDark
+                                          ? AppColors.white
+                                          : AppColors.textColor,
                                       maxLines: 2,
                                     ),
-                                    const CustomText(
+                                    CustomText(
                                       text: 'You can now transact more',
                                       size: 12,
                                       textAlign: TextAlign.start,
                                       maxLines: 3,
-                                      color: AppColors.textColor,
+                                      color: theme.isDark
+                                          ? AppColors.lightPrimary
+                                          : AppColors.textColor,
                                       weight: FontWeight.bold,
                                     ),
                                     const SizedBox(
@@ -541,13 +545,15 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
                                         ),
                                       ),
                                     ),
-                                    const CustomText(
+                                    CustomText(
                                       text:
                                           'Now you can start sending and receiving funds',
                                       size: 10,
                                       textAlign: TextAlign.start,
                                       maxLines: 3,
-                                      color: AppColors.textColor,
+                                      color: theme.isDark
+                                          ? AppColors.lightPrimary
+                                          : AppColors.textColor,
                                       weight: FontWeight.bold,
                                     ),
                                     FormButton(

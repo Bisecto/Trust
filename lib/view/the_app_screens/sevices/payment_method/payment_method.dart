@@ -349,7 +349,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                         hint: 'Input Name of Beneficiary',
                         label: '',
                         controller: _nameController,
-                        textInputType: TextInputType.number,
+                        textInputType: TextInputType.text,
                         onChanged: (value) async {},
                         validator: (value) {
                           if (value == null || value.isEmpty) {

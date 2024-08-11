@@ -5,6 +5,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/bloc/product_bloc/product_bloc.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/airtime_purchase/airtime.dart';
+import 'package:teller_trust/view/the_app_screens/sevices/airtime_to_cash_purchase/airtime_to_cash.dart';
+import 'package:teller_trust/view/the_app_screens/sevices/cable_purchase/cable_purchase.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/data_purchase/data.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/electricity_purchase/electricity_purchase.dart';
 
@@ -88,6 +90,22 @@ class _BillsPageState extends State<BillsPage> {
                           // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
                           //     services: AppList().serviceItems[index]));
                           return;
+                        case "airtime to cash":
+                          modalSheet.showMaterialModalBottomSheet(
+                            backgroundColor: Colors.transparent,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(20.0)),
+                            ),
+                            context: context,
+                            builder: (context) => Padding(
+                              padding: const EdgeInsets.only(top: 100.0),
+                              child: AirtimeToCash(category: items[index]),
+                            ),
+                          );
+                          // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
+                          //     services: AppList().serviceItems[index]));
+                          return;
                         case "data":
                           modalSheet.showMaterialModalBottomSheet(
                             backgroundColor: Colors.transparent,
@@ -121,28 +139,22 @@ class _BillsPageState extends State<BillsPage> {
                           // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
                           //     services: AppList().serviceItems[index]));
                           return;
-                        // case 'cable tv':
-                        //   modalSheet.showMaterialModalBottomSheet(
-                        //     backgroundColor: Colors.transparent,
-                        //     shape: const RoundedRectangleBorder(
-                        //       borderRadius: BorderRadius.vertical(
-                        //           top: Radius.circular(20.0)),
-                        //     ),
-                        //     context: context,
-                        //     builder: (context) => Padding(
-                        //       padding: const EdgeInsets.only(top: 100.0),
-                        //       child: CablePurchase(category: items[index]),
-                        //     ),
-                        //   );
-                        //   // AppNavigator.pushAndStackPage(context, page: InternetPurchase(
-                        //   //     services: AppList().serviceItems[index]));
-                        //   return;
-                        default :
-                          showToast(
-                              context: context,
-                              title: 'Info',
-                              subtitle: 'Oops! It looks like this service is still in the oven. We\'re baking up something great, so stay tuned! 🍰',
-                              type: ToastMessageType.info);
+                        case 'cable tv':
+                          modalSheet.showMaterialModalBottomSheet(
+                            backgroundColor: Colors.transparent,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(20.0)),
+                            ),
+                            context: context,
+                            builder: (context) => Padding(
+                              padding: const EdgeInsets.only(top: 100.0),
+                              child: CablePurchase(category: items[index]),
+                            ),
+                          );
+                          // AppNavigator.pushAndStackPage(context, page: InternetPurchase(
+                          //     services: AppList().serviceItems[index]));
+                          return;
                       // case 'Electricity':
                       //   modalSheet.showMaterialModalBottomSheet(
                       //     backgroundColor: Colors.transparent,
@@ -160,11 +172,24 @@ class _BillsPageState extends State<BillsPage> {
                       //   // AppNavigator.pushAndStackPage(context, page: InternetPurchase(
                       //   //     services: AppList().serviceItems[index]));
                       //   return;
+                        default:
+                          showToast(
+                              context: context,
+                              title: 'Info',
+                              subtitle:
+                              'Oops! It looks like this service is still in the oven. We\'re baking up something great, so stay tuned! 🍰',
+                              type: ToastMessageType.info);
                       }
 
                       //showAirtimeModal(context, AppList().serviceItems[index]);
                     },
-                    child: gridItem(items[index],theme,['airtime','data','electricity'].contains(items[index].name.toLowerCase())));
+                    child: gridItem(items[index],theme, [
+                      'airtime',
+                      'data',
+                      'electricity',
+                      'cable tv',
+                      'airtime to cash'
+                    ].contains(items[index].name.toLowerCase())));
               },
             );
           } else {

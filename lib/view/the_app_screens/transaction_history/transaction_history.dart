@@ -17,6 +17,7 @@ import '../../auth/sign_in_with_access_pin_and_biometrics.dart';
 import '../../widgets/app_custom_text.dart';
 import '../../widgets/purchase_receipt.dart';
 import '../../widgets/show_toast.dart';
+import '../../widgets/transaction_receipt.dart';
 
 class TransactionHistory extends StatefulWidget {
   const TransactionHistory({super.key});
@@ -85,6 +86,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
 
     return Scaffold(
       body: Column(
+        //crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           const TransactionHistoryCustomAppBar(
             title: 'Transactions',
@@ -122,12 +124,15 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                         itemBuilder: (context, item, index) {
                           if (item is String) {
                             // This is a date heading
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8.0),
-                              child: CustomText(
-                                text: AppUtils.formatComplexDate(dateTime: item),
-                                size: 14,
-                                weight: FontWeight.bold,
+                            return Align(
+                              alignment: Alignment.topLeft,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                child: CustomText(
+                                  text: AppUtils.formatComplexDate(dateTime: item),
+                                  size: 14,
+                                  weight: FontWeight.bold,
+                                ),
                               ),
                             );
                           } else if (item is Transaction) {
@@ -211,7 +216,10 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                                           ],
                                         ),
                                         CustomText(
-                                          text: item.status.toLowerCase() == "success" ? "SUCCESSFUL" : item.status.toUpperCase(),
+                                          text: item.status.toLowerCase() == "success" ? "SUCCESSFUL" :item.status
+                                              .toLowerCase() ==
+                                              "failure"
+                                              ? "FAILED" :item.status.toUpperCase(),
                                           color: item.status.toLowerCase() == 'success'
                                               ? AppColors.green
                                               : item.status.toLowerCase() == 'pending'
