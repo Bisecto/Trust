@@ -48,10 +48,8 @@ class _LandingPageState extends State<LandingPage> {
         Connectivity().onConnectivityChanged.listen(_handleConnectivity);
 
     landPageScreens = [
-      const HomePage(),
-      SendToPage(
-
-      ),
+       HomePage(onPageChanged: _onPageChanged),
+      SendToPage(),
       const BillsPage(),
       const CardPage(),
       const MorePage()
@@ -76,6 +74,11 @@ class _LandingPageState extends State<LandingPage> {
         _connected = true;
       });
     }
+  }
+  void _onPageChanged(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
   }
 
   @override

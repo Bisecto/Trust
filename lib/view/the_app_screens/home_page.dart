@@ -43,8 +43,11 @@ import '../widgets/transaction_receipt.dart';
 import 'kyc_verification/kyc_intro_page.dart';
 
 class HomePage extends StatefulWidget {
+  final Function(int) onPageChanged;
+
   const HomePage({
     super.key,
+    required this.onPageChanged
   });
 
   @override
@@ -500,21 +503,27 @@ class _HomePageState extends State<HomePage> {
                 size: 12,
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                    //color: AppColors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: AppColors.textColor2)),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(8.0, 5, 8, 5),
-                  child: CustomText(
-                    text: "See All",
-                    size: 12,
-                    color: theme.isDark
-                        ? AppColors.darkModeBackgroundSubTextColor
-                        : AppColors.textColor2,
+            GestureDetector(
+              onTap: (){
+                widget.onPageChanged(2); // Change to the desired index, e.g., 1 for Send page
+
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                      //color: AppColors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: AppColors.textColor2)),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(8.0, 5, 8, 5),
+                    child: CustomText(
+                      text: "See All",
+                      size: 12,
+                      color: theme.isDark
+                          ? AppColors.darkModeBackgroundSubTextColor
+                          : AppColors.textColor2,
+                    ),
                   ),
                 ),
               ),
