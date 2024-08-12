@@ -317,52 +317,42 @@ class _VerifyOtpState extends State<VerifyOtp> {
                                           child: TextStyles.richTexts(
                                               onPress1: () {
                                                 if (_start == 0) {
-                                                  // authBloc.add(RequestResetPasswordEventClick(
-                                                  //     widget.phone,false));
                                                   authBloc.add(
-                                                      PasswordResetRequestOtpEventCLick(
-                                                          widget.phone,
-                                                          context));
+                                                      PasswordResetRequestOtpEventCLick(widget.phone, context)
+                                                  );
                                                   setState(() {
-                                                    _start = 59;
+                                                    _start = 180; // Reset the timer to 180 seconds
                                                     startTimer();
                                                   });
                                                 } else {
                                                   setState(() {
-                                                    MSG.warningSnackBar(context,
-                                                        'Resend Code after 59s');
+                                                    MSG.warningSnackBar(context, 'Resend Code after 3:00 minutes');
                                                   });
                                                 }
                                               },
                                               onPress2: () {
                                                 if (_start == 0) {
-                                                  // authBloc.add(RequestResetPasswordEventClick(
-                                                  //     widget.phone,false));
                                                   authBloc.add(
-                                                      PasswordResetRequestOtpEventCLick(
-                                                          widget.phone,
-                                                          context));
+                                                      PasswordResetRequestOtpEventCLick(widget.phone, context)
+                                                  );
                                                   setState(() {
-                                                    _start = 59;
+                                                    _start = 180; // Reset the timer to 180 seconds
                                                     startTimer();
                                                   });
                                                 } else {
-                                                  MSG.warningSnackBar(context,
-                                                      'Resend Code after 59s');
+                                                  MSG.warningSnackBar(context, 'Resend Code after 3:00 minutes');
                                                 }
                                               },
                                               size: 14,
                                               weight: FontWeight.w600,
-                                              //color: const Color.fromARGB(255, 19, 48, 63),
                                               color2: AppColors.darkGreen,
-                                              //text1: '',
-                                              decoration:
-                                                  TextDecoration.underline,
+                                              decoration: TextDecoration.underline,
                                               text2: 'Resend code after',
                                               color: AppColors.black,
-                                              text3: '  00:$_start s',
-                                              text4: ''))
-                                    ],
+                                              text3: '  ${(_start ~/ 60).toString().padLeft(2, '0')}:${(_start % 60).toString().padLeft(2, '0')} minutes',
+                                              text4: ''
+                                          )
+                                      )                                    ],
                                   ),
                                 ),
                               ),
@@ -389,15 +379,14 @@ class _VerifyOtpState extends State<VerifyOtp> {
 
   String smsOTP = '';
   late Timer _timer;
-  int _start = 59;
+  int _start = 180;
 
   void startTimer() {
     const oneSec = Duration(seconds: 1);
     _timer = Timer.periodic(
       oneSec,
-      (Timer timer) {
+          (Timer timer) {
         if (_start == 0) {
-          //_start = 59;
           _timer.cancel();
         } else {
           setState(() {
@@ -406,5 +395,4 @@ class _VerifyOtpState extends State<VerifyOtp> {
         }
       },
     );
-  }
-}
+  }}
