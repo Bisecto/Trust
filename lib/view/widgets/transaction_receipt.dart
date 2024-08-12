@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
@@ -16,6 +17,7 @@ import 'package:teller_trust/view/widgets/app_custom_text.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:disk_space_update/disk_space_update.dart';
@@ -36,6 +38,7 @@ import 'package:teller_trust/utills/app_utils.dart';
 import 'package:teller_trust/view/the_app_screens/landing_page.dart';
 import 'package:teller_trust/view/widgets/form_button.dart';
 import 'package:teller_trust/view/widgets/show_toast.dart';
+import '../../bloc/product_bloc/product_bloc.dart';
 import '../../repository/app_repository.dart';
 import '../../res/apis.dart';
 import '../../res/app_colors.dart';
@@ -44,6 +47,11 @@ import '../../utills/custom_theme.dart';
 import '../../utills/enums/toast_mesage.dart';
 import '../../utills/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
+
+import '../auth/otp_pin_pages/confirm_with_otp.dart';
+import '../auth/sign_in_with_access_pin_and_biometrics.dart';
+import '../the_app_screens/sevices/build_payment_method.dart';
+import '../the_app_screens/sevices/make_bank_transfer/bank_transfer.dart';
 
 class TransactionReceipt extends StatefulWidget {
   final Transaction transaction;
@@ -60,6 +68,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
   bool isSharingPdf = false;
   ScreenshotController screenshotController = ScreenshotController();
   PdfDocument? document = PdfDocument();
+  ProductBloc purchaseProductBloc = ProductBloc();
 
   @override
   void initState() {
@@ -78,119 +87,176 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
 
     return Scaffold(
       backgroundColor:
-          theme.isDark ? AppColors.darkModeBackgroundColor :                      Color(0xffF3FFEB),
-      body: Container(
-        height: AppUtils.deviceScreenSize(context).height,
-        width: AppUtils.deviceScreenSize(context).width,
-        color:
-            theme.isDark ? AppColors.darkModeBackgroundColor : Color(0xffF3FFEB),
-        child: Screenshot(
-          controller: screenshotController,
-          child: Container(
-            width: double.maxFinite,
-            child: Stack(
-              children: [
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  height: 130,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Color(0xffF3FFEB),
-                      borderRadius:
-                          BorderRadius.vertical(bottom: Radius.circular(30)),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  height: 120,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: AppColors.darkGreen,
-                      borderRadius:
-                          BorderRadius.vertical(bottom: Radius.circular(30)),
-                    ),
-                    child: SvgPicture.asset(
-                      AppIcons.looper1,
-                      width: double.infinity,
-                      fit: BoxFit.fill,
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: 40,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: Column(
+          theme.isDark ? AppColors.darkModeBackgroundColor : Color(0xffF3FFEB),
+      body: BlocConsumer<ProductBloc, ProductState>(
+          bloc: purchaseProductBloc,
+          listenWhen: (previous, current) => current is! ProductInitial,
+          listener: (context, state) async {
+            print(state);
+            if (state is PurchaseSuccess) {
+              // AppNavigator.pushAndStackPage(context,
+              //     page: TransactionReceipt(
+              //         transaction: state.transaction));
+
+              showToast(
+                  context: context,
+                  title: 'Success',
+                  subtitle: 'Purchase was successful',
+                  type: ToastMessageType.info);
+              //refresh();
+              //MSG.snackBar(context, state.msg);
+
+              // AppNavigator.pushAndRemovePreviousPages(context,
+              //     page: LandingPage(studentProfile: state.studentProfile));
+            } else if (state is QuickPayInitiated) {
+              String accessToken = await SharedPref.getString("access-token");
+
+              AppNavigator.pushAndStackPage(context,
+                  page: MakePayment(
+                    quickPayModel: state.quickPayModel,
+                    accessToken: accessToken,
+                  ));
+            } else if (state is AccessTokenExpireState) {
+              // showToast(
+              //     context: context,
+              //     title: 'Token expired',
+              //     subtitle: 'Login again.',
+              //     type: ToastMessageType.error);
+
+              //MSG.warningSnackBar(context, state.error);
+
+              String firstame = await SharedPref.getString('firstName');
+
+              AppNavigator.pushAndRemovePreviousPages(context,
+                  page: SignInWIthAccessPinBiometrics(
+                    userName: firstame,
+                  ));
+            } else if (state is PurchaseErrorState) {
+              showToast(
+                  context: context,
+                  title: 'Info',
+                  subtitle: state.error,
+                  type: ToastMessageType.error);
+
+              //MSG.warningSnackBar(context, state.error);
+            }
+          },
+          builder: (context, state) {
+            return Container(
+              height: AppUtils.deviceScreenSize(context).height,
+              width: AppUtils.deviceScreenSize(context).width,
+              color: theme.isDark
+                  ? AppColors.darkModeBackgroundColor
+                  : Color(0xffF3FFEB),
+              child: Screenshot(
+                controller: screenshotController,
+                child: Container(
+                  width: double.maxFinite,
+                  child: Stack(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(20.0, 0, 20, 0),
-                        child: cardTopContainer(theme),
+                      Positioned(
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        height: 130,
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            color: Color(0xffF3FFEB),
+                            borderRadius: BorderRadius.vertical(
+                                bottom: Radius.circular(30)),
+                          ),
+                        ),
                       ),
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              buildReceiptDetails(theme),
-                              Container(
-                                //height: isSharingPdf ? 400 : 400,
-                                color: theme.isDark
-                                    ? AppColors.darkModeBackgroundContainerColor
-                                    : Color(0xffF3FFEB),
+                      Positioned(
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        height: 120,
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            color: AppColors.darkGreen,
+                            borderRadius: BorderRadius.vertical(
+                                bottom: Radius.circular(30)),
+                          ),
+                          child: SvgPicture.asset(
+                            AppIcons.looper1,
+                            width: double.infinity,
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: 40,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.fromLTRB(20.0, 0, 20, 0),
+                              child: cardTopContainer(theme),
+                            ),
+                            Expanded(
+                              child: SingleChildScrollView(
                                 child: Column(
                                   children: [
-
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    if (!isSharingPdf)
-                                      buildActionButtons(
-                                        widget.transaction.description,
-                                        theme,
+                                    buildReceiptDetails(theme),
+                                    Container(
+                                      //height: isSharingPdf ? 400 : 400,
+                                      color: theme.isDark
+                                          ? AppColors
+                                              .darkModeBackgroundContainerColor
+                                          : Color(0xffF3FFEB),
+                                      child: Column(
+                                        children: [
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          if (!isSharingPdf)
+                                            buildActionButtons(
+                                              widget.transaction.description,
+                                              theme,
+                                            ),
+                                          if (!isSharingPdf && widget.isHome)
+                                            FormButton(
+                                              onPressed: () {
+                                                AppNavigator
+                                                    .pushAndRemovePreviousPages(
+                                                        context,
+                                                        page: LandingPage());
+                                              },
+                                              width: AppUtils.deviceScreenSize(
+                                                          context)
+                                                      .width /
+                                                  2,
+                                              text: 'Homepage',
+                                              iconWidget: Icons.arrow_forward,
+                                              textColor: AppColors.white,
+                                              isIcon: true,
+                                              borderRadius: 20,
+                                              bgColor: AppColors.green,
+                                            ),
+                                          const SizedBox(height: 10),
+                                          buildFooter(
+                                            theme,
+                                          ),
+                                        ],
                                       ),
-                                    if (!isSharingPdf && widget.isHome)
-                                      FormButton(
-                                        onPressed: () {
-                                          AppNavigator
-                                              .pushAndRemovePreviousPages(
-                                                  context,
-                                                  page: LandingPage());
-                                        },
-                                        width:
-                                            AppUtils.deviceScreenSize(context)
-                                                    .width /
-                                                2,
-                                        text: 'Homepage',
-                                        iconWidget: Icons.arrow_forward,
-                                        textColor: AppColors.white,
-                                        isIcon: true,
-                                        borderRadius: 20,
-                                        bgColor: AppColors.green,
-                                      ),
-                                    const SizedBox(height: 10),
-                                    buildFooter(
-                                      theme,
                                     ),
                                   ],
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
                 ),
-              ],
-            ),
-          ),
-        ),
-      ),
+              ),
+            );
+          }),
     );
   }
 
@@ -387,10 +453,11 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
             theme,
           ),
         ),
-        if (widget.transaction.status.toLowerCase() == 'success')
+        if (widget.transaction.status.toLowerCase() == 'success'&&widget.transaction.order!=null)
           GestureDetector(
             onTap: () {
-              repeatTransaction(context, widget.transaction.id);
+             // print(widget.transaction.order);
+              repeatTransaction(context, widget.transaction,theme);
             },
             child: buildActionButton(
               'Repeat',
@@ -456,27 +523,26 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
           color: theme.isDark ? AppColors.white : AppColors.textColor2,
           size: 14,
         ),
-       if(isSharingPdf)
-       ... [Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: CustomText(
-            text:
-                'Want to save money on transfers and recharge cards? '
-                    'Download TellaTrust today! Plus, enjoy a referral '
-                    'bonus when you share the love with your friends.'
-                    ' Don\'t miss out!',
-
-            textAlign: TextAlign.center,
-            color: theme.isDark ? AppColors.white : AppColors.textColor2,
-            size: 14,
-            maxLines: 5,
+        if (isSharingPdf) ...[
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: CustomText(
+              text: 'Want to save money on transfers and recharge cards? '
+                  'Download TellaTrust today! Plus, enjoy a referral '
+                  'bonus when you share the love with your friends.'
+                  ' Don\'t miss out!',
+              textAlign: TextAlign.center,
+              color: theme.isDark ? AppColors.white : AppColors.textColor2,
+              size: 14,
+              maxLines: 5,
+            ),
           ),
-        ),        TextStyles.textHeadings(
-           textValue: 'Scan to Download App',
-           textSize: 14,
-           textColor: theme.isDark ? AppColors.white : AppColors.textColor2),
-         SvgPicture.asset(AppIcons.appQrCode),
-       ],
+          TextStyles.textHeadings(
+              textValue: 'Scan to Download App',
+              textSize: 14,
+              textColor: theme.isDark ? AppColors.white : AppColors.textColor2),
+          SvgPicture.asset(AppIcons.appQrCode),
+        ],
         const SizedBox(height: 20),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -496,36 +562,132 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
     return DateFormat('_yyyyMMdd_kkmmss').format(DateTime.now());
   }
 
+  String _selectedPaymentMethod = 'wallet';
+  bool isPaymentAllowed = false;
+
   Future<void> repeatTransaction(
-      BuildContext context, String transactionId) async {
+      BuildContext context, Transaction transaction,theme) async {
     AppRepository appRepository = AppRepository();
+    //final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
 
-    try {
-      showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (_) => const LoadingDialog('Preparing to repeat...'),
-      );
-      String accessToken = await SharedPref.getString("access-token");
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.transparent,
+          content: Container(
+            width: double.infinity,
+            height: 400,
+            decoration: BoxDecoration(
+              color: theme.isDark
+                  ? AppColors.darkModeBackgroundColor
+                  : AppColors.white,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                children: [
+                  PaymentMethodScreen(
+                    amtToPay: transaction.amount.toString(),
+                    onPaymentMethodSelected: (method) {
+                      // No need to use setState here directly as it might be called during the build phase
+                      Future.microtask(() {
+                        if (mounted) {
+                          setState(() {
+                            _selectedPaymentMethod = method;
+                            //print(_selectedPaymentMethod);
+                          });
+                        }
+                      });
+                    },
+                    ispaymentAllowed: (allowed) {
+                      // Deferred update to avoid issues during the build phase
+                      Future.microtask(() {
+                        if (mounted) {
+                          setState(() {
+                            isPaymentAllowed = allowed;
+                            // print(isPaymentAllowed);
+                          });
+                        }
+                      });
+                    },
+                  ),
+                  FormButton(onPressed: (){
+                    Navigator.pop(context);
+                  },text: 'Continue',)
 
-      var response = await appRepository.appGetRequest(
-          accessToken: accessToken,
-          "${AppApis.getOneTransactionDetails}/$transactionId");
-      print(response.statusCode);
-      print(response.body);
-      print(json.decode(response.body));
-    } catch (e) {
-      setState(() {
-        isSharingPdf = false;
-        Navigator.pop(context);
-      });
-      showToast(
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+    var transactionPin = '';
+    transactionPin = await modalSheet.showMaterialModalBottomSheet(
+        backgroundColor: Colors.transparent,
+        isDismissible: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+        ),
         context: context,
-        title: 'Error occurred',
-        subtitle: 'An unexpected error has occurred, try again later',
-        type: ToastMessageType.error,
-      );
+        builder: (context) => Padding(
+              padding: const EdgeInsets.only(top: 200.0),
+              child: ConfirmWithPin(
+                context: context,
+                title: 'Input your transaction pin to continue',
+              ),
+            ))??'';
+    if (transactionPin != '') {
+      purchaseProductBloc.add(PurchaseProductEvent(
+          context,
+          transaction.order!.requiredFields,
+          transaction.order!.product!.id,
+          transactionPin,
+          _selectedPaymentMethod == 'wallet' ? false : true,
+          false,
+          ''));
     }
+    // try {
+    //   showDialog(
+    //     barrierDismissible: false,
+    //     context: context,
+    //     builder: (_) => const LoadingDialog('Preparing to repeat transaction...'),
+    //   );
+    //   String accessToken = await SharedPref.getString("access-token");
+    //
+    //   var response = await appRepository.appGetRequest(
+    //       accessToken: accessToken,
+    //       "${AppApis.getOneTransactionDetails}/$transactionId");
+    //   print(response.statusCode);
+    //   print(response.body);
+    //   print(json.decode(response.body));
+    //   if(response.statusCode==200||response.statusCode==201){
+    //     setState(() {
+    //       isSharingPdf = false;
+    //       Navigator.pop(context);
+    //     });
+    //
+    //   }else{
+    //     setState(() {
+    //       isSharingPdf = false;
+    //       Navigator.pop(context);
+    //     });
+    //   }
+    // } catch (e) {
+    //   setState(() {
+    //     isSharingPdf = false;
+    //     Navigator.pop(context);
+    //   });
+    //   showToast(
+    //     context: context,
+    //     title: 'Error occurred',
+    //     subtitle: 'An unexpected error has occurred, try again later',
+    //     type: ToastMessageType.error,
+    //   );
+    // }
   }
 
   // Future<void> pdfShare(BuildContext context, String title, theme) async {

@@ -21,6 +21,7 @@ class PaymentMethodScreen extends StatefulWidget {
   final ValueChanged<bool> isSaveAsBeneficiarySelected;
 
   final String number;
+  final bool showAddBeneficiary;
 
   const PaymentMethodScreen({
     super.key,
@@ -30,6 +31,7 @@ class PaymentMethodScreen extends StatefulWidget {
     required this.isSaveAsBeneficiarySelected,
     required this.name,
     required this.number,
+    this.showAddBeneficiary=true
   });
 
   @override
@@ -115,6 +117,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                                       weight: FontWeight.bold,
                                       size: 10,
                                       color: AppColors.orange,
+                                      maxLines: 2,
                                     ),
                                   ],
                                 ),
@@ -130,7 +133,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                           _onPaymentMethodChanged('quick_pay', walletInfo),
                     ),
                     if (widget.number != '') const SizedBox(height: 24),
-                    if (widget.number != '')
+                    if (widget.number != ''&&widget.showAddBeneficiary)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -148,16 +151,14 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                               });
                               if (value) {
                                 showInputField(context: context);
-                              }else{
+                              } else {
                                 Future.microtask(() {
                                   if (mounted) {
-
                                     setState(() {
                                       _saveAsBeneficiary = false;
                                       widget.isSaveAsBeneficiarySelected(false);
                                       widget.name('');
                                     });
-
                                   }
                                 });
                               }
@@ -321,13 +322,12 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                                     Navigator.pop(context);
                                     Future.microtask(() {
                                       if (mounted) {
-
                                         setState(() {
                                           _saveAsBeneficiary = false;
-                                          widget.isSaveAsBeneficiarySelected(false);
+                                          widget.isSaveAsBeneficiarySelected(
+                                              false);
                                           widget.name('');
                                         });
-
                                       }
                                     });
                                   },
@@ -390,26 +390,20 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                           if (_nameController.text.isNotEmpty) {
                             Future.microtask(() {
                               if (mounted) {
-
-                                  widget.isSaveAsBeneficiarySelected(true);
-                                  widget.name(_nameController.text);
-
+                                widget.isSaveAsBeneficiarySelected(true);
+                                widget.name(_nameController.text);
                               }
                             });
-
-                          }else{
+                          } else {
                             Future.microtask(() {
                               if (mounted) {
-
                                 setState(() {
                                   _saveAsBeneficiary = false;
                                   widget.isSaveAsBeneficiarySelected(false);
                                   widget.name('');
                                 });
-
                               }
                             });
-
                           }
                           Navigator.pop(context);
                         },

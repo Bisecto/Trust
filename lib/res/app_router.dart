@@ -1,9 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:teller_trust/model/category_model.dart';
 import 'package:teller_trust/view/auth/sign_up_screen.dart';
 import 'package:teller_trust/view/the_app_screens/bills_page.dart';
 import 'package:teller_trust/view/the_app_screens/card_page.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/profile_details.dart';
+import 'package:teller_trust/view/the_app_screens/sevices/airtime_purchase/airtime.dart';
+import 'package:teller_trust/view/the_app_screens/sevices/make_bank_transfer/bank_transfer.dart';
 
 import '../bloc/app_bloc/app_bloc.dart';
 import '../view/auth/sign_in_with_access_pin_and_biometrics.dart';
@@ -12,6 +17,7 @@ import '../view/important_pages/not_found_page.dart';
 import '../view/on_boarding/main_on_boarding_screen.dart';
 import '../view/splash_screen.dart';
 import '../view/the_app_screens/landing_page.dart';
+import '../view/the_app_screens/more_pages/tella_rewards/tella_point_product_container.dart';
 import '../view/the_app_screens/send_page.dart';
 
 class AppRouter {
@@ -54,6 +60,9 @@ class AppRouter {
   static const String internetNetworkPage = '/internet-network-page';
   static const String cableTVNetworkPage = '/cable-tv-network-page';
   static const String bankNetworkPage = '/bank-network-page';
+  static const String tellaPointContainer = '/bank-network-page';
+
+  //static const String airtime = '/airtime';
 
   Route onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
@@ -63,6 +72,11 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const OnBoardingScreen());
       case signUpScreen:
         return MaterialPageRoute(builder: (_) => const SignUpScreen());
+      case tellaPointContainer:
+        return MaterialPageRoute(builder: (_) => BlocProvider(
+    create: (_) => AppBloc(),
+    child:   const TellaPointProductContainer(),
+    ));
       // case otpVerification:
       //   return MaterialPageRoute(
       //       builder: (_) => VerifyOtp(
@@ -95,6 +109,8 @@ class AppRouter {
       //   routeSettings.arguments as User;
       //
       //   return MaterialPageRoute(builder: (_) =>  HomePage(user: user,));
+      // case airtime:
+      //   return MaterialPageRoute(builder: (_) =>  AirtimePurchase(category: Category.fromJson(json.decode('')),));
       case sendPage:
         return MaterialPageRoute(builder: (_) => const SendPage());
       case billsPage:

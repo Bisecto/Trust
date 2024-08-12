@@ -12,11 +12,13 @@ import 'package:teller_trust/view/sendBeneficary/pages/send_main_page.dart';
 import 'package:teller_trust/view/the_app_screens/send_page.dart';
 
 import '../../bloc/app_bloc/app_bloc.dart';
+import '../../domain/txn/txn_details_to_send_out.dart';
 import '../../res/app_colors.dart';
 import '../../utills/app_navigator.dart';
 import '../../utills/custom_theme.dart';
 import '../../utills/shared_preferences.dart';
 import '../auth/sign_in_with_access_pin_and_biometrics.dart';
+import '../sendBeneficary/pages/send_to_page.dart';
 import 'bills_page.dart';
 import 'card_page.dart';
 import 'home_page.dart';
@@ -46,10 +48,8 @@ class _LandingPageState extends State<LandingPage> {
         Connectivity().onConnectivityChanged.listen(_handleConnectivity);
 
     landPageScreens = [
-      const HomePage(),
-      SendMainPage(
-        backNavCallBack: () {},
-      ),
+       HomePage(onPageChanged: _onPageChanged),
+      SendToPage(),
       const BillsPage(),
       const CardPage(),
       const MorePage()
@@ -74,6 +74,11 @@ class _LandingPageState extends State<LandingPage> {
         _connected = true;
       });
     }
+  }
+  void _onPageChanged(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
   }
 
   @override

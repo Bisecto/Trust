@@ -18,26 +18,26 @@ class SendBeneficiaryAppLogoBodyWidget extends StatelessWidget {
     final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
 
     return Container(
-      height: size.height,
-      width: size.width,
+      // height: size.height,
+      // width: size.width,
       padding: const EdgeInsets.only(
-        left: 15.0,
-        right: 15.0,
-        bottom: 10.0,
+        left: 0.0,
+        right: 0.0,
+        bottom: 0.0,
         top: 20.0,
       ),
       decoration: BoxDecoration(
-        color:
-            theme.isDark ? AppColors.darkModeBackgroundColor : AppColors.white,
-        image: DecorationImage(
-          image: AssetImage(
-            theme.isDark?
-            'assets/images/tellaTrust.png'
-                :'assets/images/tellaTrustLightMode.png',
-          ),
-          //colorFilter: ColorFilter(),
-          fit: BoxFit.cover,
-        ),
+        color:Colors.transparent
+            //theme.isDark ? AppColors.darkModeBackgroundColor : AppColors.white,
+        // image: DecorationImage(
+        //   image: AssetImage(
+        //     theme.isDark?
+        //     'assets/images/tellaTrust.png'
+        //         :'assets/images/tellaTrustLightMode.png',
+        //   ),
+        //   //colorFilter: ColorFilter(),
+        //   fit: BoxFit.cover,
+        // ),
       ),
       child: child,
     );

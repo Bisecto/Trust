@@ -9,30 +9,34 @@ import '../../widgets/app_custom_text.dart';
 
 class TransactionHistoryCustomAppBar extends StatelessWidget {
   final String title;
+  final bool showFilter;
 
-  const TransactionHistoryCustomAppBar({
-    super.key,
-    required this.title,
-  });
+  const TransactionHistoryCustomAppBar(
+      {super.key, required this.title, this.showFilter = true});
 
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
 
     return Container(
-      height: 160,
+      height: showFilter ? 160 : 110,
       decoration: const BoxDecoration(
           color: AppColors.darkGreen,
           borderRadius: BorderRadius.vertical(bottom: Radius.circular(30))),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(20.0, 40, 20, 0),
+        padding: const EdgeInsets.fromLTRB(20.0, 50, 20, 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                TextStyles.textHeadings(textValue: title, textSize: 20,textColor: theme.isDark?AppColors.darkModeBackgroundMainTextColor:AppColors.white),
+                TextStyles.textHeadings(
+                    textValue: title,
+                    textSize: 20,
+                    textColor: theme.isDark
+                        ? AppColors.darkModeBackgroundMainTextColor
+                        : AppColors.white),
                 GestureDetector(
                   onTap: () {
                     Navigator.pop(context);
@@ -48,37 +52,36 @@ class TransactionHistoryCustomAppBar extends StatelessWidget {
             const SizedBox(
               height: 5,
             ),
-
-
-            Container(
-              height: 40,
-              decoration: BoxDecoration(
-                  color: AppColors.lightgreen2,
-                  borderRadius: BorderRadius.circular(40)),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const CustomText(
-                      text: "All transactions",
-                      size: 12,
-                      weight: FontWeight.bold,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        // Navigator.pop(context);
-                      },
-                      child: SvgPicture.asset(
-                        AppIcons.filter,
-                        // color: AppColors.green,
-                        //theme: const SvgTheme(currentColor: AppColors.lightgreen2),
+            if (showFilter)
+              Container(
+                height: 40,
+                decoration: BoxDecoration(
+                    color: AppColors.lightgreen2,
+                    borderRadius: BorderRadius.circular(40)),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const CustomText(
+                        text: "All transactions",
+                        size: 12,
+                        weight: FontWeight.bold,
                       ),
-                    )
-                  ],
+                      GestureDetector(
+                        onTap: () {
+                          // Navigator.pop(context);
+                        },
+                        child: SvgPicture.asset(
+                          AppIcons.filter,
+                          // color: AppColors.green,
+                          //theme: const SvgTheme(currentColor: AppColors.lightgreen2),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            )
+              )
             //SizedBox(height: 15,),
           ],
         ),

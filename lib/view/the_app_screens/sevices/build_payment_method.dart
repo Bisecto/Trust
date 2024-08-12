@@ -107,26 +107,26 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                       onChanged: () =>
                           _onPaymentMethodChanged('quick_pay', walletInfo),
                     ),
-                    const SizedBox(height: 24),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const CustomText(
-                          text: 'Save as Beneficiary',
-                          size: 14,
-                          weight: FontWeight.bold,
-                        ),
-                        Switch(
-                          value: _saveAsBeneficiary,
-                          onChanged: (value) {
-                            setState(() {
-                              _saveAsBeneficiary = value;
-                            });
-                          },
-                          activeColor: Colors.green,
-                        ),
-                      ],
-                    ),
+                    // const SizedBox(height: 24),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     const CustomText(
+                    //       text: 'Save as Beneficiary',
+                    //       size: 14,
+                    //       weight: FontWeight.bold,
+                    //     ),
+                    //     Switch(
+                    //       value: _saveAsBeneficiary,
+                    //       onChanged: (value) {
+                    //         setState(() {
+                    //           _saveAsBeneficiary = value;
+                    //         });
+                    //       },
+                    //       activeColor: Colors.green,
+                    //     ),
+                    //   ],
+                    // ),
                   ],
                 );
               } else {

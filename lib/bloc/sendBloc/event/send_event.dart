@@ -8,16 +8,16 @@ abstract class SendEvent extends Equatable {
 }
 
 class EnterAmountToSend extends SendEvent {
-  bool isItForMainValue;
+ // bool isItForMainValue;
   String value;
   EnterAmountToSend({
-    required this.isItForMainValue,
+   // required this.isItForMainValue,
     required this.value,
   }) : super();
 
   @override
   List<Object?> get props => [
-        isItForMainValue,
+        //isItForMainValue,
         value,
       ];
 }

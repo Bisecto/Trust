@@ -25,25 +25,28 @@ import 'package:teller_trust/view/the_app_screens/sevices/cable_purchase/cable_p
 import 'package:teller_trust/view/the_app_screens/sevices/data_purchase/data.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/electricity_purchase/electricity_purchase.dart';
 import 'package:teller_trust/view/the_app_screens/transaction_history/transaction_history.dart';
+import 'package:teller_trust/view/the_app_screens/transaction_history/wallet_history.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 import 'package:teller_trust/view/widgets/purchase_receipt.dart';
 
 import '../../bloc/app_bloc/app_bloc.dart';
+import '../../domain/txn/txn_details_to_send_out.dart';
 import '../../model/category_model.dart';
 import '../../model/customer_account_model.dart';
 import '../../res/app_images.dart';
 import '../../utills/custom_theme.dart';
 import '../../utills/enums/toast_mesage.dart';
 import '../sendBeneficary/pages/send_main_page.dart';
+import '../sendBeneficary/pages/send_to_page.dart';
 import '../widgets/show_toast.dart';
 import '../widgets/transaction_receipt.dart';
 import 'kyc_verification/kyc_intro_page.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({
-    super.key,
-  });
+  final Function(int) onPageChanged;
+
+  const HomePage({super.key, required this.onPageChanged});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -498,21 +501,27 @@ class _HomePageState extends State<HomePage> {
                 size: 12,
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                    //color: AppColors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: AppColors.textColor2)),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(8.0, 5, 8, 5),
-                  child: CustomText(
-                    text: "See All",
-                    size: 12,
-                    color: theme.isDark
-                        ? AppColors.darkModeBackgroundSubTextColor
-                        : AppColors.textColor2,
+            GestureDetector(
+              onTap: () {
+                widget.onPageChanged(
+                    2); // Change to the desired index, e.g., 1 for Send page
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                      //color: AppColors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: AppColors.textColor2)),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(8.0, 5, 8, 5),
+                    child: CustomText(
+                      text: "See All",
+                      size: 12,
+                      color: theme.isDark
+                          ? AppColors.darkModeBackgroundSubTextColor
+                          : AppColors.textColor2,
+                    ),
                   ),
                 ),
               ),
@@ -522,7 +531,57 @@ class _HomePageState extends State<HomePage> {
         const SizedBox(
           height: 10,
         ),
-        quickActionsWidget(theme),
+        BlocBuilder<AppBloc, AppState>(
+          builder: (context, state) {
+            if (state is SuccessState) {
+              var walletInfo = state.customerProfile.walletInfo;
+              return quickActionsWidget(theme, walletInfo);
+            } else {
+              return SizedBox(
+                height: 160,
+                child: GridView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4,
+                    crossAxisSpacing: 10.0,
+                    mainAxisSpacing: 5.0,
+                  ),
+                  itemCount: 8, //AppList().serviceItems.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                            height: 30,
+                            width: 30,
+                            decoration: BoxDecoration(
+                                color: Colors.grey.withOpacity(0.2),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(50)))),
+                        const SizedBox(height: 5),
+                        Shimmer(
+                          duration: const Duration(seconds: 1),
+                          interval: const Duration(milliseconds: 50),
+                          color: Colors.grey.withOpacity(0.5),
+                          colorOpacity: 0.5,
+                          enabled: true,
+                          direction: const ShimmerDirection.fromLTRB(),
+                          child: Container(
+                            height: 5,
+                            width: 30,
+                            decoration: BoxDecoration(
+                              color: Colors.grey.withOpacity(0.2),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ); // Show loading indicator or handle error state
+            }
+          },
+        ),
         const SizedBox(
           height: 10,
         ),
@@ -670,77 +729,86 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                    if (!isMoneyBlocked)
-                      BlocBuilder<AppBloc, AppState>(
-                        builder: (context, state) {
-                          if (state is SuccessState) {
-                            WalletInfo walletInfo =
-                                state.customerProfile.walletInfo;
-                            return Container(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Column(
+                    GestureDetector(
+                      onTap: () {
+                        AppNavigator.pushAndStackPage(context,
+                            page: WalletHistory());
+                      },
+                      child: Column(children: [
+                        if (!isMoneyBlocked)
+                          BlocBuilder<AppBloc, AppState>(
+                            builder: (context, state) {
+                              if (state is SuccessState) {
+                                WalletInfo walletInfo =
+                                    state.customerProfile.walletInfo;
+                                return Container(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
-                                      SvgPicture.asset(
-                                        AppIcons.naira,
-                                        height: 22,
-                                        width: 22,
+                                      Column(
+                                        children: [
+                                          SvgPicture.asset(
+                                            AppIcons.naira,
+                                            height: 22,
+                                            width: 22,
+                                          ),
+                                          const SizedBox(height: 10),
+                                        ],
                                       ),
-                                      const SizedBox(height: 10),
-                                    ],
-                                  ),
-                                  TextStyles.textHeadings(
-                                    textValue:
-                                        "${AppUtils.convertPrice(walletInfo.balance.toString()).split('.')[0]}.",
-                                    textSize: 28,
-                                    textColor: AppColors.white,
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Column(
-                                    children: [
                                       TextStyles.textHeadings(
-                                        textValue: AppUtils.convertPrice(
-                                                walletInfo.balance.toString())
-                                            .split('.')[1],
-                                        textSize: 18,
+                                        textValue:
+                                            "${AppUtils.convertPrice(walletInfo.balance.toString()).split('.')[0]}.",
+                                        textSize: 28,
                                         textColor: AppColors.white,
                                       ),
-                                      const SizedBox(height: 5),
+                                      const SizedBox(width: 5),
+                                      Column(
+                                        children: [
+                                          TextStyles.textHeadings(
+                                            textValue: AppUtils.convertPrice(
+                                                    walletInfo.balance
+                                                        .toString())
+                                                .split('.')[1],
+                                            textSize: 18,
+                                            textColor: AppColors.white,
+                                          ),
+                                          const SizedBox(height: 5),
+                                        ],
+                                      ),
                                     ],
                                   ),
-                                ],
-                              ),
-                            );
-                          } else {
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SvgPicture.asset(
-                                  AppIcons.naira,
-                                  height: 20,
-                                  width: 20,
-                                ),
-                                TextStyles.textHeadings(
-                                  textValue: 'Loading...',
-                                  textSize: 20.2,
-                                  textColor: AppColors.white,
-                                ),
-                              ],
-                            );
-                          }
-                        },
-                      ),
-                    if (isMoneyBlocked)
-                      const CustomText(
-                        text: "*******",
-                        size: 22,
-                        weight: FontWeight.bold,
-                        color: AppColors.white,
-                      ),
-                    const SizedBox(height: 10),
+                                );
+                              } else {
+                                return Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    SvgPicture.asset(
+                                      AppIcons.naira,
+                                      height: 20,
+                                      width: 20,
+                                    ),
+                                    TextStyles.textHeadings(
+                                      textValue: 'Loading...',
+                                      textSize: 20.2,
+                                      textColor: AppColors.white,
+                                    ),
+                                  ],
+                                );
+                              }
+                            },
+                          ),
+                        if (isMoneyBlocked)
+                          const CustomText(
+                            text: "*******",
+                            size: 22,
+                            weight: FontWeight.bold,
+                            color: AppColors.white,
+                          ),
+                        const SizedBox(height: 10),
+                      ]),
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -799,12 +867,16 @@ class _HomePageState extends State<HomePage> {
                           onTap: () {
                             AppNavigator.pushAndStackPage(
                               context,
-                              page: SendMainPage(
-                                backNavCallBack: () {
-                                  Navigator.pop(context);
-                                },
-                              ),
+                              page: SendToPage(),
                             );
+                            // AppNavigator.pushAndStackPage(
+                            //   context,
+                            //   page: SendMainPage(
+                            //     backNavCallBack: () {
+                            //       Navigator.pop(context);
+                            //     },
+                            //   ),
+                            // );
                           },
                           child:
                               childBalanceCardContainer(AppIcons.send, "Send"),
@@ -837,7 +909,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget quickActionsWidget(AdaptiveThemeMode theme) {
+  Widget quickActionsWidget(AdaptiveThemeMode theme, WalletInfo walletInfo) {
     return BlocBuilder<ProductBloc, ProductState>(
       builder: (context, state) {
         if (state is CategorySuccessState) {
@@ -874,7 +946,10 @@ class _HomePageState extends State<HomePage> {
                             context: context,
                             builder: (context) => Padding(
                               padding: const EdgeInsets.only(top: 100.0),
-                              child: AirtimePurchase(category: items[index]),
+                              child: AirtimePurchase(
+                                category: items[index],
+                                walletInfo: walletInfo,
+                              ),
                             ),
                           );
                           // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
@@ -890,7 +965,10 @@ class _HomePageState extends State<HomePage> {
                             context: context,
                             builder: (context) => Padding(
                               padding: const EdgeInsets.only(top: 100.0),
-                              child: AirtimeToCash(category: items[index]),
+                              child: AirtimeToCash(
+                                category: items[index],
+                                walletInfo: walletInfo,
+                              ),
                             ),
                           );
                           // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
@@ -906,7 +984,10 @@ class _HomePageState extends State<HomePage> {
                             context: context,
                             builder: (context) => Padding(
                               padding: const EdgeInsets.only(top: 100.0),
-                              child: DataPurchase(category: items[index]),
+                              child: DataPurchase(
+                                category: items[index],
+                                walletInfo: walletInfo,
+                              ),
                             ),
                           );
                           // AppNavigator.pushAndStackPage(context, page: DataPurchase(
@@ -922,8 +1003,10 @@ class _HomePageState extends State<HomePage> {
                             context: context,
                             builder: (context) => Padding(
                               padding: const EdgeInsets.only(top: 100.0),
-                              child:
-                                  ElectricityPurchase(category: items[index]),
+                              child: ElectricityPurchase(
+                                category: items[index],
+                                walletInfo: walletInfo,
+                              ),
                             ),
                           );
                           // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
@@ -939,7 +1022,10 @@ class _HomePageState extends State<HomePage> {
                             context: context,
                             builder: (context) => Padding(
                               padding: const EdgeInsets.only(top: 100.0),
-                              child: CablePurchase(category: items[index]),
+                              child: CablePurchase(
+                                category: items[index],
+                                walletInfo: walletInfo,
+                              ),
                             ),
                           );
                           // AppNavigator.pushAndStackPage(context, page: InternetPurchase(

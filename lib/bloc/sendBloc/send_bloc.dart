@@ -31,36 +31,13 @@ class SendBloc extends Bloc<SendEvent, SendState> {
 
   SendBloc() : super(const InitialSendState()) {
     on<EnterAmountToSend>((event, emit) {
-      if (event.isItForMainValue && !fractionValueEntered.contains('.')) {
-        mainValueEntered = mainValueEntered.replaceAll(',', '');
-        List mainValues = mainValueEntered.split('');
-        if (mainValues.isEmpty) {
-          if (event.value != '0' && event.value != '.') {
-            mainValueEntered += event.value;
-          }
-        } else {
-          mainValueEntered += event.value;
-        }
-      } else {
-        List fractionValues = fractionValueEntered.split('');
-        if (fractionValues.isEmpty) {
-          fractionValueEntered += event.value;
-        } else {
-          if (event.value != '.') {
-            fractionValueEntered += event.value;
-          }
-        }
-      }
-      mainValueEntered = numberFormat.format(int.parse(mainValueEntered));
-      emit(
-        CurrentAmountEntered(
-          mainValue: mainValueEntered.isNotEmpty ? mainValueEntered : '0',
-          fractionValue:
-              fractionValueEntered.isNotEmpty && fractionValueEntered.length > 1
-                  ? fractionValueEntered
-                  : '.00',
-        ),
-      );
+      // Directly update the entire amount
+      String currentAmount = event.value;
+
+      // Emit the new state with the updated amount
+      emit(CurrentAmountEntered(
+        mainValue: currentAmount,  // Use the entire string as the amount
+      ));
     });
     on<BackSpaceLastEnteredAmountToSend>((event, emit) {
       if (fractionValueEntered.isNotEmpty) {
@@ -92,9 +69,9 @@ class SendBloc extends Bloc<SendEvent, SendState> {
       emit(
         CurrentAmountEntered(
           mainValue: mainValueEntered.isNotEmpty ? mainValueEntered : '0',
-          fractionValue: fractionValueEntered.isNotEmpty && fractionValueEntered.length > 1
-              ? fractionValueEntered
-              : '.00',
+          // fractionValue: fractionValueEntered.isNotEmpty && fractionValueEntered.length > 1
+          //     ? fractionValueEntered
+          //     : '.00',
         ),
       );
     });

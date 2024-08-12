@@ -23,6 +23,7 @@ import '../../utills/custom_theme.dart';
 import '../../utills/shared_preferences.dart';
 import '../widgets/app_custom_text.dart';
 import 'more_pages/account_settings.dart';
+import 'more_pages/tella_rewards/tella_point_product_container.dart';
 
 class MorePage extends StatefulWidget {
   const MorePage({
@@ -208,11 +209,12 @@ class _MorePageState extends State<MorePage> {
                   height: 10,
                 ),
                 GestureDetector(
-                    onTap: () {
-                      AppNavigator.pushAndStackPage(context,
-                          page: TellaPointMainPage());
-                    },
-                    child: SvgPicture.asset(AppIcons.tellaRewards)),
+                  onTap: () {
+                    // AppNavigator.pushAndStackPage(context,
+                    //     page: TellaPointMainPage());
+                  },
+                  child: TellaPointProductContainer(),
+                ),
                 const SizedBox(
                   height: 10,
                 ),
@@ -319,8 +321,7 @@ class _MorePageState extends State<MorePage> {
       builder: (context, state) {
         if (state is SuccessState) {
           PersonalInfo personalInfo = state.customerProfile.personalInfo;
-          var customerAccount =
-              state.customerProfile.customerAccount;
+          var customerAccount = state.customerProfile.customerAccount;
 
           print(json.encode(state.customerProfile));
           // Use user data here
@@ -360,26 +361,25 @@ class _MorePageState extends State<MorePage> {
                                 : AppColors.textColor,
                             size: 14,
                           ),
-                          if(customerAccount != null)
-                          Row(
-                            children: [
-                              TextStyles.textHeadings(
-                                textValue: 'Acc/N  ',
-                                textColor: theme.isDark
-                                    ? AppColors.darkModeBackgroundSubTextColor
-                                    : AppColors.textColor2,
-                                textSize: 12,
-                              ),
-
-                              CustomText(
-                                text: "${customerAccount.nuban}",
-                                color: theme.isDark
-                                    ? AppColors.darkModeBackgroundSubTextColor
-                                    : AppColors.textColor2,
-                                size: 12,
-                              ),
-                            ],
-                          ),
+                          if (customerAccount != null)
+                            Row(
+                              children: [
+                                TextStyles.textHeadings(
+                                  textValue: 'Acc/N  ',
+                                  textColor: theme.isDark
+                                      ? AppColors.darkModeBackgroundSubTextColor
+                                      : AppColors.textColor2,
+                                  textSize: 12,
+                                ),
+                                CustomText(
+                                  text: "${customerAccount.nuban}",
+                                  color: theme.isDark
+                                      ? AppColors.darkModeBackgroundSubTextColor
+                                      : AppColors.textColor2,
+                                  size: 12,
+                                ),
+                              ],
+                            ),
                         ],
                       )
                     ],

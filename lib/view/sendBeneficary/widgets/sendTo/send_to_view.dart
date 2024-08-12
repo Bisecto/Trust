@@ -26,11 +26,11 @@ import '../../../auth/otp_pin_pages/confirm_with_otp.dart';
 import '../../../widgets/transaction_receipt.dart';
 
 class SendToView extends StatefulWidget {
-  final TxnDetailsToSendOut txnDetails;
+  //final TxnDetailsToSendOut txnDetails;
 
   const SendToView({
     super.key,
-    required this.txnDetails,
+    //required this.txnDetails,
   });
 
   @override
@@ -38,7 +38,7 @@ class SendToView extends StatefulWidget {
 }
 
 class _SendToViewState extends State<SendToView> {
-  late TxnDetailsToSendOut txnDetails;
+   TxnDetailsToSendOut txnDetails=TxnDetailsToSendOut(amount: '0.00');
   bool isItForTellaTrust = false;
 
   bool userForTxnConfirmed = false;
@@ -62,10 +62,14 @@ class _SendToViewState extends State<SendToView> {
   String verifiedAccountNumber = '';
   String verifiedBankCode = '';
   String txnSessionId = '';
-
+  void _handleAmountChanged(String newAmount) {
+    setState(() {
+      txnDetails.amount = newAmount; // Update the state with the new amount
+    });
+  }
   @override
   void initState() {
-    txnDetails = widget.txnDetails;
+    txnDetails.amount = '0.00';
     BlocProvider.of<SendBloc>(context).add(
       const LoadSendToDetailsInitialState(),
     );
@@ -116,9 +120,12 @@ class _SendToViewState extends State<SendToView> {
           if (state is SendFundToInternalOrExternalRecepitent) {
             if (!state.processingPayment) {
               if (state.isPaymentSuccessful) {
-
+                //if(Navigator.canPop(context)){
                 AppNavigator.pushAndReplacePage(context,
-                    page: TransactionReceipt(transaction: state.transaction!));
+                    page: TransactionReceipt(transaction: state.transaction!,isHome: true,));
+              //}else{
+
+                //}
               } else {
                 showToast(
                   context: context,
@@ -163,11 +170,14 @@ class _SendToViewState extends State<SendToView> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SendToHeaderWidget(
-                      amountTransferred: txnDetails.amount,
+                      //amountTransferred: txnDetails.amount,
                       txnMadeToName: transferredToName,
                       txnMadeToImage: transferredToImage,
                       isTellaTrustTxn: isItForTellaTrust,
                       userForTxnConfirmed: userForTxnConfirmed,
+                      backNavCallBack: () {},
+                      onAmountChanged: _handleAmountChanged,
+
                     ),
                     Expanded(
                       child: Container(
@@ -182,8 +192,8 @@ class _SendToViewState extends State<SendToView> {
                               TopBeneficiariesWidget(
                                 beneficiaries: listOfBeneficiaries,
                                 isItForTellaTrust: isItForTellaTrust,
-                                isUserVerified: userForTxnConfirmed, transferredToName: transferredToName,
-
+                                isUserVerified: userForTxnConfirmed,
+                                transferredToName: transferredToName,
                               ),
                               const AppSpacer(
                                 height: 10,
@@ -205,7 +215,7 @@ class _SendToViewState extends State<SendToView> {
                     if (bottomViewInset == 0)
                       if (isUserVerified || userForTxnConfirmed)
                         Padding(
-                          padding: const EdgeInsets.all(10.0),
+                          padding: const EdgeInsets.all(25.0),
                           child: AppButton(
                             buttonBoxDecoration: BoxDecoration(
                               color: AppColors.green,
@@ -222,55 +232,68 @@ class _SendToViewState extends State<SendToView> {
                             ),
                             buttonWidth: double.infinity,
                             buttonCallback: () async {
-                              String transactionPin = await modal_sheet
-                                      .showMaterialModalBottomSheet(
-                                    backgroundColor: Colors.transparent,
-                                    isDismissible: true,
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(20.0)),
-                                    ),
-                                    context: context,
-                                    builder: (context) => Padding(
-                                      padding:
-                                          const EdgeInsets.only(top: 200.0),
-                                      child: ConfirmWithPin(
-                                        context: context,
-                                        title:
-                                            'Input your transaction pin to continue',
+                              if (txnDetails.amount != '0.00') {
+                                print(txnDetails);
+                                String transactionPin = await modal_sheet
+                                    .showMaterialModalBottomSheet(
+                                  backgroundColor: Colors.transparent,
+                                  isDismissible: true,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(20.0)),
+                                  ),
+                                  context: context,
+                                  builder: (context) =>
+                                      Padding(
+                                        padding:
+                                        const EdgeInsets.only(top: 200.0),
+                                        child: ConfirmWithPin(
+                                          context: context,
+                                          title:
+                                          'Input your transaction pin to continue',
+                                        ),
                                       ),
-                                    ),
-                                  ) ??
-                                  '';
-                              print(transactionPin);
-                              if (transactionPin != '') {
-                                print(txnDetails.amount);
-                                if (userForTxnConfirmed && isItForTellaTrust) {
-                                  BlocProvider.of<SendBloc>(context).add(
-                                    SendInternalFundToReceiptent(
-                                      amount: double.parse(txnDetails.amount
-                                          .replaceAll(',', '')),
-                                      narration: narration,
-                                      receiverId: receiverId,
-                                      accessPin: transactionPin,
-                                    ),
-                                  );
-                                } else {
-                                  BlocProvider.of<SendBloc>(context).add(
-                                    SendExternalFundToReceiptent(
-                                      amount: double.parse(txnDetails.amount
-                                          .replaceAll(',', '')),
-                                      narration: narration,
-                                      accountNumber: verifiedAccountNumber,
-                                      bankCode: verifiedBankCode,
-                                      sessionId: txnSessionId,
-                                      txnId: transactionPin,
-                                    ),
-                                  );
+                                ) ??
+                                    '';
+                                print(transactionPin);
+                                if (transactionPin != '') {
+                                  print(txnDetails.amount);
+                                  if (userForTxnConfirmed &&
+                                      isItForTellaTrust) {
+                                    BlocProvider.of<SendBloc>(context).add(
+                                      SendInternalFundToReceiptent(
+                                        amount: double.parse(txnDetails.amount
+                                            .replaceAll(',', '')),
+                                        narration: narration,
+                                        receiverId: receiverId,
+                                        accessPin: transactionPin,
+                                      ),
+                                    );
+                                  } else {
+                                    BlocProvider.of<SendBloc>(context).add(
+                                      SendExternalFundToReceiptent(
+                                        amount: double.parse(txnDetails.amount
+                                            .replaceAll(',', '')),
+                                        narration: narration,
+                                        accountNumber: verifiedAccountNumber,
+                                        bankCode: verifiedBankCode,
+                                        sessionId: txnSessionId,
+                                        txnId: transactionPin,
+                                      ),
+                                    );
+                                  }
                                 }
+                              } else {
+                                showToast(
+                                    context: context,
+                                    title: 'Info',
+                                    subtitle: "Please enter a valid amount",
+                                    type: ToastMessageType.error);
+
+                                //MSG.warningSnackBar(context, state.error);
+
                               }
-                            },
-                          ),
+                            }),
                         ),
                   ],
                 ),
