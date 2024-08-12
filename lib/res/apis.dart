@@ -25,6 +25,7 @@ class AppApis {
   static String listProduct = "$appBaseUrl/c/p/list-product";
   static String listService = "$appBaseUrl/c/p/list-service";
   static String purchaseProduct = "$appBaseUrl/c/pay/create-wallet-order";
+  static String a2cDetails = "$appBaseUrl/c/pay/get-a2c-details";
   static String createBeneficiary = "$appBaseUrl/user/c/create-beneficiary";
   static String listBeneficiary = "$appBaseUrl/user/c/list-beneficiary";
   static String deleteBeneficiary = "$appBaseUrl/user/c/delete-beneficiary";

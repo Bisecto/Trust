@@ -1,13 +1,17 @@
 import 'dart:convert';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
+import 'package:teller_trust/model/a2c_detail_model.dart';
 import 'package:teller_trust/model/service_model.dart' as serviceModel;
 import 'package:teller_trust/res/app_icons.dart';
+import 'package:teller_trust/res/app_spacer.dart';
+import 'package:teller_trust/utills/constants/loading_dialog.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/make_bank_transfer/bank_transfer.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/product_beneficiary/product_beneficiary.dart';
 import 'package:teller_trust/view/widgets/purchase_receipt.dart';
@@ -41,8 +45,8 @@ class AirtimeToCash extends StatefulWidget {
   final categoryModel.Category category;
   final WalletInfo walletInfo;
 
-
-  const AirtimeToCash({super.key, required this.category, required this.walletInfo});
+  const AirtimeToCash(
+      {super.key, required this.category, required this.walletInfo});
 
   @override
   State<AirtimeToCash> createState() => _AirtimeToCashState();
@@ -82,8 +86,8 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
       if (listServiceResponse.statusCode == 200) {
         print("productModel dtddhdhd: ${listServiceResponse.body}");
         productMode.ProductModel productModel =
-        productMode.ProductModel.fromJson(
-            json.decode(listServiceResponse.body));
+            productMode.ProductModel.fromJson(
+                json.decode(listServiceResponse.body));
         setState(() {
           productId = productModel.data.items[0].id;
         });
@@ -119,10 +123,127 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                Container(
+                  height: 60,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      color: theme.isDark
+                          ? AppColors.darkModeBackgroundColor
+                          : AppColors.white,
+                      borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(10),
+                          topLeft: Radius.circular(10))),
+                  child: Padding(
+                    padding: const EdgeInsets.all(0.0),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Positioned(
+                          top: 0, // Adjust position as needed
+                          left: 0,
+                          right: 0,
+                          child: SvgPicture.asset(
+                            AppIcons.billTopBackground,
+                            height: 60,
+                            // Increase height to fit the text
+                            width: AppUtils.deviceScreenSize(context).width,
+                            color: AppColors.darkGreen,
+                            // Set the color if needed
+                            placeholderBuilder: (context) {
+                              return Container(
+                                height: 50,
+                                width: double.infinity,
+                                color: Colors.grey[300],
+                                child: const Center(
+                                    child: CircularProgressIndicator()),
+                              );
+                            },
+                          ),
+                        ),
+                        Positioned(
+                          top: 10, // Adjust position as needed
+                          left: 10,
+                          right: 10,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              TextStyles.textHeadings(
+                                textValue: 'Airtime to Cash',
+                                textColor: AppColors.darkGreen,
+                                // w: FontWeight.w600,
+                                textSize: 14,
+                              ),
+                              // Text(
+                              //   "Airtime purchase",
+                              //   style: TextStyle(
+                              //     color: AppColors.darkGreen,
+                              //     fontWeight: FontWeight.w600,
+                              //     fontSize: 18,
+                              //   ),
+                              // ),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Icon(
+                                  Icons.cancel,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10.0),
+                  child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                          color: const Color(0xFFFFF3D5),
+                          border: Border.all(color: const Color(0xFFFFBE62)),
+                          // AppColors.lightOrange),
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                SvgPicture.asset(
+                                  AppIcons.info,
+                                  height: 25,
+                                  width: 25,
+                                ),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                Container(
+                                  width:
+                                      AppUtils.deviceScreenSize(context).width /
+                                          1.3,
+                                  child: const CustomText(
+                                    text:
+                                        "Please note that this requires manual verification which may take few minutes",
+                                    weight: FontWeight.bold,
+                                    maxLines: 3,
+                                    size: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      )),
+                ),
                 BlocConsumer<ProductBloc, ProductState>(
                     bloc: purchaseProductBloc,
                     listenWhen: (previous, current) =>
-                    current is! ProductInitial,
+                        current is! ProductInitial,
                     listener: (context, state) async {
                       print(state);
                       if (state is PurchaseSuccess) {
@@ -145,7 +266,7 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                         //     page: LandingPage(studentProfile: state.studentProfile));
                       } else if (state is QuickPayInitiated) {
                         String accessToken =
-                        await SharedPref.getString("access-token");
+                            await SharedPref.getString("access-token");
 
                         AppNavigator.pushAndStackPage(context,
                             page: MakePayment(
@@ -179,336 +300,192 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                       }
                     },
                     builder: (context, state) {
-                      return SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            Container(
-                              height: 60,
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                  color: theme.isDark
-                                      ? AppColors.darkModeBackgroundColor
-                                      : AppColors.white,
-                                  borderRadius: const BorderRadius.only(
-                                      topRight: Radius.circular(10),
-                                      topLeft: Radius.circular(10))),
-                              child: Padding(
-                                padding: const EdgeInsets.all(0.0),
-                                child: Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    Positioned(
-                                      top: 0, // Adjust position as needed
-                                      left: 0,
-                                      right: 0,
-                                      child: SvgPicture.asset(
-                                        AppIcons.billTopBackground,
-                                        height: 60,
-                                        // Increase height to fit the text
-                                        width:
-                                        AppUtils.deviceScreenSize(context)
-                                            .width,
-                                        color: AppColors.darkGreen,
-                                        // Set the color if needed
-                                        placeholderBuilder: (context) {
-                                          return Container(
-                                            height: 50,
-                                            width: double.infinity,
-                                            color: Colors.grey[300],
-                                            child: const Center(
-                                                child:
-                                                CircularProgressIndicator()),
-                                          );
+                      if ( state is !A2cDetailSuccess) {
+                        return SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              BlocConsumer<ProductBloc, ProductState>(
+                                bloc: productBloc,
+                                builder: (context, state) {
+                                  if (state is ServiceSuccessState) {
+                                    serviceModel.ServiceModel serviceItem =
+                                        state.serviceModel;
+                                    List<serviceModel.Service> services =
+                                        serviceItem.data.services;
+                                    //Use user data here
+                                    return SizedBox(
+                                      height: 90,
+                                      child: ListView.builder(
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        scrollDirection: Axis.horizontal,
+                                        // gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                        //   crossAxisCount: 4,
+                                        //   crossAxisSpacing: 8.0,
+                                        //   mainAxisSpacing: 8.0,
+                                        // ),
+                                        itemCount: services.length,
+                                        //AppList().serviceItems.length,
+                                        itemBuilder: (context, index) {
+                                          return GestureDetector(
+                                              onTap: () {
+                                                String selectedAction = '';
+                                                setState(() {
+                                                  //selectedAction=services[index].name;
+                                                });
+
+                                                //showAirtimeModal(context, AppList().serviceItems[index]);
+                                              },
+                                              child: networkProviderItem(
+                                                  services[index].name,
+                                                  services[index].image,
+                                                  theme,
+                                                  () => _handleNetworkSelect(services
+                                                      .firstWhere(
+                                                          (service) =>
+                                                              service.name
+                                                                  .toLowerCase() ==
+                                                              services[index]
+                                                                  .name
+                                                                  .toLowerCase(),
+                                                          orElse: () =>
+                                                              serviceModel.Service(
+                                                                  image: '',
+                                                                  id: '',
+                                                                  name: '',
+                                                                  slug: '',
+                                                                  category: serviceModel
+                                                                      .Category(
+                                                                          id:
+                                                                              '',
+                                                                          name:
+                                                                              '',
+                                                                          slug:
+                                                                              '')))
+                                                      .id)));
                                         },
                                       ),
-                                    ),
-                                    Positioned(
-                                      top: 10, // Adjust position as needed
-                                      left: 10,
-                                      right: 10,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          TextStyles.textHeadings(
-                                            textValue: 'Airtime to Cash',
-                                            textColor: AppColors.darkGreen,
-                                            // w: FontWeight.w600,
-                                            textSize: 14,
-                                          ),
-                                          // Text(
-                                          //   "Airtime purchase",
-                                          //   style: TextStyle(
-                                          //     color: AppColors.darkGreen,
-                                          //     fontWeight: FontWeight.w600,
-                                          //     fontSize: 18,
-                                          //   ),
-                                          // ),
-                                          GestureDetector(
-                                            onTap: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: const Icon(
-                                              Icons.cancel,
-                                              color: Colors.grey,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                    );
+                                  } else {
+                                    return _loadingNetwork(); // Show loading indicator or handle error state
+                                  }
+                                },
+                                listener: (BuildContext context,
+                                    ProductState state) async {
+                                  if (state is AccessTokenExpireState) {
+                                    String firstame =
+                                        await SharedPref.getString('firstName');
+
+                                    AppNavigator.pushAndRemovePreviousPages(
+                                        context,
+                                        page: SignInWIthAccessPinBiometrics(
+                                          userName: firstame,
+                                        ));
+                                  }
+                                },
                               ),
-                            ),
-                            // Padding(
-                            //     padding: const EdgeInsets.all(15.0),
-                            //     child: Beneficiary(
-                            //       billType: 'airtime',
-                            //       onBeneficiarySelected: (phone) {
-                            //         setState(() {
-                            //           numberTextEditingControlller.text =
-                            //               phone; // Update the selected beneficiary's phone number
-                            //         });
-                            //       },
-                            //     )),
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Container(
-                                height: 70,
-                                width: AppUtils.deviceScreenSize(context).width,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(color: AppColors.lightGreen),
-                                    color: AppColors.lightgreen2,
-                                    image: DecorationImage(
-                                        image: AssetImage(AppImages.tellaPointBannerBackground),
-                                        fit: BoxFit.cover)),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    CircleAvatar(
-                                      backgroundColor: AppColors.lightPrimary,
-                                      child: SvgPicture.asset(AppIcons.badge),
-                                    ),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(10.0, 0, 10, 10),
+                                child: Form(
+                                    key: _formKey,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        CustomText(
-                                          text: "Tella Point: 231",
-                                        ),
-                                        TextStyles.textHeadings(
-                                            textValue: 'Cash value: N231.00', textSize: 13,textColor: Colors.grey)
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-
-                            BlocConsumer<ProductBloc, ProductState>(
-                              bloc: productBloc,
-                              builder: (context, state) {
-                                if (state is ServiceSuccessState) {
-                                  serviceModel.ServiceModel serviceItem =
-                                      state.serviceModel;
-                                  List<serviceModel.Service> services =
-                                      serviceItem.data.services;
-                                  //Use user data here
-                                  return SizedBox(
-                                    height: 90,
-                                    child: ListView.builder(
-                                      physics:
-                                      const NeverScrollableScrollPhysics(),
-                                      scrollDirection: Axis.horizontal,
-                                      // gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                      //   crossAxisCount: 4,
-                                      //   crossAxisSpacing: 8.0,
-                                      //   mainAxisSpacing: 8.0,
-                                      // ),
-                                      itemCount: services.length,
-                                      //AppList().serviceItems.length,
-                                      itemBuilder: (context, index) {
-                                        return GestureDetector(
-                                            onTap: () {
-                                              String selectedAction = '';
-                                              setState(() {
-                                                //selectedAction=services[index].name;
-                                              });
-
-                                              //showAirtimeModal(context, AppList().serviceItems[index]);
-                                            },
-                                            child: networkProviderItem(
-                                                services[index].name,
-                                                services[index].image,
-                                                theme,
-                                                    () => _handleNetworkSelect(services
-                                                    .firstWhere(
-                                                        (service) =>
-                                                    service.name
-                                                        .toLowerCase() ==
-                                                        services[index]
-                                                            .name
-                                                            .toLowerCase(),
-                                                    orElse: () =>
-                                                        serviceModel.Service(
-                                                            image: '',
-                                                            id: '',
-                                                            name: '',
-                                                            slug: '',
-                                                            category: serviceModel
-                                                                .Category(
-                                                                id: '',
-                                                                name:
-                                                                '',
-                                                                slug:
-                                                                '')))
-                                                    .id)));
-                                      },
-                                    ),
-                                  );
-                                } else {
-                                  return _loadingNetwork(); // Show loading indicator or handle error state
-                                }
-                              },
-                              listener: (BuildContext context,
-                                  ProductState state) async {
-                                if (state is AccessTokenExpireState) {
-                                  String firstame =
-                                  await SharedPref.getString('firstName');
-
-                                  AppNavigator.pushAndRemovePreviousPages(
-                                      context,
-                                      page: SignInWIthAccessPinBiometrics(
-                                        userName: firstame,
-                                      ));
-                                }
-                              },
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Padding(
-                              padding:
-                              const EdgeInsets.fromLTRB(10.0, 0, 10, 10),
-                              child: Form(
-                                  key: _formKey,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    children: [
-                                      CustomTextFormField(
-                                        hint: '0.00',
-                                        label: 'Airtime Amount',
-                                        controller: _selectedAmtController,
-                                        textInputType: TextInputType.number,
-                                        validator:
-                                        AppValidator.validateTextfield,
-                                        widget: SvgPicture.asset(
-                                          AppIcons.naira,
-                                          color: _selectedAmtController
-                                              .text.isNotEmpty
-                                              ? AppColors.darkGreen
+                                        CustomTextFormField(
+                                          hint: '0.00',
+                                          label: 'Airtime Amount',
+                                          controller: _selectedAmtController,
+                                          textInputType: TextInputType.number,
+                                          validator:
+                                              AppValidator.validateTextfield,
+                                          widget: SvgPicture.asset(
+                                            AppIcons.naira,
+                                            color: _selectedAmtController
+                                                    .text.isNotEmpty
+                                                ? AppColors.darkGreen
+                                                : AppColors.grey,
+                                            height: 22,
+                                            width: 22,
+                                          ),
+                                          borderColor: _selectedAmtController
+                                                  .text.isNotEmpty
+                                              ? AppColors.green
                                               : AppColors.grey,
-                                          height: 22,
-                                          width: 22,
                                         ),
-                                        borderColor: _selectedAmtController
-                                            .text.isNotEmpty
-                                            ? AppColors.green
-                                            : AppColors.grey,
-                                      ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          //selectAmount("2000"),
-                                          selectAmount("200", theme),
-                                          selectAmount("500", theme),
-                                          selectAmount("1000", theme),
-                                          selectAmount("1500", theme),
-                                          selectAmount("2000", theme),
-                                        ],
-                                      ),
-
-                                      FormButton(
-                                        onPressed: () async {
-
-
-                                          if (_formKey.currentState!
-                                              .validate()) {
-                                            if (productId != '') {
-                                              if (_selectedPaymentMethod !=
-                                                  'wallet') {
-                                                var transactionPin = '';
-                                                widget.category.requiredFields
-                                                    .amount =
-                                                    _selectedAmtController.text;
-
-
-                                                purchaseProductBloc.add(
-                                                    PurchaseProductEvent(
-                                                        context,
-                                                        widget.category
-                                                            .requiredFields,
-                                                        productId,
-                                                        transactionPin,
-                                                        true,
-                                                        false,''));
-                                              } else {
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            //selectAmount("2000"),
+                                            selectAmount("200", theme),
+                                            selectAmount("500", theme),
+                                            selectAmount("1000", theme),
+                                            selectAmount("1500", theme),
+                                            selectAmount("2000", theme),
+                                          ],
+                                        ),
+                                        FormButton(
+                                          onPressed: () async {
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              if (productId != '') {
                                                 var transactionPin = '';
                                                 transactionPin = await modalSheet
-                                                    .showMaterialModalBottomSheet(
-                                                    backgroundColor:
-                                                    Colors.transparent,
-                                                    isDismissible: true,
-                                                    shape:
-                                                    const RoundedRectangleBorder(
-                                                      borderRadius:
-                                                      BorderRadius.vertical(
-                                                          top: Radius
-                                                              .circular(
-                                                              20.0)),
-                                                    ),
-                                                    context: context,
-                                                    builder: (context) =>
-                                                        Padding(
-                                                          padding:
-                                                          const EdgeInsets
-                                                              .only(
-                                                              top:
-                                                              200.0),
-                                                          child:
-                                                          ConfirmWithPin(
-                                                            context:
-                                                            context,
-                                                            title:
-                                                            'Input your transaction pin to continue',
-                                                          ),
-                                                        ));
+                                                        .showMaterialModalBottomSheet(
+                                                            backgroundColor:
+                                                                Colors
+                                                                    .transparent,
+                                                            isDismissible: true,
+                                                            shape:
+                                                                const RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius.vertical(
+                                                                      top: Radius
+                                                                          .circular(
+                                                                              20.0)),
+                                                            ),
+                                                            context: context,
+                                                            builder:
+                                                                (context) =>
+                                                                    Padding(
+                                                                      padding: const EdgeInsets
+                                                                          .only(
+                                                                          top:
+                                                                              200.0),
+                                                                      child:
+                                                                          ConfirmWithPin(
+                                                                        context:
+                                                                            context,
+                                                                        title:
+                                                                            'Input your transaction pin to continue',
+                                                                      ),
+                                                                    )) ??
+                                                    "";
                                                 print(transactionPin);
                                                 if (transactionPin != '') {
                                                   setState(() {
                                                     widget
-                                                        .category
-                                                        .requiredFields
-                                                        .amount =
+                                                            .category
+                                                            .requiredFields
+                                                            .amount =
                                                         _selectedAmtController
                                                             .text;
-
                                                   });
-
                                                   purchaseProductBloc.add(
-                                                      PurchaseProductEvent(
+                                                      GetA2CDetailsEvent(
                                                           context,
-                                                          widget.category
-                                                              .requiredFields,
                                                           productId,
                                                           transactionPin,
-                                                          false,false,''));
+                                                          _selectedAmtController
+                                                              .text));
                                                 }
                                               }
                                             } else {
@@ -516,26 +493,243 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                                                   context: context,
                                                   title: 'Info',
                                                   subtitle:
-                                                  'Please select a network provider',
+                                                      'Please select a network provider',
                                                   type: ToastMessageType.info);
                                             }
-                                          }
-                                        },
-                                        disableButton: (
-                                            !_selectedAmtController
-                                                .text.isNotEmpty),
-                                        text: 'Continue',
-                                        borderColor: AppColors.darkGreen,
-                                        bgColor: AppColors.darkGreen,
-                                        textColor: AppColors.white,
-                                        borderRadius: 10,
-                                      )
-                                    ],
-                                  )),
-                            ),
-                          ],
-                        ),
-                      );
+                                          },
+                                          disableButton:
+                                              (!_selectedAmtController
+                                                  .text.isNotEmpty),
+                                          text: 'Continue',
+                                          borderColor: AppColors.darkGreen,
+                                          bgColor: AppColors.darkGreen,
+                                          textColor: AppColors.white,
+                                          borderRadius: 10,
+                                        )
+                                      ],
+                                    )),
+                              ),
+                            ],
+                          ),
+                        );
+                      } else  {
+                        A2CDetailModel a2cDetailModel = state.a2cDetailModel;
+                        cashBackController.text=a2cDetailModel.data.amountToReceive.toString();
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 20.0),
+                                child: Container(
+                                    //height: 50,
+                                    width: AppUtils.deviceScreenSize(context)
+                                        .width,
+                                    decoration: BoxDecoration(
+                                        color: AppColors.lightGreen
+                                            .withOpacity(0.2),
+                                        border: Border.all(
+                                            color: AppColors.darkGreen,
+                                            width: 2),
+                                        // AppColors.lightOrange),
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          TextStyles.textHeadings(
+                                              textValue:
+                                                  "Phone Number you are sending the ${a2cDetailModel.data.recieverContact.name} airtime to:",
+                                              fontWeight: FontWeight.bold,
+                                              //maxLines: 3,
+                                              textSize: 12,
+                                              textColor: AppColors.darkGreen),
+                                          TextStyles.textHeadings(
+                                              textValue: a2cDetailModel.data
+                                                  .recieverContact.phoneNumber)
+                                        ],
+                                      ),
+                                    )),
+                              ),
+                              DottedBorder(
+                                borderType: BorderType.RRect,
+                                radius: const Radius.circular(10),
+                                dashPattern: const [10, 10],
+                                color: AppColors.lightgrey,
+                                strokeWidth: 2,
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(10.0,0,10,0),
+                                  child: ListView.builder(
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    padding: EdgeInsets.zero,
+
+                                    itemCount:
+                                        a2cDetailModel.data.instructions.length,
+                                    itemBuilder: (context, index) {
+                                      return Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          SizedBox(height: 10,),
+
+
+                                          if (index == 0)
+                                            TextStyles.textHeadings(
+                                                textValue:
+                                                    "Steps to transfer on ${a2cDetailModel.data.recieverContact.name}",
+                                                fontWeight: FontWeight.bold,
+                                                //maxLines: 3,
+                                                textSize: 12,
+                                                textColor: theme.isDark
+                                                    ? AppColors.white
+                                                    : AppColors.black),
+                                          if (index == 0)
+                                            SizedBox(height: 10,),
+                                          stepContainer(
+                                              index,
+                                              a2cDetailModel
+                                                  .data.instructions[index]),
+                                          if(index==a2cDetailModel.data.instructions.length-1)
+                                            SizedBox(height: 10,),
+
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                              AppSpacer(height:10),
+                              CustomTextFormField(
+                                hint: '',
+                                label: 'Airtime Amount',
+                                enabled: false,
+                                controller: _selectedAmtController,
+                                textInputType: TextInputType.number,
+                                validator:
+                                AppValidator.validateTextfield,
+                                widget: SvgPicture.asset(
+                                  AppIcons.naira,
+                                  color: _selectedAmtController
+                                      .text.isNotEmpty
+                                      ? AppColors.darkGreen
+                                      : AppColors.grey,
+                                  height: 22,
+                                  width: 22,
+                                ),
+                                borderColor: _selectedAmtController
+                                    .text.isNotEmpty
+                                    ? AppColors.green
+                                    : AppColors.grey,
+                              ),
+                              AppSpacer(height:10),
+
+                              CustomTextFormField(
+                                hint: a2cDetailModel.data.amountToReceive.toString(),
+                                label: 'Cash Back',
+                                enabled: false,
+                                controller: cashBackController,
+                                textInputType: TextInputType.number,
+
+                                validator:
+                                AppValidator.validateTextfield,
+                                widget: SvgPicture.asset(
+                                  AppIcons.naira,
+                                  color: cashBackController
+                                      .text.isNotEmpty
+                                      ? AppColors.darkGreen
+                                      : AppColors.grey,
+                                  height: 22,
+                                  width: 22,
+                                ),
+                                borderColor: cashBackController
+                                    .text.isNotEmpty
+                                    ? AppColors.green
+                                    : AppColors.grey,
+                              ),
+                              FormButton(
+                                onPressed: () async {
+                                  // if (_formKey.currentState!
+                                  //     .validate()) {
+                                  //   if (productId != '') {
+                                  //     var transactionPin = '';
+                                  //     transactionPin = await modalSheet
+                                  //         .showMaterialModalBottomSheet(
+                                  //         backgroundColor:
+                                  //         Colors
+                                  //             .transparent,
+                                  //         isDismissible: true,
+                                  //         shape:
+                                  //         const RoundedRectangleBorder(
+                                  //           borderRadius:
+                                  //           BorderRadius.vertical(
+                                  //               top: Radius
+                                  //                   .circular(
+                                  //                   20.0)),
+                                  //         ),
+                                  //         context: context,
+                                  //         builder:
+                                  //             (context) =>
+                                  //             Padding(
+                                  //               padding: const EdgeInsets
+                                  //                   .only(
+                                  //                   top:
+                                  //                   200.0),
+                                  //               child:
+                                  //               ConfirmWithPin(
+                                  //                 context:
+                                  //                 context,
+                                  //                 title:
+                                  //                 'Input your transaction pin to continue',
+                                  //               ),
+                                  //             )) ??
+                                  //         "";
+                                  //     print(transactionPin);
+                                  //     if (transactionPin != '') {
+                                  //       setState(() {
+                                  //         widget
+                                  //             .category
+                                  //             .requiredFields
+                                  //             .amount =
+                                  //             _selectedAmtController
+                                  //                 .text;
+                                  //       });
+                                  //       purchaseProductBloc.add(
+                                  //           GetA2CDetailsEvent(
+                                  //               context,
+                                  //               productId,
+                                  //               transactionPin,
+                                  //               _selectedAmtController
+                                  //                   .text));
+                                  //     }
+                                  //   }
+                                  // } else {
+                                  //   showToast(
+                                  //       context: context,
+                                  //       title: 'Info',
+                                  //       subtitle:
+                                  //       'Please select a network provider',
+                                  //       type: ToastMessageType.info);
+                                 // }
+                                },
+                                disableButton:
+                                (!_selectedAmtController
+                                    .text.isNotEmpty),
+                                text: 'Continue',
+                                borderColor: AppColors.darkGreen,
+                                bgColor: AppColors.darkGreen,
+                                textColor: AppColors.white,
+                                borderRadius: 10,
+                              )
+
+                            ],
+                          ),
+                        );
+                      }
                     }),
               ],
             ),
@@ -549,6 +743,7 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
 
   String selectedNetwork = "";
   final _selectedAmtController = TextEditingController();
+  final cashBackController = TextEditingController();
 
   Widget selectAmount(String amt, AdaptiveThemeMode theme) {
     return Padding(
@@ -562,7 +757,7 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
         },
         child: Container(
           decoration: BoxDecoration(
-            //color: AppColors.white,
+              //color: AppColors.white,
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: AppColors.textColor)),
           child: Padding(
@@ -575,11 +770,11 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
   }
 
   Widget networkProviderItem(
-      String name,
-      String image,
-      AdaptiveThemeMode theme,
-      void Function() onNetworkSelect, // Callback for network request
-      ) {
+    String name,
+    String image,
+    AdaptiveThemeMode theme,
+    void Function() onNetworkSelect, // Callback for network request
+  ) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -622,8 +817,8 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                     color: selectedNetwork == name.toLowerCase()
                         ? AppColors.darkGreen
                         : theme.isDark
-                        ? AppColors.white
-                        : AppColors.black,
+                            ? AppColors.white
+                            : AppColors.black,
                   ),
               ],
             ),
@@ -654,7 +849,7 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                       decoration: BoxDecoration(
                           color: Colors.grey.withOpacity(0.2),
                           borderRadius:
-                          const BorderRadius.all(Radius.circular(50)))),
+                              const BorderRadius.all(Radius.circular(50)))),
                   const SizedBox(height: 10),
                   Shimmer(
                     duration: const Duration(seconds: 1),
@@ -694,17 +889,20 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
     );
   }
 
-// void showAirtimeModal(BuildContext context, Services services) {
-//   modalSheet.showMaterialModalBottomSheet(
-//     context: context,
-//     enableDrag: true,
-//     isDismissible: true,
-//     expand: false,
-//     //shape: ShapeDecoration(shape: shape),
-//     builder: (context) => Container(
-//       height: AppUtils.deviceScreenSize(context).height * 0.8,
-//       child: ,
-//     ),
-//   );
-// }
+  Widget stepContainer(int index, String text) {
+    return Container(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CustomText(text: (index + 1).toString()+") "),
+          Container(
+              width: AppUtils.deviceScreenSize(context).width / 1.3,
+              child: CustomText(
+                text: text,
+                maxLines: 3,
+              ))
+        ],
+      ),
+    );
+  }
 }

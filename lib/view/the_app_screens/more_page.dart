@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -83,8 +84,16 @@ class _MorePageState extends State<MorePage> {
                             bottom: Radius.circular(30))),
                     child: SafeArea(
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SvgPicture.asset(AppIcons.profiletext),
+                          //SvgPicture.asset(AppIcons.profiletext),
+                          Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 17),
+                              child: TextStyles.textHeadings(
+                                  textValue: 'Profile',textColor: AppColors.darkGreen
+                              )),
+                          SizedBox(height: 10,),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 15),
                             child: profileContainer(theme),
@@ -364,15 +373,15 @@ class _MorePageState extends State<MorePage> {
                           if (customerAccount != null)
                             Row(
                               children: [
-                                TextStyles.textHeadings(
-                                  textValue: 'Acc/N  ',
+                                TextStyles.textSubHeadings(
+                                  textValue: 'USERNAME:  ',
                                   textColor: theme.isDark
                                       ? AppColors.darkModeBackgroundSubTextColor
                                       : AppColors.textColor2,
                                   textSize: 12,
                                 ),
                                 CustomText(
-                                  text: "${customerAccount.nuban}",
+                                  text: "${personalInfo.userName}",
                                   color: theme.isDark
                                       ? AppColors.darkModeBackgroundSubTextColor
                                       : AppColors.textColor2,

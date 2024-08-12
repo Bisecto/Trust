@@ -4,6 +4,7 @@ class PersonalInfo {
   String firstName;
   String middleName;
   String lastName;
+  String userName;
   String email;
   dynamic gender;
   String phone;
@@ -17,6 +18,7 @@ class PersonalInfo {
     required this.firstName,
     required this.middleName,
     required this.lastName,
+    required this.userName,
     required this.email,
     required this.gender,
     required this.phone,
@@ -28,12 +30,13 @@ class PersonalInfo {
   factory PersonalInfo.fromJson(Map<String, dynamic> json) => PersonalInfo(
         imageUrl: json["imageUrl"],
         id: json["id"],
-        firstName: json["firstName"]??'',
-        middleName: json["middleName"]??'',
-        lastName: json["lastName"]??'',
-        email: json["email"]??'',
+        firstName: json["firstName"] ?? '',
+        middleName: json["middleName"] ?? '',
+        lastName: json["lastName"] ?? '',
+        userName: json["userName"] ?? '',
+        email: json["email"] ?? '',
         gender: json["gender"],
-        phone: json["phone"]??'',
+        phone: json["phone"] ?? '',
         emailVerified: json["emailVerified"],
         phoneVerified: json["phoneVerified"],
         createdAt: DateTime.parse(json["createdAt"]),
@@ -45,6 +48,7 @@ class PersonalInfo {
         "firstName": firstName,
         "middleName": middleName,
         "lastName": lastName,
+        "userName": userName,
         "email": email,
         "gender": gender,
         "phone": phone,

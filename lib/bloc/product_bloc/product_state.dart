@@ -50,6 +50,11 @@ class PurchaseSuccess extends ProductState {
 
   PurchaseSuccess(this.transaction);
 }
+class A2cDetailSuccess extends ProductState {
+  A2CDetailModel a2cDetailModel ;
+
+  A2cDetailSuccess(this.a2cDetailModel);
+}
 
 class QuickPayInitiated extends ProductState {
   final QuickPayModel quickPayModel;
