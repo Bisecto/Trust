@@ -32,7 +32,7 @@ class _TellaPointMainPageState extends State<TellaPointMainPage> {
       body: Container(
         height: AppUtils.deviceScreenSize(context).height,
         width: AppUtils.deviceScreenSize(context).width,
-        color: AppColors.white,
+        color:       theme.isDark ? AppColors.darkModeBackgroundColor : AppColors.white,
 
         // decoration: BoxDecoration(
         //   color: AppColors.white,

@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:provider/provider.dart';
 import 'package:teller_trust/bloc/tellapoint/tellapoint_bloc.dart';
 import 'package:teller_trust/res/app_colors.dart';
 import 'package:teller_trust/res/app_icons.dart';
 
 import '../../../../model/tellapoint_history_model.dart';
 import '../../../../utills/app_utils.dart';
+import '../../../../utills/custom_theme.dart';
 import '../../../widgets/app_custom_text.dart';
 
 class TellaPointsHistory extends StatefulWidget {
@@ -43,6 +45,7 @@ class _TellaPointsHistoryState extends State<TellaPointsHistory> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Column(
@@ -54,126 +57,115 @@ class _TellaPointsHistoryState extends State<TellaPointsHistory> {
           Expanded(
             child: Padding(
               padding: EdgeInsets.only(left: 0.0, right: 0.0),
-              child: BlocConsumer<TellapointBloc, TellapointState>(
-                bloc: tellapointBloc,
-                listener: (context, state) {
-                  if (state is TellapointSuccessState) {
-                    final newItems = state.tellaPointHistoryModel.data.items;
-                    final isLastPage =
-                        state.tellaPointHistoryModel.data.currentPage ==
-                            state.tellaPointHistoryModel.data.totalPages;
-                    if (isLastPage) {
-                      _pagingController.appendLastPage(newItems);
-                    } else {
-                      final nextPageKey =
-                          state.tellaPointHistoryModel.data.currentPage + 1;
-                      _pagingController.appendPage(newItems, nextPageKey);
+              child: Container(
+               // co
+                child: BlocConsumer<TellapointBloc, TellapointState>(
+                  bloc: tellapointBloc,
+                  listener: (context, state) {
+                    if (state is TellapointSuccessState) {
+                      final newItems = state.tellaPointHistoryModel.data.items;
+                      final isLastPage =
+                          state.tellaPointHistoryModel.data.currentPage ==
+                              state.tellaPointHistoryModel.data.totalPages;
+                      if (isLastPage) {
+                        _pagingController.appendLastPage(newItems);
+                      } else {
+                        final nextPageKey =
+                            state.tellaPointHistoryModel.data.currentPage + 1;
+                        _pagingController.appendPage(newItems, nextPageKey);
+                      }
+                    } else if (state is AccessTokenExpireState) {
+                      _pagingController.error = "Access Token Expired";
+                    } else if (state is TellapointErrorState) {
+                      _pagingController.error = state.msg;
                     }
-                  } else if (state is AccessTokenExpireState) {
-                    _pagingController.error = "Access Token Expired";
-                  } else if (state is TellapointErrorState) {
-                    _pagingController.error = state.msg;
-                  }
-                },
-                builder: (context, state) {
-                  return PagedListView<int, dynamic>(
-                    pagingController: _pagingController,
-                    builderDelegate: PagedChildBuilderDelegate<dynamic>(
-                      itemBuilder: (context, item, index) {
-                        if (item is String) {
-                          // This is a date heading
-                          return Align(
-                            alignment: Alignment.topLeft,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 0),
-                              child: CustomText(
-                                text:
-                                    AppUtils.formatComplexDate(dateTime: item),
-                                size: 14,
-                                weight: FontWeight.bold,
-                              ),
-                            ),
-                          );
-                        } else if (item is Tellapoints) {
-                          // This is a transaction
-                          // final order = item.order;
+                  },
+                  builder: (context, state) {
+                    return PagedListView<int, dynamic>(
+                      pagingController: _pagingController,
+                      builderDelegate: PagedChildBuilderDelegate<dynamic>(
+                        itemBuilder: (context, item, index) {
+                 if (item is Tellapoints) {
+                            // This is a transaction
+                            // final order = item.order;
 
-                          return InkWell(
-                            onTap: () {
-                              // AppNavigator.pushAndStackPage(
-                              //   context,
-                              //   page: TransactionReceipt(transaction: item),
-                              // );
-                            },
-                            child: SizedBox(
-                              //height: 90,
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    //crossAxisAlignment: CrossAxisAlignment.c,
-                                    children: [
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          SvgPicture.asset(AppIcons.badge),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          TextStyles.textSubHeadings(
-                                              textValue:
-                                                  item.transaction.description),
-                                          SizedBox(
-                                            height: 5,
-                                          ),
-                                          CustomText(
-                                            text: item.transaction.description
-                                                .split(' ')[0],
-                                            weight: FontWeight.bold,
-                                            size: 12,
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      TextStyles.textSubHeadings(
-                                          textValue:
-                                              "${item.transaction.type.toLowerCase() == 'debit' ? '-' : "+"}" +
-                                                  item.amount.toString()),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      CustomText(
-                                        text: AppUtils.formateSimpleDate(
-                                            dateTime:
-                                                item.createdAt.toString()),
-                                        weight: FontWeight.bold,
-                                        size: 12,
-                                      )
-                                    ],
-                                  )
-                                ],
+                            return InkWell(
+                              onTap: () {
+                                // AppNavigator.pushAndStackPage(
+                                //   context,
+                                //   page: TransactionReceipt(transaction: item),
+                                // );
+                              },
+                              child: SizedBox(
+                                //height: 90,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      //crossAxisAlignment: CrossAxisAlignment.c,
+                                      children: [
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            SvgPicture.asset(AppIcons.badge),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            TextStyles.textSubHeadings(
+                                                textValue:
+                                                    item.transaction.description),
+                                            SizedBox(
+                                              height: 5,
+                                            ),
+                                            CustomText(
+                                              text: item.transaction.description
+                                                  .split(' ')[0],
+                                              weight: FontWeight.bold,
+                                              size: 12,
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      children: [
+                                        TextStyles.textSubHeadings(
+                                            textValue:
+                                                "${item.transaction.type.toLowerCase() == 'debit' ? '-' : "+"}" +
+                                                    item.amount.toString()),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        CustomText(
+                                          text: AppUtils.formateSimpleDate(
+                                              dateTime:
+                                                  item.createdAt.toString()),
+                                          weight: FontWeight.bold,
+                                          size: 12,
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        }
-                        return const SizedBox.shrink();
-                      },
-                    ),
-                  );
-                },
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        },
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
           ),
