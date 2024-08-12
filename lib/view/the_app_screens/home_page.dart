@@ -18,6 +18,7 @@ import 'package:teller_trust/utills/constants/loading_dialog.dart';
 import 'package:teller_trust/utills/shared_preferences.dart';
 import 'package:teller_trust/view/networkCenter/pages/network_center_main_page.dart';
 import 'package:teller_trust/view/the_app_screens/beneficiaries/beneficiaries.dart';
+import 'package:teller_trust/view/the_app_screens/more_pages/withdrawal_account.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/add_fundz.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/airtime_purchase/airtime.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/airtime_to_cash_purchase/airtime_to_cash.dart';
@@ -881,7 +882,10 @@ class _HomePageState extends State<HomePage> {
                           child:
                               childBalanceCardContainer(AppIcons.send, "Send"),
                         ),
-                        childBalanceCardContainer(AppIcons.switch1, "Withdraw"),
+                        GestureDetector(
+                          onTap:(){AppNavigator.pushAndStackPage(context, page: WithdrawalAccount());},
+                            child: childBalanceCardContainer(
+                                AppIcons.switch1, "Withdraw")),
                       ],
                     ),
                     const SizedBox(height: 10),

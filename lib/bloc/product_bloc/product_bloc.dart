@@ -8,6 +8,7 @@ import 'package:teller_trust/model/electricity_verify_model.dart';
 import 'package:teller_trust/model/product_model.dart';
 import 'package:teller_trust/model/transactionHistory.dart';
 
+import '../../model/a2c_detail_model.dart';
 import '../../model/beneficiary_model.dart';
 import '../../model/category_model.dart';
 import '../../model/quickpay_model.dart';
@@ -29,6 +30,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     on<ListServiceEvent>(listServiceEvent);
     on<FetchProduct>(fetchProduct);
     on<PurchaseProductEvent>(purchaseProductEvent);
+    on<GetA2CDetailsEvent>(getA2CDetailsEvent);
     on<VerifyEntityNumberEvent>(verifyEntityNumberEvent);
     on<GetProductBeneficiaryEvent>(getProductBeneficiaryEvent);
     on<DeleteBeneficiaryEvent>(deleteBeneficiaryEvent);
@@ -358,5 +360,52 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     } catch (e) {
       emit(ErrorState(AppUtils.convertString(e.toString())));
     }
+  }
+
+  FutureOr<void> getA2CDetailsEvent(
+      GetA2CDetailsEvent event, Emitter<ProductState> emit) async {
+    showDialog(
+        barrierDismissible: false,
+        context: event.context,
+        builder: (_) {
+          return const LoadingDialog('');
+        });
+
+    AppRepository appRepository = AppRepository();
+    String accessToken = await SharedPref.getString("access-token");
+    //try {
+    Map<String, dynamic> data = {
+      "productId": event.productId,
+      "amount": event.amount
+    };
+    var a2cDetailResponse = await appRepository.appPostRequest(
+      data,
+      AppApis.a2cDetails,
+      accessToken: accessToken,
+      accessPIN: event.accessPIN,
+    );
+
+    Navigator.pop(event.context);
+    print(a2cDetailResponse.body);
+
+    print("getA2CDetailsEvent status Code ${a2cDetailResponse.statusCode}");
+    print("getA2CDetailsEvent Data ${a2cDetailResponse.body}");
+    print(json.decode(a2cDetailResponse.body));
+    if (a2cDetailResponse.statusCode == 200 ||
+        a2cDetailResponse.statusCode == 201) {
+      A2CDetailModel a2cDetailModel =
+          A2CDetailModel.fromJson(json.decode(a2cDetailResponse.body));
+      emit(A2cDetailSuccess(a2cDetailModel));
+    } else if (json.decode(a2cDetailResponse.body)['errorCode'] == "N404") {
+      emit(AccessTokenExpireState());
+    } else {
+      emit(PurchaseErrorState(AppUtils.convertString(
+          json.decode(a2cDetailResponse.body)['message'])));
+      print(json.decode(a2cDetailResponse.body));
+    }
+    // } catch (e) {
+    //   emit(a2cDetailErrorState("An error occurred while fetching categories."));
+    //   print(e);
+    // }
   }
 }

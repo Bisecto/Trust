@@ -21,7 +21,7 @@ class DeleteBeneficiaryEvent extends ProductEvent {
   final String beneficiaryId;
   final String productId;
 
-  DeleteBeneficiaryEvent(this.beneficiaryId,this.productId);
+  DeleteBeneficiaryEvent(this.beneficiaryId, this.productId);
 }
 
 class ListServiceEvent extends ProductEvent {
@@ -67,4 +67,18 @@ class PurchaseProductEvent extends ProductEvent {
       this.isQuickPay,
       this.isSaveAsBeneficiarySelected,
       this.beneficiaryName);
+}
+
+class GetA2CDetailsEvent extends ProductEvent {
+  final BuildContext context;
+  final String productId;
+  final String accessPIN;
+  final String amount;
+
+  GetA2CDetailsEvent(
+    this.context,
+    this.productId,
+    this.accessPIN,
+    this.amount,
+  );
 }
