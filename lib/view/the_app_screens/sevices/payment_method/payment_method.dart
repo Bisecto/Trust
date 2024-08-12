@@ -115,6 +115,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                                       weight: FontWeight.bold,
                                       size: 10,
                                       color: AppColors.orange,
+                                      maxLines: 2,
                                     ),
                                   ],
                                 ),
