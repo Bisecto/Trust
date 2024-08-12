@@ -40,7 +40,7 @@ class _WithdrawalAccountState extends State<WithdrawalAccount> {
             child: Column(
               children: [
                 const CustomAppBar(
-                  title: AppIcons.withdrawalAccountAppbar,
+                  title: "Add Withdrawal Account",
                 ),
                 Padding(
                   padding: const EdgeInsets.all(20.0),

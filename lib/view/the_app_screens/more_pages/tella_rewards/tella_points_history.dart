@@ -89,73 +89,76 @@ class _TellaPointsHistoryState extends State<TellaPointsHistory> {
                             // This is a transaction
                             // final order = item.order;
 
-                            return InkWell(
-                              onTap: () {
-                                // AppNavigator.pushAndStackPage(
-                                //   context,
-                                //   page: TransactionReceipt(transaction: item),
-                                // );
-                              },
-                              child: SizedBox(
-                                //height: 90,
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      //crossAxisAlignment: CrossAxisAlignment.c,
-                                      children: [
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            SvgPicture.asset(AppIcons.badge),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            TextStyles.textSubHeadings(
-                                                textValue:
-                                                    item.transaction.description),
-                                            SizedBox(
-                                              height: 5,
-                                            ),
-                                            CustomText(
-                                              text: item.transaction.description
-                                                  .split(' ')[0],
-                                              weight: FontWeight.bold,
-                                              size: 12,
-                                            ),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.end,
-                                      children: [
-                                        TextStyles.textSubHeadings(
-                                            textValue:
-                                                "${item.transaction.type.toLowerCase() == 'debit' ? '-' : "+"}" +
-                                                    item.amount.toString()),
-                                        SizedBox(
-                                          height: 5,
-                                        ),
-                                        CustomText(
-                                          text: AppUtils.formateSimpleDate(
-                                              dateTime:
-                                                  item.createdAt.toString()),
-                                          weight: FontWeight.bold,
-                                          size: 12,
-                                        )
-                                      ],
-                                    )
-                                  ],
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: InkWell(
+                                onTap: () {
+                                  // AppNavigator.pushAndStackPage(
+                                  //   context,
+                                  //   page: TransactionReceipt(transaction: item),
+                                  // );
+                                },
+                                child: SizedBox(
+                                  //height: 90,
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        //crossAxisAlignment: CrossAxisAlignment.c,
+                                        children: [
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              SvgPicture.asset(AppIcons.badge),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              TextStyles.textSubHeadings(
+                                                  textValue:
+                                                      item.transaction.description),
+                                              SizedBox(
+                                                height: 5,
+                                              ),
+                                              CustomText(
+                                                text: item.transaction.description
+                                                    .split(' ')[0],
+                                                weight: FontWeight.bold,
+                                                size: 12,
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                        children: [
+                                          TextStyles.textSubHeadings(
+                                              textValue:
+                                                  "${item.transaction.type.toLowerCase() == 'debit' ? '-' : "+"}" +
+                                                      item.amount.toString()),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          CustomText(
+                                            text: AppUtils.formateSimpleDate(
+                                                dateTime:
+                                                    item.createdAt.toString()),
+                                            weight: FontWeight.bold,
+                                            size: 12,
+                                          )
+                                        ],
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                             );
