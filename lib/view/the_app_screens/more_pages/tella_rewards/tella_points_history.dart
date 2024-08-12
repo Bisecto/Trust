@@ -143,7 +143,7 @@ class _TellaPointsHistoryState extends State<TellaPointsHistory> {
                                         children: [
                                           TextStyles.textSubHeadings(
                                               textValue:
-                                                  "${item.transaction.type.toLowerCase() == 'debit' ? '-' : "+"}" +
+                                                  "${item.transaction.type.toLowerCase() != 'debit' ? '-' : "+"}" +
                                                       item.amount.toString()),
                                           SizedBox(
                                             height: 5,
