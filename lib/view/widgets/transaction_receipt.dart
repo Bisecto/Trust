@@ -456,8 +456,8 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
         if (widget.transaction.status.toLowerCase() == 'success'&&widget.transaction.order!=null)
           GestureDetector(
             onTap: () {
-              print(widget.transaction.order);
-              //repeatTransaction(context, widget.transaction,theme);
+             // print(widget.transaction.order);
+              repeatTransaction(context, widget.transaction,theme);
             },
             child: buildActionButton(
               'Repeat',
@@ -639,7 +639,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                 context: context,
                 title: 'Input your transaction pin to continue',
               ),
-            ));
+            ))??'';
     if (transactionPin != '') {
       purchaseProductBloc.add(PurchaseProductEvent(
           context,

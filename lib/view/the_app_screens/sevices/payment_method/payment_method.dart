@@ -21,6 +21,7 @@ class PaymentMethodScreen extends StatefulWidget {
   final ValueChanged<bool> isSaveAsBeneficiarySelected;
 
   final String number;
+  final bool showAddBeneficiary;
 
   const PaymentMethodScreen({
     super.key,
@@ -30,6 +31,7 @@ class PaymentMethodScreen extends StatefulWidget {
     required this.isSaveAsBeneficiarySelected,
     required this.name,
     required this.number,
+    this.showAddBeneficiary=true
   });
 
   @override
@@ -131,7 +133,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                           _onPaymentMethodChanged('quick_pay', walletInfo),
                     ),
                     if (widget.number != '') const SizedBox(height: 24),
-                    if (widget.number != '')
+                    if (widget.number != ''&&widget.showAddBeneficiary)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
