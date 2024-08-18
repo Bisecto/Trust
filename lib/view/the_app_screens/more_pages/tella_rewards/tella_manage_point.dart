@@ -1,13 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:teller_trust/res/app_images.dart';
 import 'package:teller_trust/utills/app_utils.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/tella_rewards/tella_point_product_container.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
 
+import '../../../../bloc/app_bloc/app_bloc.dart';
 import '../../../../res/app_colors.dart';
 import '../../../../res/app_icons.dart';
+import '../../../../utills/custom_theme.dart';
 
 class TellaManagePoint extends StatefulWidget {
   const TellaManagePoint({super.key});
@@ -18,7 +22,16 @@ class TellaManagePoint extends StatefulWidget {
 
 class _TellaManagePointState extends State<TellaManagePoint> {
   @override
+  void initState() {
+    // TODO: implement initState
+    context.read<AppBloc>().add(InitialEvent());
+
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Column(
@@ -34,7 +47,7 @@ class _TellaManagePointState extends State<TellaManagePoint> {
           TextStyles.textHeadings(
               textValue: 'Tella Point Rules',
               textSize: 15,
-              textColor: Colors.black)
+              textColor: theme.isDark?AppColors.white:AppColors.black)
         ],
       ),
     );

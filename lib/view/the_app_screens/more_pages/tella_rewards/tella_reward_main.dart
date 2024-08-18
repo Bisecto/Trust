@@ -116,7 +116,8 @@ class _TellaPointMainPageState extends State<TellaPointMainPage> {
             height: AppUtils.deviceScreenSize(context).height-150, // Set an appropriate height
             width: AppUtils.deviceScreenSize(context).width,
             child: TabBarView(
-              children: [TellaManagePoint(), TellaPointsHistory()],
+              children: [
+                TellaManagePoint(), TellaPointsHistory()],
             ),
           )
           //quickActionsWidget(),

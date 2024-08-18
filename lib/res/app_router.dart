@@ -17,7 +17,9 @@ import '../view/important_pages/not_found_page.dart';
 import '../view/on_boarding/main_on_boarding_screen.dart';
 import '../view/splash_screen.dart';
 import '../view/the_app_screens/landing_page.dart';
+import '../view/the_app_screens/more_pages/tella_rewards/tella_manage_point.dart';
 import '../view/the_app_screens/more_pages/tella_rewards/tella_point_product_container.dart';
+import '../view/the_app_screens/more_pages/tella_rewards/tella_reward_main.dart';
 import '../view/the_app_screens/send_page.dart';
 
 class AppRouter {
@@ -60,7 +62,7 @@ class AppRouter {
   static const String internetNetworkPage = '/internet-network-page';
   static const String cableTVNetworkPage = '/cable-tv-network-page';
   static const String bankNetworkPage = '/bank-network-page';
-  static const String tellaPointContainer = '/bank-network-page';
+  static const String tellaPointPage = '/tella-point-page';
 
   //static const String airtime = '/airtime';
 
@@ -72,10 +74,10 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const OnBoardingScreen());
       case signUpScreen:
         return MaterialPageRoute(builder: (_) => const SignUpScreen());
-      case tellaPointContainer:
+      case tellaPointPage:
         return MaterialPageRoute(builder: (_) => BlocProvider(
     create: (_) => AppBloc(),
-    child:   const TellaPointProductContainer(),
+    child:   const TellaPointMainPage(),
     ));
       // case otpVerification:
       //   return MaterialPageRoute(
