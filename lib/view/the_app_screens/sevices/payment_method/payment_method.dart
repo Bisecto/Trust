@@ -82,13 +82,14 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                 _deferredUpdatePaymentAllowed(walletInfo);
                 return Column(
                   children: [
+                   //if (walletInfo==null)
                     GestureDetector(
                       onTap: () =>
                           _onPaymentMethodChanged('wallet', walletInfo),
                       child: _buildPaymentOption(
                         title: 'Wallet Balance',
                         subtitle:
-                            'Acct. Number ${state.customerProfile.customerAccount!.nuban}',
+                            'Acct. Number ${state.customerProfile.customerAccount==null?'':state.customerProfile.customerAccount!.nuban}',
                         trailing: CustomText(
                           text: 'NGN${walletInfo.balance}',
                           weight: FontWeight.bold,
