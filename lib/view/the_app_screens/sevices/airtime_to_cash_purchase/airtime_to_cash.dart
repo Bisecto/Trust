@@ -300,7 +300,7 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                       }
                     },
                     builder: (context, state) {
-                      if ( state is !A2cDetailSuccess) {
+                      if (state is! A2cDetailSuccess) {
                         return SingleChildScrollView(
                           child: Column(
                             children: [
@@ -437,64 +437,22 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                                             if (_formKey.currentState!
                                                 .validate()) {
                                               if (productId != '') {
-                                                var transactionPin = '';
-                                                transactionPin = await modalSheet
-                                                        .showMaterialModalBottomSheet(
-                                                            backgroundColor:
-                                                                Colors
-                                                                    .transparent,
-                                                            isDismissible: true,
-                                                            shape:
-                                                                const RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius.vertical(
-                                                                      top: Radius
-                                                                          .circular(
-                                                                              20.0)),
-                                                            ),
-                                                            context: context,
-                                                            builder:
-                                                                (context) =>
-                                                                    Padding(
-                                                                      padding: const EdgeInsets
-                                                                          .only(
-                                                                          top:
-                                                                              200.0),
-                                                                      child:
-                                                                          ConfirmWithPin(
-                                                                        context:
-                                                                            context,
-                                                                        title:
-                                                                            'Input your transaction pin to continue',
-                                                                      ),
-                                                                    )) ??
-                                                    "";
-                                                print(transactionPin);
-                                                if (transactionPin != '') {
-                                                  setState(() {
-                                                    widget
-                                                            .category
-                                                            .requiredFields
-                                                            .amount =
+                                                purchaseProductBloc.add(
+                                                    GetA2CDetailsEvent(
+                                                        context,
+                                                        productId,
+                                                        '',
                                                         _selectedAmtController
-                                                            .text;
-                                                  });
-                                                  purchaseProductBloc.add(
-                                                      GetA2CDetailsEvent(
-                                                          context,
-                                                          productId,
-                                                          transactionPin,
-                                                          _selectedAmtController
-                                                              .text));
-                                                }
+                                                            .text));
+                                              } else {
+                                                showToast(
+                                                    context: context,
+                                                    title: 'Info',
+                                                    subtitle:
+                                                        'Please select a network provider',
+                                                    type:
+                                                        ToastMessageType.info);
                                               }
-                                            } else {
-                                              showToast(
-                                                  context: context,
-                                                  title: 'Info',
-                                                  subtitle:
-                                                      'Please select a network provider',
-                                                  type: ToastMessageType.info);
                                             }
                                           },
                                           disableButton:
@@ -512,9 +470,10 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                             ],
                           ),
                         );
-                      } else  {
+                      } else {
                         A2CDetailModel a2cDetailModel = state.a2cDetailModel;
-                        cashBackController.text=a2cDetailModel.data.amountToReceive.toString();
+                        cashBackController.text =
+                            a2cDetailModel.data.amountToReceive.toString();
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Column(
@@ -561,13 +520,13 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                                 color: AppColors.lightgrey,
                                 strokeWidth: 2,
                                 child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(10.0,0,10,0),
+                                  padding:
+                                      const EdgeInsets.fromLTRB(10.0, 0, 10, 0),
                                   child: ListView.builder(
                                     physics:
                                         const NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
                                     padding: EdgeInsets.zero,
-
                                     itemCount:
                                         a2cDetailModel.data.instructions.length,
                                     itemBuilder: (context, index) {
@@ -575,9 +534,9 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          SizedBox(height: 10,),
-
-
+                                          SizedBox(
+                                            height: 10,
+                                          ),
                                           if (index == 0)
                                             TextStyles.textHeadings(
                                                 textValue:
@@ -589,65 +548,65 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                                                     ? AppColors.white
                                                     : AppColors.black),
                                           if (index == 0)
-                                            SizedBox(height: 10,),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
                                           stepContainer(
                                               index,
                                               a2cDetailModel
                                                   .data.instructions[index]),
-                                          if(index==a2cDetailModel.data.instructions.length-1)
-                                            SizedBox(height: 10,),
-
+                                          if (index ==
+                                              a2cDetailModel.data.instructions
+                                                      .length -
+                                                  1)
+                                            SizedBox(
+                                              height: 10,
+                                            ),
                                         ],
                                       );
                                     },
                                   ),
                                 ),
                               ),
-                              AppSpacer(height:10),
+                              AppSpacer(height: 10),
                               CustomTextFormField(
                                 hint: '',
                                 label: 'Airtime Amount',
                                 enabled: false,
                                 controller: _selectedAmtController,
                                 textInputType: TextInputType.number,
-                                validator:
-                                AppValidator.validateTextfield,
+                                validator: AppValidator.validateTextfield,
                                 widget: SvgPicture.asset(
                                   AppIcons.naira,
-                                  color: _selectedAmtController
-                                      .text.isNotEmpty
+                                  color: _selectedAmtController.text.isNotEmpty
                                       ? AppColors.darkGreen
                                       : AppColors.grey,
                                   height: 22,
                                   width: 22,
                                 ),
-                                borderColor: _selectedAmtController
-                                    .text.isNotEmpty
-                                    ? AppColors.green
-                                    : AppColors.grey,
+                                borderColor:
+                                    _selectedAmtController.text.isNotEmpty
+                                        ? AppColors.green
+                                        : AppColors.grey,
                               ),
-                              AppSpacer(height:10),
-
+                              AppSpacer(height: 10),
                               CustomTextFormField(
-                                hint: a2cDetailModel.data.amountToReceive.toString(),
+                                hint: a2cDetailModel.data.amountToReceive
+                                    .toString(),
                                 label: 'Cash Back',
                                 enabled: false,
                                 controller: cashBackController,
                                 textInputType: TextInputType.number,
-
-                                validator:
-                                AppValidator.validateTextfield,
+                                validator: AppValidator.validateTextfield,
                                 widget: SvgPicture.asset(
                                   AppIcons.naira,
-                                  color: cashBackController
-                                      .text.isNotEmpty
+                                  color: cashBackController.text.isNotEmpty
                                       ? AppColors.darkGreen
                                       : AppColors.grey,
                                   height: 22,
                                   width: 22,
                                 ),
-                                borderColor: cashBackController
-                                    .text.isNotEmpty
+                                borderColor: cashBackController.text.isNotEmpty
                                     ? AppColors.green
                                     : AppColors.grey,
                               ),
@@ -714,18 +673,16 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                                   //       subtitle:
                                   //       'Please select a network provider',
                                   //       type: ToastMessageType.info);
-                                 // }
+                                  // }
                                 },
                                 disableButton:
-                                (!_selectedAmtController
-                                    .text.isNotEmpty),
+                                    (!_selectedAmtController.text.isNotEmpty),
                                 text: 'Continue',
                                 borderColor: AppColors.darkGreen,
                                 bgColor: AppColors.darkGreen,
                                 textColor: AppColors.white,
                                 borderRadius: 10,
                               )
-
                             ],
                           ),
                         );
@@ -894,7 +851,7 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomText(text: (index + 1).toString()+") "),
+          CustomText(text: (index + 1).toString() + ") "),
           Container(
               width: AppUtils.deviceScreenSize(context).width / 1.3,
               child: CustomText(
