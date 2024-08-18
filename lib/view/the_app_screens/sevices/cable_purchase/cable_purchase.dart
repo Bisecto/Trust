@@ -1,4 +1,5 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -62,7 +63,15 @@ class _CablePurchaseState extends State<CablePurchase> {
   String selectedCablePlan = 'Choose Plan';
   String selectedCablePlanPrice = '';
   String selectedCablePlanId = '';
+  TextEditingController _beneficiaryController = TextEditingController();
+  CancelableOperation<void>? _cancelableOperation; // Store the current operation
 
+  @override
+  void dispose() {
+    _beneficiaryController.dispose();
+    _cancelableOperation?.cancel(); // Cancel any ongoing operations on dispose
+    super.dispose();
+  }
   // Future<String> handleNetworkSelect(String? selectedServiceId) async {
   //   AppRepository appRepository = AppRepository();
   //   String accessToken = await SharedPref.getString("access-token");
@@ -102,7 +111,35 @@ class _CablePurchaseState extends State<CablePurchase> {
   //     // Handle exception
   //   }
   // }
+  void _onInputChanged(String value) {
+    if (value.length > 9 && selectedCableProviderId.isNotEmpty) {
+      // Cancel the previous request if it exists
+      _cancelableOperation?.cancel();
 
+      // Create a new cancelable operation for the current request
+      _cancelableOperation = CancelableOperation.fromFuture(
+        verifyEntityNumber(value), // The function that sends the request
+        onCancel: () {
+          print("Previous request canceled");
+        },
+      );
+
+      // Handle the response
+      _cancelableOperation!.value.then((response) {
+        if (mounted) {
+          // Process the response here
+        }
+      }).catchError((error) {
+        // Handle the error here
+      });
+    }
+  }
+  Future<void> verifyEntityNumber(String meterNumber) async {
+    // Simulate an API request or call your Bloc event here
+    verifyEntityNumberProductBloc.add(
+      VerifyEntityNumberEvent(selectedCablePlanId, meterNumber),
+    );
+  }
   @override
   void initState() {
     // TODO: implement initState
@@ -544,26 +581,7 @@ class _CablePurchaseState extends State<CablePurchase> {
                                             controller: _beneficiaryController,
                                             textInputType: TextInputType.number,
                                             widget: const Icon(Icons.numbers),
-                                            onChanged: (value) async {
-                                              print(_beneficiaryController
-                                                  .text.length);
-                                              print(selectedCableProviderId);
-                                              if (_beneficiaryController
-                                                  .text.length >
-                                                  9 &&
-                                                  selectedCableProviderId
-                                                      .isNotEmpty) {
-                                                //String mainServiceId =
-                                                // await handleNetworkSelect(
-                                                //     selectedCableProviderId);
-
-                                                verifyEntityNumberProductBloc.add(
-                                                  VerifyEntityNumberEvent(
-                                                      selectedCablePlanId,
-                                                      _beneficiaryController.text),
-                                                );
-                                              }
-                                            },
+                                            onChanged: _onInputChanged,
                                             validator: (value) {
                                               if (value == null || value.isEmpty) {
                                                 return 'Please enter your SmartCard number';
@@ -572,124 +590,66 @@ class _CablePurchaseState extends State<CablePurchase> {
                                               }
                                               return null;
                                             },
-                                            borderColor: _beneficiaryController
-                                                .text.isNotEmpty
-                                                ? AppColors.green
-                                                : AppColors.grey,
+                                            borderColor: _beneficiaryController.text.isNotEmpty ? AppColors.green : AppColors.grey,
                                           ),
-                                          if (_beneficiaryController.text.length >
-                                              9 &&
-                                              selectedCableProviderId != '')
+
+// Ensure this BlocConsumer is only rendered if the input length is valid and a provider is selected
+                                          if (_beneficiaryController.text.length > 9 && selectedCableProviderId.isNotEmpty)
                                             BlocConsumer<ProductBloc, ProductState>(
-                                                bloc: verifyEntityNumberProductBloc,
-                                                // listenWhen: (previous, current) =>
-                                                //     current is! InitialSuccessState,
-                                                // buildWhen: (previous, current) =>
-                                                // current is! GetCablePlanLoadingState,
-                                                listener: (context, state) {
-                                                  if (state
-                                                  is EntityNumberErrorState) {
-                                                    // MSG.warningSnackBar(context, state.error);
-                                                  }
-                                                },
-                                                builder: (context, state) {
-                                                  if (_beneficiaryController
-                                                      .text.length >
-                                                      9 &&
-                                                      selectedCableProviderId !=
-                                                          '') {
-                                                    if (state
-                                                    is EntityNumberSuccessState) {
-                                                      final res = state;
-                                                      // setState(() {
-                                                      //   enableButton=true;
-                                                      //
-                                                      // });
-                                                      return Padding(
-                                                          padding: const EdgeInsets
-                                                              .fromLTRB(
-                                                              10, 10, 10, 25.0),
-                                                          child: Column(
-                                                            children: [
-                                                              Container(
-                                                                decoration: BoxDecoration(
-                                                                    color: AppColors
-                                                                        .lightgreen2,
-                                                                    border: Border.all(
-                                                                        color: AppColors
-                                                                            .darkGreen),
-                                                                    borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                        10)),
-                                                                child: Padding(
-                                                                  padding:
-                                                                  const EdgeInsets
-                                                                      .all(5.0),
-                                                                  child: CustomText(
-                                                                    text: res
-                                                                        .electricityVerifiedData
-                                                                        .name,
-                                                                    color: AppColors
-                                                                        .green,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              // Container(
-                                                              //   decoration: BoxDecoration(
-                                                              //       color: AppColors.lightgreen2,
-                                                              //       border:Border.all(color:AppColors.darkGreen),
-                                                              //       borderRadius:BorderRadius.circular(10)
-                                                              //   ),
-                                                              //   child: Padding(
-                                                              //     padding: const EdgeInsets.all(5.0),
-                                                              //     child: CustomText(
-                                                              //       text: "res.name",
-                                                              //       color:
-                                                              //       AppColors.green,
-                                                              //     ),
-                                                              //   ),
-                                                              // ),
-                                                            ],
-                                                          ));
-                                                    } else if (state
-                                                    is EntityNumberErrorState) {
-                                                      return const Padding(
-                                                          padding:
-                                                          EdgeInsets.fromLTRB(
-                                                              10, 0, 10, 25.0),
-                                                          child: CustomText(
-                                                            text:
-                                                            "Invalid Meter number",
-                                                            size: 14,
-                                                            color: AppColors.red,
-                                                          ));
-                                                    } else {
-                                                      return Padding(
-                                                          padding: const EdgeInsets
-                                                              .fromLTRB(
-                                                              10, 10, 10, 25.0),
-                                                          child: CustomText(
-                                                            text:
-                                                            "Verifying user.....",
-                                                            size: 14,
-                                                            color: theme.isDark
-                                                                ? AppColors.white
-                                                                : AppColors.black,
-                                                          ));
-                                                    }
-                                                  } else {
-                                                    return const Padding(
-                                                        padding:
-                                                        EdgeInsets.fromLTRB(
-                                                            10, 0, 10, 25.0),
-                                                        child: CustomText(
-                                                          text: "",
-                                                          size: 14,
-                                                          color: AppColors.red,
-                                                        ));
-                                                  }
-                                                }),
+                                              bloc: verifyEntityNumberProductBloc,
+                                              listener: (context, state) {
+                                                if (state is EntityNumberErrorState) {
+                                                  // Handle error (e.g., show a snack bar or error message)
+                                                }
+                                              },
+                                              builder: (context, state) {
+                                                if (state is EntityNumberSuccessState) {
+                                                  final res = state;
+                                                  return Padding(
+                                                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 25.0),
+                                                    child: Column(
+                                                      children: [
+                                                        Container(
+                                                          decoration: BoxDecoration(
+                                                            color: AppColors.lightgreen2,
+                                                            border: Border.all(color: AppColors.darkGreen),
+                                                            borderRadius: BorderRadius.circular(10),
+                                                          ),
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.all(5.0),
+                                                            child: CustomText(
+                                                              text: res.electricityVerifiedData.name,
+                                                              color: AppColors.green,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                } else if (state is EntityNumberErrorState) {
+                                                  final errorMsg = state.error;
+
+                                                  return  Padding(
+                                                    padding: EdgeInsets.fromLTRB(10, 0, 10, 25.0),
+                                                    child: CustomText(
+                                                      text: errorMsg,
+                                                      size: 14,
+                                                      color: AppColors.red,
+                                                    ),
+                                                  );
+                                                } else {
+                                                  return Padding(
+                                                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 25.0),
+                                                    child: CustomText(
+                                                      text: "Verifying user...",
+                                                      size: 14,
+                                                      color: theme.isDark ? AppColors.white : AppColors.black,
+                                                    ),
+                                                  );
+                                                }
+                                              },
+                                            ),
+
                                           if (selectedCablePlanId.isNotEmpty)
                                             SizedBox(
                                               height: 10,
@@ -999,7 +959,7 @@ class _CablePurchaseState extends State<CablePurchase> {
 
   //final String beneficiaryName = '';
 
-  final _beneficiaryController = TextEditingController();
+  //final _beneficiaryController = TextEditingController();
 }
 
 class CableProvider extends StatelessWidget {

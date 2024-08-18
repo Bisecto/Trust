@@ -270,6 +270,17 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         ElectricityVerifiedData electricityVerifiedData =
             ElectricityVerifiedData.fromJson(
                 json.decode(entityNumberResponse.body)['data']);
+        if (json.decode(entityNumberResponse.body)['data']['statusCode'] ==
+                200 ||
+            json.decode(entityNumberResponse.body)['data']['statusCode'] ==
+                201) {
+          emit(EntityNumberSuccessState(electricityVerifiedData));
+
+        }else{
+          emit(EntityNumberErrorState(AppUtils.convertString(
+              json.decode(entityNumberResponse.body)['data']['message'])));
+        }
+        // if(electricityVerifiedData.)
         // BillPaymentModel billPaymentModel = BillPaymentModel.fromJson(
         //     jsonDecode(response.body)['data']['data']);
 
@@ -277,7 +288,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         // ['customer_name'] ??
         //     "No user found";
 
-        emit(EntityNumberSuccessState(electricityVerifiedData));
       } else {
         emit(EntityNumberErrorState(AppUtils.convertString(
             json.decode(entityNumberResponse.body)['message'])));
