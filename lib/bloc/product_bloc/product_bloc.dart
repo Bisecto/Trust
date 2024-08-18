@@ -8,7 +8,8 @@ import 'package:teller_trust/model/electricity_verify_model.dart';
 import 'package:teller_trust/model/product_model.dart';
 import 'package:teller_trust/model/transactionHistory.dart';
 
-import '../../model/a2c_detail_model.dart';
+import '../../model/a2c/a2c_create_transaction_model.dart';
+import '../../model/a2c/a2c_detail_model.dart';
 import '../../model/beneficiary_model.dart';
 import '../../model/category_model.dart';
 import '../../model/quickpay_model.dart';
@@ -31,6 +32,8 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     on<FetchProduct>(fetchProduct);
     on<PurchaseProductEvent>(purchaseProductEvent);
     on<GetA2CDetailsEvent>(getA2CDetailsEvent);
+    on<CreateA2CDetailsEvent>(createA2CDetailsEvent);
+    on<ReportTransferEvent>(reportTransferEvent);
     on<VerifyEntityNumberEvent>(verifyEntityNumberEvent);
     on<GetProductBeneficiaryEvent>(getProductBeneficiaryEvent);
     on<DeleteBeneficiaryEvent>(deleteBeneficiaryEvent);
@@ -275,8 +278,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
             json.decode(entityNumberResponse.body)['data']['statusCode'] ==
                 201) {
           emit(EntityNumberSuccessState(electricityVerifiedData));
-
-        }else{
+        } else {
           emit(EntityNumberErrorState(AppUtils.convertString(
               json.decode(entityNumberResponse.body)['data']['message'])));
         }
@@ -287,7 +289,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         // String customerName = json.decode(response.body)['data']['data']
         // ['customer_name'] ??
         //     "No user found";
-
       } else {
         emit(EntityNumberErrorState(AppUtils.convertString(
             json.decode(entityNumberResponse.body)['message'])));
@@ -412,6 +413,95 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       emit(PurchaseErrorState(AppUtils.convertString(
           json.decode(a2cDetailResponse.body)['message'])));
       print(json.decode(a2cDetailResponse.body));
+    }
+    // } catch (e) {
+    //   emit(a2cDetailErrorState("An error occurred while fetching categories."));
+    //   print(e);
+    // }
+  }
+
+  FutureOr<void> createA2CDetailsEvent(
+      CreateA2CDetailsEvent event, Emitter<ProductState> emit) async {
+    showDialog(
+        barrierDismissible: false,
+        context: event.context,
+        builder: (_) {
+          return const LoadingDialog('');
+        });
+
+    AppRepository appRepository = AppRepository();
+    String accessToken = await SharedPref.getString("access-token");
+    //try {
+    Map<String, dynamic> data = {
+      "productId": event.productId,
+      "amount": event.amount
+    };
+    var createA2cResponse = await appRepository.appPostRequest(
+      data,
+      AppApis.createA2c,
+      accessToken: accessToken,
+      accessPIN: event.accessPIN,
+    );
+
+    Navigator.pop(event.context);
+    print(createA2cResponse.body);
+
+    print("getA2CDetailsEvent status Code ${createA2cResponse.statusCode}");
+    print("getA2CDetailsEvent Data ${createA2cResponse.body}");
+    print(json.decode(createA2cResponse.body));
+    if (createA2cResponse.statusCode == 200 ||
+        createA2cResponse.statusCode == 201) {
+      A2CCreateTransactionModel a2cCreateTransactionModel=A2CCreateTransactionModel.fromJson(json.decode(createA2cResponse.body)['data']);
+      emit(CreateA2cSuccess(a2cCreateTransactionModel));
+    } else if (json.decode(createA2cResponse.body)['errorCode'] == "N404") {
+      emit(AccessTokenExpireState());
+    } else {
+      emit(PurchaseErrorState(AppUtils.convertString(
+          json.decode(createA2cResponse.body)['message'])));
+      print(json.decode(createA2cResponse.body));
+    }
+    // } catch (e) {
+    //   emit(a2cDetailErrorState("An error occurred while fetching categories."));
+    //   print(e);
+    // }
+  }
+
+  FutureOr<void> reportTransferEvent(
+      ReportTransferEvent event, Emitter<ProductState> emit) async {
+    showDialog(
+        barrierDismissible: false,
+        context: event.context,
+        builder: (_) {
+          return const LoadingDialog('');
+        });
+
+    AppRepository appRepository = AppRepository();
+    String accessToken = await SharedPref.getString("access-token");
+    //try {
+
+    var reportA2cResponse = await appRepository.appPostRequest(
+      {},
+      '${AppApis.reportA2c}/${event.transactionId}',
+      accessToken: accessToken,
+      accessPIN: event.accessPIN,
+    );
+
+    Navigator.pop(event.context);
+    print(reportA2cResponse.body);
+
+    print("getA2CDetailsEvent status Code ${reportA2cResponse.statusCode}");
+    print("getA2CDetailsEvent Data ${reportA2cResponse.body}");
+    print(json.decode(reportA2cResponse.body));
+    if (reportA2cResponse.statusCode == 200 ||
+        reportA2cResponse.statusCode == 201) {
+//Transaction transaction=Transaction.
+      emit(A2CPurchaseSuccess());
+    } else if (json.decode(reportA2cResponse.body)['errorCode'] == "N404") {
+      emit(AccessTokenExpireState());
+    } else {
+      emit(PurchaseErrorState(AppUtils.convertString(
+          json.decode(reportA2cResponse.body)['message'])));
+      print(json.decode(reportA2cResponse.body));
     }
     // } catch (e) {
     //   emit(a2cDetailErrorState("An error occurred while fetching categories."));

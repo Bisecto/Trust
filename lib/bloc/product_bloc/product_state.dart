@@ -9,9 +9,9 @@ final class BeneficiaryLoadingState extends ProductState {}
 
 final class GetBeneficiarySuccessState extends ProductState {
   final BeneficiaryModel beneficiaryModel;
+
   GetBeneficiarySuccessState(this.beneficiaryModel);
 }
-
 
 class CategoryLoadingState extends ProductState {}
 
@@ -49,11 +49,22 @@ class PurchaseSuccess extends ProductState {
   Transaction transaction;
 
   PurchaseSuccess(this.transaction);
+}class A2CPurchaseSuccess extends ProductState {
+
 }
+
 class A2cDetailSuccess extends ProductState {
-  A2CDetailModel a2cDetailModel ;
+  A2CDetailModel a2cDetailModel;
 
   A2cDetailSuccess(this.a2cDetailModel);
+}
+
+class CreateA2cSuccess extends ProductState {
+  final A2CCreateTransactionModel a2cCreateTransactionModel;
+  CreateA2cSuccess(this.a2cCreateTransactionModel);
+}class ReportSuccess extends ProductState {
+  final A2CCreateTransactionModel a2cCreateTransactionModel;
+  ReportSuccess(this.a2cCreateTransactionModel);
 }
 
 class QuickPayInitiated extends ProductState {
@@ -99,6 +110,7 @@ class EntityNumberErrorState extends ProductState {
 
   EntityNumberErrorState(this.error);
 }
+
 class ErrorState extends ProductState {
   final String error;
 

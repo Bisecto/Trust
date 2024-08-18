@@ -81,4 +81,27 @@ class GetA2CDetailsEvent extends ProductEvent {
     this.accessPIN,
     this.amount,
   );
+}class ReportTransferEvent extends ProductEvent {
+  final BuildContext context;
+  final String transactionId;
+  final String accessPIN;
+
+  ReportTransferEvent(
+    this.context,
+    this.transactionId,
+    this.accessPIN,
+  );
+}
+class CreateA2CDetailsEvent extends ProductEvent {
+  final BuildContext context;
+  final String productId;
+  final String accessPIN;
+  final String amount;
+
+  CreateA2CDetailsEvent(
+    this.context,
+    this.productId,
+    this.accessPIN,
+    this.amount,
+  );
 }
