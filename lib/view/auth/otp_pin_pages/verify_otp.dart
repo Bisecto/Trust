@@ -178,9 +178,9 @@ class _VerifyOtpState extends State<VerifyOtp> {
                           ),
                         ),
                         Positioned.fill(
-                          top: AppUtils.deviceScreenSize(context).height * 0.3,
+                          top: AppUtils.deviceScreenSize(context).height * 0.25,
                           bottom:
-                              AppUtils.deviceScreenSize(context).height * 0.3,
+                              AppUtils.deviceScreenSize(context).height * 0.25,
                           right: 20,
                           left: 20,
                           child: GestureDetector(
@@ -313,46 +313,70 @@ class _VerifyOtpState extends State<VerifyOtp> {
                                       const SizedBox(
                                         height: 10,
                                       ),
-                                      Center(
-                                          child: TextStyles.richTexts(
-                                              onPress1: () {
+
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          CustomText(
+                                            text: "Didn\'t receive code",
+                                            color: AppColors.red,
+                                            size: 14,
+                                          ),
+                                          if (_start != 0)
+                                            Row(
+                                              children: [
+                                                const Icon(Icons.alarm),
+                                                SizedBox(width: 5,),
+                                                CustomText(text: '${(_start ~/ 60).toString().padLeft(2, '0')}:${(_start % 60).toString().padLeft(2, '0')}',color: theme.isDark
+                                                    ? AppColors
+                                                    .darkModeBackgroundSubTextColor
+                                                    : AppColors.black,),
+                                              ],
+                                            ),
+                                          if (_start == 0)
+                                            GestureDetector(
+                                              onTap: () {
                                                 if (_start == 0) {
                                                   authBloc.add(
-                                                      PasswordResetRequestOtpEventCLick(widget.phone, context)
-                                                  );
+                                                      PasswordResetRequestOtpEventCLick(
+                                                          widget.phone,
+                                                          context));
                                                   setState(() {
-                                                    _start = 180; // Reset the timer to 180 seconds
+                                                    _start =
+                                                        180; // Reset the timer to 180 seconds
                                                     startTimer();
                                                   });
                                                 } else {
                                                   setState(() {
-                                                    MSG.warningSnackBar(context, 'Resend Code after 3:00 minutes');
+                                                    MSG.warningSnackBar(context,
+                                                        'Resend Code after 3:00 minutes');
                                                   });
                                                 }
                                               },
-                                              onPress2: () {
-                                                if (_start == 0) {
-                                                  authBloc.add(
-                                                      PasswordResetRequestOtpEventCLick(widget.phone, context)
-                                                  );
-                                                  setState(() {
-                                                    _start = 180; // Reset the timer to 180 seconds
-                                                    startTimer();
-                                                  });
-                                                } else {
-                                                  MSG.warningSnackBar(context, 'Resend Code after 3:00 minutes');
-                                                }
-                                              },
-                                              size: 14,
-                                              weight: FontWeight.w600,
-                                              color2: AppColors.darkGreen,
-                                              decoration: TextDecoration.underline,
-                                              text2: 'Resend code after',
-                                              color: AppColors.black,
-                                              text3: '  ${(_start ~/ 60).toString().padLeft(2, '0')}:${(_start % 60).toString().padLeft(2, '0')} minutes',
-                                              text4: ''
-                                          )
-                                      )                                    ],
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        color: AppColors.grey),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      10.0),
+                                                  child: CustomText(
+                                                    text: "Request new code",
+                                                    color: theme.isDark
+                                                        ? AppColors
+                                                            .darkModeBackgroundSubTextColor
+                                                        : AppColors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                        ],
+                                      )
+                                    ],
                                   ),
                                 ),
                               ),
@@ -385,7 +409,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
     const oneSec = Duration(seconds: 1);
     _timer = Timer.periodic(
       oneSec,
-          (Timer timer) {
+      (Timer timer) {
         if (_start == 0) {
           _timer.cancel();
         } else {
@@ -395,4 +419,5 @@ class _VerifyOtpState extends State<VerifyOtp> {
         }
       },
     );
-  }}
+  }
+}
