@@ -86,8 +86,9 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
     final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
 
     return Scaffold(
-      backgroundColor:
-          theme.isDark ? AppColors.darkModeBackgroundColor : Color(0xffF3FFEB),
+      backgroundColor: theme.isDark
+          ? AppColors.darkModeBackgroundColor
+          : const Color(0xffF3FFEB),
       body: BlocConsumer<ProductBloc, ProductState>(
           bloc: purchaseProductBloc,
           listenWhen: (previous, current) => current is! ProductInitial,
@@ -147,7 +148,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
               width: AppUtils.deviceScreenSize(context).width,
               color: theme.isDark
                   ? AppColors.darkModeBackgroundColor
-                  : Color(0xffF3FFEB),
+                  : const Color(0xffF3FFEB),
               child: Screenshot(
                 controller: screenshotController,
                 child: Container(
@@ -207,10 +208,10 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                                       color: theme.isDark
                                           ? AppColors
                                               .darkModeBackgroundContainerColor
-                                          : Color(0xffF3FFEB),
+                                          : const Color(0xffF3FFEB),
                                       child: Column(
                                         children: [
-                                          SizedBox(
+                                          const SizedBox(
                                             height: 10,
                                           ),
                                           if (!isSharingPdf)
@@ -224,7 +225,8 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                                                 AppNavigator
                                                     .pushAndRemovePreviousPages(
                                                         context,
-                                                        page: LandingPage());
+                                                        page:
+                                                            const LandingPage());
                                               },
                                               width: AppUtils.deviceScreenSize(
                                                           context)
@@ -268,7 +270,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CircleAvatar(
+          const CircleAvatar(
             backgroundColor: Colors.transparent,
           ),
           Column(
@@ -276,7 +278,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
               SvgPicture.asset(
                 AppIcons.logoReceipt,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               TextStyles.textHeadings(
@@ -288,7 +290,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
             ],
           ),
           if (isSharingPdf)
-            CircleAvatar(
+            const CircleAvatar(
               backgroundColor: Colors.transparent,
             ),
           if (!isSharingPdf)
@@ -296,7 +298,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
               onTap: () {
                 if (widget.isHome) {
                   AppNavigator.pushAndRemovePreviousPages(context,
-                      page: LandingPage());
+                      page: const LandingPage());
                 } else {
                   Navigator.pop(context);
                 }
@@ -322,7 +324,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
       decoration: BoxDecoration(
         color:
             theme.isDark ? AppColors.darkModeBackgroundColor : AppColors.white,
-        borderRadius: BorderRadius.only(
+        borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(0), topRight: Radius.circular(0)),
         // boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 10)],
       ),
@@ -453,11 +455,12 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
             theme,
           ),
         ),
-        if (widget.transaction.status.toLowerCase() == 'success'&&widget.transaction.order!=null)
+        if (widget.transaction.status.toLowerCase() == 'success' &&
+            widget.transaction.order != null)
           GestureDetector(
             onTap: () {
-             // print(widget.transaction.order);
-              repeatTransaction(context, widget.transaction,theme);
+              // print(widget.transaction.order);
+              repeatTransaction(context, widget.transaction, theme);
             },
             child: buildActionButton(
               'Repeat',
@@ -547,7 +550,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.lock, color: AppColors.green),
+            const Icon(Icons.lock, color: AppColors.green),
             TextStyles.textHeadings(
                 textValue: 'Secured by TellaTrust',
                 textSize: 14,
@@ -566,9 +569,9 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
   bool isPaymentAllowed = false;
 
   Future<void> repeatTransaction(
-      BuildContext context, Transaction transaction,theme) async {
+      BuildContext context, Transaction transaction, theme) async {
     AppRepository appRepository = AppRepository();
-    //final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+    bool isCancelled = false; // Flag to track if cancel icon was clicked
 
     await showDialog(
       context: context,
@@ -589,35 +592,42 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
               padding: const EdgeInsets.all(10.0),
               child: Column(
                 children: [
+                  GestureDetector(
+                    onTap: () {
+                      isCancelled = true; // Set the flag to true
+                      Navigator.pop(context); // Close the dialog
+                    },
+                    child: const Align(
+                        alignment: Alignment.topRight,
+                        child: Icon(Icons.cancel,size: 30,)),
+                  ),
                   PaymentMethodScreen(
                     amtToPay: transaction.amount.toString(),
                     onPaymentMethodSelected: (method) {
-                      // No need to use setState here directly as it might be called during the build phase
                       Future.microtask(() {
                         if (mounted) {
                           setState(() {
                             _selectedPaymentMethod = method;
-                            //print(_selectedPaymentMethod);
                           });
                         }
                       });
                     },
                     ispaymentAllowed: (allowed) {
-                      // Deferred update to avoid issues during the build phase
                       Future.microtask(() {
                         if (mounted) {
                           setState(() {
                             isPaymentAllowed = allowed;
-                            // print(isPaymentAllowed);
                           });
                         }
                       });
                     },
                   ),
-                  FormButton(onPressed: (){
-                    Navigator.pop(context);
-                  },text: 'Continue',)
-
+                  FormButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    text: 'Continue',
+                  ),
                 ],
               ),
             ),
@@ -625,21 +635,28 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
         );
       },
     );
-    var transactionPin = '';
-    transactionPin = await modalSheet.showMaterialModalBottomSheet(
-        backgroundColor: Colors.transparent,
-        isDismissible: true,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
-        ),
-        context: context,
-        builder: (context) => Padding(
-              padding: const EdgeInsets.only(top: 200.0),
-              child: ConfirmWithPin(
-                context: context,
-                title: 'Input your transaction pin to continue',
-              ),
-            ))??'';
+
+    // Check if the cancel icon was clicked, if so, stop further execution
+    if (isCancelled) return;
+
+    // Proceed to show the modal sheet for transaction pin
+    var transactionPin = await modalSheet.showMaterialModalBottomSheet(
+            backgroundColor: Colors.transparent,
+            isDismissible: true,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+            ),
+            context: context,
+            builder: (context) => Padding(
+                  padding: const EdgeInsets.only(top: 200.0),
+                  child: ConfirmWithPin(
+                    context: context,
+                    title: 'Input your transaction pin to continue',
+                  ),
+                )) ??
+        '';
+
+    // If the transaction pin is not empty, trigger the purchase event
     if (transactionPin != '') {
       purchaseProductBloc.add(PurchaseProductEvent(
           context,
@@ -650,44 +667,6 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
           false,
           ''));
     }
-    // try {
-    //   showDialog(
-    //     barrierDismissible: false,
-    //     context: context,
-    //     builder: (_) => const LoadingDialog('Preparing to repeat transaction...'),
-    //   );
-    //   String accessToken = await SharedPref.getString("access-token");
-    //
-    //   var response = await appRepository.appGetRequest(
-    //       accessToken: accessToken,
-    //       "${AppApis.getOneTransactionDetails}/$transactionId");
-    //   print(response.statusCode);
-    //   print(response.body);
-    //   print(json.decode(response.body));
-    //   if(response.statusCode==200||response.statusCode==201){
-    //     setState(() {
-    //       isSharingPdf = false;
-    //       Navigator.pop(context);
-    //     });
-    //
-    //   }else{
-    //     setState(() {
-    //       isSharingPdf = false;
-    //       Navigator.pop(context);
-    //     });
-    //   }
-    // } catch (e) {
-    //   setState(() {
-    //     isSharingPdf = false;
-    //     Navigator.pop(context);
-    //   });
-    //   showToast(
-    //     context: context,
-    //     title: 'Error occurred',
-    //     subtitle: 'An unexpected error has occurred, try again later',
-    //     type: ToastMessageType.error,
-    //   );
-    // }
   }
 
   // Future<void> pdfShare(BuildContext context, String title, theme) async {
