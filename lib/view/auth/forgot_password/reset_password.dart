@@ -137,7 +137,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                         Positioned.fill(
                           top: AppUtils.deviceScreenSize(context).height * 0.2,
                           bottom:
-                              AppUtils.deviceScreenSize(context).height * 0.3,
+                              AppUtils.deviceScreenSize(context).height * 0.15,
                           right: 20,
                           left: 20,
                           child: GestureDetector(
