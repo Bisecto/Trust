@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
 import 'package:cross_connectivity/cross_connectivity.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:idle_detector_wrapper/idle_detector_wrapper.dart';
 import 'package:provider/provider.dart';
@@ -13,8 +16,10 @@ import 'package:teller_trust/view/the_app_screens/send_page.dart';
 
 import '../../bloc/app_bloc/app_bloc.dart';
 import '../../domain/txn/txn_details_to_send_out.dart';
+import '../../main.dart';
 import '../../res/app_colors.dart';
 import '../../utills/app_navigator.dart';
+import '../../utills/app_utils.dart';
 import '../../utills/custom_theme.dart';
 import '../../utills/shared_preferences.dart';
 import '../auth/sign_in_with_access_pin_and_biometrics.dart';
@@ -37,12 +42,124 @@ class _LandingPageState extends State<LandingPage> {
   bool _connected = true;
 
   StreamSubscription<ConnectivityStatus>? _connectivitySubscription;
+  bool isNotification = false;
 
   @override
   void initState() {
     // TODO: implement initState
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+      if (notification != null && android != null) {
+        // OrderNotification orderNotification =
+        //  OrderNotification.fromJson(message.data);
+        setState(() {
+          isNotification = true;
+        });
+
+        modalSheet.showMaterialModalBottomSheet(
+          context: context,
+          enableDrag: true,
+          isDismissible: true,
+          expand: false,
+          builder: (context) => SingleChildScrollView(
+            controller: modalSheet.ModalScrollController.of(context),
+            child: Padding(
+              padding: const EdgeInsets.all(0.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    width: AppUtils.deviceScreenSize(context).width,
+                    height: 100,
+                    color: AppColors.blue,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+        flutterLocalNotificationsPlugin.show(
+            notification.hashCode,
+            notification.title,
+            notification.body,
+            NotificationDetails(
+                android: AndroidNotificationDetails(
+                  channel.id,
+                  channel.name,
+                  //channel.description,
+                  color: Colors.blueAccent,
+                  playSound: true,
+                  icon: 'asset/images/logo.png',
+                )));
+      }
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      AppUtils().debuglog('A new MessageOpenedApp event was published');
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+      if (notification != null && android != null) {
+        // OrderNotification orderNotification =
+        // OrderNotification.fromJson(message.data);
+        setState(() {
+          isNotification = true;
+          // cat_Slug = message.data['categorySlug'];
+          // news_Id = message.data['news_id'];
+        });
+
+        //AppUtils().debuglog(orderNotification);
+        setState(() {
+          isNotification = true;
+        });
+
+        // modalSheet.showMaterialModalBottomSheet(
+        //   context: context,
+        //   enableDrag: true,
+        //   isDismissible: true,
+        //   expand: false,
+        //   builder: (context) => SingleChildScrollView(
+        //     controller: modalSheet.ModalScrollController.of(context),
+        //     child: Padding(
+        //       padding: const EdgeInsets.all(0.0),
+        //       child: Column(
+        //         crossAxisAlignment: CrossAxisAlignment.start,
+        //         children: <Widget>[
+        //           Container(
+        //             width: AppUtils.deviceScreenSize(context).width,
+        //             height: 130,
+        //             color: AppColors.blue,
+        //             child: const Padding(
+        //               padding: EdgeInsets.all(15.0),
+        //               child: Padding(
+        //                 padding: EdgeInsets.all(0),
+        //               ),
+        //             ),
+        //           ),
+        //           const Padding(
+        //             padding: EdgeInsets.all(15.0),
+        //             child: Row(
+        //               children: [
+        //                 Icon(
+        //                   Icons.home,
+        //                   color: AppColors.green,
+        //                 ),
+        //                 CustomText(
+        //                   text: "Home Delivery",
+        //                   weight: FontWeight.bold,
+        //                 )
+        //               ],
+        //             ),
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //   ),
+        // );
+      }
+    });
     context.read<AppBloc>().add(InitialEvent());
     context.read<ProductBloc>().add(ListCategoryEvent("1", "8"));
+
     _checkConnectivity();
     _connectivitySubscription =
         Connectivity().onConnectivityChanged.listen(_handleConnectivity);

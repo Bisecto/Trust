@@ -181,6 +181,7 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                             //     fontSize: 18,
                             //   ),
                             // ),
+
                             GestureDetector(
                               onTap: () {
                                 Navigator.pop(context);
@@ -188,6 +189,7 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                               child: const Icon(
                                 Icons.cancel,
                                 color: Colors.grey,
+                                size: 30,
                               ),
                             ),
                           ],
