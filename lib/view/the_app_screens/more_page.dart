@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -272,7 +273,7 @@ class _MorePageState extends State<MorePage> {
                   child: Divider(),
                 ),
                 InkWell(
-                    onTap: () {
+                    onTap: () async {
                       SharedPref.remove("password");
                       SharedPref.remove("email");
                       SharedPref.remove("phone");
@@ -285,6 +286,7 @@ class _MorePageState extends State<MorePage> {
 
                       SharedPref.remove("refresh-token");
                       SharedPref.remove("access-token");
+                      await FirebaseMessaging.instance.deleteToken();
                       AppNavigator.pushAndRemovePreviousPages(context,
                           page: const SignInScreen());
                     },

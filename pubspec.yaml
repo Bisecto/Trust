@@ -56,6 +56,9 @@ dependencies:
   encrypt: ^5.0.0
   flutter_native_contact_picker: ^0.0.7
   async:
+  firebase_core: ^2.24.2
+  firebase_messaging:
+  flutter_local_notifications:
 
 
 dev_dependencies:

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:teller_trust/model/customer_profile.dart';
@@ -47,6 +48,12 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       "${AppApis.listTransaction}?page=1&pageSize=5",
       accessToken: accessToken,
     );
+    String? token = await FirebaseMessaging.instance.getToken();
+    var respons = await appRepository.appPutRequest(
+        {"fcmToken": token, "isSubscribe": true},
+        "${AppApis.appBaseUrl}/user/c/enable-push-message",accessToken: accessToken);
+    //FirebaseMessaging.instance.onTokenRefresh.listen(saveTokenToDatabase);
+    print(respons.body);
     print(userTransactionList.body);
     print("Profile status COde ${profileResponse.statusCode}");
     print("Profile Data ${profileResponse.body}");
@@ -165,7 +172,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
     var userTransactionList = await appRepository.appGetRequest(
       "${AppApis.listTransaction}?page=${event.page}&pageSize=${event.pageSize}"
-          "&search=${event.search}&status=${event.status}&type=${event.type}",
+      "&search=${event.search}&status=${event.status}&type=${event.type}",
       accessToken: accessToken,
     );
     print(userTransactionList.body);
@@ -180,7 +187,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           transactionHistoryModel)); // Emit success state with data
     } else if (json.decode(userTransactionList.body)['errorCode'] == "N404") {
       emit(AccessTokenExpireState());
-    }  else {
+    } else {
       emit(TransactionErrorState(AppUtils.convertString(
           json.decode(userTransactionList.body)['message'])));
       print(json.decode(userTransactionList.body));

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "848624001738",
+    "project_id": "tellatrusted",
+    "storage_bucket": "tellatrusted.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:848624001738:android:37805c90a00db7e0184a33",
+        "android_client_info": {
+          "package_name": "com.swizel.tellatrust.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA76KvNQlsQV31eikJtgO-ZGeg6GfFCnJU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

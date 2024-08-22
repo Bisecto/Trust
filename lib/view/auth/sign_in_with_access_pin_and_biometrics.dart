@@ -1,4 +1,5 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:otp_text_field/otp_field.dart';
@@ -266,6 +267,8 @@ class _SignInWIthAccessPinBiometricsState
                                                     "temUserPhone");
                                                 SharedPref.remove(
                                                     "temUserPassword");
+                                                await FirebaseMessaging.instance.deleteToken();
+
                                                 AppNavigator.pushAndReplacePage(
                                                     context,
                                                     page: const SignInScreen());

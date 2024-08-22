@@ -4,6 +4,7 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,6 +22,7 @@ import 'package:teller_trust/view/sendBeneficary/pages/send_main_page.dart';
 import 'package:teller_trust/view/splash_screen.dart';
 import 'package:teller_trust/view/widgets/transaction_receipt.dart';
 import 'bloc/app_bloc/app_bloc.dart';
+
 AndroidNotificationChannel channel = const AndroidNotificationChannel(
     'id', 'name',
     importance: Importance.high, playSound: true);
@@ -73,7 +75,11 @@ void main() async {
   } else {
     AppUtils().debuglog('User declined or has not accepted permission');
   }
-  FirebaseMessaging.instance.subscribeToTopic("Tella");
+  FirebaseMessaging.instance.subscribeToTopic("TellaTrust");
+  //await FirebaseMessaging.instance.deleteToken();
+
+  // var token= FirebaseMessaging.instance.getToken();
+  // print( await token);
   runApp(
     MultiBlocProvider(
       providers: [

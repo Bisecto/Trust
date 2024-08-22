@@ -28,7 +28,31 @@ class AppRepository {
     print(response);
     return response;
   }
+  Future<http.Response> appPutRequest(Map<String, dynamic> data, String apiUrl,
+      {String accessToken = '',
+        String accessPIN = '',
+        String refreshToken = ''}) async {
+    print(apiUrl);
+    print(apiUrl);
 
+    var headers = {
+      'x-access-token': accessToken,
+      'x-access-pin': accessPIN,
+      'x-refresh-token': refreshToken,
+      'Content-Type': 'application/json'
+    };
+    print(data);
+    print(headers);
+    var body = jsonEncode(data);
+    final response = await http.put(
+      Uri.parse(apiUrl),
+      headers: headers,
+      body: body,
+    );
+    print(apiUrl);
+    print(response);
+    return response;
+  }
   Future<http.Response> appGetRequest(String apiUrl,
       {String accessToken = '',
       String accessPIN = '',
