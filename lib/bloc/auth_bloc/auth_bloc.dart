@@ -94,7 +94,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     Map<String, dynamic> data = {
       "token": event.token,
-      "phone": await SharedPref.getString("userData"),
+      "phone": await SharedPref.getString("phone"),
     };
     Map<String, dynamic> deviceData = {
       "token": event.token,
@@ -287,6 +287,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } else if (response.statusCode == 400 &&
         json.decode(response.body)['errorCode'] == 'E302') {
       SharedPref.putString('temUserData', event.userData);
+
       SharedPref.putString('temUserPassword', event.password);
       Navigator.pop(event.context);
 

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:async/async.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -62,7 +63,46 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
   bool isSaveAsBeneficiarySelected = false;
   String beneficiaryName = '';
 
+  CancelableOperation<void>? _cancelableOperation; // Store the current operation
   bool isShow = false;
+  void _onInputChanged(String value) async {
+    if (value.length > 9 && selectedElectricityProviderId.isNotEmpty) {
+      // Cancel the previous request if it exists
+      _cancelableOperation?.cancel();
+
+      String mainServiceId = await handleNetworkSelect(selectedElectricityProviderId);
+
+      // Create a new cancelable operation for the current request
+      _cancelableOperation = CancelableOperation.fromFuture(
+        verifyEntityNumber(mainServiceId, value),
+        onCancel: () {
+          print("Previous request canceled");
+        },
+      );
+
+      // Handle the response
+      _cancelableOperation!.value.then((response) {
+        if (mounted) {
+          // Process the response here
+        }
+      }).catchError((error) {
+        // Handle the error here
+      });
+    }
+  }
+
+  Future<void> verifyEntityNumber(String serviceId, String meterNumber) async {
+    verifyEntityNumberProductBloc.add(
+      VerifyEntityNumberEvent(serviceId, meterNumber),
+    );
+  }
+
+  @override
+  void dispose() {
+    _beneficiaryController.dispose();
+    _cancelableOperation?.cancel(); // Cancel any ongoing operations on dispose
+    super.dispose();
+  }
 
   Future<String> handleNetworkSelect(String? selectedServiceId) async {
     AppRepository appRepository = AppRepository();
@@ -376,11 +416,13 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                                   .text.length >
                                                   9 &&
                                                   mainServiceId != '') {
-                                                verifyEntityNumberProductBloc.add(
-                                                    VerifyEntityNumberEvent(
-                                                        mainServiceId,
-                                                        _beneficiaryController
-                                                            .text));
+                                                _onInputChanged(_beneficiaryController
+                                                    .text);
+                                                // verifyEntityNumberProductBloc.add(
+                                                //     VerifyEntityNumberEvent(
+                                                //         mainServiceId,
+                                                //         _beneficiaryController
+                                                //             .text));
                                               }
                                             },
                                             categoryId: widget.category.id,
@@ -494,26 +536,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                             label: 'Meter Number',
                                             controller: _beneficiaryController,
                                             textInputType: TextInputType.number,
-                                            onChanged: (value) async {
-                                              print(_beneficiaryController
-                                                  .text.length);
-                                              print(selectedElectricityProviderId);
-                                              if (_beneficiaryController
-                                                  .text.length >
-                                                  9 &&
-                                                  selectedElectricityProviderId
-                                                      .isNotEmpty) {
-                                                String mainServiceId =
-                                                await handleNetworkSelect(
-                                                    selectedElectricityProviderId);
-
-                                                verifyEntityNumberProductBloc.add(
-                                                  VerifyEntityNumberEvent(
-                                                      mainServiceId,
-                                                      _beneficiaryController.text),
-                                                );
-                                              }
-                                            },
+                                            onChanged: _onInputChanged,
                                             validator: (value) {
                                               if (value == null || value.isEmpty) {
                                                 return 'Please enter your SmartCard number';
@@ -522,353 +545,117 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                               }
                                               return null;
                                             },
-                                            borderColor: _beneficiaryController
-                                                .text.isNotEmpty
-                                                ? AppColors.green
-                                                : AppColors.grey,
+                                            borderColor: _beneficiaryController.text.isNotEmpty ? AppColors.green : AppColors.grey,
                                             widget: const Icon(Icons.numbers),
                                           ),
-                                          if (_beneficiaryController.text.length >
-                                              9 &&
-                                              selectedElectricityProviderId != '')
+                                          if (_beneficiaryController.text.length > 9 && selectedElectricityProviderId.isNotEmpty)
                                             BlocConsumer<ProductBloc, ProductState>(
-                                                bloc: verifyEntityNumberProductBloc,
-                                                // listenWhen: (previous, current) =>
-                                                //     current is! InitialSuccessState,
-                                                // buildWhen: (previous, current) =>
-                                                // current is! GetDataPlanLoadingState,
-                                                listener: (context, state) {
-                                                  if (state
-                                                  is EntityNumberErrorState) {
-                                                    // MSG.warningSnackBar(context, state.error);
-                                                  }
-                                                },
-                                                builder: (context, state) {
-                                                  if (_beneficiaryController
-                                                      .text.length >
-                                                      9 &&
-                                                      selectedElectricityProviderId !=
-                                                          '') {
-                                                    if (state
-                                                    is EntityNumberSuccessState) {
-                                                      final res = state;
-                                                      // setState(() {
-                                                      //   enableButton=true;
-                                                      //
-                                                      // });
-                                                      return Padding(
-                                                          padding: const EdgeInsets
-                                                              .fromLTRB(
-                                                              10, 10, 10, 25.0),
-                                                          child: Column(
-                                                            children: [
-                                                              Row(
-                                                                children: [
-                                                                  Container(
-                                                                    decoration: BoxDecoration(
-                                                                        color: AppColors
-                                                                            .lightgreen2,
-                                                                        border: Border.all(
-                                                                            color: AppColors
-                                                                                .darkGreen),
-                                                                        borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            10)),
-                                                                    child: Padding(
-                                                                      padding:
-                                                                      const EdgeInsets
-                                                                          .all(
-                                                                          5.0),
-                                                                      child:
-                                                                      CustomText(
-                                                                        text: res
-                                                                            .electricityVerifiedData
-                                                                            .name,
-                                                                        color: AppColors
-                                                                            .green,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ],
+                                              bloc: verifyEntityNumberProductBloc,
+                                              listener: (context, state) {
+                                                if (state is EntityNumberErrorState) {
+                                                  // Handle error state
+                                                }
+                                              },
+                                              builder: (context, state) {
+                                                if (state is EntityNumberSuccessState) {
+                                                  final res = state.electricityVerifiedData;
+                                                  return Padding(
+                                                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 25.0),
+                                                    child: Column(
+                                                      children: [
+                                                        Row(
+                                                          children: [
+                                                            Container(
+                                                              decoration: BoxDecoration(
+                                                                color: AppColors.lightgreen2,
+                                                                border: Border.all(color: AppColors.darkGreen),
+                                                                borderRadius: BorderRadius.circular(10),
                                                               ),
-                                                              Row(
-                                                                mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                                children: [
-                                                                  GestureDetector(
-                                                                    onTap: () {
-                                                                      setState(() {
-                                                                        isShow =
-                                                                        !isShow;
-                                                                      });
-                                                                    },
-                                                                    child: Align(
-                                                                      alignment:
-                                                                      Alignment
-                                                                          .center,
-                                                                      child:
-                                                                      Container(
-                                                                        decoration: BoxDecoration(
-                                                                          //color: AppColors.lightgreen2,
-                                                                            border: Border.all(color: AppColors.darkGreen),
-                                                                            borderRadius: BorderRadius.circular(10)),
-                                                                        child:
-                                                                        Padding(
-                                                                          padding: const EdgeInsets
-                                                                              .all(
-                                                                              5.0),
-                                                                          child: isShow
-                                                                              ? const CustomText(
-                                                                            text: "hide order review",
-                                                                            color: AppColors.green,
-                                                                          )
-                                                                              : const CustomText(
-                                                                            text: "show order review",
-                                                                            color: AppColors.green,
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ],
+                                                              child: Padding(
+                                                                padding: const EdgeInsets.all(5.0),
+                                                                child: CustomText(
+                                                                  text: res.name,
+                                                                  color: AppColors.green,
+                                                                ),
                                                               ),
-                                                              if (isShow)
-                                                                const SizedBox(
-                                                                    height: 10),
-                                                              if (isShow)
-                                                                DottedBorder(
-                                                                  borderType:
-                                                                  BorderType
-                                                                      .RRect,
-                                                                  radius:
-                                                                  const Radius
-                                                                      .circular(
-                                                                      10),
-                                                                  dashPattern: const [
-                                                                    10,
-                                                                    10
-                                                                  ],
-                                                                  color: AppColors
-                                                                      .lightgrey,
-                                                                  strokeWidth: 2,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          children: [
+                                                            GestureDetector(
+                                                              onTap: () {
+                                                                setState(() {
+                                                                  isShow = !isShow;
+                                                                });
+                                                              },
+                                                              child: Align(
+                                                                alignment: Alignment.center,
+                                                                child: Container(
+                                                                  decoration: BoxDecoration(
+                                                                    border: Border.all(color: AppColors.darkGreen),
+                                                                    borderRadius: BorderRadius.circular(10),
+                                                                  ),
                                                                   child: Padding(
-                                                                    padding:
-                                                                    const EdgeInsets
-                                                                        .all(
-                                                                        10.0),
-                                                                    child: Column(
-                                                                      children: [
-                                                                        Row(
-                                                                          mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .spaceBetween,
-                                                                          children: [
-                                                                            const Column(
-                                                                              crossAxisAlignment:
-                                                                              CrossAxisAlignment.start,
-                                                                              children: [
-                                                                                CustomText(
-                                                                                  text: 'Meter Number',
-                                                                                  size: 10,
-                                                                                  textAlign: TextAlign.center,
-                                                                                  color: AppColors.lightgrey,
-                                                                                  weight: FontWeight.bold,
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                            Column(
-                                                                              crossAxisAlignment:
-                                                                              CrossAxisAlignment.end,
-                                                                              children: [
-                                                                                CustomText(
-                                                                                  text: res.electricityVerifiedData.meterNo,
-                                                                                  size: 10,
-                                                                                  textAlign: TextAlign.center,
-                                                                                  color: AppColors.lightgrey,
-                                                                                  weight: FontWeight.bold,
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                        Row(
-                                                                          mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .spaceBetween,
-                                                                          children: [
-                                                                            const Column(
-                                                                              crossAxisAlignment:
-                                                                              CrossAxisAlignment.start,
-                                                                              children: [
-                                                                                CustomText(
-                                                                                  text: 'Name',
-                                                                                  size: 10,
-                                                                                  textAlign: TextAlign.center,
-                                                                                  color: AppColors.lightgrey,
-                                                                                  weight: FontWeight.bold,
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                            Column(
-                                                                              crossAxisAlignment:
-                                                                              CrossAxisAlignment.end,
-                                                                              children: [
-                                                                                CustomText(
-                                                                                  text: res.electricityVerifiedData.name,
-                                                                                  size: 10,
-                                                                                  textAlign: TextAlign.center,
-                                                                                  color: AppColors.lightgrey,
-                                                                                  weight: FontWeight.bold,
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                        Row(
-                                                                          mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .spaceBetween,
-                                                                          children: [
-                                                                            const Column(
-                                                                              crossAxisAlignment:
-                                                                              CrossAxisAlignment.start,
-                                                                              children: [
-                                                                                CustomText(
-                                                                                  text: 'Meter Type',
-                                                                                  size: 10,
-                                                                                  textAlign: TextAlign.center,
-                                                                                  color: AppColors.lightgrey,
-                                                                                  weight: FontWeight.bold,
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                            Column(
-                                                                              crossAxisAlignment:
-                                                                              CrossAxisAlignment.end,
-                                                                              children: [
-                                                                                CustomText(
-                                                                                  text: res.electricityVerifiedData.vendType,
-                                                                                  size: 10,
-                                                                                  textAlign: TextAlign.center,
-                                                                                  color: AppColors.lightgrey,
-                                                                                  weight: FontWeight.bold,
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                        Row(
-                                                                          mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .spaceBetween,
-                                                                          children: [
-                                                                            const Column(
-                                                                              crossAxisAlignment:
-                                                                              CrossAxisAlignment.start,
-                                                                              children: [
-                                                                                CustomText(
-                                                                                  text: 'Outstanding',
-                                                                                  size: 10,
-                                                                                  textAlign: TextAlign.center,
-                                                                                  color: AppColors.lightgrey,
-                                                                                  weight: FontWeight.bold,
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                            Column(
-                                                                              crossAxisAlignment:
-                                                                              CrossAxisAlignment.end,
-                                                                              children: [
-                                                                                CustomText(
-                                                                                  text: res.electricityVerifiedData.outstanding.toString(),
-                                                                                  size: 10,
-                                                                                  textAlign: TextAlign.center,
-                                                                                  color: AppColors.lightgrey,
-                                                                                  weight: FontWeight.bold,
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                        Row(
-                                                                          mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .spaceBetween,
-                                                                          children: [
-                                                                            const Column(
-                                                                              crossAxisAlignment:
-                                                                              CrossAxisAlignment.start,
-                                                                              children: [
-                                                                                CustomText(
-                                                                                  text: 'Address',
-                                                                                  size: 10,
-                                                                                  textAlign: TextAlign.center,
-                                                                                  color: AppColors.lightgrey,
-                                                                                  weight: FontWeight.bold,
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                            Column(
-                                                                              crossAxisAlignment:
-                                                                              CrossAxisAlignment.end,
-                                                                              children: [
-                                                                                CustomText(
-                                                                                  text: res.electricityVerifiedData.address.toString(),
-                                                                                  size: 10,
-                                                                                  textAlign: TextAlign.center,
-                                                                                  color: AppColors.lightgrey,
-                                                                                  weight: FontWeight.bold,
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      ],
+                                                                    padding: const EdgeInsets.all(5.0),
+                                                                    child: CustomText(
+                                                                      text: isShow ? "Hide order review" : "Show order review",
+                                                                      color: AppColors.green,
                                                                     ),
                                                                   ),
                                                                 ),
-                                                            ],
-                                                          ));
-                                                    } else if (state
-                                                    is EntityNumberErrorState) {
-                                                      return const Padding(
-                                                          padding:
-                                                          EdgeInsets.fromLTRB(
-                                                              10, 0, 10, 25.0),
-                                                          child: CustomText(
-                                                            text:
-                                                            "Invalid Meter number",
-                                                            size: 14,
-                                                            color: AppColors.red,
-                                                          ));
-                                                    } else {
-                                                      return Padding(
-                                                          padding: const EdgeInsets
-                                                              .fromLTRB(
-                                                              10, 10, 10, 25.0),
-                                                          child: CustomText(
-                                                            text:
-                                                            "Verifying user.....",
-                                                            size: 14,
-                                                            color: theme.isDark
-                                                                ? AppColors.white
-                                                                : AppColors.black,
-                                                          ));
-                                                    }
-                                                  } else {
-                                                    return const Padding(
-                                                        padding:
-                                                        EdgeInsets.fromLTRB(
-                                                            10, 0, 10, 25.0),
-                                                        child: CustomText(
-                                                          text: "",
-                                                          size: 14,
-                                                          color: AppColors.red,
-                                                        ));
-                                                  }
-                                                }),
-                                          if (serviceID.isNotEmpty)
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        if (isShow) const SizedBox(height: 10),
+                                                        if (isShow)
+                                                          DottedBorder(
+                                                            borderType: BorderType.RRect,
+                                                            radius: const Radius.circular(10),
+                                                            dashPattern: const [10, 10],
+                                                            color: AppColors.lightgrey,
+                                                            strokeWidth: 2,
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.all(10.0),
+                                                              child: Column(
+                                                                children: [
+                                                                  buildInfoRow('Meter Number', res.meterNo),
+                                                                  buildInfoRow('Name', res.name),
+                                                                  buildInfoRow('Meter Type', res.vendType),
+                                                                  buildInfoRow('Outstanding', res.outstanding.toString()),
+                                                                  buildInfoRow('Address', res.address),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                } else if (state is EntityNumberErrorState) {
+                                                  final error = state.error;
+
+                                                  return  Padding(
+                                                    padding: EdgeInsets.fromLTRB(10, 0, 10, 25.0),
+                                                    child: CustomText(
+                                                      text: error, //"Invalid Meter number",
+                                                      size: 14,
+                                                      color: AppColors.red,
+                                                    ),
+                                                  );
+                                                } else {
+                                                  return Padding(
+                                                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 25.0),
+                                                    child: CustomText(
+                                                      text: "Verifying user.....",
+                                                      size: 14,
+                                                      color: theme.isDark ? AppColors.white : AppColors.black,
+                                                    ),
+                                                  );
+                                                }
+                                              },
+                                            ), if (serviceID.isNotEmpty)
                                             SizedBox(
                                               height: 10,
                                             ),
@@ -1089,7 +876,35 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
       ),
     );
   }
-
+  Widget buildInfoRow(String title, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CustomText(
+              text: title,
+              size: 10,
+              color: AppColors.lightgrey,
+              weight: FontWeight.bold,
+            ),
+          ],
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            CustomText(
+              text: value,
+              size: 10,
+              color: AppColors.lightgrey,
+              weight: FontWeight.bold,
+            ),
+          ],
+        ),
+      ],
+    );
+  }
   Widget selectAmount(String amt, AdaptiveThemeMode theme) {
     return Padding(
       padding: const EdgeInsets.all(8.0),

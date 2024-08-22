@@ -2,10 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/bloc/product_bloc/product_bloc.dart';
 import 'package:teller_trust/model/transactionHistory.dart';
@@ -18,11 +21,19 @@ import 'package:teller_trust/view/sendBeneficary/pages/send_main_page.dart';
 import 'package:teller_trust/view/splash_screen.dart';
 import 'package:teller_trust/view/widgets/transaction_receipt.dart';
 import 'bloc/app_bloc/app_bloc.dart';
+AndroidNotificationChannel channel = const AndroidNotificationChannel(
+    'id', 'name',
+    importance: Importance.high, playSound: true);
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+FlutterLocalNotificationsPlugin();
 
+Future<void> _FirebaseMessagingBacground(RemoteMessage message) async {
+  AppUtils().debuglog('A message just Poped: ${message.data}');
+}
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   await dotenv.load(fileName: ".env");
-
   AdaptiveThemeMode? adaptiveThemeMode =
       await AdaptiveTheme.getThemeMode() ?? AdaptiveThemeMode.light;
   try {
@@ -31,6 +42,38 @@ void main() async {
   } catch (e) {
     print('Error: $e');
   }
+  FirebaseMessaging.onBackgroundMessage(_FirebaseMessagingBacground);
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+      AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
+
+  // Remove the call to Firebase.initializeApp() from here
+
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+  NotificationSettings settings =
+  await FirebaseMessaging.instance.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
+
+  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+    AppUtils().debuglog('User granted permission');
+  } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+    AppUtils().debuglog('User granted provisional permission');
+  } else {
+    AppUtils().debuglog('User declined or has not accepted permission');
+  }
+  FirebaseMessaging.instance.subscribeToTopic("Tella");
   runApp(
     MultiBlocProvider(
       providers: [

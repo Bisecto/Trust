@@ -3,6 +3,7 @@ import 'package:encrypt/encrypt.dart' as prefix0;
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:encrypt/encrypt.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/src/foundation/key.dart'as kk;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,7 +25,12 @@ class AppUtils {
   static Color hexToColor(String code) {
     return Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
   }
-
+  void debuglog(object) {
+    if (kDebugMode) {
+      print(object.toString());
+      // debugPrint(object.toString());
+    }
+  }
   //final IV iv = IV.fromLength(16);
   final iv = IV.allZerosOfLength(16);
 

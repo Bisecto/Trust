@@ -101,7 +101,7 @@ class _SendToOptionsWidgetState extends State<SendToOptionsWidget> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         const Text(
-                          'Beneficiary',
+                          'Select Bank',
                           style: TextStyle(
                             color: AppColors.sendBodyTextColor,
                             fontSize: 16.0,

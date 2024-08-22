@@ -205,7 +205,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         Positioned.fill(
                           top: AppUtils.deviceScreenSize(context).height * 0.35,
                           bottom:
-                              AppUtils.deviceScreenSize(context).height * 0.1,
+                              AppUtils.deviceScreenSize(context).height * 0.15,
                           right: 20,
                           left: 20,
                           child: GestureDetector(
@@ -230,8 +230,9 @@ class _SignInScreenState extends State<SignInScreen> {
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      CustomText(
+                                      ...[CustomText(
                                         text: "Log In",
                                         weight: FontWeight.w600,
                                         size: 20,
@@ -301,10 +302,10 @@ class _SignInScreenState extends State<SignInScreen> {
                                               )
                                             ],
                                           )),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      GestureDetector(
+                                      ],
+                                     ...[const SizedBox(
+                                       height: 10,
+                                     ), GestureDetector(
                                         onTap: () {
                                           AppNavigator.pushAndStackPage(context,
                                               page: const RequestOtp());
@@ -354,49 +355,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                             ),
                                           ],
                                         ),
-                                      )
-                                      // Row(
-                                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      //   children: [
-                                      //     GestureDetector(
-                                      //       onTap: () {
-                                      //         //Navigator.pop(context);
-                                      //       },
-                                      //       child: Container(
-                                      //         height: 50,
-                                      //         width: AppUtils.deviceScreenSize(context).width /
-                                      //             2.5,
-                                      //         decoration: const BoxDecoration(
-                                      //           image: DecorationImage(
-                                      //             image: AssetImage(AppImages.Google),
-                                      //             fit: BoxFit.fill,
-                                      //           ),
-                                      //         ),
-                                      //         // child: const Icon(Icons.arrow_back),
-                                      //       ),
-                                      //     ),
-                                      //     GestureDetector(
-                                      //       onTap: () {
-                                      //         //Navigator.pop(context);
-                                      //       },
-                                      //       child: Container(
-                                      //         height: 50,
-                                      //         width: AppUtils.deviceScreenSize(context).width /
-                                      //             2.5,
-                                      //         decoration: const BoxDecoration(
-                                      //           image: DecorationImage(
-                                      //             image: AssetImage(AppImages.apple),
-                                      //             fit: BoxFit.fill,
-                                      //           ),
-                                      //         ),
-                                      //         // child: const Icon(Icons.arrow_back),
-                                      //       ),
-                                      //     )
-                                      //   ],
-                                      // ),
-                                      // const SizedBox(
-                                      //   height: 10,
-                                      // ),
+                                      )]
                                     ],
                                   ),
                                 ),

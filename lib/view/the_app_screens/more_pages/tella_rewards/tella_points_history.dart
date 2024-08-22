@@ -56,7 +56,7 @@ class _TellaPointsHistoryState extends State<TellaPointsHistory> {
           ),
           Expanded(
             child: Padding(
-              padding: EdgeInsets.only(left: 0.0, right: 0.0),
+              padding: EdgeInsets.only(left: 0.0, right: 0.0,top: 10),
               child: Container(
                // co
                 child: BlocConsumer<TellapointBloc, TellapointState>(
@@ -90,7 +90,7 @@ class _TellaPointsHistoryState extends State<TellaPointsHistory> {
                             // final order = item.order;
 
                             return Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.fromLTRB(0,15,0,10),
                               child: InkWell(
                                 onTap: () {
                                   // AppNavigator.pushAndStackPage(

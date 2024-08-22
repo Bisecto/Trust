@@ -96,7 +96,8 @@ Future<bool?> alert({
               ),
               Column(
                 children: [
-                  Lottie.asset(_getImage(alertType), height: 120, width: 120),
+                  GestureDetector(onTap:(){                  Navigator.pop(context);
+                  },child: Lottie.asset(_getImage(alertType), height: 120, width: 120)),
                   const SizedBox(
                     height: 5,
                   ),

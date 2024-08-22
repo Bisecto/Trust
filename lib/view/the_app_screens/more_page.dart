@@ -370,7 +370,7 @@ class _MorePageState extends State<MorePage> {
                                 : AppColors.textColor,
                             size: 14,
                           ),
-                          if (customerAccount != null)
+                          //if (customerAccount != null)
                             Row(
                               children: [
                                 TextStyles.textSubHeadings(

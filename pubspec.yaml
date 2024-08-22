@@ -55,6 +55,7 @@ dependencies:
   infinite_scroll_pagination:
   encrypt: ^5.0.0
   flutter_native_contact_picker: ^0.0.7
+  async:
 
 
 dev_dependencies:

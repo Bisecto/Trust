@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:teller_trust/res/app_router.dart';
 import 'package:teller_trust/utills/constants/loading_dialog.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/tella_rewards/tella_reward_main.dart';
 
@@ -23,8 +24,9 @@ class TellaPointProductContainer extends StatelessWidget {
           var walletInfo = state.customerProfile.walletInfo;
           return GestureDetector(
             onTap: () {
+             // AppNavigator.pushAndStackNamed(context, name: AppRouter.tellaPointPage);
               AppNavigator.pushAndStackPage(context,
-                  page: TellaPointMainPage());
+                  page: const TellaPointMainPage());
             },
             child: Padding(
               padding: const EdgeInsets.all(10.0),
@@ -35,7 +37,7 @@ class TellaPointProductContainer extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: AppColors.lightGreen),
                     color: AppColors.lightgreen2,
-                    image: DecorationImage(
+                    image: const DecorationImage(
                         image: AssetImage(AppImages.tellaPointBannerBackground),
                         fit: BoxFit.cover)),
                 child: Row(
@@ -64,7 +66,7 @@ class TellaPointProductContainer extends StatelessWidget {
             ),
           );
         } else {
-          return LoadingDialog(
+          return const LoadingDialog(
               ''); // Show loading indicator or handle error state
         }
       },
