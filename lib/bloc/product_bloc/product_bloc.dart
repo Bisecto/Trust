@@ -273,10 +273,12 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         ElectricityVerifiedData electricityVerifiedData =
             ElectricityVerifiedData.fromJson(
                 json.decode(entityNumberResponse.body)['data']);
-        if (json.decode(entityNumberResponse.body)['data']['statusCode'] ==
-                200 ||
-            json.decode(entityNumberResponse.body)['data']['statusCode'] ==
-                201) {
+        if (json.decode(entityNumberResponse.body)['data']['statusCode']==null
+            // ==
+            //     200 ||
+            // json.decode(entityNumberResponse.body)['data']['statusCode'] ==
+            //     201
+        ) {
           emit(EntityNumberSuccessState(electricityVerifiedData));
         } else {
           emit(EntityNumberErrorState(AppUtils.convertString(
