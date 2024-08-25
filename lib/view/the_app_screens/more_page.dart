@@ -18,6 +18,7 @@ import 'package:teller_trust/view/the_app_screens/more_pages/tella_rewards/tella
 import 'package:teller_trust/view/the_app_screens/more_pages/tella_rewards/tella_reward_main.dart';
 
 import '../../bloc/app_bloc/app_bloc.dart';
+import '../../model/customer_account_model.dart';
 import '../../model/personal_profile.dart';
 import '../../res/app_colors.dart';
 import '../../utills/app_navigator.dart';
@@ -52,7 +53,7 @@ class _MorePageState extends State<MorePage> {
     firstname = await SharedPref.getString('firstName');
     lastname = await SharedPref.getString('lastName');
   }
-
+   CustomerAccountModel? customerAccountModel;
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
@@ -231,7 +232,7 @@ class _MorePageState extends State<MorePage> {
                 InkWell(
                     onTap: () {
                       AppNavigator.pushAndStackPage(context,
-                          page: const AccountSetting());
+                          page:  AccountSetting(customerAccount: customerAccountModel,));
                     },
                     child: itemContainer(
                         AppIcons.accounsetting, 'Account Settings', theme)),
@@ -332,7 +333,7 @@ class _MorePageState extends State<MorePage> {
       builder: (context, state) {
         if (state is SuccessState) {
           PersonalInfo personalInfo = state.customerProfile.personalInfo;
-          var customerAccount = state.customerProfile.customerAccount;
+          customerAccountModel = state.customerProfile.customerAccount;
 
           print(json.encode(state.customerProfile));
           // Use user data here

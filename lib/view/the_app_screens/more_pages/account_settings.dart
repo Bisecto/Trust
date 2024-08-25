@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:teller_trust/model/customer_account_model.dart';
+import 'package:teller_trust/model/customer_profile.dart';
 import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/res/app_spacer.dart';
 import 'package:teller_trust/view/the_app_screens/kyc_verification/kyc_intro_page.dart';
@@ -20,9 +22,9 @@ import '../../widgets/appBar_widget.dart';
 import '../../widgets/custom_container.dart';
 
 class AccountSetting extends StatefulWidget {
-  const AccountSetting({
-    super.key,
-  });
+  CustomerAccountModel? customerAccount;
+
+  AccountSetting({super.key,  this.customerAccount});
 
   @override
   State<AccountSetting> createState() => _AccountSettingState();
@@ -127,13 +129,15 @@ class _AccountSettingState extends State<AccountSetting> {
                     //       title: "Withdrawal Account",
                     //       description: "View/Add Withdrawal account"),
                     // ),
+                    if(widget.customerAccount==null)
                     InkWell(
                       onTap: () {
                         AppNavigator.pushAndStackPage(context,
                             page: const KYCIntro());
                       },
                       child: const CustomContainerFirTitleDesc(
-                          title: "KYC", description: "Complete this to unlock features"),
+                          title: "KYC",
+                          description: "Complete this to unlock features"),
                     ),
 
                     // CustomContainerForToggle(
@@ -143,7 +147,9 @@ class _AccountSettingState extends State<AccountSetting> {
                     //   isSwitched: isSwitched,
                     //   toggleSwitch: _toggleSwitch,
                     // ),
-                    AppSpacer(height: 15,),
+                    AppSpacer(
+                      height: 15,
+                    ),
                     canUseBiometrics
                         ? BuildListTile(
                             icon: AppIcons.biometric,
