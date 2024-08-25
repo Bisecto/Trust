@@ -59,8 +59,11 @@ Future<bool?> alert({
                   ? AppColors.darkModeBackgroundContainerColor
                   : AppColors.white,
               borderRadius: BorderRadius.circular(20),
-              image: const DecorationImage(
-                  image: AssetImage(AppImages.modalBackground),
+              image:   DecorationImage(
+                  image: AssetImage(AppImages.modalBackground,),
+                  //colorFilter: ColorFilter.,
+                  opacity:theme.isDark
+                      ? 0.2:1,
                   fit: BoxFit.cover)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
