@@ -536,7 +536,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                             label: 'Meter Number',
                                             controller: _beneficiaryController,
                                             textInputType: TextInputType.number,
-                                            onChanged: _onInputChanged,
+                                            onFieldSubmitted: _onInputChanged,
                                             validator: (value) {
                                               if (value == null || value.isEmpty) {
                                                 return 'Please enter your SmartCard number';
