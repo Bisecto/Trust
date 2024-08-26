@@ -5,6 +5,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:teller_trust/model/service_model.dart' as serviceModel;
@@ -59,6 +60,7 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
   String _selectedPaymentMethod = 'wallet';
   bool isPaymentAllowed = false;
   late A2CDetailModel a2cDetailModel;
+  XFile? proofImage;
 
   @override
   void initState() {
@@ -200,7 +202,8 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
+                padding:
+                    const EdgeInsets.only(bottom: 10.0, left: 10, right: 10),
                 child: Container(
                     height: 50,
                     decoration: BoxDecoration(
@@ -226,11 +229,11 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                               ),
                               Container(
                                 width:
-                                AppUtils.deviceScreenSize(context).width /
-                                    1.3,
+                                    AppUtils.deviceScreenSize(context).width /
+                                        1.3,
                                 child: const CustomText(
                                   text:
-                                  "Please note that this requires manual verification which may take few minutes",
+                                      "Please note that this requires manual verification which may take few minutes",
                                   weight: FontWeight.bold,
                                   maxLines: 3,
                                   size: 12,
@@ -244,8 +247,7 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
               ),
               BlocConsumer<ProductBloc, ProductState>(
                   bloc: purchaseProductBloc,
-                  listenWhen: (previous, current) =>
-                  current is! ProductInitial,
+                  listenWhen: (previous, current) => current is! ProductInitial,
                   listener: (context, state) async {
                     print(state);
                     if (state is A2CPurchaseSuccess) {
@@ -261,7 +263,7 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                       //     page: LandingPage(studentProfile: state.studentProfile));
                     } else if (state is QuickPayInitiated) {
                       String accessToken =
-                      await SharedPref.getString("access-token");
+                          await SharedPref.getString("access-token");
 
                       AppNavigator.pushAndStackPage(context,
                           page: MakePayment(
@@ -277,8 +279,7 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
 
                       //MSG.warningSnackBar(context, state.error);
 
-                      String firstame =
-                      await SharedPref.getString('firstName');
+                      String firstame = await SharedPref.getString('firstName');
 
                       AppNavigator.pushAndRemovePreviousPages(context,
                           page: SignInWIthAccessPinBiometrics(
@@ -296,7 +297,8 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                   },
                   builder: (context, state) {
                     if ((state is ProductInitial ||
-                        state is PurchaseErrorState)||state is A2CPurchaseSuccess) {
+                            state is PurchaseErrorState) ||
+                        state is A2CPurchaseSuccess) {
                       return SingleChildScrollView(
                         child: Column(
                           children: [
@@ -313,7 +315,7 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                                     height: 90,
                                     child: ListView.builder(
                                       physics:
-                                      const NeverScrollableScrollPhysics(),
+                                          const NeverScrollableScrollPhysics(),
                                       scrollDirection: Axis.horizontal,
                                       // gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                                       //   crossAxisCount: 4,
@@ -336,28 +338,27 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                                                 services[index].name,
                                                 services[index].image,
                                                 theme,
-                                                    () => _handleNetworkSelect(services
+                                                () => _handleNetworkSelect(services
                                                     .firstWhere(
                                                         (service) =>
-                                                    service.name
-                                                        .toLowerCase() ==
-                                                        services[index]
-                                                            .name
-                                                            .toLowerCase(),
-                                                    orElse: () =>
-                                                        serviceModel.Service(
-                                                            image: '',
-                                                            id: '',
-                                                            name: '',
-                                                            slug: '',
-                                                            category: serviceModel
-                                                                .Category(
-                                                                id:
-                                                                '',
-                                                                name:
-                                                                '',
-                                                                slug:
-                                                                '')))
+                                                            service.name
+                                                                .toLowerCase() ==
+                                                            services[index]
+                                                                .name
+                                                                .toLowerCase(),
+                                                        orElse: () =>
+                                                            serviceModel.Service(
+                                                                image: '',
+                                                                id: '',
+                                                                name: '',
+                                                                slug: '',
+                                                                category: serviceModel
+                                                                    .Category(
+                                                                        id: '',
+                                                                        name:
+                                                                            '',
+                                                                        slug:
+                                                                            '')))
                                                     .id)));
                                       },
                                     ),
@@ -370,7 +371,7 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                                   ProductState state) async {
                                 if (state is AccessTokenExpireState) {
                                   String firstame =
-                                  await SharedPref.getString('firstName');
+                                      await SharedPref.getString('firstName');
 
                                   AppNavigator.pushAndRemovePreviousPages(
                                       context,
@@ -385,12 +386,12 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                             ),
                             Padding(
                               padding:
-                              const EdgeInsets.fromLTRB(10.0, 0, 10, 10),
+                                  const EdgeInsets.fromLTRB(10.0, 0, 10, 10),
                               child: Form(
                                   key: _formKey,
                                   child: Column(
                                     crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                     children: [
                                       CustomTextFormField(
                                         hint: '0.00',
@@ -398,18 +399,18 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                                         controller: _selectedAmtController,
                                         textInputType: TextInputType.number,
                                         validator:
-                                        AppValidator.validateTextfield,
+                                            AppValidator.validateTextfield,
                                         widget: SvgPicture.asset(
                                           AppIcons.naira,
                                           color: _selectedAmtController
-                                              .text.isNotEmpty
+                                                  .text.isNotEmpty
                                               ? AppColors.darkGreen
                                               : AppColors.grey,
                                           height: 22,
                                           width: 22,
                                         ),
                                         borderColor: _selectedAmtController
-                                            .text.isNotEmpty
+                                                .text.isNotEmpty
                                             ? AppColors.green
                                             : AppColors.grey,
                                       ),
@@ -418,7 +419,7 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                                       ),
                                       Row(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
+                                            MainAxisAlignment.spaceEvenly,
                                         children: [
                                           //selectAmount("2000"),
                                           selectAmount("200", theme),
@@ -445,14 +446,12 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                                                   context: context,
                                                   title: 'Info',
                                                   subtitle:
-                                                  'Please select a network provider',
-                                                  type:
-                                                  ToastMessageType.info);
+                                                      'Please select a network provider',
+                                                  type: ToastMessageType.info);
                                             }
                                           }
                                         },
-                                        disableButton:
-                                        (!_selectedAmtController
+                                        disableButton: (!_selectedAmtController
                                             .text.isNotEmpty),
                                         text: 'Continue',
                                         borderColor: AppColors.darkGreen,
@@ -474,27 +473,25 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                             Padding(
                               padding: const EdgeInsets.only(bottom: 20.0),
                               child: Container(
-                                //height: 50,
-                                  width: AppUtils.deviceScreenSize(context)
-                                      .width,
+                                  //height: 50,
+                                  width:
+                                      AppUtils.deviceScreenSize(context).width,
                                   decoration: BoxDecoration(
-                                      color: AppColors.lightGreen
-                                          .withOpacity(0.2),
+                                      color:
+                                          AppColors.lightGreen.withOpacity(0.2),
                                       border: Border.all(
-                                          color: AppColors.darkGreen,
-                                          width: 2),
+                                          color: AppColors.darkGreen, width: 2),
                                       // AppColors.lightOrange),
-                                      borderRadius:
-                                      BorderRadius.circular(10)),
+                                      borderRadius: BorderRadius.circular(10)),
                                   child: Padding(
                                     padding: const EdgeInsets.all(5.0),
                                     child: Column(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                       children: [
                                         TextStyles.textHeadings(
                                             textValue:
-                                            "Phone Number you are sending the ${a2cDetailModel.data.recieverContact.name} airtime to:",
+                                                "Phone Number you are sending the ${a2cDetailModel.data.recieverContact.name} airtime to:",
                                             fontWeight: FontWeight.bold,
                                             //maxLines: 3,
                                             textSize: 12,
@@ -514,18 +511,17 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                               strokeWidth: 2,
                               child: Padding(
                                 padding:
-                                const EdgeInsets.fromLTRB(10.0, 0, 10, 0),
+                                    const EdgeInsets.fromLTRB(10.0, 0, 10, 0),
                                 child: ListView.builder(
-                                  physics:
-                                  const NeverScrollableScrollPhysics(),
+                                  physics: const NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
                                   padding: EdgeInsets.zero,
                                   itemCount:
-                                  a2cDetailModel.data.instructions.length,
+                                      a2cDetailModel.data.instructions.length,
                                   itemBuilder: (context, index) {
                                     return Column(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.center,
+                                          CrossAxisAlignment.center,
                                       children: [
                                         SizedBox(
                                           height: 10,
@@ -533,7 +529,7 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                                         if (index == 0)
                                           TextStyles.textHeadings(
                                               textValue:
-                                              "Steps to transfer on ${a2cDetailModel.data.recieverContact.name}",
+                                                  "Steps to transfer on ${a2cDetailModel.data.recieverContact.name}",
                                               fontWeight: FontWeight.bold,
                                               //maxLines: 3,
                                               textSize: 12,
@@ -549,8 +545,8 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                                             a2cDetailModel
                                                 .data.instructions[index]),
                                         if (index ==
-                                            a2cDetailModel.data.instructions
-                                                .length -
+                                            a2cDetailModel
+                                                    .data.instructions.length -
                                                 1)
                                           SizedBox(
                                             height: 10,
@@ -578,9 +574,9 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                                 width: 22,
                               ),
                               borderColor:
-                              _selectedAmtController.text.isNotEmpty
-                                  ? AppColors.green
-                                  : AppColors.grey,
+                                  _selectedAmtController.text.isNotEmpty
+                                      ? AppColors.green
+                                      : AppColors.grey,
                             ),
                             AppSpacer(height: 10),
                             CustomTextFormField(
@@ -604,42 +600,56 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                                   : AppColors.grey,
                             ),
                             AppSpacer(height: 10),
-                            CustomTextFormField(
-                              hint: '',
-                              label: 'Attach Proof of Transfer(Optional)',
-                              enabled: false,
-                              controller: imgController,
-                              textInputType: TextInputType.number,
-                              validator: AppValidator.validateTextfield,
-                              widget: Icon(
-                                Icons.image,
-                                color: imgController.text.isNotEmpty
-                                    ? AppColors.darkGreen
-                                    : AppColors.grey,
-                                size: 22,
-                              ),
-                              suffixIcon: Container(
-                                width: 70,
-                                //height :20,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: AppColors.lightgreen2,
-                                ),
-                                child: Center(
-                                  child: CustomText(
-                                      text: 'Upload',
-                                      size: 14,
-                                      color: AppColors.black),
-                                ),
-                              ),
-                              borderColor: imgController.text.isNotEmpty
-                                  ? AppColors.green
-                                  : AppColors.grey,
-                            ),
+                            GestureDetector(
+                                onTap: () async {
+                                  print(1234);
+                                  final pickedImage = await ImagePicker()
+                                      .pickImage(source: ImageSource.gallery);
+                                  if (pickedImage != null) {
+                                    setState(() {
+                                      proofImage = pickedImage;
+                                      imgController.text = proofImage!.name;
+                                    });
+                                  }
+                                },
+                                child: CustomTextFormField(
+                                  hint: 'Proof of Transfer',
+                                  label: 'Attach Proof of Transfer(Optional)',
+                                  enabled: false,
+                                  controller: imgController,
+                                  textInputType: TextInputType.number,
+                                  validator: AppValidator.validateTextfield,
+                                  widget: Icon(
+                                    Icons.image,
+                                    color: imgController.text.isNotEmpty
+                                        ? AppColors.darkGreen
+                                        : AppColors.grey,
+                                    size: 22,
+                                  ),
+                                  suffixIcon: Container(
+                                    width: 70,
+                                    //height :20,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: AppColors.lightgreen2,
+                                    ),
+                                    child: InkWell(
+                                      child: Center(
+                                        child: CustomText(
+                                            text: 'Upload',
+                                            size: 14,
+                                            color: AppColors.black),
+                                      ),
+                                    ),
+                                  ),
+                                  borderColor: imgController.text.isNotEmpty
+                                      ? AppColors.green
+                                      : AppColors.grey,
+                                )),
                             SizedBox(height: 10),
                             TextStyles.textHeadings(
                                 textValue:
-                                'Please ensure you made the transfer to'
+                                    'Please ensure you made the transfer to'
                                     ' the given number. Traded cash'
                                     ' would be added to your “Tellawallet”',
                                 textSize: 14),
@@ -652,10 +662,10 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                                 purchaseProductBloc.add(ReportTransferEvent(
                                     context,
                                     state.a2cCreateTransactionModel.id,
-                                    ''));
+                                    '',proofImage));
                               },
                               disableButton:
-                              (!_selectedAmtController.text.isNotEmpty),
+                                  (!_selectedAmtController.text.isNotEmpty),
                               text: 'I have made this transfer',
                               borderColor: AppColors.darkGreen,
                               bgColor: AppColors.darkGreen,
@@ -688,27 +698,25 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                             Padding(
                               padding: const EdgeInsets.only(bottom: 20.0),
                               child: Container(
-                                //height: 50,
-                                  width: AppUtils.deviceScreenSize(context)
-                                      .width,
+                                  //height: 50,
+                                  width:
+                                      AppUtils.deviceScreenSize(context).width,
                                   decoration: BoxDecoration(
-                                      color: AppColors.lightGreen
-                                          .withOpacity(0.2),
+                                      color:
+                                          AppColors.lightGreen.withOpacity(0.2),
                                       border: Border.all(
-                                          color: AppColors.darkGreen,
-                                          width: 2),
+                                          color: AppColors.darkGreen, width: 2),
                                       // AppColors.lightOrange),
-                                      borderRadius:
-                                      BorderRadius.circular(10)),
+                                      borderRadius: BorderRadius.circular(10)),
                                   child: Padding(
                                     padding: const EdgeInsets.all(5.0),
                                     child: Column(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                       children: [
                                         TextStyles.textHeadings(
                                             textValue:
-                                            "Phone Number you are sending the ${a2cDetailModel.data.recieverContact.name} airtime to:",
+                                                "Phone Number you are sending the ${a2cDetailModel.data.recieverContact.name} airtime to:",
                                             fontWeight: FontWeight.bold,
                                             //maxLines: 3,
                                             textSize: 12,
@@ -728,18 +736,17 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                               strokeWidth: 2,
                               child: Padding(
                                 padding:
-                                const EdgeInsets.fromLTRB(10.0, 0, 10, 0),
+                                    const EdgeInsets.fromLTRB(10.0, 0, 10, 0),
                                 child: ListView.builder(
-                                  physics:
-                                  const NeverScrollableScrollPhysics(),
+                                  physics: const NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
                                   padding: EdgeInsets.zero,
                                   itemCount:
-                                  a2cDetailModel.data.instructions.length,
+                                      a2cDetailModel.data.instructions.length,
                                   itemBuilder: (context, index) {
                                     return Column(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.center,
+                                          CrossAxisAlignment.center,
                                       children: [
                                         SizedBox(
                                           height: 10,
@@ -747,7 +754,7 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                                         if (index == 0)
                                           TextStyles.textHeadings(
                                               textValue:
-                                              "Steps to transfer on ${a2cDetailModel.data.recieverContact.name}",
+                                                  "Steps to transfer on ${a2cDetailModel.data.recieverContact.name}",
                                               fontWeight: FontWeight.bold,
                                               //maxLines: 3,
                                               textSize: 12,
@@ -763,8 +770,8 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                                             a2cDetailModel
                                                 .data.instructions[index]),
                                         if (index ==
-                                            a2cDetailModel.data.instructions
-                                                .length -
+                                            a2cDetailModel
+                                                    .data.instructions.length -
                                                 1)
                                           SizedBox(
                                             height: 10,
@@ -792,9 +799,9 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                                 width: 22,
                               ),
                               borderColor:
-                              _selectedAmtController.text.isNotEmpty
-                                  ? AppColors.green
-                                  : AppColors.grey,
+                                  _selectedAmtController.text.isNotEmpty
+                                      ? AppColors.green
+                                      : AppColors.grey,
                             ),
                             AppSpacer(height: 10),
                             CustomTextFormField(
@@ -822,28 +829,28 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                                 if (productId != '') {
                                   var transactionPin = '';
                                   transactionPin = await modalSheet
-                                      .showMaterialModalBottomSheet(
-                                      backgroundColor:
-                                      Colors.transparent,
-                                      isDismissible: true,
-                                      shape:
-                                      const RoundedRectangleBorder(
-                                        borderRadius:
-                                        BorderRadius.vertical(
-                                            top: Radius.circular(
-                                                20.0)),
-                                      ),
-                                      context: context,
-                                      builder: (context) => Padding(
-                                        padding:
-                                        const EdgeInsets.only(
-                                            top: 200.0),
-                                        child: ConfirmWithPin(
-                                          context: context,
-                                          title:
-                                          'Input your transaction pin to continue',
-                                        ),
-                                      )) ??
+                                          .showMaterialModalBottomSheet(
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              isDismissible: true,
+                                              shape:
+                                                  const RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.vertical(
+                                                        top: Radius.circular(
+                                                            20.0)),
+                                              ),
+                                              context: context,
+                                              builder: (context) => Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            top: 200.0),
+                                                    child: ConfirmWithPin(
+                                                      context: context,
+                                                      title:
+                                                          'Input your transaction pin to continue',
+                                                    ),
+                                                  )) ??
                                       "";
                                   print(transactionPin);
                                   if (transactionPin != '') {
@@ -861,7 +868,7 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                                 }
                               },
                               disableButton:
-                              (!_selectedAmtController.text.isNotEmpty),
+                                  (!_selectedAmtController.text.isNotEmpty),
                               text: 'Continue',
                               borderColor: AppColors.darkGreen,
                               bgColor: AppColors.darkGreen,

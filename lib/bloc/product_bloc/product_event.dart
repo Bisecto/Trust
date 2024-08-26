@@ -85,11 +85,13 @@ class GetA2CDetailsEvent extends ProductEvent {
   final BuildContext context;
   final String transactionId;
   final String accessPIN;
+  final XFile? proofImage;
 
   ReportTransferEvent(
     this.context,
     this.transactionId,
     this.accessPIN,
+      this.proofImage,
   );
 }
 class CreateA2CDetailsEvent extends ProductEvent {

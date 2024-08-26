@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:teller_trust/model/electricity_verify_model.dart';
 import 'package:teller_trust/model/product_model.dart';
 import 'package:teller_trust/model/transactionHistory.dart';
@@ -481,9 +482,9 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     String accessToken = await SharedPref.getString("access-token");
     //try {
 
-    var reportA2cResponse = await appRepository.appPostRequest(
+    var reportA2cResponse = await appRepository.appPostRequestWithSingleImages(
       {},
-      '${AppApis.reportA2c}/${event.transactionId}',
+      '${AppApis.reportA2c}/${event.transactionId}',event.proofImage,
       accessToken: accessToken,
       accessPIN: event.accessPIN,
     );

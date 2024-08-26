@@ -43,7 +43,11 @@ class ElectricityPurchase extends StatefulWidget {
   final mainCategory.Category category;
   final WalletInfo walletInfo;
 
-  const ElectricityPurchase({super.key, required this.category, required this.walletInfo,});
+  const ElectricityPurchase({
+    super.key,
+    required this.category,
+    required this.walletInfo,
+  });
 
   @override
   State<ElectricityPurchase> createState() => _ElectricityPurchaseState();
@@ -63,14 +67,17 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
   bool isSaveAsBeneficiarySelected = false;
   String beneficiaryName = '';
 
-  CancelableOperation<void>? _cancelableOperation; // Store the current operation
+  CancelableOperation<void>?
+      _cancelableOperation; // Store the current operation
   bool isShow = false;
+
   void _onInputChanged(String value) async {
     if (value.length > 9 && selectedElectricityProviderId.isNotEmpty) {
       // Cancel the previous request if it exists
       _cancelableOperation?.cancel();
 
-      String mainServiceId = await handleNetworkSelect(selectedElectricityProviderId);
+      String mainServiceId =
+          await handleNetworkSelect(selectedElectricityProviderId);
 
       // Create a new cancelable operation for the current request
       _cancelableOperation = CancelableOperation.fromFuture(
@@ -157,7 +164,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
     final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
 
     return Container(
-      height: AppUtils.deviceScreenSize(context).height/ 1.1,
+      height: AppUtils.deviceScreenSize(context).height / 1.1,
       decoration: BoxDecoration(
           color: theme.isDark
               ? AppColors.darkModeBackgroundColor
@@ -167,8 +174,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
       child: Column(
         children: [
           Container(
-            height: (AppUtils.deviceScreenSize(context).height/ 1.2)-50,
-
+            height: (AppUtils.deviceScreenSize(context).height / 1.2) - 50,
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(0.0),
@@ -177,7 +183,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                     BlocConsumer<ProductBloc, ProductState>(
                         bloc: purchaseProductBloc,
                         listenWhen: (previous, current) =>
-                        current is! ProductInitial,
+                            current is! ProductInitial,
                         listener: (context, state) async {
                           print(state);
                           if (state is PurchaseSuccess) {
@@ -204,7 +210,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                             //     page: LandingPage(studentProfile: state.studentProfile));
                           } else if (state is QuickPayInitiated) {
                             String accessToken =
-                            await SharedPref.getString("access-token");
+                                await SharedPref.getString("access-token");
 
                             AppNavigator.pushAndStackPage(context,
                                 page: MakePayment(
@@ -213,7 +219,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                 ));
                           } else if (state is AccessTokenExpireState) {
                             String firstame =
-                            await SharedPref.getString('firstName');
+                                await SharedPref.getString('firstName');
 
                             AppNavigator.pushAndRemovePreviousPages(context,
                                 page: SignInWIthAccessPinBiometrics(
@@ -266,7 +272,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                                 color: Colors.grey[300],
                                                 child: const Center(
                                                     child:
-                                                    CircularProgressIndicator()),
+                                                        CircularProgressIndicator()),
                                               );
                                             },
                                           ),
@@ -277,7 +283,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                           right: 10,
                                           child: Row(
                                             mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
                                               TextStyles.textHeadings(
                                                 textValue: 'Electricity',
@@ -301,7 +307,6 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                                   Icons.cancel,
                                                   color: Colors.grey,
                                                   size: 30,
- 
                                                 ),
                                               ),
                                             ],
@@ -396,28 +401,33 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                         context: context,
                                         builder: (context) => Padding(
                                           padding:
-                                          const EdgeInsets.only(top: 200.0),
+                                              const EdgeInsets.only(top: 200.0),
                                           child: ElectricityProvider(
                                             onElectricityProviderSelected:
                                                 (String name, String imageUrl,
-                                                String id) async {
+                                                    String id) async {
                                               setState(() {
-                                                selectedElectricityProvider = name;
+                                                selectedElectricityProvider =
+                                                    name;
                                                 selectedElectricityProviderImage =
                                                     imageUrl;
-                                                selectedElectricityProviderId = id;
+                                                selectedElectricityProviderId =
+                                                    id;
                                               });
-                                              print(selectedElectricityProviderId);
-                                              Navigator.pop(context); // Close modal
-                                              String mainServiceId =
-                                              await handleNetworkSelect(
+                                              print(
                                                   selectedElectricityProviderId);
+                                              Navigator.pop(
+                                                  context); // Close modal
+                                              String mainServiceId =
+                                                  await handleNetworkSelect(
+                                                      selectedElectricityProviderId);
                                               if (_beneficiaryController
-                                                  .text.length >
-                                                  9 &&
+                                                          .text.length >
+                                                      9 &&
                                                   mainServiceId != '') {
-                                                _onInputChanged(_beneficiaryController
-                                                    .text);
+                                                _onInputChanged(
+                                                    _beneficiaryController
+                                                        .text);
                                                 // verifyEntityNumberProductBloc.add(
                                                 //     VerifyEntityNumberEvent(
                                                 //         mainServiceId,
@@ -437,7 +447,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                       decoration: BoxDecoration(
                                         color: theme.isDark
                                             ? AppColors
-                                            .darkModeBackgroundContainerColor
+                                                .darkModeBackgroundContainerColor
                                             : AppColors.white,
                                         border: Border.all(
                                           color: selectedServiceId.isNotEmpty
@@ -445,13 +455,15 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                               : AppColors.grey,
                                           width: 1.0,
                                         ),
-                                        borderRadius: BorderRadius.circular(10.0),
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
                                       ),
                                       child: Padding(
-                                        padding: const EdgeInsets.only(left: 25.0),
+                                        padding:
+                                            const EdgeInsets.only(left: 25.0),
                                         child: Row(
                                           mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             if (selectedElectricityProvider !=
                                                 "Choose Provider")
@@ -467,18 +479,19 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                               ),
                                             Expanded(
                                               child: CustomText(
-                                                text: selectedElectricityProvider,
+                                                text:
+                                                    selectedElectricityProvider,
                                                 size: 14,
                                                 color:
-                                                selectedElectricityProvider !=
-                                                    "Choose Provider"
-                                                    ? (theme.isDark
-                                                    ? Colors.white
-                                                    : Colors.black)
-                                                    : (theme.isDark
-                                                    ? Colors.grey
-                                                    : AppColors
-                                                    .lightDivider),
+                                                    selectedElectricityProvider !=
+                                                            "Choose Provider"
+                                                        ? (theme.isDark
+                                                            ? Colors.white
+                                                            : Colors.black)
+                                                        : (theme.isDark
+                                                            ? Colors.grey
+                                                            : AppColors
+                                                                .lightDivider),
                                               ),
                                             ),
                                             const Icon(Icons.arrow_drop_down),
@@ -495,7 +508,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                       key: _formKey,
                                       child: Column(
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                         children: [
                                           CustomTextFormField(
                                             hint: '0.00',
@@ -503,16 +516,16 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                             controller: _selectedAmtController,
                                             textInputType: TextInputType.number,
                                             validator:
-                                            AppValidator.validateTextfield,
+                                                AppValidator.validateTextfield,
                                             widget: SvgPicture.asset(
                                               AppIcons.naira,
                                               color: _selectedAmtController
-                                                  .text.isNotEmpty
+                                                      .text.isNotEmpty
                                                   ? AppColors.darkGreen
                                                   : AppColors.grey,
                                             ),
                                             borderColor: _selectedAmtController
-                                                .text.isNotEmpty
+                                                    .text.isNotEmpty
                                                 ? AppColors.green
                                                 : AppColors.grey,
                                           ),
@@ -521,7 +534,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                           ),
                                           Row(
                                             mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
+                                                MainAxisAlignment.spaceEvenly,
                                             children: [
                                               //selectAmount("2000"),
                                               selectAmount("1000", theme),
@@ -538,70 +551,118 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                             textInputType: TextInputType.number,
                                             onFieldSubmitted: _onInputChanged,
                                             validator: (value) {
-                                              if (value == null || value.isEmpty) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
                                                 return 'Please enter your SmartCard number';
                                               } else if (value.length < 9) {
                                                 return 'Invalid SmartCard number';
                                               }
                                               return null;
                                             },
-                                            borderColor: _beneficiaryController.text.isNotEmpty ? AppColors.green : AppColors.grey,
+                                            borderColor: _beneficiaryController
+                                                    .text.isNotEmpty
+                                                ? AppColors.green
+                                                : AppColors.grey,
                                             widget: const Icon(Icons.numbers),
                                           ),
-                                          if (_beneficiaryController.text.length > 9 && selectedElectricityProviderId.isNotEmpty)
-                                            BlocConsumer<ProductBloc, ProductState>(
-                                              bloc: verifyEntityNumberProductBloc,
+                                          if (_beneficiaryController
+                                                      .text.length >
+                                                  9 &&
+                                              selectedElectricityProviderId
+                                                  .isNotEmpty)
+                                            BlocConsumer<ProductBloc,
+                                                ProductState>(
+                                              bloc:
+                                                  verifyEntityNumberProductBloc,
                                               listener: (context, state) {
-                                                if (state is EntityNumberErrorState) {
+                                                if (state
+                                                    is EntityNumberErrorState) {
                                                   // Handle error state
                                                 }
                                               },
                                               builder: (context, state) {
-                                                if (state is EntityNumberSuccessState) {
-                                                  final res = state.electricityVerifiedData;
+                                                if (state
+                                                    is EntityNumberSuccessState) {
+                                                  final res = state
+                                                      .electricityVerifiedData;
                                                   return Padding(
-                                                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 25.0),
+                                                    padding: const EdgeInsets
+                                                        .fromLTRB(
+                                                        10, 10, 10, 25.0),
                                                     child: Column(
                                                       children: [
                                                         Row(
                                                           children: [
                                                             Container(
-                                                              decoration: BoxDecoration(
-                                                                color: AppColors.lightgreen2,
-                                                                border: Border.all(color: AppColors.darkGreen),
-                                                                borderRadius: BorderRadius.circular(10),
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: AppColors
+                                                                    .lightgreen2,
+                                                                border: Border.all(
+                                                                    color: AppColors
+                                                                        .darkGreen),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10),
                                                               ),
                                                               child: Padding(
-                                                                padding: const EdgeInsets.all(5.0),
-                                                                child: CustomText(
-                                                                  text: res.name,
-                                                                  color: AppColors.green,
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .all(
+                                                                        5.0),
+                                                                child:
+                                                                    CustomText(
+                                                                  text:
+                                                                      res.name,
+                                                                  color:
+                                                                      AppColors
+                                                                          .green,
                                                                 ),
                                                               ),
                                                             ),
                                                           ],
                                                         ),
                                                         Row(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
                                                           children: [
                                                             GestureDetector(
                                                               onTap: () {
                                                                 setState(() {
-                                                                  isShow = !isShow;
+                                                                  isShow =
+                                                                      !isShow;
                                                                 });
                                                               },
                                                               child: Align(
-                                                                alignment: Alignment.center,
-                                                                child: Container(
-                                                                  decoration: BoxDecoration(
-                                                                    border: Border.all(color: AppColors.darkGreen),
-                                                                    borderRadius: BorderRadius.circular(10),
+                                                                alignment:
+                                                                    Alignment
+                                                                        .center,
+                                                                child:
+                                                                    Container(
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    border: Border.all(
+                                                                        color: AppColors
+                                                                            .darkGreen),
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10),
                                                                   ),
-                                                                  child: Padding(
-                                                                    padding: const EdgeInsets.all(5.0),
-                                                                    child: CustomText(
-                                                                      text: isShow ? "Hide order review" : "Show order review",
-                                                                      color: AppColors.green,
+                                                                  child:
+                                                                      Padding(
+                                                                    padding:
+                                                                        const EdgeInsets
+                                                                            .all(
+                                                                            5.0),
+                                                                    child:
+                                                                        CustomText(
+                                                                      text: isShow
+                                                                          ? "Hide order review"
+                                                                          : "Show order review",
+                                                                      color: AppColors
+                                                                          .green,
                                                                     ),
                                                                   ),
                                                                 ),
@@ -609,23 +670,46 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                                             ),
                                                           ],
                                                         ),
-                                                        if (isShow) const SizedBox(height: 10),
+                                                        if (isShow)
+                                                          const SizedBox(
+                                                              height: 10),
                                                         if (isShow)
                                                           DottedBorder(
-                                                            borderType: BorderType.RRect,
-                                                            radius: const Radius.circular(10),
-                                                            dashPattern: const [10, 10],
-                                                            color: AppColors.lightgrey,
+                                                            borderType:
+                                                                BorderType
+                                                                    .RRect,
+                                                            radius: const Radius
+                                                                .circular(10),
+                                                            dashPattern: const [
+                                                              10,
+                                                              10
+                                                            ],
+                                                            color: AppColors
+                                                                .lightgrey,
                                                             strokeWidth: 2,
                                                             child: Padding(
-                                                              padding: const EdgeInsets.all(10.0),
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(
+                                                                      10.0),
                                                               child: Column(
                                                                 children: [
-                                                                  buildInfoRow('Meter Number', res.meterNo),
-                                                                  buildInfoRow('Name', res.name),
-                                                                  buildInfoRow('Meter Type', res.vendType),
-                                                                  buildInfoRow('Outstanding', res.outstanding.toString()),
-                                                                  buildInfoRow('Address', res.address),
+                                                                  buildInfoRow(
+                                                                      'Meter Number',
+                                                                      res.meterNo),
+                                                                  buildInfoRow(
+                                                                      'Name',
+                                                                      res.name),
+                                                                  buildInfoRow(
+                                                                      'Meter Type',
+                                                                      res.vendType),
+                                                                  buildInfoRow(
+                                                                      'Outstanding',
+                                                                      res.outstanding
+                                                                          .toString()),
+                                                                  buildInfoRow(
+                                                                      'Address',
+                                                                      res.address),
                                                                 ],
                                                               ),
                                                             ),
@@ -633,29 +717,39 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                                       ],
                                                     ),
                                                   );
-                                                } else if (state is EntityNumberErrorState) {
+                                                } else if (state
+                                                    is EntityNumberErrorState) {
                                                   final error = state.error;
 
-                                                  return  Padding(
-                                                    padding: EdgeInsets.fromLTRB(10, 0, 10, 25.0),
+                                                  return Padding(
+                                                    padding:
+                                                        EdgeInsets.fromLTRB(
+                                                            10, 0, 10, 25.0),
                                                     child: CustomText(
-                                                      text: error, //"Invalid Meter number",
+                                                      text: error,
+                                                      //"Invalid Meter number",
                                                       size: 14,
                                                       color: AppColors.red,
                                                     ),
                                                   );
                                                 } else {
                                                   return Padding(
-                                                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 25.0),
+                                                    padding: const EdgeInsets
+                                                        .fromLTRB(
+                                                        10, 10, 10, 25.0),
                                                     child: CustomText(
-                                                      text: "Verifying user.....",
+                                                      text:
+                                                          "Verifying user.....",
                                                       size: 14,
-                                                      color: theme.isDark ? AppColors.white : AppColors.black,
+                                                      color: theme.isDark
+                                                          ? AppColors.white
+                                                          : AppColors.black,
                                                     ),
                                                   );
                                                 }
                                               },
-                                            ), if (serviceID.isNotEmpty)
+                                            ),
+                                          if (serviceID.isNotEmpty)
                                             SizedBox(
                                               height: 10,
                                             ),
@@ -673,10 +767,11 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                             height: 310,
                                             child: PaymentMethodScreen(
                                               amtToPay: _selectedAmtController
-                                                  .text.isEmpty
+                                                      .text.isEmpty
                                                   ? '0'
                                                   : _selectedAmtController.text,
-                                              onPaymentMethodSelected: (method) {
+                                              onPaymentMethodSelected:
+                                                  (method) {
                                                 // No need to use setState here directly as it might be called during the build phase
                                                 Future.microtask(() {
                                                   if (mounted) {
@@ -693,7 +788,8 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                                 Future.microtask(() {
                                                   if (mounted) {
                                                     setState(() {
-                                                      isPaymentAllowed = allowed;
+                                                      isPaymentAllowed =
+                                                          allowed;
                                                       // print(isPaymentAllowed);
                                                     });
                                                   }
@@ -710,7 +806,8 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                                   }
                                                 });
                                               },
-                                              isSaveAsBeneficiarySelected: (value) {
+                                              isSaveAsBeneficiarySelected:
+                                                  (value) {
                                                 print(value);
                                                 Future.microtask(() {
                                                   if (mounted) {
@@ -722,7 +819,8 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                                   }
                                                 });
                                               },
-                                              number: _beneficiaryController.text,
+                                              number:
+                                                  _beneficiaryController.text,
                                             ),
                                           ),
                                           const SizedBox(
@@ -798,7 +896,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(bottom: 20,left: 20,right: 20),
+            padding: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
             child: FormButton(
               onPressed: () async {
                 print(_selectedPaymentMethod);
@@ -826,21 +924,23 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                         beneficiaryName));
                   } else {
                     var transactionPin = '';
-                    transactionPin = await modalSheet.showMaterialModalBottomSheet(
-                        backgroundColor: Colors.transparent,
-                        isDismissible: true,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius:
-                          BorderRadius.vertical(top: Radius.circular(20.0)),
-                        ),
-                        context: context,
-                        builder: (context) => Padding(
-                          padding: const EdgeInsets.only(top: 200.0),
-                          child: ConfirmWithPin(
+                    transactionPin =
+                        await modalSheet.showMaterialModalBottomSheet(
+                            backgroundColor: Colors.transparent,
+                            isDismissible: true,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(20.0)),
+                            ),
                             context: context,
-                            title: 'Input your transaction pin to continue',
-                          ),
-                        ));
+                            builder: (context) => Padding(
+                                  padding: const EdgeInsets.only(top: 200.0),
+                                  child: ConfirmWithPin(
+                                    context: context,
+                                    title:
+                                        'Input your transaction pin to continue',
+                                  ),
+                                ));
                     print(transactionPin);
                     if (transactionPin != '') {
                       setState(() {
@@ -863,8 +963,8 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                   }
                 }
               },
-              disableButton:
-              (!isPaymentAllowed || _beneficiaryController.text.length < 10),
+              disableButton: (!isPaymentAllowed ||
+                  _beneficiaryController.text.length < 10),
               text: 'Purchase Electricity',
               borderColor: AppColors.darkGreen,
               bgColor: AppColors.darkGreen,
@@ -876,6 +976,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
       ),
     );
   }
+
   Widget buildInfoRow(String title, String value) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -905,6 +1006,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
       ],
     );
   }
+
   Widget selectAmount(String amt, AdaptiveThemeMode theme) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
