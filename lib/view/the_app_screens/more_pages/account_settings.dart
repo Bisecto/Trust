@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -5,13 +6,12 @@ import 'package:flutter_svg/svg.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/model/customer_account_model.dart';
-import 'package:teller_trust/model/customer_profile.dart';
+import 'package:teller_trust/repository/app_repository.dart';
 import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/res/app_spacer.dart';
 import 'package:teller_trust/view/the_app_screens/kyc_verification/kyc_intro_page.dart';
-import 'package:teller_trust/view/the_app_screens/more_pages/change_password.dart';
-import 'package:teller_trust/view/the_app_screens/more_pages/change_pin/old_pin.dart';
 
+import '../../../res/apis.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/app_router.dart';
 import '../../../utills/app_navigator.dart';
@@ -24,7 +24,7 @@ import '../../widgets/custom_container.dart';
 class AccountSetting extends StatefulWidget {
   CustomerAccountModel? customerAccount;
 
-  AccountSetting({super.key,  this.customerAccount});
+  AccountSetting({super.key, this.customerAccount});
 
   @override
   State<AccountSetting> createState() => _AccountSettingState();
@@ -40,6 +40,7 @@ class _AccountSettingState extends State<AccountSetting> {
   }
 
   bool isBiometricEnabled = false;
+  bool isNotificationEnabled = false;
   bool canUseBiometrics = false;
   final LocalAuthentication auth = LocalAuthentication();
 
@@ -67,8 +68,12 @@ class _AccountSettingState extends State<AccountSetting> {
 
   Future<void> getCanUseBiometrics() async {
     bool biometricEnabled = await SharedPref.getBool('biometric') ?? false;
+    bool notificationEnabled = await SharedPref.getBool('notification') ?? true;
     setState(() {
       isBiometricEnabled = biometricEnabled;
+      isNotificationEnabled = notificationEnabled;
+      print("notificationEnabled");
+      print(isNotificationEnabled);
     });
   }
 
@@ -129,16 +134,16 @@ class _AccountSettingState extends State<AccountSetting> {
                     //       title: "Withdrawal Account",
                     //       description: "View/Add Withdrawal account"),
                     // ),
-                    if(widget.customerAccount==null)
-                    InkWell(
-                      onTap: () {
-                        AppNavigator.pushAndStackPage(context,
-                            page: const KYCIntro());
-                      },
-                      child: const CustomContainerFirTitleDesc(
-                          title: "KYC",
-                          description: "Complete this to unlock features"),
-                    ),
+                    if (widget.customerAccount == null)
+                      InkWell(
+                        onTap: () {
+                          AppNavigator.pushAndStackPage(context,
+                              page: const KYCIntro());
+                        },
+                        child: const CustomContainerFirTitleDesc(
+                            title: "KYC",
+                            description: "Complete this to unlock features"),
+                      ),
 
                     // CustomContainerForToggle(
                     //   title: "Use 4-Digit Access Pin",
@@ -149,6 +154,34 @@ class _AccountSettingState extends State<AccountSetting> {
                     // ),
                     AppSpacer(
                       height: 15,
+                    ),
+                    BuildListTile(
+                      icon: AppIcons.notification,
+                      title: "Enable Notification",
+                      onPressed: () {},
+                      trailingWidget: CupertinoSwitch(
+                        value: isNotificationEnabled,
+                        onChanged: (value) async {
+                          setState(() {
+                            print(value);
+                            isNotificationEnabled = value;
+                            SharedPref.putBool('notification', value);
+
+                          });
+                          String accessToken =
+                              await SharedPref.getString("access-token");
+                          AppRepository appRepository = AppRepository();
+                          String? token =
+                              await FirebaseMessaging.instance.getToken();
+                          var respons = await appRepository.appPutRequest({
+                            "fcmToken": token,
+                            "isSubscribe": value
+                          }, "${AppApis.appBaseUrl}/user/c/enable-push-message",
+                              accessToken: accessToken);
+                          print(respons.body);
+                        },
+                        activeColor: AppColors.darkGreen,
+                      ),
                     ),
                     canUseBiometrics
                         ? BuildListTile(
