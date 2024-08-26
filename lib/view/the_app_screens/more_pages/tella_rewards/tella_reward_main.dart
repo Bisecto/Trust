@@ -91,17 +91,19 @@ class _TellaPointMainPageState extends State<TellaPointMainPage> {
             height: 50,
             width: AppUtils.deviceScreenSize(context).width,
             decoration: BoxDecoration(
-              //color: Colors.grey[300],
-                border: Border.all(color: AppColors.lightPrimaryGreen),
-                borderRadius: BorderRadius.circular(20.0)),
+              border: Border.all(color: AppColors.lightPrimaryGreen),
+              borderRadius: BorderRadius.circular(0.0),
+            ),
             child: TabBar(
               indicator: BoxDecoration(
-                  color: AppColors.green,
-                  borderRadius: BorderRadius.circular(25.0)),
+                color: AppColors.green,
+                borderRadius: BorderRadius.circular(0.0),
+              ),
               indicatorSize: TabBarIndicatorSize.tab,
               indicatorWeight: 0,
               labelColor: Colors.white,
               unselectedLabelColor: Colors.grey,
+              indicatorColor: Colors.transparent, // Set to transparent to remove line
               tabs: const [
                 Tab(
                   text: 'Manage Points',
@@ -113,14 +115,15 @@ class _TellaPointMainPageState extends State<TellaPointMainPage> {
             ),
           ),
           SizedBox(
-            height: AppUtils.deviceScreenSize(context).height-150, // Set an appropriate height
+            height: AppUtils.deviceScreenSize(context).height - 150, // Set an appropriate height
             width: AppUtils.deviceScreenSize(context).width,
             child: TabBarView(
               children: [
-                TellaManagePoint(), TellaPointsHistory()],
+                TellaManagePoint(),
+                TellaPointsHistory(),
+              ],
             ),
-          )
-          //quickActionsWidget(),
+          ),
         ],
       ),
     );
