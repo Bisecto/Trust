@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../res/app_colors.dart';
+import 'app_custom_text.dart';
+
 class DropDown extends StatefulWidget {
   final String selectedValue;
   final String label;
@@ -33,7 +36,7 @@ class DropDown extends StatefulWidget {
     this.color,
     this.borderRadius = 4,
     this.dropIconColor,
-    this.textSize = 16,
+    this.textSize = 12,
   }) : super(key: key);
 
   @override
@@ -58,9 +61,10 @@ class _DropDownState extends State<DropDown> {
         widget.showLabel
             ? Container(
           margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-          child: Text(
-            widget.label,
-            style: TextStyle(fontSize: widget.textSize, fontWeight: FontWeight.w500, color: widget.labelColor ?? widget.color ?? Colors.black87),
+          child: CustomText(
+           text: widget.label,
+            size: widget.textSize,
+            color: widget.labelColor ?? widget.color ?? AppColors.textColor2,
           ),
         )
             : const SizedBox.shrink(),
