@@ -1,7 +1,7 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
+//import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
@@ -55,8 +55,8 @@ class _DataPurchaseState extends State<DataPurchase> {
   String selectedDataPlanId = '';
   String selectedServiceId = '';
   bool isPaymentAllowed = false;
-  final FlutterContactPicker _contactPicker = FlutterContactPicker();
-  Contact? contacts;
+  // final FlutterContactPicker _contactPicker = FlutterContactPicker();
+  // Contact? contacts;
 
   @override
   void initState() {
@@ -397,17 +397,17 @@ class _DataPurchaseState extends State<DataPurchase> {
                                             suffixIcon: GestureDetector(
                                               onTap: () async {
                                                 //contacts.clear();
-                                                Contact? contact =
-                                                await _contactPicker
-                                                    .selectContact();
-                                                setState(() {
-                                                  // contacts = contact!.fullName==null
-                                                  //     ? null
-                                                  //     : contact;
-                                                  // print(contacts);
-                                                  _beneficiaryController.text =
-                                                      contact!.phoneNumbers!.first;
-                                                });
+                                                // Contact? contact =
+                                                // await _contactPicker
+                                                //     .selectContact();
+                                                // setState(() {
+                                                //   // contacts = contact!.fullName==null
+                                                //   //     ? null
+                                                //   //     : contact;
+                                                //   // print(contacts);
+                                                //   _beneficiaryController.text =
+                                                //       contact!.phoneNumbers!.first;
+                                                // });
                                               },
                                               child: Icon(
                                                   Icons.contact_page_outlined,
