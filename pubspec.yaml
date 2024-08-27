@@ -34,7 +34,7 @@ dependencies:
   dio: any # specify a version if known
   flutter_pw_validator: ^1.5.0
   rflutter_alert: ^2.0.6
-  flutter_vibrate: ^1.3.0
+  #flutter_vibrate: ^1.3.0
   loading_animation_widget: ^1.2.0+2
   shimmer_animation: any # specify a version if known
   dotted_border: ^2.1.0
@@ -54,7 +54,7 @@ dependencies:
   percent_indicator: ^4.2.3
   infinite_scroll_pagination:
   encrypt: ^5.0.0
-  flutter_native_contact_picker: ^0.0.7
+  #flutter_native_contact_picker: ^0.0.7
   async:
   firebase_core: ^2.24.2
   firebase_messaging:
