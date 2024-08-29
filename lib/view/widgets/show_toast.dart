@@ -65,71 +65,74 @@ Future<bool?> alert({
                   opacity:theme.isDark
                       ? 0.2:1,
                   fit: BoxFit.cover)),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Container(
-                      height: 50,
-                      width: 50,
-                      decoration: BoxDecoration(
-                          color:
-                          theme.isDark ? AppColors.red : Colors.transparent,
-                          border: Border.all(
-                              color: theme.isDark
-                                  ? AppColors.red
-                                  : AppColors.green),
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Center(
-                          child: Icon(
-                            Icons.arrow_back,
-                            color:
-                            theme.isDark ? AppColors.white : AppColors.black,
-                          )),
-                    ),
-                  ),
-                ),
-              ),
-              Column(
-                children: [
-                  GestureDetector(onTap:(){                  Navigator.pop(context);
-                  },child: Lottie.asset(_getImage(alertType), height: 120, width: 120)),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  TextStyles.textHeadings(
-                    textValue: title,
-                    textColor: theme.isDark ? AppColors.white : AppColors.black,
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  Center(
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Align(
+                    alignment: Alignment.topLeft,
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: CustomText(
-                        text: subtitle,
-                        color:
-                        theme.isDark ? AppColors.white : AppColors.black,
-                        size: 14,
-                        maxLines: 5,
-                        textAlign: TextAlign.center,
+                      padding: const EdgeInsets.all(15.0),
+                      child: Container(
+                        height: 50,
+                        width: 50,
+                        decoration: BoxDecoration(
+                            color:
+                            theme.isDark ? AppColors.red : Colors.transparent,
+                            border: Border.all(
+                                color: theme.isDark
+                                    ? AppColors.red
+                                    : AppColors.green),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Center(
+                            child: Icon(
+                              Icons.arrow_back,
+                              color:
+                              theme.isDark ? AppColors.white : AppColors.black,
+                            )),
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 20,
-                  )
-                ],
-              )
-            ],
+                ),
+                Column(
+                  children: [
+                    GestureDetector(onTap:(){                  Navigator.pop(context);
+                    },child: Lottie.asset(_getImage(alertType), height: 120, width: 120)),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    TextStyles.textHeadings(
+                      textValue: title,
+                      textColor: theme.isDark ? AppColors.white : AppColors.black,
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: CustomText(
+                          text: subtitle,
+                          color:
+                          theme.isDark ? AppColors.white : AppColors.black,
+                          size: 14,
+                          maxLines: 5,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    )
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       );
