@@ -102,7 +102,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                         additionalInfo: _selectedPaymentMethod == 'wallet' &&
                                 double.parse(widget.amtToPay) >
                                     double.parse(walletInfo.balance.toString())
-                            ? const Padding(
+                            ?  Padding(
                                 padding: EdgeInsets.only(left: 16, top: 4),
                                 child: Row(
                                   children: [
@@ -112,13 +112,16 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                                       size: 10,
                                     ),
                                     SizedBox(width: 4),
-                                    CustomText(
-                                      text:
-                                          'Insufficient Funds. Fund your wallet to enjoy benefits',
-                                      weight: FontWeight.bold,
-                                      size: 10,
-                                      color: AppColors.orange,
-                                      maxLines: 2,
+                                    SizedBox(
+                                      width:AppUtils.deviceScreenSize(context).width/1.5,
+                                      child: CustomText(
+                                        text:
+                                            'Insufficient Funds.',
+                                        weight: FontWeight.bold,
+                                        size: 10,
+                                        color: AppColors.orange,
+                                        maxLines: 3,
+                                      ),
                                     ),
                                   ],
                                 ),

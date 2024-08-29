@@ -13,6 +13,7 @@ import 'package:teller_trust/view/auth/sign_in_screen.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/get_help.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/legal.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/notification.dart';
+import 'package:teller_trust/view/the_app_screens/more_pages/profile_details.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/security_page.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/tella_rewards/tella_manage_point.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/tella_rewards/tella_reward_main.dart';
@@ -345,7 +346,8 @@ class _MorePageState extends State<MorePage> {
           // Use user data here
           return InkWell(
             onTap: () {
-              print(json.encode(state.customerProfile));
+              AppNavigator.pushAndStackPage(context, page: const ProfileDetails());
+              //print(json.encode(state.customerProfile));
             },
             child: SizedBox(
               height: 40,

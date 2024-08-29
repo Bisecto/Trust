@@ -4,6 +4,7 @@ import 'package:teller_trust/model/wallet_info.dart';
 import 'package:teller_trust/res/app_colors.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
 import '../../../bloc/app_bloc/app_bloc.dart';
+import '../../../utills/app_utils.dart';
 
 class PaymentMethodScreen extends StatefulWidget {
   final String amtToPay;
@@ -76,7 +77,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                         additionalInfo: _selectedPaymentMethod == 'wallet' &&
                                 double.parse(widget.amtToPay) >
                                     double.parse(walletInfo.balance.toString())
-                            ? const Padding(
+                            ?  Padding(
                                 padding:
                                     EdgeInsets.only(left: 16, top: 4),
                                 child: Row(
@@ -86,13 +87,17 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                                       color: Colors.orange,
                                       size: 10,
                                     ),
-                                    SizedBox(width: 4),
-                                    CustomText(
-                                      text:
-                                          'Insufficient Funds. Fund your wallet to enjoy benefits',
-                                      weight: FontWeight.bold,
-                                      size: 10,
-                                      color: AppColors.orange,
+                                    SizedBox(width: 5),
+                                    SizedBox(
+                                      width:AppUtils.deviceScreenSize(context).width/2,
+                                      child: CustomText(
+                                        text:
+                                            'Insufficient Funds. Fund your wallet to enjoy benefits',
+                                        weight: FontWeight.bold,
+                                        size: 10,
+                                        color: AppColors.orange,
+                                        maxLines: 2,
+                                      ),
                                     ),
                                   ],
                                 ),
