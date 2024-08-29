@@ -395,6 +395,7 @@ class _SendToHeaderWidgetState extends State<SendToHeaderWidget> {
         GestureDetector(
           onTap: () async {
             print(controller.text);
+            if(balance!='0'){
             var enteredAmount = '0';
             enteredAmount = await modalSheet.showMaterialModalBottomSheet(
                   backgroundColor: theme.isDark
@@ -431,7 +432,7 @@ class _SendToHeaderWidgetState extends State<SendToHeaderWidget> {
                 //widget.amountTransferred = enteredAmount;
               });
             } else {}
-          },
+          }},
           child: Padding(
             padding: const EdgeInsets.all(10.0),
             child: CustomTextFormField(
