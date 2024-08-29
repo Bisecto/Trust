@@ -62,7 +62,7 @@ class _TellaCardRequestState extends State<TellaCardRequest> {
                 selectedValue: _selectedPlan,
                 color: AppColors.white,
                 borderRadius: 12,
-                height: 50,
+                height: 50, onChanged: (String value) {  },
               ),
               DropDown(
                 //controller: _genderController,
@@ -73,7 +73,7 @@ class _TellaCardRequestState extends State<TellaCardRequest> {
                 selectedValue: _selectedPlan,
                 color: AppColors.white,
                 borderRadius: 12,
-                height: 50,
+                height: 50, onChanged: (String value) {  },
               ),
               Form(
                   key: _formKey,

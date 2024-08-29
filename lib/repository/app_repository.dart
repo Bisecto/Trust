@@ -127,7 +127,7 @@ class AppRepository {
       // Attach the image file with its detected content type
       request.files.add(
         await http.MultipartFile.fromPath(
-          'images',
+          'profileImage',
           image.path,
           contentType: MediaType(mimeTypeData[0], mimeTypeData[1]),
         ),

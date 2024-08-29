@@ -626,19 +626,22 @@ class _AirtimeToCashState extends State<AirtimeToCash> {
                                         : AppColors.grey,
                                     size: 22,
                                   ),
-                                  suffixIcon: Container(
-                                    width: 70,
-                                    //height :20,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: AppColors.lightgreen2,
-                                    ),
-                                    child: InkWell(
-                                      child: Center(
-                                        child: CustomText(
-                                            text: 'Upload',
-                                            size: 14,
-                                            color: AppColors.black),
+                                  suffixIcon: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      width: 70,
+                                      //height :20,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: AppColors.lightgreen2,
+                                      ),
+                                      child: InkWell(
+                                        child: Center(
+                                          child: CustomText(
+                                              text: 'Upload',
+                                              size: 14,
+                                              color: AppColors.black),
+                                        ),
                                       ),
                                     ),
                                   ),
