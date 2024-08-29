@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:teller_trust/utills/app_utils.dart';
 
 import '../../res/app_colors.dart';
 import 'app_custom_text.dart';
@@ -17,8 +18,10 @@ class DropDown extends StatefulWidget {
   final Color? borderColor;
   final Color? dropIconColor;
   final bool showLabel;
+  final bool showIcon;
   final bool showBorder;
   final double borderRadius;
+  final ValueChanged<String> onChanged; // New callback for value change
 
   const DropDown({
     Key? key,
@@ -31,12 +34,14 @@ class DropDown extends StatefulWidget {
     this.initialValue,
     this.labelColor,
     this.showLabel = true,
+    this.showIcon = false,
     this.showBorder = true,
     this.borderColor,
     this.color,
     this.borderRadius = 4,
     this.dropIconColor,
     this.textSize = 12,
+    required this.onChanged, // Add callback parameter
   }) : super(key: key);
 
   @override
@@ -49,8 +54,7 @@ class _DropDownState extends State<DropDown> {
   @override
   void initState() {
     super.initState();
-    _selectedValue = widget.selectedValue;
-    _selectedValue = widget.initialValue ?? '';
+    _selectedValue = widget.initialValue ?? widget.selectedValue;
   }
 
   @override
@@ -58,43 +62,47 @@ class _DropDownState extends State<DropDown> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        widget.showLabel
-            ? Container(
-          margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-          child: CustomText(
-           text: widget.label,
-            size: widget.textSize,
-            color: widget.labelColor ?? widget.color ?? AppColors.textColor2,
+        if (widget.showLabel)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: CustomText(
+              text: widget.label,
+              size: widget.textSize,
+              color: widget.labelColor ?? widget.color ?? AppColors.textColor2,
+            ),
           ),
-        )
-            : const SizedBox.shrink(),
-        widget.showLabel ? const SizedBox(height: 8) : const SizedBox.shrink(),
         Material(
           elevation: 0,
           type: MaterialType.card,
-          color: const Color.fromARGB(31, 65, 61, 61),
+          color: Colors.transparent,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(widget.borderRadius)),
+            borderRadius: BorderRadius.all(
+              Radius.circular(widget.borderRadius),
+            ),
           ),
           child: Container(
             width: widget.width,
             height: widget.height,
             padding: const EdgeInsets.only(left: 0),
             decoration: BoxDecoration(
-              color: widget.color ?? const Color.fromARGB(150, 220, 220, 220),
+              color: Colors.transparent,
               borderRadius: BorderRadius.all(Radius.circular(widget.borderRadius)),
-              border: widget.showBorder ? Border.all(color: widget.borderColor ?? Colors.black12) : null,
+              border: widget.showBorder
+                  ? Border.all(color: widget.borderColor ?? Colors.black12)
+                  : null,
             ),
-            margin: const EdgeInsets.only(left: 0, right: 0),
             child: SizedBox(
-              width: widget.width,
+              width: AppUtils.deviceScreenSize(context).width*1,
               child: DropdownButton<String>(
+
                 iconEnabledColor: widget.dropIconColor ?? Colors.black54,
-                icon: const Padding(
-                  padding: EdgeInsets.only(right: 8.0),
+                menuWidth: AppUtils.deviceScreenSize(context).width*1.8,
+                icon: Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
                   child: Icon(
                     Icons.expand_more,
                     size: 22,
+                    color: widget.borderColor,
                   ),
                 ),
                 isExpanded: true,
@@ -103,11 +111,16 @@ class _DropDownState extends State<DropDown> {
                 alignment: Alignment.bottomCenter,
                 elevation: 3,
                 underline: Container(color: Colors.transparent),
-                value: _selectedValue == ' ' || !widget.items.contains(_selectedValue) ? null : _selectedValue,
+                value: widget.items.contains(_selectedValue)
+                    ? _selectedValue
+                    : null,
                 onChanged: (newValue) {
-                  setState(() {
-                    _selectedValue = newValue ?? '';
-                  });
+                  if (newValue != null) {
+                    setState(() {
+                      _selectedValue = newValue;
+                    });
+                    widget.onChanged(newValue); // Call the parent callback
+                  }
                 },
                 hint: Padding(
                   padding: const EdgeInsets.only(left: 10.0),
@@ -124,7 +137,10 @@ class _DropDownState extends State<DropDown> {
                     value: data,
                     child: Padding(
                       padding: const EdgeInsets.only(left: 12),
-                      child: Text(data, style: TextStyle(color: Colors.black87, fontSize: widget.textSize)),
+                      child: Text(
+                        data,
+                        style: TextStyle(fontSize: widget.textSize),
+                      ),
                     ),
                   );
                 }).toList(),
