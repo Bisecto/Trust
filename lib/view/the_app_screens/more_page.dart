@@ -53,7 +53,9 @@ class _MorePageState extends State<MorePage> {
     firstname = await SharedPref.getString('firstName');
     lastname = await SharedPref.getString('lastName');
   }
-   CustomerAccountModel? customerAccountModel;
+
+  CustomerAccountModel? customerAccountModel;
+
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
@@ -93,9 +95,11 @@ class _MorePageState extends State<MorePage> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 17),
                               child: TextStyles.textHeadings(
-                                  textValue: 'Profile',textColor: AppColors.darkGreen
-                              )),
-                          SizedBox(height: 10,),
+                                  textValue: 'Profile',
+                                  textColor: AppColors.darkGreen)),
+                          SizedBox(
+                            height: 10,
+                          ),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 15),
                             child: profileContainer(theme),
@@ -232,7 +236,9 @@ class _MorePageState extends State<MorePage> {
                 InkWell(
                     onTap: () {
                       AppNavigator.pushAndStackPage(context,
-                          page:  AccountSetting(customerAccount: customerAccountModel,));
+                          page: AccountSetting(
+                            customerAccount: customerAccountModel,
+                          ));
                     },
                     child: itemContainer(
                         AppIcons.accounsetting, 'Account Settings', theme)),
@@ -350,12 +356,14 @@ class _MorePageState extends State<MorePage> {
                   Row(
                     children: [
                       CircleAvatar(
-                        //backgroundImage: NetworkImage(),
-                        child: SvgPicture.network(
+                        backgroundImage: NetworkImage(
                           personalInfo.imageUrl,
-                          height: 32,
-                          width: 32,
                         ),
+                        // child: SvgPicture.network(
+                        //   personalInfo.imageUrl,
+                        //   height: 32,
+                        //   width: 32,
+                        // ),
                       ),
                       const SizedBox(
                         width: 10,
@@ -374,24 +382,24 @@ class _MorePageState extends State<MorePage> {
                             size: 14,
                           ),
                           //if (customerAccount != null)
-                            Row(
-                              children: [
-                                TextStyles.textSubHeadings(
-                                  textValue: 'USERNAME:  ',
-                                  textColor: theme.isDark
-                                      ? AppColors.darkModeBackgroundSubTextColor
-                                      : AppColors.textColor2,
-                                  textSize: 12,
-                                ),
-                                CustomText(
-                                  text: "${personalInfo.userName}",
-                                  color: theme.isDark
-                                      ? AppColors.darkModeBackgroundSubTextColor
-                                      : AppColors.textColor2,
-                                  size: 12,
-                                ),
-                              ],
-                            ),
+                          Row(
+                            children: [
+                              TextStyles.textSubHeadings(
+                                textValue: 'USERNAME:  ',
+                                textColor: theme.isDark
+                                    ? AppColors.darkModeBackgroundSubTextColor
+                                    : AppColors.textColor2,
+                                textSize: 12,
+                              ),
+                              CustomText(
+                                text: "${personalInfo.userName}",
+                                color: theme.isDark
+                                    ? AppColors.darkModeBackgroundSubTextColor
+                                    : AppColors.textColor2,
+                                size: 12,
+                              ),
+                            ],
+                          ),
                         ],
                       )
                     ],

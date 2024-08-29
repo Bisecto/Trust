@@ -225,12 +225,13 @@ class _HomePageState extends State<HomePage> {
                   Row(
                     children: [
                       CircleAvatar(
-                        //backgroundImage: NetworkImage(),
-                        child: SvgPicture.network(
-                          personalInfo.imageUrl,
-                          height: 32,
-                          width: 32,
-                        ),
+                        backgroundImage: NetworkImage(personalInfo.imageUrl,
+                          ),
+                        // child: Image.network(
+                        //   personalInfo.imageUrl,
+                        //   height: 32,
+                        //   width: 32,
+                        // ),
                       ),
                       const SizedBox(
                         width: 10,

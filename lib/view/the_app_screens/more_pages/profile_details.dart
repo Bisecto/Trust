@@ -74,7 +74,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
               _firstnameController.text = personalInfo.firstName;
               _lastnameController.text = personalInfo.lastName;
               _phoneController.text = personalInfo.phone;
-              _initialMiddlenameController.text = personalInfo.middleName;
+              _initialMiddlenameController.text =personalInfo.middleName;
               gender = personalInfo.gender ?? '';
 
               return SingleChildScrollView(
@@ -188,7 +188,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                             ),
                             const SizedBox(height: 10),
                             CustomTextFormField(
-                              hint: _initialMiddlenameController.text,
+                              hint: _initialMiddlenameController.text.isEmpty?'E.g. John':_initialMiddlenameController.text,
                               label: '',
                               enabled: _initialMiddlenameController.text.isEmpty
                                   ? true
@@ -321,7 +321,15 @@ class _ProfileDetailsState extends State<ProfileDetails> {
               );
             } else if (state is LoadingState) {
               return const Center(
-                child: CircularProgressIndicator(),
+                child: Column(
+
+                  children: [
+                    const CustomAppBar(
+                      title: "Profile Details",
+                    ),
+                    LoadingDialog(""),
+                  ],
+                ),
               );
             } else if (state is ErrorState) {
               return const Center(
