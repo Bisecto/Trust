@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
+import 'package:teller_trust/bloc/app_bloc/app_bloc.dart';
 import 'package:teller_trust/model/category_model.dart' as mainCategory;
 import 'package:teller_trust/view/the_app_screens/sevices/product_beneficiary/product_beneficiary.dart';
 
@@ -217,15 +218,17 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                   quickPayModel: state.quickPayModel,
                                   accessToken: accessToken,
                                 ));
-                          } else if (state is AccessTokenExpireState) {
-                            String firstame =
-                                await SharedPref.getString('firstName');
-
-                            AppNavigator.pushAndRemovePreviousPages(context,
-                                page: SignInWIthAccessPinBiometrics(
-                                  userName: firstame,
-                                ));
-                          } else if (state is PurchaseErrorState) {
+                          }
+                          // else if (state is AccessTokenExpireState) {
+                          //   String firstame =
+                          //       await SharedPref.getString('firstName');
+                          //
+                          //   AppNavigator.pushAndRemovePreviousPages(context,
+                          //       page: SignInWIthAccessPinBiometrics(
+                          //         userName: firstame,
+                          //       ));
+                          // }
+                          else if (state is PurchaseErrorState) {
                             showToast(
                                 context: context,
                                 title: 'Info',
@@ -732,7 +735,9 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                                       color: AppColors.red,
                                                     ),
                                                   );
-                                                } else {
+                                                } else if (state
+
+                                                    is EntityNumberLoadingState) {
                                                   return Padding(
                                                     padding: const EdgeInsets
                                                         .fromLTRB(
@@ -746,6 +751,8 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                                           : AppColors.black,
                                                     ),
                                                   );
+                                                } else {
+                                                  return SizedBox();
                                                 }
                                               },
                                             ),
