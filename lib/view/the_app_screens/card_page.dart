@@ -91,15 +91,16 @@ class _CardPageState extends State<CardPage> {
             decoration: BoxDecoration(
                 //color: Colors.grey[300],
                 border: Border.all(color: AppColors.lightPrimaryGreen),
-                borderRadius: BorderRadius.circular(0.0)),
+                borderRadius: BorderRadius.circular(16.0)),
             child: TabBar(
               indicator: BoxDecoration(
                   color: AppColors.green,
-                  borderRadius: BorderRadius.circular(0.0)),
+                  borderRadius: BorderRadius.circular(16.0)),
               indicatorSize: TabBarIndicatorSize.tab,
               indicatorWeight: 0,
               labelColor: Colors.white,
               unselectedLabelColor: Colors.grey,
+              dividerColor: Colors.transparent,
               tabs: const [
                 Tab(
                   text: 'Physical',
