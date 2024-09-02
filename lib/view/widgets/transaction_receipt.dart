@@ -342,8 +342,11 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
           ),
           buildDetailRow('Amount', theme, 'N${widget.transaction.amount}'),
           if (widget.transaction.order != null) const SizedBox(height: 12),
-          if (widget.transaction.order != null)
-            buildDetailRow(
+          if (widget.transaction.order != null&&(widget.transaction.order?.requiredFields.meterNumber ??
+              widget.transaction.order?.requiredFields.cardNumber ??
+              widget.transaction.order?.requiredFields.phoneNumber ??
+              '').isNotEmpty)
+            ...[buildDetailRow(
                 'To',
                 theme,
                 widget.transaction.order?.requiredFields.meterNumber ??
@@ -351,7 +354,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                     widget.transaction.order?.requiredFields.phoneNumber ??
                     '',
                 true),
-          const SizedBox(height: 12),
+          const SizedBox(height: 12),],
           buildDetailRow('Description', theme, widget.transaction.description),
           if (widget.transaction.order?.response?.utilityToken != null &&
               widget.transaction.order!.response!.utilityToken.isNotEmpty &&
