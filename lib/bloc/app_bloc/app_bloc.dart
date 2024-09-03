@@ -84,7 +84,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     //print(customerProfile.customerAccount);
     transactionHistoryModel = transactionHistoryModel;
     //print(tr)
-    //emit(SuccessState(customerProfile,transactionHistoryModel));
+    emit(SuccessState(customerProfile,transactionHistoryModel));
   }
 
   Future<FutureOr<void>> addWithdrawalAccount(

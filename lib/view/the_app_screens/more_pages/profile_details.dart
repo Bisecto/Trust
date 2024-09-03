@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:image_cropper/image_cropper.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -46,6 +49,8 @@ class _ProfileDetailsState extends State<ProfileDetails> {
   final _phoneController = TextEditingController();
 
   XFile? profileImage;
+  XFile? compressedImage;
+  File? croppedImage;
   bool readOnly = true;
   String gender = '';
   String selectedGender = '';
@@ -74,7 +79,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
               _firstnameController.text = personalInfo.firstName;
               _lastnameController.text = personalInfo.lastName;
               _phoneController.text = personalInfo.phone;
-              _initialMiddlenameController.text =personalInfo.middleName;
+              _initialMiddlenameController.text = personalInfo.middleName;
               gender = personalInfo.gender ?? '';
 
               return SingleChildScrollView(
@@ -96,10 +101,16 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                                 final pickedImage = await ImagePicker()
                                     .pickImage(source: ImageSource.gallery);
                                 if (pickedImage != null) {
-                                  setState(() {
-                                    profileImage = pickedImage;
-                                    _imageController.text = profileImage!.name;
-                                  });
+                                  // Crop the image
+                                   croppedImage =
+                                      await _cropImage(File(pickedImage.path));
+                                  if (croppedImage != null) {
+                                    setState(() {
+                                      profileImage = XFile(croppedImage!.path);
+                                      _imageController.text =
+                                          profileImage!.name;
+                                    });
+                                  }
                                 }
                               },
                               child: CustomTextFormField(
@@ -188,7 +199,9 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                             ),
                             const SizedBox(height: 10),
                             CustomTextFormField(
-                              hint: _initialMiddlenameController.text.isEmpty?'E.g. John':_initialMiddlenameController.text,
+                              hint: _initialMiddlenameController.text.isEmpty
+                                  ? 'E.g. John'
+                                  : _initialMiddlenameController.text,
                               label: '',
                               enabled: _initialMiddlenameController.text.isEmpty
                                   ? true
@@ -246,11 +259,9 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                                 if (inputValue == null || inputValue.isEmpty) {
                                   return 'Email field is required';
                                 }
-                                if (!RegExp(
-                                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_'{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                    .hasMatch(inputValue)) {
-                                  return 'Incorrect email format';
-                                }
+                                // if (!inputValue.isValidEmail()) {
+                                //   return 'Incorrect email format';
+                                // }
                                 return null;
                               },
                               widget: SvgPicture.asset(AppIcons.email),
@@ -260,101 +271,136 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                             ),
                             const SizedBox(height: 10),
                             CustomTextFormField(
-                              hint: 'Phone number',
+                              hint: '123-456-7890',
                               label: '',
                               enabled: false,
                               controller: _phoneController,
-                              textInputType: TextInputType.number,
+                              validator: (inputValue) {
+                                if (inputValue == null || inputValue.isEmpty) {
+                                  return 'Phone Number field is required';
+                                }
+                                // if (inputValue.length != 10) {
+                                //   return 'Phone Number must be 10 digits';
+                                // }
+                                return null;
+                              },
                               widget: SvgPicture.asset(AppIcons.phone),
                               borderColor: _phoneController.text.isNotEmpty
                                   ? AppColors.green
                                   : AppColors.grey,
                             ),
-                            const SizedBox(height: 30),
-                            FormButton(
-                              onPressed: () async {
-                                if (_formKey.currentState!.validate()) {
-                                  showDialog(
-                                    barrierDismissible: false,
-                                    context: context,
-                                    builder: (_) =>
-                                        const LoadingDialog('Processing...'),
-                                  );
-                                  try {
-                                    final response =
-                                        await _updateProfile(personalInfo.id);
-                                    if (response) {
-                                      await refresh();
-                                      Navigator.pop(context);
-                                      showToast(
-                                        context: context,
-                                        title: 'Successful',
-                                        subtitle:
-                                            "Profile update was successful",
-                                        type: ToastMessageType.success,
-                                      );
-                                      setState(() {
-                                        readOnly = true;
-                                      });
-                                    }
-                                  } catch (e) {
-                                    Navigator.pop(context);
-                                    showToast(
-                                      context: context,
-                                      title: 'Error',
-                                      subtitle: e.toString(),
-                                      type: ToastMessageType.info,
-                                    );
-                                  }
-                                }
-                              },
-                              text: "Update Profile",
-                              bgColor: AppColors.green,
-                            ),
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 10),
                           ],
                         ),
                       ),
                     ),
-                  ],
-                ),
-              );
-            } else if (state is LoadingState) {
-              return const Center(
-                child: Column(
+                      //if (!readOnly)
+                        Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: FormButton(
+                            text: "Save Changes",
+                            onPressed: () async {
+                              if (_formKey.currentState!.validate()) {
+                                // If form is valid, trigger the update
+                                bool success = await _updateProfile(
+                                  state.customerProfile.personalInfo.id, // Pass the user/customer ID
+                                  profileImage, // Pass the profile image if selected
+                                );
 
-                  children: [
-                    const CustomAppBar(
-                      title: "Profile Details",
-                    ),
-                    LoadingDialog(""),
-                  ],
+                                // Handle the result of the update
+                                if (success) {
+                                  showToast(
+                                    context: context,
+                                    title: 'Success',
+                                    subtitle: 'Profile updated successfully!',
+                                    type: ToastMessageType.success,
+                                  );
+                                } else {
+                                  showToast(
+                                    context: context,
+                                    title: 'Error',
+                                    subtitle: 'Failed to update profile.',
+                                    type: ToastMessageType.error,
+                                  );
+                                }
+                              }
+                            },
+                          ),
+                        ),],
                 ),
-              );
-            } else if (state is ErrorState) {
-              return const Center(
-                child: Text("An error occurred. Please try again later."),
               );
             }
-            return const SizedBox();
+            return const Center(child: LoadingDialog(''));
           },
         ),
       ),
     );
   }
-
   Future<void> refresh() async {
     context.read<AppBloc>().add(InitialEvent());
   }
+  Future<XFile> testCompressAndGetFile(File file) async {
+    // Get a directory to store the compressed file
+    final directory = await getTemporaryDirectory();
 
-  Future<bool> _updateProfile(id) async {
+    // Ensure the target file has a .jpg extension
+    String targetPath = path.join(directory.path, 'compressed_${path.basenameWithoutExtension(file.path)}.jpg');
+
+    XFile? result = await FlutterImageCompress.compressAndGetFile(
+      file.absolute.path,
+      targetPath,
+      quality: 70,
+      //rotate: 0,
+    );
+
+    if (result == null) {
+      throw Exception("Compression failed, result is null");
+    }
+
+    // Parsing the XFile
+    print("Original File Size: ${file.lengthSync()} bytes");
+    print("Compressed File Size: ${File(result.path).lengthSync()} bytes");
+    print("Compressed File Path: ${result.path}");
+    print("Compressed File Name: ${result.name}");
+
+    // Return the compressed XFile
+    return result;
+  }
+
+
+  Future<bool> _updateProfile(String id, XFile? profileImage) async {
+    if (profileImage == null) {
+      showToast(
+        context: context,
+        title: 'Error',
+        subtitle: "No image selected.",
+        type: ToastMessageType.info,
+      );
+      return false;
+    }
+
+    // Crop the image before compressing it
+    //File? croppedImage = await _cropImage(File(profileImage.path));
+
+    if (croppedImage == null) {
+      showToast(
+        context: context,
+        title: 'Error',
+        subtitle: "Image cropping was cancelled.",
+        type: ToastMessageType.info,
+      );
+      return false;
+    }
+
+    // Compress the cropped image
+
+    XFile compressedImage = await testCompressAndGetFile(croppedImage!);
+
     if (_formKey.currentState!.validate()) {
       showDialog(
         barrierDismissible: false,
         context: context,
-        builder: (_) {
-          return const LoadingDialog('Processing...');
-        },
+        builder: (_) => const LoadingDialog('Processing...'),
       );
 
       AppRepository repository = AppRepository();
@@ -363,8 +409,12 @@ class _ProfileDetailsState extends State<ProfileDetails> {
         String accessToken = await SharedPref.getString("access-token");
 
         Map<String, dynamic> requestData = {
-          'middleName': _middlenameController.text,
-          'gender': selectedGender.toLowerCase(),
+          'middleName': _middlenameController.text.isEmpty
+              ? _initialMiddlenameController.text
+              : _middlenameController.text,
+          'gender': selectedGender.toLowerCase().isEmpty
+              ? gender.toLowerCase()
+              : selectedGender.toLowerCase(),
           'customerId': id
         };
 
@@ -374,9 +424,9 @@ class _ProfileDetailsState extends State<ProfileDetails> {
           requestData,
           accessToken: accessToken,
           '${AppApis.appBaseUrl}/user/c/update-profile',
-          profileImage,
+          compressedImage,
         );
-        Navigator.pop(context);
+        //Navigator.pop(context);
 
         if (response.statusCode == 200 || response.statusCode == 201) {
           // Success
@@ -401,8 +451,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
           showToast(
             context: context,
             title: 'Error',
-            subtitle:
-                AppUtils.convertString(json.decode(response.body)['message']),
+            subtitle: AppUtils.convertString(json.decode(response.body)['message']),
             type: ToastMessageType.info,
           );
           return false;
@@ -412,8 +461,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
         showToast(
           context: context,
           title: 'Error',
-          subtitle:
-              "Network error: Unable to connect. Please check your internet connection.",
+          subtitle: "Network error: Unable to connect. Please check your internet connection.",
           type: ToastMessageType.info,
         );
         return false;
@@ -450,4 +498,31 @@ class _ProfileDetailsState extends State<ProfileDetails> {
       return false;
     }
   }
+
+  Future<File?> _cropImage(File imageFile) async {
+    CroppedFile? croppedFile = await ImageCropper().cropImage(
+      sourcePath: imageFile.path,
+      aspectRatio: const CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
+      // Square aspect ratio for profile pictures
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: 'Crop Image',
+          toolbarColor: Colors.green,
+          toolbarWidgetColor: Colors.white,
+          lockAspectRatio: true,
+        ),
+        IOSUiSettings(
+          minimumAspectRatio: 1.0,
+        ),
+      ],
+    );
+
+    // Convert CroppedFile? to File?
+    if (croppedFile != null) {
+      return File(croppedFile.path);
+    } else {
+      return null; // Return null if cropping was canceled or failed
+    }
+  }
+
 }
