@@ -30,6 +30,7 @@ import 'package:teller_trust/view/the_app_screens/transaction_history/wallet_his
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 import 'package:teller_trust/view/widgets/purchase_receipt.dart';
+import 'package:teller_trust/view/widgets/view_image.dart';
 
 import '../../bloc/app_bloc/app_bloc.dart';
 import '../../domain/txn/txn_details_to_send_out.dart';
@@ -207,11 +208,20 @@ class _HomePageState extends State<HomePage> {
 
   Widget homeProfileContainer(AdaptiveThemeMode theme) {
     return BlocBuilder<AppBloc, AppState>(
+      // buildWhen: (previousState, currentState) {
+      //   // Rebuild only when there is a new SuccessState with updated profile
+      //   if (previousState is SuccessState && currentState is SuccessState) {
+      //     // Rebuild only when the profile data has changed
+      //     return previousState.customerProfile != currentState.customerProfile;
+      //   }
+      //   // Rebuild when switching to SuccessState
+      //   return currentState is SuccessState;
+      // },
       builder: (context, state) {
         if (state is SuccessState) {
           PersonalInfo personalInfo = state.customerProfile.personalInfo;
           print(json.encode(state.customerProfile));
-          // Use user data here
+          // Your existing widget logic
           return GestureDetector(
             onTap: () {
               print(json.encode(state.customerProfile));
@@ -224,14 +234,16 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Row(
                     children: [
-                      CircleAvatar(
-                        backgroundImage: NetworkImage(personalInfo.imageUrl,
+                      GestureDetector(
+                        onTap: () {
+                          AppNavigator.pushAndStackPage(context,
+                              page: ImagePage(imageUrl: personalInfo.imageUrl));
+                        },
+                        child: CircleAvatar(
+                          backgroundImage: NetworkImage(
+                            personalInfo.imageUrl,
                           ),
-                        // child: Image.network(
-                        //   personalInfo.imageUrl,
-                        //   height: 32,
-                        //   width: 32,
-                        // ),
+                        ),
                       ),
                       const SizedBox(
                         width: 10,
@@ -248,13 +260,14 @@ class _HomePageState extends State<HomePage> {
                             size: 12,
                           ),
                           TextStyles.textHeadings(
-                              textValue:
-                                  "${AppUtils.formatString(data: personalInfo.firstName)}",
-                              textColor: theme.isDark
-                                  ? AppColors.darkModeBackgroundMainTextColor
-                                  : AppColors.textColor,
-                              textSize: 14,
-                              fontWeight: FontWeight.w400),
+                            textValue:
+                            "${AppUtils.formatString(data: personalInfo.firstName)}",
+                            textColor: theme.isDark
+                                ? AppColors.darkModeBackgroundMainTextColor
+                                : AppColors.textColor,
+                            textSize: 14,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ],
                       )
                     ],
@@ -288,6 +301,7 @@ class _HomePageState extends State<HomePage> {
             ),
           );
         } else {
+          // Fallback UI when not in SuccessState
           return SizedBox(
             height: 40,
             width: AppUtils.deviceScreenSize(context).width,
@@ -297,7 +311,6 @@ class _HomePageState extends State<HomePage> {
                 Row(
                   children: [
                     CircleAvatar(
-                      //backgroundImage: NetworkImage(),
                       child: SvgPicture.asset(
                         AppIcons.person,
                         height: 32,
@@ -311,20 +324,20 @@ class _HomePageState extends State<HomePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CustomText(
-                          text: "Hello",
+                          text: "Hellos",
                           color: theme.isDark
                               ? AppColors.darkModeBackgroundSubTextColor
                               : AppColors.textColor2,
                           size: 12,
                         ),
                         TextStyles.textHeadings(
-                            textValue:
-                                "${AppUtils.formatString(data: firstname)}",
-                            textColor: theme.isDark
-                                ? AppColors.darkModeBackgroundMainTextColor
-                                : AppColors.textColor,
-                            textSize: 14,
-                            fontWeight: FontWeight.w400)
+                          textValue: "${AppUtils.formatString(data: firstname)}",
+                          textColor: theme.isDark
+                              ? AppColors.darkModeBackgroundMainTextColor
+                              : AppColors.textColor,
+                          textSize: 14,
+                          fontWeight: FontWeight.w400,
+                        )
                       ],
                     )
                   ],
@@ -343,7 +356,7 @@ class _HomePageState extends State<HomePage> {
                 )
               ],
             ),
-          ); // Show loading indicator or handle error state
+          );
         }
       },
     );
