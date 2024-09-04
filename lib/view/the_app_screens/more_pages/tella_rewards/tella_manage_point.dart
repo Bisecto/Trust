@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/res/app_images.dart';
 import 'package:teller_trust/utills/app_utils.dart';
+import 'package:teller_trust/view/the_app_screens/more_pages/tella_rewards/reward_rules/tella_reward_rules.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/tella_rewards/tella_point_product_container.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
 
@@ -28,27 +29,31 @@ class _TellaManagePointState extends State<TellaManagePoint> {
 
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 50,
-          ),
-          TellaPointProductContainer(),
-          SizedBox(
-            height: 20,
-          ),
-          TextStyles.textHeadings(
-              textValue: 'Tella Point Rules',
-              textSize: 15,
-              textColor: theme.isDark?AppColors.white:AppColors.black)
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(
+              height: 10,
+            ),
+            const TellaPointProductContainer(),
+            const SizedBox(
+              height: 20,
+            ),
+            TextStyles.textHeadings(
+                textValue: 'Tella Point Rules\n',
+                textSize: 15,
+                textColor: theme.isDark ? AppColors.white : AppColors.black),
+            RewardRulesScreen()
+          ],
+        ),
       ),
     );
   }

@@ -115,10 +115,11 @@ class _TellaPointMainPageState extends State<TellaPointMainPage> {
               ],
             ),
           ),
+          const SizedBox(height:20 ,),
           SizedBox(
             height: AppUtils.deviceScreenSize(context).height - 150, // Set an appropriate height
             width: AppUtils.deviceScreenSize(context).width,
-            child: TabBarView(
+            child: const TabBarView(
               children: [
                 TellaManagePoint(),
                 TellaPointsHistory(),

@@ -225,7 +225,8 @@ class _HomePageState extends State<HomePage> {
           return GestureDetector(
             onTap: () {
               AppNavigator.pushAndStackPage(context,
-                  page: const ProfileDetails());            },
+                  page: const ProfileDetails());
+            },
             child: SizedBox(
               height: 40,
               width: AppUtils.deviceScreenSize(context).width,
@@ -263,7 +264,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                           TextStyles.textHeadings(
                             textValue:
-                            "${AppUtils.formatString(data: personalInfo.firstName)}",
+                                "${AppUtils.formatString(data: personalInfo.firstName)}",
                             textColor: theme.isDark
                                 ? AppColors.darkModeBackgroundMainTextColor
                                 : AppColors.textColor,
@@ -333,7 +334,8 @@ class _HomePageState extends State<HomePage> {
                           size: 12,
                         ),
                         TextStyles.textHeadings(
-                          textValue: "${AppUtils.formatString(data: firstname)}",
+                          textValue:
+                              "${AppUtils.formatString(data: firstname)}",
                           textColor: theme.isDark
                               ? AppColors.darkModeBackgroundMainTextColor
                               : AppColors.textColor,
@@ -828,7 +830,6 @@ class _HomePageState extends State<HomePage> {
                               SizedBox(height: 11),
                             ],
                           ),
-
                         const SizedBox(height: 10),
                       ]),
                     ),
@@ -905,7 +906,10 @@ class _HomePageState extends State<HomePage> {
                               childBalanceCardContainer(AppIcons.send, "Send"),
                         ),
                         GestureDetector(
-                          onTap:(){AppNavigator.pushAndStackPage(context, page: const WithdrawalAccount());},
+                            onTap: () {
+                              AppNavigator.pushAndStackPage(context,
+                                  page: const WithdrawalAccount());
+                            },
                             child: childBalanceCardContainer(
                                 AppIcons.switch1, "Withdraw")),
                       ],

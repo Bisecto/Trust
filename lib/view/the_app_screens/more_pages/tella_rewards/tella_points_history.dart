@@ -45,134 +45,123 @@ class _TellaPointsHistoryState extends State<TellaPointsHistory> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 0,
-          ),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(left: 0.0, right: 0.0,top: 10),
-              child: Container(
-               // co
-                child: BlocConsumer<TellapointBloc, TellapointState>(
-                  bloc: tellapointBloc,
-                  listener: (context, state) {
-                    if (state is TellapointSuccessState) {
-                      final newItems = state.tellaPointHistoryModel.data.items;
-                      final isLastPage =
-                          state.tellaPointHistoryModel.data.currentPage ==
-                              state.tellaPointHistoryModel.data.totalPages;
-                      if (isLastPage) {
-                        _pagingController.appendLastPage(newItems);
-                      } else {
-                        final nextPageKey =
-                            state.tellaPointHistoryModel.data.currentPage + 1;
-                        _pagingController.appendPage(newItems, nextPageKey);
-                      }
-                    } else if (state is AccessTokenExpireState) {
-                      _pagingController.error = "Access Token Expired";
-                    } else if (state is TellapointErrorState) {
-                      _pagingController.error = state.msg;
-                    }
-                  },
-                  builder: (context, state) {
-                    return PagedListView<int, dynamic>(
-                      pagingController: _pagingController,
-                      builderDelegate: PagedChildBuilderDelegate<dynamic>(
-                        itemBuilder: (context, item, index) {
-                 if (item is Tellapoints) {
-                            // This is a transaction
-                            // final order = item.order;
+      body: Padding(
+        padding: EdgeInsets.only(left: 0.0, right: 0.0, top: 0),
+        child: BlocConsumer<TellapointBloc, TellapointState>(
+          bloc: tellapointBloc,
+          listener: (context, state) {
+            if (state is TellapointSuccessState) {
+              final newItems = state.tellaPointHistoryModel.data.items;
+              final isLastPage =
+                  state.tellaPointHistoryModel.data.currentPage ==
+                      state.tellaPointHistoryModel.data.totalPages;
+              if (isLastPage) {
+                _pagingController.appendLastPage(newItems);
+              } else {
+                final nextPageKey =
+                    state.tellaPointHistoryModel.data.currentPage + 1;
+                _pagingController.appendPage(newItems, nextPageKey);
+              }
+            } else if (state is AccessTokenExpireState) {
+              _pagingController.error = "Access Token Expired";
+            } else if (state is TellapointErrorState) {
+              _pagingController.error = state.msg;
+            }
+          },
+          builder: (context, state) {
+            return PagedListView<int, dynamic>(
+              pagingController: _pagingController,
+              builderDelegate: PagedChildBuilderDelegate<dynamic>(
+                itemBuilder: (context, item, index) {
+                  if (item is Tellapoints) {
+                    // This is a transaction
+                    // final order = item.order;
 
-                            return Padding(
-                              padding: const EdgeInsets.fromLTRB(0,15,0,10),
-                              child: InkWell(
-                                onTap: () {
-                                  // AppNavigator.pushAndStackPage(
-                                  //   context,
-                                  //   page: TransactionReceipt(transaction: item),
-                                  // );
-                                },
-                                child: SizedBox(
-                                  //height: 90,
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                    return Padding(
+                      padding:  EdgeInsets.fromLTRB(0, index==0?0:15, 0, 10),
+                      child: InkWell(
+                        onTap: () {
+                          // AppNavigator.pushAndStackPage(
+                          //   context,
+                          //   page: TransactionReceipt(transaction: item),
+                          // );
+                        },
+                        child: SizedBox(
+                          //height: 90,
+                          child: Row(
+                            crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                            mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                //crossAxisAlignment: CrossAxisAlignment.c,
+                                children: [
+                                  Column(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                        MainAxisAlignment.center,
                                     children: [
-                                      Row(
-                                        //crossAxisAlignment: CrossAxisAlignment.c,
-                                        children: [
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              SvgPicture.asset(AppIcons.badge),
-                                            ],
-                                          ),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              TextStyles.textSubHeadings(
-                                                  textValue:
-                                                      item.transaction.description),
-                                              SizedBox(
-                                                height: 5,
-                                              ),
-                                              CustomText(
-                                                text: item.transaction.description
-                                                    .split(' ')[0],
-                                                weight: FontWeight.bold,
-                                                size: 12,
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.end,
-                                        children: [
-                                          TextStyles.textSubHeadings(
-                                              textValue:
-                                                  "${item.transaction.type.toLowerCase() != 'debit' ? '-' : "+"}" +
-                                                      item.amount.toString()),
-                                          SizedBox(
-                                            height: 5,
-                                          ),
-                                          CustomText(
-                                            text: AppUtils.formateSimpleDate(
-                                                dateTime:
-                                                    item.createdAt.toString()),
-                                            weight: FontWeight.bold,
-                                            size: 12,
-                                          )
-                                        ],
-                                      )
+                                      SvgPicture.asset(AppIcons.badge),
                                     ],
                                   ),
-                                ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      TextStyles.textSubHeadings(
+                                          textValue: item
+                                              .transaction.description),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      CustomText(
+                                        text: item
+                                            .transaction.description
+                                            .split(' ')[0],
+                                        weight: FontWeight.bold,
+                                        size: 12,
+                                      ),
+                                    ],
+                                  )
+                                ],
                               ),
-                            );
-                          }
-                          return const SizedBox.shrink();
-                        },
+                              Column(
+                                crossAxisAlignment:
+                                    CrossAxisAlignment.end,
+                                children: [
+                                  TextStyles.textSubHeadings(
+                                      textValue:
+                                          "${item.transaction.type.toLowerCase() != 'debit' ? '-' : "+"}" +
+                                              item.amount.toString()),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  CustomText(
+                                    text: AppUtils.formateSimpleDate(
+                                        dateTime:
+                                            item.createdAt.toString()),
+                                    weight: FontWeight.bold,
+                                    size: 12,
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
                       ),
                     );
-                  },
-                ),
+                  }
+                  return const SizedBox.shrink();
+                },
               ),
-            ),
-          ),
-        ],
+            );
+          },
+        ),
       ),
     );
   }
