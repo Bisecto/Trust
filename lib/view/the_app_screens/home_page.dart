@@ -83,7 +83,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
-
     return Scaffold(
       backgroundColor:
           theme.isDark ? AppColors.darkModeBackgroundColor : AppColors.white,
@@ -747,7 +746,7 @@ class _HomePageState extends State<HomePage> {
                     GestureDetector(
                       onTap: () {
                         AppNavigator.pushAndStackPage(context,
-                            page: WalletHistory());
+                            page: const WalletHistory());
                       },
                       child: Column(children: [
                         if (!isMoneyBlocked)
@@ -815,12 +814,18 @@ class _HomePageState extends State<HomePage> {
                             },
                           ),
                         if (isMoneyBlocked)
-                          const CustomText(
-                            text: "*******",
-                            size: 22,
-                            weight: FontWeight.bold,
-                            color: AppColors.white,
+                          const Column(
+                            children: [
+                              CustomText(
+                                text: "*******",
+                                size: 22,
+                                weight: FontWeight.bold,
+                                color: AppColors.white,
+                              ),
+                              SizedBox(height: 10),
+                            ],
                           ),
+
                         const SizedBox(height: 10),
                       ]),
                     ),
@@ -882,7 +887,7 @@ class _HomePageState extends State<HomePage> {
                           onTap: () {
                             AppNavigator.pushAndStackPage(
                               context,
-                              page: SendToPage(),
+                              page: const SendToPage(),
                             );
                             // AppNavigator.pushAndStackPage(
                             //   context,
@@ -897,7 +902,7 @@ class _HomePageState extends State<HomePage> {
                               childBalanceCardContainer(AppIcons.send, "Send"),
                         ),
                         GestureDetector(
-                          onTap:(){AppNavigator.pushAndStackPage(context, page: WithdrawalAccount());},
+                          onTap:(){AppNavigator.pushAndStackPage(context, page: const WithdrawalAccount());},
                             child: childBalanceCardContainer(
                                 AppIcons.switch1, "Withdraw")),
                       ],
