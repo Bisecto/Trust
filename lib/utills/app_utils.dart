@@ -133,7 +133,7 @@ class AppUtils {
   }
 
   void copyToClipboard(textToCopy, context) {
-    Clipboard.setData(ClipboardData(text: textToCopy));
+    Clipboard.setData(ClipboardData(text: "${textToCopy} copied"));
     //MSG.snackBar(context, "$textToCopy copied");
     // You can also show a snackbar or any other feedback to the user.
     print('Text copied to clipboard: $textToCopy');

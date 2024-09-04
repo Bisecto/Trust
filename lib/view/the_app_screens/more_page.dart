@@ -393,12 +393,17 @@ class _MorePageState extends State<MorePage> {
                                     : AppColors.textColor2,
                                 textSize: 12,
                               ),
-                              CustomText(
-                                text: "${personalInfo.userName}",
-                                color: theme.isDark
-                                    ? AppColors.darkModeBackgroundSubTextColor
-                                    : AppColors.textColor2,
-                                size: 12,
+                              GestureDetector(
+                                onTap: (){
+                                  AppUtils().copyToClipboard(personalInfo.userName, context);
+                                },
+                                child: CustomText(
+                                  text: personalInfo.userName,
+                                  color: theme.isDark
+                                      ? AppColors.darkModeBackgroundSubTextColor
+                                      : AppColors.textColor2,
+                                  size: 12,
+                                ),
                               ),
                             ],
                           ),
