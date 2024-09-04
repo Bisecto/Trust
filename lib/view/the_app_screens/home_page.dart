@@ -822,7 +822,7 @@ class _HomePageState extends State<HomePage> {
                                 weight: FontWeight.bold,
                                 color: AppColors.white,
                               ),
-                              SizedBox(height: 10),
+                              SizedBox(height: 11),
                             ],
                           ),
 
