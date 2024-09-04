@@ -311,21 +311,21 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                                     );
 
                                     // Handle the result of the update
-                                    if (success) {
-                                      showToast(
-                                        context: context,
-                                        title: 'Success',
-                                        subtitle: 'Profile updated successfully!',
-                                        type: ToastMessageType.success,
-                                      );
-                                    } else {
-                                      showToast(
-                                        context: context,
-                                        title: 'Error',
-                                        subtitle: 'Failed to update profile.',
-                                        type: ToastMessageType.error,
-                                      );
-                                    }
+                                    // if (success) {
+                                    //   showToast(
+                                    //     context: context,
+                                    //     title: 'Success',
+                                    //     subtitle: 'Profile updated successfully!',
+                                    //     type: ToastMessageType.success,
+                                    //   );
+                                    // } else {
+                                    //   showToast(
+                                    //     context: context,
+                                    //     title: 'Error',
+                                    //     subtitle: 'Failed to update profile.',
+                                    //     type: ToastMessageType.error,
+                                    //   );
+                                    // }
                                   }
                                 },
                               ),
