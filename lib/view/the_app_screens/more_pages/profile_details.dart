@@ -71,267 +71,272 @@ class _ProfileDetailsState extends State<ProfileDetails> {
           : AppColors.lightPrimary,
       body: Padding(
         padding: const EdgeInsets.all(0.0),
-        child: BlocBuilder<AppBloc, AppState>(
-          builder: (context, state) {
-            if (state is SuccessState) {
-              PersonalInfo personalInfo = state.customerProfile.personalInfo;
-              _emailController.text = personalInfo.email;
-              _firstnameController.text = personalInfo.firstName;
-              _lastnameController.text = personalInfo.lastName;
-              _phoneController.text = personalInfo.phone;
-              _initialMiddlenameController.text = personalInfo.middleName;
-              gender = personalInfo.gender ?? '';
+        child: Column(
+          children: [
+            const CustomAppBar(
+              title: "Profile Details",
+            ),
+            BlocBuilder<AppBloc, AppState>(
+              builder: (context, state) {
+                if (state is SuccessState) {
+                  PersonalInfo personalInfo = state.customerProfile.personalInfo;
+                  _emailController.text = personalInfo.email;
+                  _firstnameController.text = personalInfo.firstName;
+                  _lastnameController.text = personalInfo.lastName;
+                  _phoneController.text = personalInfo.phone;
+                  _initialMiddlenameController.text = personalInfo.middleName;
+                  gender = personalInfo.gender ?? '';
 
-              return SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const CustomAppBar(
-                      title: "Profile Details",
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          children: [
-                            const SizedBox(height: 10),
-                            GestureDetector(
-                              onTap: () async {
-                                final pickedImage = await ImagePicker()
-                                    .pickImage(source: ImageSource.gallery);
-                                if (pickedImage != null) {
-                                  // Crop the image
-                                   croppedImage =
-                                      await _cropImage(File(pickedImage.path));
-                                  if (croppedImage != null) {
-                                    setState(() {
-                                      profileImage = XFile(croppedImage!.path);
-                                      _imageController.text =
-                                          profileImage!.name;
-                                    });
-                                  }
-                                }
-                              },
-                              child: CustomTextFormField(
-                                hint: '',
-                                label: 'Profile Picture',
-                                enabled: false,
-                                controller: _imageController,
-                                widget: CircleAvatar(
-                                  radius: 10,
-                                  backgroundImage: profileImage != null
-                                      ? FileImage(File(profileImage!.path))
-                                      : NetworkImage(personalInfo.imageUrl)
-                                          as ImageProvider,
-                                  onBackgroundImageError: (Object exception,
-                                      StackTrace? stackTrace) {
-                                    AppUtils().debuglog(stackTrace);
-                                  },
-                                ),
-                                suffixIcon: Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Container(
-                                    height: 30,
-                                    width: 70,
-                                    decoration: BoxDecoration(
-                                      color: Colors.green,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: const Center(
-                                      child: CustomText(
-                                        text: 'Change',
-                                        color: AppColors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                borderColor: AppColors.green,
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            const Divider(),
-                            const SizedBox(height: 10),
-                            CustomTextFormField(
-                              hint: 'E.g. John',
-                              label: 'Profile Details',
-                              enabled: false,
-                              controller: _firstnameController,
-                              validator: (inputValue) {
-                                if (inputValue == null || inputValue.isEmpty) {
-                                  return 'First Name field is required';
-                                } else if (!RegExp(r"^[\p{L} ,.'-]*$",
-                                        caseSensitive: false,
-                                        unicode: true,
-                                        dotAll: true)
-                                    .hasMatch(inputValue.toString())) {
-                                  return 'Incorrect name format';
-                                }
-                                return null;
-                              },
-                              widget: SvgPicture.asset(AppIcons.person),
-                              borderColor: _firstnameController.text.isNotEmpty
-                                  ? AppColors.green
-                                  : AppColors.grey,
-                            ),
-                            const SizedBox(height: 10),
-                            CustomTextFormField(
-                              hint: 'E.g. Doe',
-                              label: '',
-                              enabled: false,
-                              controller: _lastnameController,
-                              validator: (inputValue) {
-                                if (inputValue == null || inputValue.isEmpty) {
-                                  return 'Last Name field is required';
-                                } else if (!RegExp(r"^[\p{L} ,.'-]*$",
-                                        caseSensitive: false,
-                                        unicode: true,
-                                        dotAll: true)
-                                    .hasMatch(inputValue.toString())) {
-                                  return 'Incorrect name format';
-                                }
-                                return null;
-                              },
-                              widget: SvgPicture.asset(AppIcons.person),
-                              borderColor: _lastnameController.text.isNotEmpty
-                                  ? AppColors.green
-                                  : AppColors.grey,
-                            ),
-                            const SizedBox(height: 10),
-                            CustomTextFormField(
-                              hint: _initialMiddlenameController.text.isEmpty
-                                  ? 'E.g. John'
-                                  : _initialMiddlenameController.text,
-                              label: '',
-                              enabled: _initialMiddlenameController.text.isEmpty
-                                  ? true
-                                  : false,
-                              controller:
-                                  _initialMiddlenameController.text.isEmpty
-                                      ? _middlenameController
-                                      : _initialMiddlenameController,
-                              validator: (inputValue) {
-                                if (inputValue == null || inputValue.isEmpty) {
-                                  return 'Middle Name field is required';
-                                } else if (!RegExp(r"^[\p{L} ,.'-]*$",
-                                        caseSensitive: false,
-                                        unicode: true,
-                                        dotAll: true)
-                                    .hasMatch(inputValue.toString())) {
-                                  return 'Incorrect name format';
-                                }
-                                return null;
-                              },
-                              widget: SvgPicture.asset(AppIcons.person),
-                              borderColor:
-                                  _initialMiddlenameController.text.isEmpty
-                                      ? (_middlenameController.text.isNotEmpty
-                                          ? AppColors.green
-                                          : AppColors.grey)
-                                      : AppColors.green,
-                            ),
-                            const SizedBox(height: 18),
-                            DropDown(
-                              items: const ["male", "female"],
-                              borderRadius: 10,
-                              label: 'Gender',
-                              showLabel: false,
-                              hint: "Select gender",
-                              height: 50,
-                              initialValue: gender,
-                              borderColor: selectedGender.isNotEmpty
-                                  ? AppColors.green
-                                  : AppColors.textColor2,
-                              selectedValue: selectedGender,
-                              onChanged: (newValue) {
-                                setState(() {
-                                  selectedGender = newValue;
-                                });
-                              },
-                            ),
-                            const SizedBox(height: 8),
-                            CustomTextFormField(
-                              hint: 'example@gmail.com',
-                              label: '',
-                              enabled: false,
-                              controller: _emailController,
-                              validator: (inputValue) {
-                                if (inputValue == null || inputValue.isEmpty) {
-                                  return 'Email field is required';
-                                }
-                                // if (!inputValue.isValidEmail()) {
-                                //   return 'Incorrect email format';
-                                // }
-                                return null;
-                              },
-                              widget: SvgPicture.asset(AppIcons.email),
-                              borderColor: _emailController.text.isNotEmpty
-                                  ? AppColors.green
-                                  : AppColors.grey,
-                            ),
-                            const SizedBox(height: 10),
-                            CustomTextFormField(
-                              hint: '123-456-7890',
-                              label: '',
-                              enabled: false,
-                              controller: _phoneController,
-                              validator: (inputValue) {
-                                if (inputValue == null || inputValue.isEmpty) {
-                                  return 'Phone Number field is required';
-                                }
-                                // if (inputValue.length != 10) {
-                                //   return 'Phone Number must be 10 digits';
-                                // }
-                                return null;
-                              },
-                              widget: SvgPicture.asset(AppIcons.phone),
-                              borderColor: _phoneController.text.isNotEmpty
-                                  ? AppColors.green
-                                  : AppColors.grey,
-                            ),
-                            const SizedBox(height: 10),
-                          ],
-                        ),
-                      ),
-                    ),
-                      //if (!readOnly)
+                  return SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+
                         Padding(
                           padding: const EdgeInsets.all(15.0),
-                          child: FormButton(
-                            text: "Save Changes",
-                            onPressed: () async {
-                              if (_formKey.currentState!.validate()) {
-                                // If form is valid, trigger the update
-                                bool success = await _updateProfile(
-                                  state.customerProfile.personalInfo.id, // Pass the user/customer ID
-                                  profileImage, // Pass the profile image if selected
-                                );
-
-                                // Handle the result of the update
-                                if (success) {
-                                  showToast(
-                                    context: context,
-                                    title: 'Success',
-                                    subtitle: 'Profile updated successfully!',
-                                    type: ToastMessageType.success,
-                                  );
-                                } else {
-                                  showToast(
-                                    context: context,
-                                    title: 'Error',
-                                    subtitle: 'Failed to update profile.',
-                                    type: ToastMessageType.error,
-                                  );
-                                }
-                              }
-                            },
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              children: [
+                                const SizedBox(height: 10),
+                                GestureDetector(
+                                  onTap: () async {
+                                    final pickedImage = await ImagePicker()
+                                        .pickImage(source: ImageSource.gallery);
+                                    if (pickedImage != null) {
+                                      // Crop the image
+                                       croppedImage =
+                                          await _cropImage(File(pickedImage.path));
+                                      if (croppedImage != null) {
+                                        setState(() {
+                                          profileImage = XFile(croppedImage!.path);
+                                          _imageController.text =
+                                              profileImage!.name;
+                                        });
+                                      }
+                                    }
+                                  },
+                                  child: CustomTextFormField(
+                                    hint: '',
+                                    label: 'Profile Picture',
+                                    enabled: false,
+                                    controller: _imageController,
+                                    widget: CircleAvatar(
+                                      radius: 10,
+                                      backgroundImage: profileImage != null
+                                          ? FileImage(File(profileImage!.path))
+                                          : NetworkImage(personalInfo.imageUrl)
+                                              as ImageProvider,
+                                      onBackgroundImageError: (Object exception,
+                                          StackTrace? stackTrace) {
+                                        AppUtils().debuglog(stackTrace);
+                                      },
+                                    ),
+                                    suffixIcon: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Container(
+                                        height: 30,
+                                        width: 70,
+                                        decoration: BoxDecoration(
+                                          color: Colors.green,
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        child: const Center(
+                                          child: CustomText(
+                                            text: 'Change',
+                                            color: AppColors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    borderColor: AppColors.green,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                const Divider(),
+                                const SizedBox(height: 10),
+                                CustomTextFormField(
+                                  hint: 'E.g. John',
+                                  label: 'Profile Details',
+                                  enabled: false,
+                                  controller: _firstnameController,
+                                  validator: (inputValue) {
+                                    if (inputValue == null || inputValue.isEmpty) {
+                                      return 'First Name field is required';
+                                    } else if (!RegExp(r"^[\p{L} ,.'-]*$",
+                                            caseSensitive: false,
+                                            unicode: true,
+                                            dotAll: true)
+                                        .hasMatch(inputValue.toString())) {
+                                      return 'Incorrect name format';
+                                    }
+                                    return null;
+                                  },
+                                  widget: SvgPicture.asset(AppIcons.person),
+                                  borderColor: _firstnameController.text.isNotEmpty
+                                      ? AppColors.green
+                                      : AppColors.grey,
+                                ),
+                                const SizedBox(height: 10),
+                                CustomTextFormField(
+                                  hint: 'E.g. Doe',
+                                  label: '',
+                                  enabled: false,
+                                  controller: _lastnameController,
+                                  validator: (inputValue) {
+                                    if (inputValue == null || inputValue.isEmpty) {
+                                      return 'Last Name field is required';
+                                    } else if (!RegExp(r"^[\p{L} ,.'-]*$",
+                                            caseSensitive: false,
+                                            unicode: true,
+                                            dotAll: true)
+                                        .hasMatch(inputValue.toString())) {
+                                      return 'Incorrect name format';
+                                    }
+                                    return null;
+                                  },
+                                  widget: SvgPicture.asset(AppIcons.person),
+                                  borderColor: _lastnameController.text.isNotEmpty
+                                      ? AppColors.green
+                                      : AppColors.grey,
+                                ),
+                                const SizedBox(height: 10),
+                                CustomTextFormField(
+                                  hint: _initialMiddlenameController.text.isEmpty
+                                      ? 'E.g. John'
+                                      : _initialMiddlenameController.text,
+                                  label: '',
+                                  enabled: _initialMiddlenameController.text.isEmpty
+                                      ? true
+                                      : false,
+                                  controller:
+                                      _initialMiddlenameController.text.isEmpty
+                                          ? _middlenameController
+                                          : _initialMiddlenameController,
+                                  validator: (inputValue) {
+                                    if (inputValue == null || inputValue.isEmpty) {
+                                      return 'Middle Name field is required';
+                                    } else if (!RegExp(r"^[\p{L} ,.'-]*$",
+                                            caseSensitive: false,
+                                            unicode: true,
+                                            dotAll: true)
+                                        .hasMatch(inputValue.toString())) {
+                                      return 'Incorrect name format';
+                                    }
+                                    return null;
+                                  },
+                                  widget: SvgPicture.asset(AppIcons.person),
+                                  borderColor:
+                                      _initialMiddlenameController.text.isEmpty
+                                          ? (_middlenameController.text.isNotEmpty
+                                              ? AppColors.green
+                                              : AppColors.grey)
+                                          : AppColors.green,
+                                ),
+                                const SizedBox(height: 18),
+                                DropDown(
+                                  items: const ["male", "female"],
+                                  borderRadius: 10,
+                                  label: 'Gender',
+                                  showLabel: false,
+                                  hint: "Select gender",
+                                  height: 50,
+                                  initialValue: gender,
+                                  borderColor: selectedGender.isNotEmpty
+                                      ? AppColors.green
+                                      : AppColors.textColor2,
+                                  selectedValue: selectedGender,
+                                  onChanged: (newValue) {
+                                    setState(() {
+                                      selectedGender = newValue;
+                                    });
+                                  },
+                                ),
+                                const SizedBox(height: 8),
+                                CustomTextFormField(
+                                  hint: 'example@gmail.com',
+                                  label: '',
+                                  enabled: false,
+                                  controller: _emailController,
+                                  validator: (inputValue) {
+                                    if (inputValue == null || inputValue.isEmpty) {
+                                      return 'Email field is required';
+                                    }
+                                    // if (!inputValue.isValidEmail()) {
+                                    //   return 'Incorrect email format';
+                                    // }
+                                    return null;
+                                  },
+                                  widget: SvgPicture.asset(AppIcons.email),
+                                  borderColor: _emailController.text.isNotEmpty
+                                      ? AppColors.green
+                                      : AppColors.grey,
+                                ),
+                                const SizedBox(height: 10),
+                                CustomTextFormField(
+                                  hint: '123-456-7890',
+                                  label: '',
+                                  enabled: false,
+                                  controller: _phoneController,
+                                  validator: (inputValue) {
+                                    if (inputValue == null || inputValue.isEmpty) {
+                                      return 'Phone Number field is required';
+                                    }
+                                    // if (inputValue.length != 10) {
+                                    //   return 'Phone Number must be 10 digits';
+                                    // }
+                                    return null;
+                                  },
+                                  widget: SvgPicture.asset(AppIcons.phone),
+                                  borderColor: _phoneController.text.isNotEmpty
+                                      ? AppColors.green
+                                      : AppColors.grey,
+                                ),
+                                const SizedBox(height: 10),
+                              ],
+                            ),
                           ),
-                        ),],
-                ),
-              );
-            }
-            return const Center(child: LoadingDialog(''));
-          },
+                        ),
+                          //if (!readOnly)
+                            Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: FormButton(
+                                text: "Save Changes",
+                                onPressed: () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    // If form is valid, trigger the update
+                                    bool success = await _updateProfile(
+                                      state.customerProfile.personalInfo.id, // Pass the user/customer ID
+                                      profileImage, // Pass the profile image if selected
+                                    );
+
+                                    // Handle the result of the update
+                                    if (success) {
+                                      showToast(
+                                        context: context,
+                                        title: 'Success',
+                                        subtitle: 'Profile updated successfully!',
+                                        type: ToastMessageType.success,
+                                      );
+                                    } else {
+                                      showToast(
+                                        context: context,
+                                        title: 'Error',
+                                        subtitle: 'Failed to update profile.',
+                                        type: ToastMessageType.error,
+                                      );
+                                    }
+                                  }
+                                },
+                              ),
+                            ),],
+                    ),
+                  );
+                }
+                return const Center(child: LoadingDialog(''));
+              },
+            ),
+          ],
         ),
       ),
     );

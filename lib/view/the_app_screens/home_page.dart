@@ -18,6 +18,7 @@ import 'package:teller_trust/utills/constants/loading_dialog.dart';
 import 'package:teller_trust/utills/shared_preferences.dart';
 import 'package:teller_trust/view/networkCenter/pages/network_center_main_page.dart';
 import 'package:teller_trust/view/the_app_screens/beneficiaries/beneficiaries.dart';
+import 'package:teller_trust/view/the_app_screens/more_pages/profile_details.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/withdrawal_account.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/add_fundz.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/airtime_purchase/airtime.dart';
@@ -223,8 +224,8 @@ class _HomePageState extends State<HomePage> {
           // Your existing widget logic
           return GestureDetector(
             onTap: () {
-              print(json.encode(state.customerProfile));
-            },
+              AppNavigator.pushAndStackPage(context,
+                  page: const ProfileDetails());            },
             child: SizedBox(
               height: 40,
               width: AppUtils.deviceScreenSize(context).width,
@@ -234,10 +235,12 @@ class _HomePageState extends State<HomePage> {
                   Row(
                     children: [
                       GestureDetector(
-                        onTap: () {
-                          AppNavigator.pushAndStackPage(context,
-                              page: ImagePage(imageUrl: personalInfo.imageUrl));
-                        },
+                        // onTap: () {
+                        //   // AppNavigator.pushAndStackPage(context,
+                        //   //     page: const ProfileDetails());
+                        //   // AppNavigator.pushAndStackPage(context,
+                        //   //     page: ImagePage(imageUrl: personalInfo.imageUrl));
+                        // },
                         child: CircleAvatar(
                           backgroundImage: NetworkImage(
                             personalInfo.imageUrl,
