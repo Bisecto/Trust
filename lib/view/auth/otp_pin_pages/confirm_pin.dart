@@ -62,7 +62,7 @@ class _ConfirmPinState extends State<ConfirmPin> {
                     subtitle: state.error,
                     type: ToastMessageType.error);
               } else if (state is SuccessState) {
-                welcomeAlertDialog(context,theme);
+                welcomeAlertDialog(context, theme);
                 await Future.delayed(const Duration(seconds: 3));
                 AppNavigator.pushNamedAndRemoveUntil(context,
                     name: AppRouter.landingPage);
@@ -190,20 +190,35 @@ class _ConfirmPinState extends State<ConfirmPin> {
                                               AppUtils.deviceScreenSize(context)
                                                   .width,
                                           inputHasBorder: true,
-                                          inputFillColor: theme.isDark?AppColors.black:AppColors.white,
+                                          inputFillColor: theme.isDark
+                                              ? AppColors.black
+                                              : AppColors.white,
                                           inputHeight: 55,
                                           inputWidth: 55,
                                           keyboardBtnSize: 70,
-                                          cancelColor: theme.isDark?AppColors.white:AppColors.black,
-                                          inputTextColor: theme.isDark?AppColors.white:AppColors.black,
+                                          cancelColor: theme.isDark
+                                              ? AppColors.white
+                                              : AppColors.black,
+                                          inputTextColor: theme.isDark
+                                              ? AppColors.white
+                                              : AppColors.black,
                                           inputBorderRadius:
-                                          BorderRadius.circular(10),
-                                          doneButton: Icon(Icons.done,color: theme.isDark?AppColors.white:AppColors.black,),
+                                              BorderRadius.circular(10),
+                                          doneButton: Icon(
+                                            Icons.done,
+                                            color: theme.isDark
+                                                ? AppColors.white
+                                                : AppColors.black,
+                                          ),
                                           keyoardBtnBorderRadius:
                                               BorderRadius.circular(10),
                                           //inputElevation: 3,
-                                          buttonFillColor: theme.isDark?AppColors.black:AppColors.white,
-                                          btnTextColor:  theme.isDark?AppColors.white:AppColors.textColor,
+                                          buttonFillColor: theme.isDark
+                                              ? AppColors.black
+                                              : AppColors.white,
+                                          btnTextColor: theme.isDark
+                                              ? AppColors.white
+                                              : AppColors.textColor,
                                           buttonBorderColor: AppColors.grey,
                                           spacing:
                                               AppUtils.deviceScreenSize(context)
@@ -216,7 +231,6 @@ class _ConfirmPinState extends State<ConfirmPin> {
                                             /// ignore: avoid_print
                                             if (widget.pin !=
                                                 pinInputController.text) {
-
                                               showToast(
                                                   context: context,
                                                   title: 'Warning',
@@ -258,7 +272,7 @@ class _ConfirmPinState extends State<ConfirmPin> {
             }));
   }
 
-  welcomeAlertDialog(BuildContext context,AdaptiveThemeMode theme) {
+  welcomeAlertDialog(BuildContext context, AdaptiveThemeMode theme) {
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -266,7 +280,8 @@ class _ConfirmPinState extends State<ConfirmPin> {
           return AlertDialog(
             backgroundColor: theme.isDark
                 ? AppColors.darkModeBackgroundColor
-                : AppColors.white,            contentPadding: EdgeInsets.zero,
+                : AppColors.white,
+            contentPadding: EdgeInsets.zero,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20.0)),
             ),
@@ -282,13 +297,15 @@ class _ConfirmPinState extends State<ConfirmPin> {
                   Container(
                     width: AppUtils.deviceScreenSize(context).width,
                     height: 150,
-                    decoration:  BoxDecoration(
+                    decoration: BoxDecoration(
                         color: theme.isDark
                             ? AppColors.darkModeBackgroundContainerColor
                             : AppColors.white,
                         image: DecorationImage(
                           image: AssetImage(
-                            theme.isDark? AppImages.verifyAlertDialogDarkImage:AppImages.verifyAlertDialogImage,
+                            theme.isDark
+                                ? AppImages.verifyAlertDialogDarkImage
+                                : AppImages.verifyAlertDialogImage,
                           ),
                           fit: BoxFit.fill,
                         ),
@@ -300,7 +317,15 @@ class _ConfirmPinState extends State<ConfirmPin> {
                   const SizedBox(
                     height: 10,
                   ),
-                   CustomText(
+                  TextStyles.textHeadings(
+                    textValue: AppStrings.magic,
+                    textColor: theme.isDark
+                        ? AppColors.darkModeBackgroundMainTextColor
+                        : AppColors.textColor,
+                    textSize: 20,
+                    fontWeight: FontWeight.bold
+                  ),
+                  CustomText(
                     text: AppStrings.magic,
                     weight: FontWeight.bold,
                     size: 18,
@@ -311,7 +336,7 @@ class _ConfirmPinState extends State<ConfirmPin> {
                   const SizedBox(
                     height: 10,
                   ),
-                   CustomText(
+                  CustomText(
                     text: AppStrings.magicDescription,
                     // weight: FontWeight.bold,
                     size: 16,

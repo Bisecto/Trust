@@ -889,10 +889,12 @@ class _HomePageState extends State<HomePage> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            AppNavigator.pushAndStackPage(
-                              context,
-                              page: const SendToPage(),
-                            );
+                            widget.onPageChanged(
+                                1); //
+                            // AppNavigator.pushAndStackPage(
+                            //   context,
+                            //   page: const SendToPage(),
+                            // );
                             // AppNavigator.pushAndStackPage(
                             //   context,
                             //   page: SendMainPage(

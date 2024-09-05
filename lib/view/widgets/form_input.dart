@@ -53,7 +53,7 @@ class CustomTextFormField extends StatefulWidget {
     this.validateName,
     this.validator,
     this.isMobileNumber = false,
-    this.isobscure = false,
+    this.isobscure = true,
     this.enabled = true,
     this.onChanged,
     this.onFieldSubmitted,
@@ -169,7 +169,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                     validator: widget.validator,
                     maxLines: widget.maxLines,
                     maxLength: widget.maxLength,
-                    obscureText: _obscureText,
+                    obscureText: widget.isPasswordField?_obscureText:false,
                     onFieldSubmitted: (val) {
                       widget.onFieldSubmitted?.call(val);
                     },
