@@ -319,7 +319,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                     ),
                                   ),
                                 ),
-                                TellaPointProductContainer(),
+                                //(),
 
                                 // const SizedBox(
                                 //   height: 10,

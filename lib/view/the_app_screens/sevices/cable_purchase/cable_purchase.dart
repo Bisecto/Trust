@@ -305,7 +305,7 @@ class _CablePurchaseState extends State<CablePurchase> {
                                     ),
                                   ),
                                 ),
-                                TellaPointProductContainer(),
+                                //(),
 
                                 // const SizedBox(
                                 //   height: 10,

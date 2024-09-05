@@ -228,7 +228,7 @@ class _DataPurchaseState extends State<DataPurchase> {
                                 // const SizedBox(
                                 //   height: 10,
                                 // ),
-                                TellaPointProductContainer(),
+                                //(),
 
                                 BlocConsumer<ProductBloc, ProductState>(
                                   bloc: productBloc,

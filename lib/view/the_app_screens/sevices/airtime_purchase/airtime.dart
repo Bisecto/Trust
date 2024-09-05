@@ -280,7 +280,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                   //         });
                                   //       },
                                   //     )),
-                                  TellaPointProductContainer(),
+
                                   BlocConsumer<ProductBloc, ProductState>(
                                     bloc: productBloc,
                                     builder: (context, state) {
