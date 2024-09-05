@@ -14,6 +14,7 @@ import 'package:teller_trust/view/the_app_screens/kyc_verification/kyc_intro_pag
 import '../../../res/apis.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/app_router.dart';
+import '../../../res/sharedpref_key.dart';
 import '../../../utills/app_navigator.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/custom_theme.dart';
@@ -67,8 +68,8 @@ class _AccountSettingState extends State<AccountSetting> {
   }
 
   Future<void> getCanUseBiometrics() async {
-    bool biometricEnabled = await SharedPref.getBool('biometric') ?? false;
-    bool notificationEnabled = await SharedPref.getBool('notification') ?? true;
+    bool biometricEnabled = await SharedPref.getBool(SharedPrefKey.biometricKey) ?? false;
+    bool notificationEnabled = await SharedPref.getBool(SharedPrefKey.notificationKey) ?? true;
     setState(() {
       isBiometricEnabled = biometricEnabled;
       isNotificationEnabled = notificationEnabled;
@@ -165,11 +166,11 @@ class _AccountSettingState extends State<AccountSetting> {
                           setState(() {
                             print(value);
                             isNotificationEnabled = value;
-                            SharedPref.putBool('notification', value);
+                            SharedPref.putBool(SharedPrefKey.notificationKey, value);
 
                           });
                           String accessToken =
-                              await SharedPref.getString("access-token");
+                              await SharedPref.getString(SharedPrefKey.accessTokenKey);
                           AppRepository appRepository = AppRepository();
                           String? token =
                               await FirebaseMessaging.instance.getToken();
@@ -193,7 +194,7 @@ class _AccountSettingState extends State<AccountSetting> {
                               onChanged: (value) {
                                 setState(() {
                                   isBiometricEnabled = value;
-                                  SharedPref.putBool('biometric', value);
+                                  SharedPref.putBool(SharedPrefKey.biometricKey, value);
                                 });
                               },
                               activeColor: AppColors.darkGreen,

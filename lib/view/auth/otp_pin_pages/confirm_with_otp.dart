@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../../bloc/auth_bloc/auth_bloc.dart';
 import '../../../res/app_colors.dart';
+import '../../../res/sharedpref_key.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/custom_theme.dart';
 import '../../../utills/shared_preferences.dart';
@@ -38,7 +39,7 @@ class _ConfirmWithPinState extends State<ConfirmWithPin> {
     super.initState();
   }
   getCanUseBiometrics() async {
-    bool isBiometricsEnabled = await SharedPref.getBool('biometric') ?? false;
+    bool isBiometricsEnabled = await SharedPref.getBool(SharedPrefKey.biometricKey) ?? false;
     var availableBiometrics = await auth.getAvailableBiometrics();
     canUseBiometrics = await auth.canCheckBiometrics &&
         await auth.isDeviceSupported() &&
@@ -222,16 +223,16 @@ class _ConfirmWithPinState extends State<ConfirmWithPin> {
                               await AppUtils.biometrics(
                                   "Please authenticate to sign in");
                               if (didAuthenticate) {
-                                String hashedPin=await SharedPref.getString('hashedAccessPin');
+                                String hashedPin=await SharedPref.getString(SharedPrefKey.hashedAccessPinKey);
                                 print(hashedPin);
                                 String unHashedPin= AppUtils().decryptData(hashedPin)??'';
                                 print(unHashedPin);
                                 String userData =
                                 await SharedPref.getString(
-                                    'userData');
+                                    SharedPrefKey.userDataKey);
                                 String password =
                                 await SharedPref.getString(
-                                    'password');
+                                    SharedPrefKey.passwordKey);
                                 Navigator.pop(context, unHashedPin);
                                 //model.signIn(context, withBiometrics: true);
                               }

@@ -9,6 +9,7 @@ import '../../../bloc/product_bloc/product_bloc.dart';
 import '../../../model/service_model.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/app_icons.dart';
+import '../../../res/sharedpref_key.dart';
 import '../../../utills/app_navigator.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/app_validator.dart';
@@ -224,7 +225,7 @@ class _InternetPurchaseState extends State<InternetPurchase> {
                                   ProductState state) async {
                                 if (state is AccessTokenExpireState) {
                                   String firstame =
-                                      await SharedPref.getString('firstName');
+                                      await SharedPref.getString(SharedPrefKey.firstNameKey);
 
                                   AppNavigator.pushAndRemovePreviousPages(
                                       context,

@@ -10,6 +10,7 @@ import 'package:teller_trust/repository/app_repository.dart';
 import 'package:teller_trust/res/apis.dart';
 
 import '../../model/transactionHistory.dart';
+import '../../res/sharedpref_key.dart';
 import '../../utills/app_utils.dart';
 import '../../utills/constants/loading_dialog.dart';
 import '../../utills/shared_preferences.dart';
@@ -37,7 +38,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     emit(LoadingState()); // Emit loading state at the start of the event
 
     AppRepository appRepository = AppRepository();
-    String accessToken = await SharedPref.getString("access-token");
+    String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
 
     // try {
     var profileResponse = await appRepository.appGetRequest(
@@ -95,7 +96,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         builder: (_) {
           return const LoadingDialog('Processing...');
         });
-    String accessToken = await SharedPref.getString("access-token");
+    String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
 
     AppRepository appRepository = AppRepository();
     Map<String, dynamic> data = {
@@ -166,7 +167,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     emit(LoadingState()); // Emit loading state at the start of the event
 
     AppRepository appRepository = AppRepository();
-    String accessToken = await SharedPref.getString("access-token");
+    String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
 
     // try {
 

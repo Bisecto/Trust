@@ -19,6 +19,8 @@ import 'package:teller_trust/res/apis.dart';
 import 'package:teller_trust/utills/app_utils.dart';
 import 'package:teller_trust/utills/shared_preferences.dart';
 
+import '../../res/sharedpref_key.dart';
+
 class SendBloc extends Bloc<SendEvent, SendState> {
   String mainValueEntered = '';
   String fractionValueEntered = '';
@@ -79,7 +81,7 @@ class SendBloc extends Bloc<SendEvent, SendState> {
       emit(const SendToDetailsInitialState());
     });
     on<LoadUserBalance>((event, emit) async {
-      String accessToken = await SharedPref.getString("access-token");
+      String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
 
       var profileResponse = await appRepository.appGetRequest(
         AppApis.userProfile,
@@ -123,7 +125,7 @@ class SendBloc extends Bloc<SendEvent, SendState> {
           banks: const [],
         ),
       );
-      String accessToken = await SharedPref.getString("access-token");
+      String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
       var availableBanks = await appRepository.appGetRequest(
         AppApis.banks,
         accessToken: accessToken,
@@ -226,7 +228,7 @@ class SendBloc extends Bloc<SendEvent, SendState> {
               tellaTrustCustomerReceived: false,
             ),
           );
-          String accessToken = await SharedPref.getString("access-token");
+          String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
           var tellaTrustCustomer = await appRepository.appPostRequest(
             TellaTrustCustomerRequest(userData: tellaTrustReceiptentAcc)
                 .toJson(),
@@ -281,7 +283,7 @@ class SendBloc extends Bloc<SendEvent, SendState> {
             statusMessage: '',
           ),
         );
-        String accessToken = await SharedPref.getString("access-token");
+        String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
         var sendInternalFund = await appRepository.appPostRequest(
             SendInternalFundRequest(
               receiverId: event.receiverId,
@@ -339,7 +341,7 @@ class SendBloc extends Bloc<SendEvent, SendState> {
             statusMessage: '',
           ),
         );
-        String accessToken = await SharedPref.getString("access-token");
+        String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
         var sendExternalFund = await appRepository.appPostRequest(
           SendExternalFundRequest(
             narration: event.narration,
@@ -397,7 +399,7 @@ class SendBloc extends Bloc<SendEvent, SendState> {
             statusMessage: '',
           ),
         );
-        String accessToken = await SharedPref.getString("access-token");
+        String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
         var verifyAccountNumber = await appRepository.appPostRequest(
           VerifyReceiptentAccountRequest(
             accountNumber: event.accountNumber,

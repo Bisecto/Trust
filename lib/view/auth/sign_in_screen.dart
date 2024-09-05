@@ -41,19 +41,8 @@ class _SignInScreenState extends State<SignInScreen> {
   void initState() {
     // TODO: implement initState
     authBloc.add(InitialEvent());
-    SharedPref.remove("password");
-    SharedPref.remove("email");
-    SharedPref.remove("phone");
-    SharedPref.remove("accessPin");
-    SharedPref.remove("userId");
-    SharedPref.remove("firstname");
-    SharedPref.remove("lastname");
-    SharedPref.remove("userData");
-    SharedPref.remove("refresh-token");
-    SharedPref.remove("access-token");
-    SharedPref.remove("temUserData");
-    SharedPref.remove("temUserPassword");
-    SharedPref.remove("temUserPhone");
+     AppUtils().logout(context);
+
     super.initState();
   }
 

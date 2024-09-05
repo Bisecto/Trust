@@ -7,6 +7,7 @@ import 'package:teller_trust/res/apis.dart';
 
 import '../../model/user.dart';
 import '../../repository/app_repository.dart';
+import '../../res/sharedpref_key.dart';
 import '../../utills/app_utils.dart';
 import '../../utills/constants/loading_dialog.dart';
 import '../../utills/shared_preferences.dart';
@@ -47,10 +48,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       print(response.body);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        await SharedPref.putString("password", event.data["password"]!);
-        await SharedPref.putString("email", event.data["email"]!);
-        await SharedPref.putString("phone", event.data['phone']!);
-        await SharedPref.putString("userData", event.data['phone']!);
+        await SharedPref.putString(SharedPrefKey.passwordKey, event.data["password"]!);
+        await SharedPref.putString(SharedPrefKey.emailKey, event.data["email"]!);
+        await SharedPref.putString(SharedPrefKey.phoneKey, event.data['phone']!);
+        await SharedPref.putString(SharedPrefKey.userDataKey, event.data['phone']!);
         Navigator.pop(event.context);
         emit(AuthOtpRequestState(
             AppUtils.convertString(json.decode(response.body)['message']),
@@ -94,11 +95,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     Map<String, dynamic> data = {
       "token": event.token,
-      "phone": await SharedPref.getString("phone"),
+      "phone": await SharedPref.getString(SharedPrefKey.phoneKey),
     };
     Map<String, dynamic> deviceData = {
       "token": event.token,
-      "userData": await SharedPref.getString("userData"),
+      "userData": await SharedPref.getString(SharedPrefKey.userDataKey),
       "deviceId": deviceId
     };
     print(data);
@@ -120,7 +121,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         // await SharedPref.putString("email", event.user.email!);
         User user = User.fromJson(json.decode(response.body)['data']);
         print(response.body);
-        await SharedPref.putString("userId", user.userId);
+        await SharedPref.putString(SharedPrefKey.userIdKey, user.userId);
         Navigator.pop(event.context);
         emit(AuthOtpVerifySucess(
             AppUtils.convertString(json.decode(response.body)['message']),
@@ -152,7 +153,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           return const LoadingDialog('Creating Access PIN...');
         });
     AppRepository authRepository = AppRepository();
-    String userId = await SharedPref.getString("userId");
+    String userId = await SharedPref.getString(SharedPrefKey.userIdKey);
     print(userId);
     print(userId);
     print(userId);
@@ -171,10 +172,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         String deviceID = await AppUtils.getId();
-        String userData = await SharedPref.getString('userData');
-        String password = await SharedPref.getString('password');
+        String userData = await SharedPref.getString(SharedPrefKey.userDataKey);
+        String password = await SharedPref.getString(SharedPrefKey.passwordKey);
         String hashedAccessPin = await AppUtils().encryptData(event.accessPin);
-        await SharedPref.putString('hashedAccessPin', hashedAccessPin);
+        await SharedPref.putString(SharedPrefKey.hashedAccessPinKey, hashedAccessPin);
 
         Map<String, dynamic> loginData = {
           "userData": userData,
@@ -183,7 +184,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           "loginOption": "accessPin",
         };
         await SharedPref.putString(
-            "refresh-token", response.headers['refresh-token']!);
+            SharedPrefKey.refreshTokenKey, response.headers['refresh-token']!);
 
         var loginResponse = await authRepository.appPostRequest(
             loginData, AppApis.loginAccessPin,
@@ -193,13 +194,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         print(loginResponse.body);
         if (loginResponse.statusCode == 200 ||
             loginResponse.statusCode == 201) {
-          await SharedPref.putString("userData", userData);
-          await SharedPref.putString("password", password);
+          await SharedPref.putString(SharedPrefKey.userDataKey, userData);
+          await SharedPref.putString(SharedPrefKey.passwordKey, password);
           User user = User.fromJson(jsonDecode(loginResponse.body)['data']);
-          await SharedPref.putString("firstName", user.firstName);
-          await SharedPref.putString("lastName", user.lastName);
+          await SharedPref.putString(SharedPrefKey.firstNameKey, user.firstName);
+          await SharedPref.putString(SharedPrefKey.lastNameKey, user.lastName);
           await SharedPref.putString(
-              "access-token", loginResponse.headers['access-token']!);
+              SharedPrefKey.accessTokenKey, loginResponse.headers['access-token']!);
 
           Navigator.pop(event.context);
 
@@ -267,15 +268,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     print(response.body);
     if (response.statusCode == 200 || response.statusCode == 201) {
-      await SharedPref.putString("userData", event.userData);
-      await SharedPref.putString("password", event.password);
+      await SharedPref.putString(SharedPrefKey.userDataKey, event.userData);
+      await SharedPref.putString(SharedPrefKey.passwordKey, event.password);
       User userData = User.fromJson(jsonDecode(response.body)['data']);
-      await SharedPref.putString("firstName", userData.firstName);
-      await SharedPref.putString("lastName", userData.lastName);
-      await SharedPref.putString("userId", userData.userId);
+      await SharedPref.putString(SharedPrefKey.firstNameKey, userData.firstName);
+      await SharedPref.putString(SharedPrefKey.lastNameKey, userData.lastName);
+      await SharedPref.putString(SharedPrefKey.userIdKey, userData.userId);
       print(response.headers['refresh-token']);
       await SharedPref.putString(
-          "refresh-token", response.headers['refresh-token']!);
+          SharedPrefKey.refreshTokenKey, response.headers['refresh-token']!);
       Navigator.pop(event.context);
 
       emit(InitiatedLoginState(
@@ -286,13 +287,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthInitial());
     } else if (response.statusCode == 400 &&
         json.decode(response.body)['errorCode'] == 'E302') {
-      SharedPref.putString('temUserData', event.userData);
+      SharedPref.putString(SharedPrefKey.temUserDataKey, event.userData);
 
-      SharedPref.putString('temUserPassword', event.password);
+      SharedPref.putString(SharedPrefKey.temPasswordKey, event.password);
       Navigator.pop(event.context);
 
       await SharedPref.putString(
-          "phone", json.decode(response.body)['data']['phone']);
+          SharedPrefKey.phoneKey, json.decode(response.body)['data']['phone']);
       emit(AuthOtpRequestState(
           AppUtils.convertString(json.decode(response.body)['message']),
           event.userData));
@@ -300,11 +301,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } else if (response.statusCode == 400 &&
         (json.decode(response.body)['errorCode'] == 'E301' ||
             json.decode(response.body)['errorCode'] == 'N429')) {
-      SharedPref.putString('temUserData', event.userData);
-      SharedPref.putString('temUserPassword', event.password);
+      SharedPref.putString(SharedPrefKey.temUserDataKey, event.userData);
+      SharedPref.putString(SharedPrefKey.temPasswordKey, event.password);
 
       await SharedPref.putString(
-          "userData", event.userData,);
+        SharedPrefKey.userDataKey, event.userData,);
       Navigator.pop(event.context);
 
       emit(AuthChangeDeviceOtpRequestState(
@@ -338,7 +339,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         builder: (_) {
           return const LoadingDialog('Signing user in...');
         });
-    String refreshToken = await SharedPref.getString("refresh-token");
+    String refreshToken = await SharedPref.getString(SharedPrefKey.refreshTokenKey);
 
     AppRepository authRepository = AppRepository();
     Map<String, dynamic> data = {
@@ -355,15 +356,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       print(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
-        await SharedPref.putString("userData", event.userData);
-        await SharedPref.putString("password", event.password);
+        await SharedPref.putString(SharedPrefKey.userDataKey, event.userData);
+        await SharedPref.putString(SharedPrefKey.passwordKey, event.password);
         User userData = User.fromJson(jsonDecode(response.body)['data']);
-        await SharedPref.putString("firstName", userData.firstName);
-        await SharedPref.putString("lastName", userData.lastName);
+        await SharedPref.putString(SharedPrefKey.firstNameKey, userData.firstName);
+        await SharedPref.putString(SharedPrefKey.lastNameKey, userData.lastName);
         await SharedPref.putString(
-            "access-token", response.headers['access-token']!);
+            SharedPrefKey.accessTokenKey, response.headers['access-token']!);
         String hashedAccessPin = await AppUtils().encryptData(event.accessPin);
-        await SharedPref.putString('hashedAccessPin', hashedAccessPin);
+        await SharedPref.putString(SharedPrefKey.hashedAccessPinKey, hashedAccessPin);
 
         // String? cookie = response.headers['set-cookie'];
         // print(response.headers.values);
@@ -403,7 +404,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         builder: (_) {
           return const LoadingDialog('Changing pin...');
         });
-    String accessToken = await SharedPref.getString("access-token");
+    String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
 
     AppRepository authRepository = AppRepository();
     Map<String, dynamic> data = {
@@ -434,7 +435,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         // await SharedPref.putString("firstName", userData.firstName);
         // await SharedPref.putString("lastName", userData.lastName);
         // await SharedPref.putString(
-        //     "access-token", response.headers['access-token']!);
+        //     SharedPrefKey.accessTokenKey, response.headers['access-token']!);
 
         // String? cookie = response.headers['set-cookie'];
         // print(response.headers.values);
@@ -444,7 +445,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         // });
         //await SharedPref.putString("lastName", userData.lastName);
         String hashedAccessPin = await AppUtils().encryptData(event.accessPin);
-        await SharedPref.putString('hashedAccessPin', hashedAccessPin);
+        await SharedPref.putString(SharedPrefKey.hashedAccessPinKey, hashedAccessPin);
         Navigator.pop(event.context);
 
         emit(SuccessState(userData,
@@ -478,7 +479,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         builder: (_) {
           return const LoadingDialog('Changing password ...');
         });
-    String accessToken = await SharedPref.getString("access-token");
+    String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
 
     AppRepository authRepository = AppRepository();
     // Map<String, dynamic> data = {
@@ -495,12 +496,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       // print(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
         // await SharedPref.putString("userData", event.userData);
-        await SharedPref.putString("password", event.data['newPassword']!);
+        await SharedPref.putString(SharedPrefKey.passwordKey, event.data['newPassword']!);
         User userData = User.fromJson(jsonDecode(response.body)['data']);
         // await SharedPref.putString("firstName", userData.firstName);
         // await SharedPref.putString("lastName", userData.lastName);
         // await SharedPref.putString(
-        //     "access-token", response.headers['access-token']!);
+        //     SharedPrefKey.accessTokenKey, response.headers['access-token']!);
 
         // String? cookie = response.headers['set-cookie'];
         // print(response.headers.values);
@@ -546,7 +547,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         builder: (_) {
           return const LoadingDialog('Requesting OTP...');
         });
-    //String accessToken = await SharedPref.getString("access-token");
+    //String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
 
     AppRepository authRepository = AppRepository();
     Map<String, dynamic> data = {"userData": event.data, "medium": "phone"};
@@ -563,7 +564,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (response.statusCode == 200 || response.statusCode == 201) {
         // print(response.headers.keys);
         // await SharedPref.putString(
-        //     "access-token", response.headers['access-token']!);
+        //     SharedPrefKey.accessTokenKey, response.headers['access-token']!);
         Navigator.pop(event.context);
 
         emit(OTPRequestSuccessState(
@@ -595,7 +596,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         builder: (_) {
           return const LoadingDialog('Reseting password...');
         });
-    //String accessToken = await SharedPref.getString("access-token");
+    //String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
 
     AppRepository authRepository = AppRepository();
     Map<String, dynamic> data = {
@@ -615,7 +616,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       print(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
         // await SharedPref.putString(
-        //     "access-token", response.headers['access-token']!);
+        //     SharedPrefKey.accessTokenKey, response.headers['access-token']!);
         Navigator.pop(event.context);
 
         emit(PasswordResetSuccessState(

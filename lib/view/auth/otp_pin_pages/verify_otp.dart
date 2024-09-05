@@ -12,6 +12,7 @@ import 'package:teller_trust/view/auth/otp_pin_pages/create_pin.dart';
 import '../../../bloc/auth_bloc/auth_bloc.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/app_images.dart';
+import '../../../res/sharedpref_key.dart';
 import '../../../utills/app_navigator.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/custom_theme.dart';
@@ -82,8 +83,8 @@ class _VerifyOtpState extends State<VerifyOtp> {
               if (widget.isRegister) {
                 AppNavigator.pushAndStackPage(context, page: const CreatePin());
               } else {
-                String userData = await SharedPref.getString('temUserData');
-                String password = await SharedPref.getString('temUserPassword');
+                String userData = await SharedPref.getString(SharedPrefKey.temUserDataKey);
+                String password = await SharedPref.getString(SharedPrefKey.temPasswordKey);
                 authBloc
                     .add(InitiateSignInEventClick(userData, password, context));
                 //MSG.snackBar(context, state.msg);

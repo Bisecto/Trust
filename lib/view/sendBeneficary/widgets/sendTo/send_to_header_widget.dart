@@ -11,6 +11,7 @@ import 'package:teller_trust/view/widgets/form_input.dart';
 import '../../../../bloc/sendBloc/event/send_event.dart';
 import '../../../../bloc/sendBloc/send_bloc.dart';
 import '../../../../bloc/sendBloc/states/send_state.dart';
+import '../../../../res/sharedpref_key.dart';
 import '../../../../utills/custom_theme.dart';
 import '../../../../utills/shared_preferences.dart';
 import '../sendMain/send_main_form_widget.dart';
@@ -50,7 +51,7 @@ class _SendToHeaderWidgetState extends State<SendToHeaderWidget> {
   bool isMoneyBlocked = false;
 
   Future<void> getIfMoneyIsBlocked() async {
-    isMoneyBlocked = await SharedPref.getBool('isMoneyBlocked') ?? false;
+    isMoneyBlocked = await SharedPref.getBool(SharedPrefKey.isMoneyBlockedKey) ?? false;
     print('Initial isMoneyBlocked: $isMoneyBlocked');
     setState(() {});
   }
@@ -211,7 +212,7 @@ class _SendToHeaderWidgetState extends State<SendToHeaderWidget> {
                                               isMoneyBlocked = !isMoneyBlocked;
                                             });
                                             await SharedPref.putBool(
-                                                'isMoneyBlocked',
+                                                SharedPrefKey.isMoneyBlockedKey,
                                                 isMoneyBlocked);
                                             print(
                                                 'Saved isMoneyBlocked: $isMoneyBlocked');

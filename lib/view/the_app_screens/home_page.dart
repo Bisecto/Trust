@@ -38,6 +38,7 @@ import '../../domain/txn/txn_details_to_send_out.dart';
 import '../../model/category_model.dart';
 import '../../model/customer_account_model.dart';
 import '../../res/app_images.dart';
+import '../../res/sharedpref_key.dart';
 import '../../utills/custom_theme.dart';
 import '../../utills/enums/toast_mesage.dart';
 import '../sendBeneficary/pages/send_main_page.dart';
@@ -70,8 +71,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> getName() async {
-    firstname = await SharedPref.getString('firstName') ?? "";
-    isMoneyBlocked = await SharedPref.getBool('isMoneyBlocked') ?? false;
+    firstname = await SharedPref.getString(SharedPrefKey.firstNameKey) ?? "";
+    isMoneyBlocked = await SharedPref.getBool(SharedPrefKey.isMoneyBlockedKey) ?? false;
     print('Initial isMoneyBlocked: $isMoneyBlocked');
     setState(() {});
   }
@@ -731,7 +732,7 @@ class _HomePageState extends State<HomePage> {
                           isMoneyBlocked = !isMoneyBlocked;
                         });
                         await SharedPref.putBool(
-                            'isMoneyBlocked', isMoneyBlocked);
+                            SharedPrefKey.isMoneyBlockedKey, isMoneyBlocked);
                         print('Saved isMoneyBlocked: $isMoneyBlocked');
                       },
                       child: Padding(

@@ -21,6 +21,7 @@ import '../../../../repository/app_repository.dart';
 import '../../../../res/apis.dart';
 import '../../../../res/app_colors.dart';
 import '../../../../res/app_images.dart';
+import '../../../../res/sharedpref_key.dart';
 import '../../../../utills/app_navigator.dart';
 import '../../../../utills/app_utils.dart';
 import '../../../../utills/app_validator.dart';
@@ -73,7 +74,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
       productId = '';
     });
     AppRepository appRepository = AppRepository();
-    String accessToken = await SharedPref.getString("access-token");
+    String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
     String apiUrl =
         '${AppApis.listProduct}?page=1&pageSize=10&categoryId=${widget.category.id}&serviceId=$networkName';
 
@@ -153,7 +154,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                               //     page: LandingPage(studentProfile: state.studentProfile));
                             } else if (state is QuickPayInitiated) {
                               String accessToken =
-                                  await SharedPref.getString("access-token");
+                                  await SharedPref.getString(SharedPrefKey.accessTokenKey);
 
                               AppNavigator.pushAndStackPage(context,
                                   page: MakePayment(
@@ -170,7 +171,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                               //MSG.warningSnackBar(context, state.error);
 
                               String firstame =
-                                  await SharedPref.getString('firstName');
+                                  await SharedPref.getString(SharedPrefKey.firstNameKey);
 
                               AppNavigator.pushAndRemovePreviousPages(context,
                                   page: SignInWIthAccessPinBiometrics(
@@ -367,7 +368,7 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                                         ProductState state) async {
                                       if (state is AccessTokenExpireState) {
                                         String firstame =
-                                            await SharedPref.getString('firstName');
+                                            await SharedPref.getString(SharedPrefKey.firstNameKey);
 
                                         AppNavigator.pushAndRemovePreviousPages(
                                             context,

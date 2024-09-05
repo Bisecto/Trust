@@ -22,6 +22,7 @@ import '../../bloc/app_bloc/app_bloc.dart';
 import '../../model/customer_account_model.dart';
 import '../../model/personal_profile.dart';
 import '../../res/app_colors.dart';
+import '../../res/sharedpref_key.dart';
 import '../../utills/app_navigator.dart';
 import '../../utills/custom_theme.dart';
 import '../../utills/shared_preferences.dart';
@@ -51,8 +52,8 @@ class _MorePageState extends State<MorePage> {
   }
 
   Future<void> getName() async {
-    firstname = await SharedPref.getString('firstName');
-    lastname = await SharedPref.getString('lastName');
+    firstname = await SharedPref.getString(SharedPrefKey.firstNameKey);
+    lastname = await SharedPref.getString(SharedPrefKey.lastNameKey);
   }
 
   CustomerAccountModel? customerAccountModel;
@@ -282,18 +283,7 @@ class _MorePageState extends State<MorePage> {
                 ),
                 InkWell(
                     onTap: () async {
-                      SharedPref.remove("password");
-                      SharedPref.remove("email");
-                      SharedPref.remove("phone");
-                      SharedPref.remove("accessPin");
-                      SharedPref.remove("userId");
-                      SharedPref.remove("firstname");
-                      SharedPref.remove("lastname");
-                      SharedPref.remove("userData");
-                      SharedPref.remove("userId");
-
-                      SharedPref.remove("refresh-token");
-                      SharedPref.remove("access-token");
+                      await AppUtils().logout(context);
                       await FirebaseMessaging.instance.deleteToken();
                       AppNavigator.pushAndRemovePreviousPages(context,
                           page: const SignInScreen());

@@ -18,6 +18,7 @@ import '../../model/required_field_model.dart';
 import '../../model/service_model.dart';
 import '../../repository/app_repository.dart';
 import '../../res/apis.dart';
+import '../../res/sharedpref_key.dart';
 import '../../utills/app_utils.dart';
 import '../../utills/constants/loading_dialog.dart';
 import '../../utills/shared_preferences.dart';
@@ -49,7 +50,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         CategoryLoadingState()); // Emit loading state at the start of the event
 
     AppRepository appRepository = AppRepository();
-    String accessToken = await SharedPref.getString("access-token");
+    String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
     //try {
     var listProductResponse = await appRepository.appGetRequest(
       '${AppApis.listCategory}?page=${event.page}&pageSize=${event.pageSize}',
@@ -95,7 +96,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     emit(ServiceLoadingState()); // Emit loading state at the start of the event
 
     AppRepository appRepository = AppRepository();
-    String accessToken = await SharedPref.getString("access-token");
+    String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
     try {
       var listServiceResponse = await appRepository.appGetRequest(
         '${AppApis.listService}?page=${event.page}&pageSize=${event.pageSize}&categoryId=${event.categoryId}',
@@ -141,7 +142,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         });
 
     AppRepository appRepository = AppRepository();
-    String accessToken = await SharedPref.getString("access-token");
+    String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
     //try {
     Map<String, dynamic> data = {
       "productId": event.productId,
@@ -208,7 +209,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     emit(ProductLoadingState()); // Emit loading state at the start of the event
 
     AppRepository appRepository = AppRepository();
-    String accessToken = await SharedPref.getString("access-token");
+    String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
     try {
       var listServiceResponse = await appRepository.appGetRequest(
         '${AppApis.listProduct}?page=${event.page}&pageSize=${event.pageSize}&categoryId=${event.categoryId}&serviceId=${event.serviceId}',
@@ -256,7 +257,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       //   "transactionPin": event.transactionPin,
       // };
       AppRepository appRepository = AppRepository();
-      String accessToken = await SharedPref.getString("access-token");
+      String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
       // try {
       Map<String, dynamic> data = {
         "productId": event.producId,
@@ -307,7 +308,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     AppRepository appRepository = AppRepository();
 
     try {
-      String accessToken = await SharedPref.getString("access-token");
+      String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
 
       var response = await appRepository.appGetRequest(
           accessToken: accessToken,
@@ -342,7 +343,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     AppRepository appRepository = AppRepository();
 
     try {
-      String accessToken = await SharedPref.getString("access-token");
+      String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
 
       var response2 = await appRepository.appDeleteRequest(
           accessToken: accessToken,
@@ -386,7 +387,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         });
 
     AppRepository appRepository = AppRepository();
-    String accessToken = await SharedPref.getString("access-token");
+    String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
     //try {
     Map<String, dynamic> data = {
       "productId": event.productId,
@@ -433,7 +434,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         });
 
     AppRepository appRepository = AppRepository();
-    String accessToken = await SharedPref.getString("access-token");
+    String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
     //try {
     Map<String, dynamic> data = {
       "productId": event.productId,
@@ -479,7 +480,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         });
 
     AppRepository appRepository = AppRepository();
-    String accessToken = await SharedPref.getString("access-token");
+    String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
     //try {
 
     var reportA2cResponse = await appRepository.appPostRequestWithSingleImages(

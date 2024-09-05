@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../../repository/app_repository.dart';
 import '../../res/apis.dart';
+import '../../res/sharedpref_key.dart';
 import '../../utills/constants/loading_dialog.dart';
 import '../../utills/shared_preferences.dart';
 
@@ -38,7 +39,7 @@ class KycBloc extends Bloc<KycEvent, KycState> {
         "identityNumber": event.identityNumber,
         "dateOfBirth":event.dob
       };
-      String accessToken = await SharedPref.getString("access-token");
+      String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
 
       var verificationResponse = await appRepository.appPostRequest(
           data, AppApis.initiateVerification,
@@ -80,7 +81,7 @@ class KycBloc extends Bloc<KycEvent, KycState> {
         "type": event.identityType,
         "otp": event.otp,
       };
-      String accessToken = await SharedPref.getString("access-token");
+      String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
 
       var validateVerificationResponse = await appRepository.appPostRequest(
           data, AppApis.validateVerification,

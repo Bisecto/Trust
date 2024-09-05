@@ -19,6 +19,7 @@ import '../../../model/personal_profile.dart';
 import '../../../res/apis.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/app_icons.dart';
+import '../../../res/sharedpref_key.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/app_validator.dart';
 import '../../../utills/constants/loading_dialog.dart';
@@ -411,7 +412,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
       AppRepository repository = AppRepository();
 
       try {
-        String accessToken = await SharedPref.getString("access-token");
+        String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
 
         Map<String, dynamic> requestData = {
           'middleName': _middlenameController.text.isEmpty
@@ -436,8 +437,8 @@ class _ProfileDetailsState extends State<ProfileDetails> {
         if (response.statusCode == 200 || response.statusCode == 201) {
           // Success
           await refresh();
-          await SharedPref.putString("firstname", _firstnameController.text);
-          await SharedPref.putString("lastname", _lastnameController.text);
+          await SharedPref.putString(SharedPrefKey.firstNameKey, _firstnameController.text);
+          await SharedPref.putString(SharedPrefKey.lastNameKey, _lastnameController.text);
 
           Navigator.pop(context);
           showToast(

@@ -15,6 +15,7 @@ import '../../../../model/wallet_info.dart';
 import '../../../../res/app_colors.dart';
 import '../../../../res/app_icons.dart';
 import '../../../../res/app_images.dart';
+import '../../../../res/sharedpref_key.dart';
 import '../../../../utills/app_navigator.dart';
 import '../../../../utills/app_utils.dart';
 import '../../../../utills/app_validator.dart';
@@ -117,7 +118,7 @@ class _DataPurchaseState extends State<DataPurchase> {
                             //     page: LandingPage(studentProfile: state.studentProfile));
                           } else if (state is QuickPayInitiated) {
                             String accessToken =
-                            await SharedPref.getString("access-token");
+                            await SharedPref.getString(SharedPrefKey.accessTokenKey);
 
                             AppNavigator.pushAndStackPage(context,
                                 page: MakePayment(
@@ -126,7 +127,7 @@ class _DataPurchaseState extends State<DataPurchase> {
                                 ));
                           } else if (state is AccessTokenExpireState) {
                             String firstame =
-                            await SharedPref.getString('firstName');
+                            await SharedPref.getString(SharedPrefKey.firstNameKey);
 
                             AppNavigator.pushAndRemovePreviousPages(context,
                                 page: SignInWIthAccessPinBiometrics(
@@ -277,7 +278,7 @@ class _DataPurchaseState extends State<DataPurchase> {
                                       ProductState state) async {
                                     if (state is AccessTokenExpireState) {
                                       String firstame =
-                                      await SharedPref.getString('firstName');
+                                      await SharedPref.getString(SharedPrefKey.firstNameKey);
 
                                       AppNavigator.pushAndRemovePreviousPages(
                                           context,

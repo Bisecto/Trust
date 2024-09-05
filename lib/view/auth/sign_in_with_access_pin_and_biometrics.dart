@@ -13,6 +13,7 @@ import '../../res/app_colors.dart';
 import '../../res/app_images.dart';
 import '../../res/app_router.dart';
 import '../../res/app_strings.dart';
+import '../../res/sharedpref_key.dart';
 import '../../utills/app_navigator.dart';
 import '../../utills/app_utils.dart';
 import '../../utills/custom_theme.dart';
@@ -52,7 +53,7 @@ class _SignInWIthAccessPinBiometricsState
   }
 
   Future<void> getCanUseBiometrics() async {
-    bool isBiometricsEnabled = await SharedPref.getBool('biometric') ?? false;
+    bool isBiometricsEnabled = await SharedPref.getBool(SharedPrefKey.biometricKey) ?? false;
     var availableBiometrics = await auth.getAvailableBiometrics();
     bool canCheck = await auth.canCheckBiometrics;
     bool isSupported = await auth.isDeviceSupported();
@@ -239,34 +240,7 @@ class _SignInWIthAccessPinBiometricsState
                                             ),
                                             GestureDetector(
                                               onTap: () async {
-                                                await SharedPref.remove(
-                                                    "password");
-                                                await SharedPref.remove(
-                                                    "email");
-                                                await SharedPref.remove(
-                                                    "phone");
-                                                await SharedPref.remove(
-                                                    "hashedAccessPin");
-                                                await SharedPref.remove(
-                                                    "biometric");
-                                                await SharedPref.remove(
-                                                    "userId");
-                                                await SharedPref.remove(
-                                                    "firstname");
-                                                await SharedPref.remove(
-                                                    "lastname");
-                                                await SharedPref.remove(
-                                                    "userData");
-                                                await SharedPref.remove(
-                                                    "refresh-token");
-                                                await SharedPref.remove(
-                                                    "access-token");
-                                                SharedPref.remove(
-                                                    "temUserData");
-                                                SharedPref.remove(
-                                                    "temUserPhone");
-                                                SharedPref.remove(
-                                                    "temUserPassword");
+                                                await AppUtils().logout(context);
                                                 await FirebaseMessaging.instance.deleteToken();
 
                                                 AppNavigator.pushAndReplacePage(
@@ -351,7 +325,7 @@ class _SignInWIthAccessPinBiometricsState
                                                       String hashedPin =
                                                           await SharedPref
                                                               .getString(
-                                                                  'hashedAccessPin');
+                                                              SharedPrefKey.hashedAccessPinKey);
                                                       print(hashedPin);
                                                       String unHashedPin =
                                                           AppUtils().decryptData(
@@ -361,11 +335,11 @@ class _SignInWIthAccessPinBiometricsState
                                                       String userData =
                                                           await SharedPref
                                                               .getString(
-                                                                  'userData');
+                                                              SharedPrefKey.userDataKey);
                                                       String password =
                                                           await SharedPref
                                                               .getString(
-                                                                  'password');
+                                                              SharedPrefKey.passwordKey);
                                                       authBloc.add(
                                                           SignInEventClick(
                                                               userData,
@@ -436,10 +410,10 @@ class _SignInWIthAccessPinBiometricsState
                                             /// ignore: avoid_print
                                             String userData =
                                                 await SharedPref.getString(
-                                                    'userData');
+                                                    SharedPrefKey.userDataKey);
                                             String password =
                                                 await SharedPref.getString(
-                                                    'password');
+                                                    SharedPrefKey.passwordKey);
                                             authBloc.add(SignInEventClick(
                                                 userData,
                                                 password,

@@ -8,6 +8,7 @@ import 'package:otp_text_field/style.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/bloc/kyc_bloc/kyc_bloc.dart';
 import 'package:teller_trust/res/app_icons.dart';
+import 'package:teller_trust/res/sharedpref_key.dart';
 import 'package:teller_trust/utills/app_utils.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
 import 'package:teller_trust/view/widgets/form_button.dart';
@@ -150,7 +151,7 @@ class _BvnNinKyc2State extends State<BvnNinKyc2> {
                             //MSG.warningSnackBar(context, state.error);
                           } else if (state is AccessTokenExpireState) {
                             String firstame =
-                                await SharedPref.getString('firstName');
+                                await SharedPref.getString(SharedPrefKey.firstNameKey);
 
                             AppNavigator.pushAndRemovePreviousPages(context,
                                 page: SignInWIthAccessPinBiometrics(

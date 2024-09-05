@@ -8,6 +8,7 @@ import 'package:teller_trust/view/the_app_screens/transaction_history/wallet_his
 import '../../model/wallet_history_model.dart';
 import '../../repository/app_repository.dart';
 import '../../res/apis.dart';
+import '../../res/sharedpref_key.dart';
 import '../../utills/app_utils.dart';
 import '../../utills/shared_preferences.dart';
 
@@ -27,7 +28,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
         WalletHistoryLoadingState()); // Emit loading state at the start of the event
 
     AppRepository appRepository = AppRepository();
-    String accessToken = await SharedPref.getString("access-token");
+    String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
 
     try {
 

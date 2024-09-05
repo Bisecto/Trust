@@ -42,6 +42,7 @@ import '../../bloc/product_bloc/product_bloc.dart';
 import '../../repository/app_repository.dart';
 import '../../res/apis.dart';
 import '../../res/app_colors.dart';
+import '../../res/sharedpref_key.dart';
 import '../../utills/constants/loading_dialog.dart';
 import '../../utills/custom_theme.dart';
 import '../../utills/enums/toast_mesage.dart';
@@ -110,7 +111,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
               // AppNavigator.pushAndRemovePreviousPages(context,
               //     page: LandingPage(studentProfile: state.studentProfile));
             } else if (state is QuickPayInitiated) {
-              String accessToken = await SharedPref.getString("access-token");
+              String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
 
               AppNavigator.pushAndStackPage(context,
                   page: MakePayment(
@@ -126,7 +127,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
 
               //MSG.warningSnackBar(context, state.error);
 
-              String firstame = await SharedPref.getString('firstName');
+              String firstame = await SharedPref.getString(SharedPrefKey.firstNameKey);
 
               AppNavigator.pushAndRemovePreviousPages(context,
                   page: SignInWIthAccessPinBiometrics(

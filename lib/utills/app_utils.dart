@@ -4,7 +4,7 @@ import 'package:encrypt/encrypt.dart' as prefix0;
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/src/foundation/key.dart'as kk;
+import 'package:flutter/src/foundation/key.dart' as kk;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -15,6 +15,7 @@ import 'package:teller_trust/view/auth/sign_in_screen.dart';
 import 'package:teller_trust/view/auth/sign_in_with_access_pin_and_biometrics.dart';
 
 import '../res/app_router.dart';
+import '../res/sharedpref_key.dart';
 import 'app_navigator.dart';
 
 String? env(name) {
@@ -25,19 +26,21 @@ class AppUtils {
   static Color hexToColor(String code) {
     return Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
   }
+
   void debuglog(object) {
     if (kDebugMode) {
       print(object.toString());
       // debugPrint(object.toString());
     }
   }
+
   //final IV iv = IV.fromLength(16);
   final iv = IV.allZerosOfLength(16);
 
   static Encrypter crypt() {
     final appKey = env('APP_KEY')!;
     try {
-      final key =prefix0.Key.fromBase64(appKey);
+      final key = prefix0.Key.fromBase64(appKey);
       return Encrypter(AES(key, mode: AESMode.cbc));
     } catch (e) {
       throw FormatException('Invalid Base64 encoding in APP_KEY');
@@ -63,10 +66,11 @@ class AppUtils {
   }
 
   openApp(context) async {
-    bool isFirstOpen = (await SharedPref.getBool('isFirstOpen')) ?? true;
-    String userData = await SharedPref.getString('userData');
-    String password = await SharedPref.getString('password');
-    String firstame = await SharedPref.getString('firstName');
+    bool isFirstOpen =
+        (await SharedPref.getBool(SharedPrefKey.isFirstOpenKey)) ?? true;
+    String userData = await SharedPref.getString(SharedPrefKey.userDataKey);
+    String password = await SharedPref.getString(SharedPrefKey.passwordKey);
+    String firstame = await SharedPref.getString(SharedPrefKey.firstNameKey);
     print(userData);
     print(password);
     print(8);
@@ -91,7 +95,7 @@ class AppUtils {
     } else {
       print(15);
 
-      await SharedPref.putBool('isFirstOpen', false);
+      await SharedPref.putBool(SharedPrefKey.isFirstOpenKey, false);
       if (Platform.isAndroid) {
         print(5);
 
@@ -108,6 +112,26 @@ class AppUtils {
         });
       }
     }
+  }
+
+  logout(context) async {
+    SharedPref.remove(SharedPrefKey.passwordKey);
+    SharedPref.remove(SharedPrefKey.emailKey);
+    SharedPref.remove(SharedPrefKey.phoneKey);
+    SharedPref.remove("accessPin");
+    SharedPref.remove(SharedPrefKey.userIdKey);
+    SharedPref.remove(SharedPrefKey.firstNameKey);
+    SharedPref.remove(SharedPrefKey.lastNameKey);
+    SharedPref.remove(SharedPrefKey.userDataKey);
+    SharedPref.remove(SharedPrefKey.refreshTokenKey);
+    SharedPref.remove(SharedPrefKey.accessTokenKey);
+    SharedPref.remove(SharedPrefKey.temUserDataKey);
+    SharedPref.remove(SharedPrefKey.temPasswordKey);
+    SharedPref.remove("temUserPhone");
+    SharedPref.remove(SharedPrefKey.hashedAccessPinKey);
+    SharedPref.remove(SharedPrefKey.biometricKey);
+    SharedPref.remove("temUserPhone");
+    SharedPref.remove("accessPin");
   }
 
   static Future<bool> biometrics(String localizedReason) async {

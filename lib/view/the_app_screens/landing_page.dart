@@ -19,6 +19,7 @@ import '../../bloc/app_bloc/app_bloc.dart';
 import '../../domain/txn/txn_details_to_send_out.dart';
 import '../../main.dart';
 import '../../res/app_colors.dart';
+import '../../res/sharedpref_key.dart';
 import '../../utills/app_navigator.dart';
 import '../../utills/app_utils.dart';
 import '../../utills/custom_theme.dart';
@@ -221,7 +222,7 @@ class _LandingPageState extends State<LandingPage> {
         ? IdleDetector(
       idleTime: const Duration(minutes: 20),
       onIdle: () async {
-        String firstame = await SharedPref.getString('firstName');
+        String firstame = await SharedPref.getString(SharedPrefKey.firstNameKey);
 
         AppNavigator.pushAndRemovePreviousPages(context,
             page: SignInWIthAccessPinBiometrics(

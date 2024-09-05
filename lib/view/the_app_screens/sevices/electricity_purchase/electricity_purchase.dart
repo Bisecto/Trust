@@ -19,6 +19,7 @@ import '../../../../res/apis.dart';
 import '../../../../res/app_colors.dart';
 import '../../../../res/app_icons.dart';
 import '../../../../res/app_images.dart';
+import '../../../../res/sharedpref_key.dart';
 import '../../../../utills/app_navigator.dart';
 import '../../../../utills/app_utils.dart';
 import '../../../../utills/app_validator.dart';
@@ -114,7 +115,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
 
   Future<String> handleNetworkSelect(String? selectedServiceId) async {
     AppRepository appRepository = AppRepository();
-    String accessToken = await SharedPref.getString("access-token");
+    String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
     String apiUrl =
         '${AppApis.listProduct}?page=1&pageSize=10&categoryId=${widget.category.id}&serviceId=$selectedServiceId';
 
@@ -211,7 +212,7 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                             //     page: LandingPage(studentProfile: state.studentProfile));
                           } else if (state is QuickPayInitiated) {
                             String accessToken =
-                                await SharedPref.getString("access-token");
+                                await SharedPref.getString(SharedPrefKey.accessTokenKey);
 
                             AppNavigator.pushAndStackPage(context,
                                 page: MakePayment(
