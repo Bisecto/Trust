@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/bloc/product_bloc/product_bloc.dart';
+import 'package:teller_trust/res/app_images.dart';
 import 'package:teller_trust/utills/constants/loading_dialog.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/airtime_purchase/airtime.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/airtime_to_cash_purchase/airtime_to_cash.dart';
@@ -15,6 +16,7 @@ import '../../bloc/app_bloc/app_bloc.dart';
 import '../../model/category_model.dart';
 import '../../res/app_colors.dart';
 import '../../res/app_icons.dart';
+import '../../utills/app_utils.dart';
 import '../../utills/custom_theme.dart';
 import '../../utills/enums/toast_mesage.dart';
 import '../widgets/app_custom_text.dart';
@@ -56,191 +58,229 @@ class _BillsPageState extends State<BillsPage> {
             )
           ],
         ),
-        body: BlocBuilder<AppBloc, AppState>(
-          builder: (context, state) {
-            if (state is SuccessState) {
-              var walletInfo = state.customerProfile.walletInfo;
-              return Container(
-                  //height: 210,
-                  child: BlocBuilder<ProductBloc, ProductState>(
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              BlocBuilder<AppBloc, AppState>(
                 builder: (context, state) {
-                  if (state is CategorySuccessState) {
-                    CategoryModel categoryModel = state.categoryModel;
-                    List<Category> items = categoryModel.data.categories;
-                    //Use user data here
-                    return GridView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        crossAxisSpacing: 20.0,
-                        mainAxisSpacing: 8.0,
-                      ),
-                      itemCount: items.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                            onTap: () {
-                              String selectedAction = '';
-                              setState(() {
-                                selectedAction =
-                                    items[index].name.toLowerCase();
-                              });
-                              switch (selectedAction) {
-                                case "airtime":
-                                  modalSheet.showMaterialModalBottomSheet(
-                                    backgroundColor: Colors.transparent,
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(20.0)),
-                                    ),
-                                    context: context,
-                                    builder: (context) => Padding(
-                                      padding:
-                                          const EdgeInsets.only(top: 100.0),
-                                      child: AirtimePurchase(
-                                        category: items[index],
-                                        walletInfo: walletInfo,
-                                      ),
-                                    ),
-                                  );
-                                  // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
-                                  //     services: AppList().serviceItems[index]));
-                                  return;
-                                case "airtime to cash":
-                                  modalSheet.showMaterialModalBottomSheet(
-                                    backgroundColor: Colors.transparent,
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(20.0)),
-                                    ),
-                                    context: context,
-                                    builder: (context) => Padding(
-                                      padding:
-                                          const EdgeInsets.only(top: 100.0),
-                                      child: AirtimeToCash(
-                                        category: items[index],
-                                        walletInfo: walletInfo,
-                                      ),
-                                    ),
-                                  );
-                                  // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
-                                  //     services: AppList().serviceItems[index]));
-                                  return;
-                                case "data":
-                                  modalSheet.showMaterialModalBottomSheet(
-                                    backgroundColor: Colors.transparent,
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(20.0)),
-                                    ),
-                                    context: context,
-                                    builder: (context) => Padding(
-                                      padding:
-                                          const EdgeInsets.only(top: 100.0),
-                                      child: DataPurchase(
-                                        category: items[index],
-                                        walletInfo: walletInfo,
-                                      ),
-                                    ),
-                                  );
-                                  // AppNavigator.pushAndStackPage(context, page: DataPurchase(
-                                  //     services: AppList().serviceItems[index]));
-                                  return;
-                                case "electricity":
-                                  modalSheet.showMaterialModalBottomSheet(
-                                    backgroundColor: Colors.transparent,
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(20.0)),
-                                    ),
-                                    context: context,
-                                    builder: (context) => Padding(
-                                      padding:
-                                          const EdgeInsets.only(top: 100.0),
-                                      child: ElectricityPurchase(
-                                        category: items[index],
-                                        walletInfo: walletInfo,
-                                      ),
-                                    ),
-                                  );
-                                  // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
-                                  //     services: AppList().serviceItems[index]));
-                                  return;
-                                case 'cable tv':
-                                  modalSheet.showMaterialModalBottomSheet(
-                                    backgroundColor: Colors.transparent,
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(20.0)),
-                                    ),
-                                    context: context,
-                                    builder: (context) => Padding(
-                                      padding:
-                                          const EdgeInsets.only(top: 100.0),
-                                      child: CablePurchase(
-                                        category: items[index],
-                                        walletInfo: walletInfo,
-                                      ),
-                                    ),
-                                  );
-                                  // AppNavigator.pushAndStackPage(context, page: InternetPurchase(
-                                  //     services: AppList().serviceItems[index]));
-                                  return;
-                                // case 'Electricity':
-                                //   modalSheet.showMaterialModalBottomSheet(
-                                //     backgroundColor: Colors.transparent,
-                                //     shape: const RoundedRectangleBorder(
-                                //       borderRadius:
-                                //           BorderRadius.vertical(top: Radius.circular(20.0)),
-                                //     ),
-                                //     context: context,
-                                //     builder: (context) => Padding(
-                                //       padding: const EdgeInsets.only(top: 100.0),
-                                //       child: Electricity(
-                                //           services: AppList().serviceItems[index]),
-                                //     ),
-                                //   );
-                                //   // AppNavigator.pushAndStackPage(context, page: InternetPurchase(
-                                //   //     services: AppList().serviceItems[index]));
-                                //   return;
-                                default:
-                                  showToast(
-                                      context: context,
-                                      title: 'Info',
-                                      subtitle:
-                                          'Oops! It looks like this service is still in the oven. We\'re baking up something great, so stay tuned! 🍰',
-                                      type: ToastMessageType.info);
-                              }
+                  if (state is SuccessState) {
+                    var walletInfo = state.customerProfile.walletInfo;
+                    return Container(
+                        //height: 210,
+                        child: BlocBuilder<ProductBloc, ProductState>(
+                      builder: (context, state) {
+                        if (state is CategorySuccessState) {
+                          CategoryModel categoryModel = state.categoryModel;
+                          List<Category> items = categoryModel.data.categories;
+                          //Use user data here
+                          return SizedBox(
+                            height: 300,
+                            child: GridView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
 
-                              //showAirtimeModal(context, AppList().serviceItems[index]);
-                            },
-                            child: gridItem(
-                                items[index],
-                                theme,
-                                [
-                                  'airtime',
-                                  'data',
-                                  'electricity',
-                                  'cable tv',
-                                  'airtime to cash'
-                                ].contains(items[index].name.toLowerCase())));
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                crossAxisSpacing: 20.0,
+                                mainAxisSpacing: 8.0,
+                              ),
+                              itemCount: items.length,
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                    onTap: () {
+                                      String selectedAction = '';
+                                      setState(() {
+                                        selectedAction =
+                                            items[index].name.toLowerCase();
+                                      });
+                                      switch (selectedAction) {
+                                        case "airtime":
+                                          modalSheet.showMaterialModalBottomSheet(
+                                            backgroundColor: Colors.transparent,
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.vertical(
+                                                  top: Radius.circular(20.0)),
+                                            ),
+                                            context: context,
+                                            builder: (context) => Padding(
+                                              padding:
+                                                  const EdgeInsets.only(top: 100.0),
+                                              child: AirtimePurchase(
+                                                category: items[index],
+                                                walletInfo: walletInfo,
+                                              ),
+                                            ),
+                                          );
+                                          // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
+                                          //     services: AppList().serviceItems[index]));
+                                          return;
+                                        case "airtime to cash":
+                                          modalSheet.showMaterialModalBottomSheet(
+                                            backgroundColor: Colors.transparent,
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.vertical(
+                                                  top: Radius.circular(20.0)),
+                                            ),
+                                            context: context,
+                                            builder: (context) => Padding(
+                                              padding:
+                                                  const EdgeInsets.only(top: 100.0),
+                                              child: AirtimeToCash(
+                                                category: items[index],
+                                                walletInfo: walletInfo,
+                                              ),
+                                            ),
+                                          );
+                                          // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
+                                          //     services: AppList().serviceItems[index]));
+                                          return;
+                                        case "data":
+                                          modalSheet.showMaterialModalBottomSheet(
+                                            backgroundColor: Colors.transparent,
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.vertical(
+                                                  top: Radius.circular(20.0)),
+                                            ),
+                                            context: context,
+                                            builder: (context) => Padding(
+                                              padding:
+                                                  const EdgeInsets.only(top: 100.0),
+                                              child: DataPurchase(
+                                                category: items[index],
+                                                walletInfo: walletInfo,
+                                              ),
+                                            ),
+                                          );
+                                          // AppNavigator.pushAndStackPage(context, page: DataPurchase(
+                                          //     services: AppList().serviceItems[index]));
+                                          return;
+                                        case "electricity":
+                                          modalSheet.showMaterialModalBottomSheet(
+                                            backgroundColor: Colors.transparent,
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.vertical(
+                                                  top: Radius.circular(20.0)),
+                                            ),
+                                            context: context,
+                                            builder: (context) => Padding(
+                                              padding:
+                                                  const EdgeInsets.only(top: 100.0),
+                                              child: ElectricityPurchase(
+                                                category: items[index],
+                                                walletInfo: walletInfo,
+                                              ),
+                                            ),
+                                          );
+                                          // AppNavigator.pushAndStackPage(context, page: AirtimePurchase(
+                                          //     services: AppList().serviceItems[index]));
+                                          return;
+                                        case 'cable tv':
+                                          modalSheet.showMaterialModalBottomSheet(
+                                            backgroundColor: Colors.transparent,
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.vertical(
+                                                  top: Radius.circular(20.0)),
+                                            ),
+                                            context: context,
+                                            builder: (context) => Padding(
+                                              padding:
+                                                  const EdgeInsets.only(top: 100.0),
+                                              child: CablePurchase(
+                                                category: items[index],
+                                                walletInfo: walletInfo,
+                                              ),
+                                            ),
+                                          );
+                                          // AppNavigator.pushAndStackPage(context, page: InternetPurchase(
+                                          //     services: AppList().serviceItems[index]));
+                                          return;
+                                        // case 'Electricity':
+                                        //   modalSheet.showMaterialModalBottomSheet(
+                                        //     backgroundColor: Colors.transparent,
+                                        //     shape: const RoundedRectangleBorder(
+                                        //       borderRadius:
+                                        //           BorderRadius.vertical(top: Radius.circular(20.0)),
+                                        //     ),
+                                        //     context: context,
+                                        //     builder: (context) => Padding(
+                                        //       padding: const EdgeInsets.only(top: 100.0),
+                                        //       child: Electricity(
+                                        //           services: AppList().serviceItems[index]),
+                                        //     ),
+                                        //   );
+                                        //   // AppNavigator.pushAndStackPage(context, page: InternetPurchase(
+                                        //   //     services: AppList().serviceItems[index]));
+                                        //   return;
+                                        default:
+                                          showToast(
+                                              context: context,
+                                              title: 'Info',
+                                              subtitle:
+                                                  'Oops! It looks like this service is still in the oven. We\'re baking up something great, so stay tuned! 🍰',
+                                              type: ToastMessageType.info);
+                                      }
+
+                                      //showAirtimeModal(context, AppList().serviceItems[index]);
+                                    },
+                                    child: gridItem(
+                                        items[index],
+                                        theme,
+                                        [
+                                          'airtime',
+                                          'data',
+                                          'electricity',
+                                          'cable tv',
+                                          'airtime to cash'
+                                        ].contains(items[index].name.toLowerCase())));
+                              },
+                            ),
+                          );
+                        } else {
+                          return const CustomText(
+                            text: "",
+                            size: 15,
+                            weight: FontWeight.bold,
+                            color: AppColors.white,
+                          ); // Show loading indicator or handle error state
+                        }
                       },
-                    );
+                    ));
                   } else {
-                    return const CustomText(
-                      text: "",
-                      size: 15,
-                      weight: FontWeight.bold,
-                      color: AppColors.white,
-                    ); // Show loading indicator or handle error state
+                    return const LoadingDialog(
+                        ''); // Show loading indicator or handle error state
                   }
                 },
-              ));
-            } else {
-              return const LoadingDialog(
-                  ''); // Show loading indicator or handle error state
-            }
-          },
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Center(
+                  child: SizedBox(
+                    // Set the desired width of the container
+                    height: 150,
+
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                        width: AppUtils.deviceScreenSize(context).width,
+                        // Set the desired width of the container
+                        //height: 150,
+                        // Set the desired height of the container
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          image: const DecorationImage(
+                            image: AssetImage(AppImages.billCard),
+                            // Replace with your actual image file path
+                            fit: BoxFit
+                                .cover, // You can adjust the fit property to cover, contain, or others
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
         ));
   }
 
