@@ -8,6 +8,7 @@ import '../../model/tellapoint_history_model.dart';
 import '../../model/transactionHistory.dart';
 import '../../repository/app_repository.dart';
 import '../../res/apis.dart';
+import '../../res/sharedpref_key.dart';
 import '../../utills/app_utils.dart';
 import '../../utills/shared_preferences.dart';
 
@@ -29,7 +30,7 @@ class TellapointBloc extends Bloc<TellapointEvent, TellapointState> {
         TellapointLoadingState()); // Emit loading state at the start of the event
 
     AppRepository appRepository = AppRepository();
-    String accessToken = await SharedPref.getString("access-token");
+    String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
 
      try {
 

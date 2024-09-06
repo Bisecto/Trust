@@ -230,7 +230,7 @@ class _MorePageState extends State<MorePage> {
                     // AppNavigator.pushAndStackPage(context,
                     //     page: TellaPointMainPage());
                   },
-                  child: TellaPointProductContainer(),
+                  child: TellaPointProductContainer(showForwardIcon: true,),
                 ),
                 const SizedBox(
                   height: 10,

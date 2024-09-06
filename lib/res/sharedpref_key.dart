@@ -4,8 +4,6 @@ class SharedPrefKey {
   static const String temPasswordKey = 'temUserPassword';
   static const String passwordKey = 'password';
 
-
-
   static const String emailKey = 'email';
   static const String phoneKey = 'phone';
   static const String userDataKey = 'userData';
@@ -16,11 +14,8 @@ class SharedPrefKey {
   static const String firstNameKey = 'firstName';
   static const String lastNameKey = 'lastName';
 
-
   static const String isFirstOpenKey = 'isFirstOpen';
   static const String isMoneyBlockedKey = 'isMoneyBlocked';
   static const String notificationKey = 'notification';
   static const String biometricKey = 'biometric';
-
-
 }

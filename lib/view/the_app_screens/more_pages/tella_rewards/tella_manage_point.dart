@@ -43,7 +43,7 @@ class _TellaManagePointState extends State<TellaManagePoint> {
             const SizedBox(
               height: 10,
             ),
-            const TellaPointProductContainer(),
+             const TellaPointProductContainer(allowClick: false, showForwardIcon: false,),
             const SizedBox(
               height: 20,
             ),
