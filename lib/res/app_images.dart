@@ -1,6 +1,7 @@
 class AppImages {
   static const String _imageBaseUrl = 'assets/images/';
   static const logo = '${_imageBaseUrl}logo.png';
+  static const whiteLogo = '${_imageBaseUrl}white_logo.png';
   static const fullLogo = '${_imageBaseUrl}full_logo.png';
   static const apple = '${_imageBaseUrl}Apple.png';
   static const tellaPointBannerBackground = '${_imageBaseUrl}tella_point_banner_background.png';
@@ -33,6 +34,7 @@ class AppImages {
   static const modalBackground = '${_imageBaseUrl}modal_background.png';
   static const looperImage = '${_imageBaseUrl}looper_image.png';
   static const qrCode = '${_imageBaseUrl}qr_code.png';
+  static const receiptBg = '${_imageBaseUrl}receipt_bg.png';
 
 
 }

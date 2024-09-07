@@ -87,18 +87,20 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
     super.initState();
   }
 
-  Future<void> _createAndSharePdf(Transaction transaction, bool isShare) async {
+  Future<void> _shareOrDownloadPdf(
+      Transaction transaction, bool isShare) async {
     // Create a new PDF document
     final pdf = pw.Document();
 
     // Load the necessary images
     final ByteData qrCodeBytes = await rootBundle.load(AppImages.qrCode);
     final Uint8List qrCodeImage = qrCodeBytes.buffer.asUint8List();
-    final ByteData authAppLogoImageBytes =
-        await rootBundle.load(AppImages.authAppLogoImage);
-    final Uint8List authAppLogoImage = qrCodeBytes.buffer.asUint8List();
+    final ByteData receiptBgBytes =
+        await rootBundle.load(AppImages.receiptBg);
+    final Uint8List receiptBg =
+    receiptBgBytes.buffer.asUint8List();
 
-    final ByteData logoBytes = await rootBundle.load(AppImages.logo);
+    final ByteData logoBytes = await rootBundle.load(AppImages.whiteLogo);
     final Uint8List logoImage = logoBytes.buffer.asUint8List();
 
     final ByteData looperBytes = await rootBundle.load(AppImages.looperImage);
@@ -174,32 +176,47 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                                 decoration: pw.BoxDecoration(
                                   color: PdfColors.white,
                                   borderRadius: pw.BorderRadius.circular(20),
-                                  //image: pw.DecorationImage(image: AssetImage(AppImages.authAppLogoImage) as ImageProvider)
+
                                 ),
-                                child: pw.Row(
-                                    mainAxisAlignment:
-                                        pw.MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment:
-                                        pw.CrossAxisAlignment.start,
-                                    children: [
-                                      pdfBuildReceiptDetails(transaction),
-                                      pw.Column(
-                                          mainAxisAlignment:
-                                              pw.MainAxisAlignment.start,
-                                          children: [
-                                            pw.SizedBox(height: 20),
-                                            pw.Image(
-                                                pw.MemoryImage(qrCodeImage),
-                                                //width: double.infinity,
-                                                //fit: pw.BoxFit.fill,
-                                                height: 100),
-                                            pw.SizedBox(height: 10),
-                                            pw.Text('Scan to Download App  ',
-                                                style: const pw.TextStyle(
-                                                    fontSize: 14,
-                                                    color: PdfColors.black)),
-                                          ])
-                                    ]),
+                                child: pw.Padding(
+                                    padding: pw.EdgeInsets.fromLTRB(20,10,20,0),
+                                    child: pw.Container(
+                                        decoration: pw.BoxDecoration(
+                                          color: PdfColors.white,
+                                          image: pw.DecorationImage(
+                                            image: pw.MemoryImage(receiptBg),
+//dpi: 10,
+                                            // Your background image here
+                                            fit: pw.BoxFit.fill, // Set how the background image will fit
+
+                                          ),                                ),
+
+                                        child: pw.Row(
+                                            mainAxisAlignment: pw
+                                                .MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment:
+                                                pw.CrossAxisAlignment.start,
+                                            children: [
+                                          pdfBuildReceiptDetails(transaction),
+                                          pw.Column(
+                                              mainAxisAlignment:
+                                                  pw.MainAxisAlignment.start,
+                                              children: [
+                                                pw.SizedBox(height: 20),
+                                                pw.Image(
+                                                    pw.MemoryImage(qrCodeImage),
+                                                    //width: double.infinity,
+                                                    //fit: pw.BoxFit.fill,
+                                                    height: 100),
+                                                pw.SizedBox(height: 10),
+                                                pw.Text(
+                                                    'Scan to Download App  ',
+                                                    style: const pw.TextStyle(
+                                                        fontSize: 14,
+                                                        color:
+                                                            PdfColors.black)),
+                                              ])
+                                        ]))),
                               ),
                             ),
 
@@ -227,22 +244,55 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
     );
 
     // Save and share the PDF
-    final directory = await getTemporaryDirectory();
-    final file = File(
-        "${directory.path}/TELLATRUST_TRANSACTION_${transaction.order?.product?.name ?? "${transaction.type.toLowerCase().contains('credit') ? 'Credit' : 'Debit'}_${transaction.reference}"}.pdf");
-    await file.writeAsBytes(await pdf.save());
-    if (isShare) {
-      await Printing.sharePdf(
-        bytes: await pdf.save(),
-        filename:
-            'TELLATRUST_TRANSACTION_${transaction.order?.product?.name ?? "${transaction.type.toLowerCase().contains('credit') ? 'Credit' : 'Debit'}_${transaction.reference}"}.pdf',
-      );
-    } else {
-      await Printing.sharePdf(
-        bytes: await pdf.save(),
-        filename:
-            'TELLATRUST_TRANSACTION_${transaction.order?.product?.name ?? "${transaction.type.toLowerCase().contains('credit') ? 'Credit' : 'Debit'}_${transaction.reference}"}.pdf',
-      );
+
+    //Platform check: Android or iOS
+    if (Platform.isAndroid) {
+      if (isShare) {
+        // Sharing the PDF on Android
+        await Printing.sharePdf(
+          bytes: await pdf.save(),
+          filename:
+              'TELLATRUST_TRANSACTION_${transaction.order?.product?.name ?? "${transaction.type.toLowerCase().contains('credit') ? 'Credit' : 'Debit'}_${transaction.reference}"}.pdf',
+        );
+      } else {
+        // Save the PDF to Downloads folder on Android
+        var status = await Permission.storage.request();
+
+        if (status.isGranted) {
+          // Get the Downloads folder path on Android
+          final downloadsDirectory = Directory('/storage/emulated/0/Download');
+          if (!downloadsDirectory.existsSync()) {
+            downloadsDirectory.createSync();
+          }
+
+          final file = File(
+              '${downloadsDirectory.path}/TELLATRUST_TRANSACTION_${transaction.order?.product?.name ?? "${transaction.type.toLowerCase().contains('credit') ? 'Credit' : 'Debit'}_${transaction.reference}"}.pdf');
+          await file.writeAsBytes(await pdf.save());
+
+          print('PDF saved to ${file.path}');
+        } else {
+          print('Permission to access storage denied');
+        }
+      }
+    } else if (Platform.isIOS) {
+      // On iOS, save the PDF to the app's Documents directory
+      final directory = await getApplicationDocumentsDirectory();
+      final file = File(
+          '${directory.path}/TELLATRUST_TRANSACTION_${transaction.order?.product?.name ?? "${transaction.type.toLowerCase().contains('credit') ? 'Credit' : 'Debit'}_${transaction.reference}"}.pdf');
+      await file.writeAsBytes(await pdf.save());
+
+      if (isShare) {
+        // Share the PDF on iOS
+        await Printing.sharePdf(
+          bytes: await pdf.save(),
+          filename:
+              'TELLATRUST_TRANSACTION_${transaction.order?.product?.name ?? "${transaction.type.toLowerCase().contains('credit') ? 'Credit' : 'Debit'}_${transaction.reference}"}.pdf',
+        );
+      } else {
+        // Provide a message to the user about accessing the file in the app's directory
+        print(
+            'PDF saved to ${file.path} (in-app Documents folder). You can access it via the Files app.');
+      }
     }
   }
 
@@ -279,9 +329,9 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
 // Translated buildReceiptDetails for PDF
   pw.Widget pdfBuildReceiptDetails(Transaction transaction) {
     return pw.Container(
-      padding: const pw.EdgeInsets.all(16),
+      padding: const pw.EdgeInsets.all(0),
       decoration: const pw.BoxDecoration(
-        color: PdfColors.white,
+        //color: PdfColors.white,
         borderRadius: pw.BorderRadius.only(
           topLeft: pw.Radius.circular(0),
           topRight: pw.Radius.circular(0),
@@ -506,8 +556,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                       child: Column(
                         children: [
                           Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(20.0, 0, 20, 0),
+                            padding: const EdgeInsets.fromLTRB(20.0, 0, 20, 0),
                             child: cardTopContainer(theme),
                           ),
                           Expanded(
@@ -747,26 +796,26 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
       children: [
         GestureDetector(
           onTap: () {
-            _createAndSharePdf(widget.transaction, true);
+            _shareOrDownloadPdf(widget.transaction, true);
             //imageShare(context, title, theme);
           },
           child: buildActionButton(
             'Share',
             AppIcons.send,
-            _createAndSharePdf,
+            _shareOrDownloadPdf,
             theme,
           ),
         ),
         GestureDetector(
           onTap: () {
-            _createAndSharePdf(widget.transaction, false);
+            _shareOrDownloadPdf(widget.transaction, false);
 
             //imageDownload(context, title);
           },
           child: buildActionButton(
             'Download',
             AppIcons.download,
-            _createAndSharePdf,
+            _shareOrDownloadPdf,
             theme,
           ),
         ),
