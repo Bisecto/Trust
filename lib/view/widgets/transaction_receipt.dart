@@ -91,15 +91,18 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
   Future<void> _shareOrDownloadPdf(
       Transaction transaction, bool isShare) async {
     // Create a new PDF document
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (_) => const LoadingDialog(''),
+    );
     final pdf = pw.Document();
 
     // Load the necessary images
     final ByteData qrCodeBytes = await rootBundle.load(AppImages.qrCode);
     final Uint8List qrCodeImage = qrCodeBytes.buffer.asUint8List();
-    final ByteData receiptBgBytes =
-        await rootBundle.load(AppImages.receiptBg);
-    final Uint8List receiptBg =
-    receiptBgBytes.buffer.asUint8List();
+    final ByteData receiptBgBytes = await rootBundle.load(AppImages.receiptBg);
+    final Uint8List receiptBg = receiptBgBytes.buffer.asUint8List();
 
     final ByteData logoBytes = await rootBundle.load(AppImages.whiteLogo);
     final Uint8List logoImage = logoBytes.buffer.asUint8List();
@@ -177,10 +180,10 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                                 decoration: pw.BoxDecoration(
                                   color: PdfColors.white,
                                   borderRadius: pw.BorderRadius.circular(20),
-
                                 ),
                                 child: pw.Padding(
-                                    padding: pw.EdgeInsets.fromLTRB(20,10,20,0),
+                                    padding:
+                                        pw.EdgeInsets.fromLTRB(20, 10, 20, 0),
                                     child: pw.Container(
                                         decoration: pw.BoxDecoration(
                                           color: PdfColors.white,
@@ -188,36 +191,39 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                                             image: pw.MemoryImage(receiptBg),
 //dpi: 10,
                                             // Your background image here
-                                            fit: pw.BoxFit.fill, // Set how the background image will fit
-
-                                          ),                                ),
-
+                                            fit: pw.BoxFit
+                                                .fill, // Set how the background image will fit
+                                          ),
+                                        ),
                                         child: pw.Row(
                                             mainAxisAlignment: pw
                                                 .MainAxisAlignment.spaceBetween,
                                             crossAxisAlignment:
                                                 pw.CrossAxisAlignment.start,
                                             children: [
-                                          pdfBuildReceiptDetails(transaction),
-                                          pw.Column(
-                                              mainAxisAlignment:
-                                                  pw.MainAxisAlignment.start,
-                                              children: [
-                                                pw.SizedBox(height: 20),
-                                                pw.Image(
-                                                    pw.MemoryImage(qrCodeImage),
-                                                    //width: double.infinity,
-                                                    //fit: pw.BoxFit.fill,
-                                                    height: 100),
-                                                pw.SizedBox(height: 10),
-                                                pw.Text(
-                                                    'Scan to Download App  ',
-                                                    style: const pw.TextStyle(
-                                                        fontSize: 14,
-                                                        color:
-                                                            PdfColors.black)),
-                                              ])
-                                        ]))),
+                                              pdfBuildReceiptDetails(
+                                                  transaction),
+                                              pw.Column(
+                                                  mainAxisAlignment: pw
+                                                      .MainAxisAlignment.start,
+                                                  children: [
+                                                    pw.SizedBox(height: 20),
+                                                    pw.Image(
+                                                        pw.MemoryImage(
+                                                            qrCodeImage),
+                                                        //width: double.infinity,
+                                                        //fit: pw.BoxFit.fill,
+                                                        height: 100),
+                                                    pw.SizedBox(height: 10),
+                                                    pw.Text(
+                                                        'Scan to Download App  ',
+                                                        style:
+                                                            const pw.TextStyle(
+                                                                fontSize: 14,
+                                                                color: PdfColors
+                                                                    .black)),
+                                                  ])
+                                            ]))),
                               ),
                             ),
 
@@ -255,28 +261,50 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
           filename:
               'TELLATRUST_TRANSACTION_${transaction.order?.product?.name ?? "${transaction.type.toLowerCase().contains('credit') ? 'Credit' : 'Debit'}_${transaction.reference}"}.pdf',
         );
+        Navigator.pop(context);
       } else {
         // Save the PDF to Downloads folder on Android
         //var status = await Permission.storage.request();
 
         if (await _requestStoragePermission()) {
           // Get the Downloads folder path on Android
-          if(Platform.isAndroid && await _isAndroid13OrAbove()){
-            await savePdfWithIntent(pdf, 'TELLATRUST_TRANSACTION_${transaction.order?.product?.name ?? "${transaction.type.toLowerCase().contains('credit') ? 'Credit' : 'Debit'}_${transaction.reference}"}.pdf');
-          }else{
+          if (Platform.isAndroid && await _isAndroid13OrAbove()) {
+            Navigator.pop(context);
+            await savePdfWithIntent(pdf,
+                'TELLATRUST_TRANSACTION_${transaction.order?.product?.name ?? "${transaction.type.toLowerCase().contains('credit') ? 'Credit' : 'Debit'}_${transaction.reference}"}.pdf');
+            showToast(
+              context: context,
+              title: 'Download Successful',
+              subtitle: 'View PDF in downloads',
+              type: ToastMessageType.success,
+            );
+          } else {
+            Navigator.pop(context);
+            final downloadsDirectory =
+                Directory('/storage/emulated/0/Download');
+            if (!downloadsDirectory.existsSync()) {
+              downloadsDirectory.createSync();
+            }
 
-
-          final downloadsDirectory = Directory('/storage/emulated/0/Download');
-          if (!downloadsDirectory.existsSync()) {
-            downloadsDirectory.createSync();
+            final file = File(
+                '${downloadsDirectory.path}/TELLATRUST_TRANSACTION_${transaction.order?.product?.name ?? "${transaction.type.toLowerCase().contains('credit') ? 'Credit' : 'Debit'}_${transaction.reference}"}.pdf');
+            await file.writeAsBytes(await pdf.save());
+            showToast(
+              context: context,
+              title: 'Download Successful',
+              subtitle: 'View PDF in downloads',
+              type: ToastMessageType.success,
+            );
+            print('PDF saved to ${file.path}');
           }
-
-          final file = File(
-              '${downloadsDirectory.path}/TELLATRUST_TRANSACTION_${transaction.order?.product?.name ?? "${transaction.type.toLowerCase().contains('credit') ? 'Credit' : 'Debit'}_${transaction.reference}"}.pdf');
-          await file.writeAsBytes(await pdf.save());
-
-          print('PDF saved to ${file.path}');}
         } else {
+          Navigator.pop(context);
+          showToast(
+            context: context,
+            title: 'Permission Denied',
+            subtitle: 'Permission to access storage denied',
+            type: ToastMessageType.error,
+          );
           print('Permission to access storage denied');
         }
       }
@@ -294,13 +322,22 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
           filename:
               'TELLATRUST_TRANSACTION_${transaction.order?.product?.name ?? "${transaction.type.toLowerCase().contains('credit') ? 'Credit' : 'Debit'}_${transaction.reference}"}.pdf',
         );
+        Navigator.pop(context);
+
       } else {
+        showToast(
+          context: context,
+          title: 'Download Successful',
+          subtitle: 'View PDF in downloads',
+          type: ToastMessageType.success,
+        );
         // Provide a message to the user about accessing the file in the app's directory
         print(
             'PDF saved to ${file.path} (in-app Documents folder). You can access it via the Files app.');
       }
     }
   }
+
   Future<void> savePdfWithIntent(pw.Document pdf, String fileName) async {
     final AndroidIntent intent = AndroidIntent(
       action: 'android.intent.action.CREATE_DOCUMENT',
@@ -311,6 +348,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
     );
     await intent.launch();
   }
+
   Future<bool> _isAndroid13OrAbove() async {
     if (Platform.isAndroid) {
       final version = int.parse(Platform.version.split(' ')[0].split('.')[0]);
