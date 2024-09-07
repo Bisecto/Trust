@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:android_intent_plus/android_intent.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
@@ -256,10 +257,15 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
         );
       } else {
         // Save the PDF to Downloads folder on Android
-        var status = await Permission.storage.request();
+        //var status = await Permission.storage.request();
 
-        if (status.isGranted) {
+        if (await _requestStoragePermission()) {
           // Get the Downloads folder path on Android
+          if(Platform.isAndroid && await _isAndroid13OrAbove()){
+            await savePdfWithIntent(pdf, 'TELLATRUST_TRANSACTION_${transaction.order?.product?.name ?? "${transaction.type.toLowerCase().contains('credit') ? 'Credit' : 'Debit'}_${transaction.reference}"}.pdf');
+          }else{
+
+
           final downloadsDirectory = Directory('/storage/emulated/0/Download');
           if (!downloadsDirectory.existsSync()) {
             downloadsDirectory.createSync();
@@ -269,7 +275,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
               '${downloadsDirectory.path}/TELLATRUST_TRANSACTION_${transaction.order?.product?.name ?? "${transaction.type.toLowerCase().contains('credit') ? 'Credit' : 'Debit'}_${transaction.reference}"}.pdf');
           await file.writeAsBytes(await pdf.save());
 
-          print('PDF saved to ${file.path}');
+          print('PDF saved to ${file.path}');}
         } else {
           print('Permission to access storage denied');
         }
@@ -293,6 +299,35 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
         print(
             'PDF saved to ${file.path} (in-app Documents folder). You can access it via the Files app.');
       }
+    }
+  }
+  Future<void> savePdfWithIntent(pw.Document pdf, String fileName) async {
+    final AndroidIntent intent = AndroidIntent(
+      action: 'android.intent.action.CREATE_DOCUMENT',
+      type: 'application/pdf',
+      arguments: <String, dynamic>{
+        'android.intent.extra.TITLE': '$fileName.pdf',
+      },
+    );
+    await intent.launch();
+  }
+  Future<bool> _isAndroid13OrAbove() async {
+    if (Platform.isAndroid) {
+      final version = int.parse(Platform.version.split(' ')[0].split('.')[0]);
+      return version >= 33; // Android 13 is API level 33+
+    }
+    return false;
+  }
+
+// Request storage permission for Android versions below Android 10
+  Future<bool> _requestStoragePermission() async {
+    if (await Permission.storage.request().isGranted) {
+      return true;
+    } else {
+      if (await Permission.manageExternalStorage.request().isGranted) {
+        return true;
+      }
+      return false;
     }
   }
 
