@@ -31,5 +31,8 @@ class AppImages {
   static const advertCard4 = '${_imageBaseUrl}advert_card4.png';
   static const billCard = '${_imageBaseUrl}bill_card.png';
   static const modalBackground = '${_imageBaseUrl}modal_background.png';
+  static const looperImage = '${_imageBaseUrl}looper_image.png';
+  static const qrCode = '${_imageBaseUrl}qr_code.png';
+
 
 }

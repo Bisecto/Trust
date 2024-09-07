@@ -63,6 +63,8 @@ dependencies:
   http_parser: ^4.0.0
   flutter_image_compress: ^2.3.0
   image_cropper:
+  pdf: ^3.11.1
+  printing:
 
 
 dev_dependencies:

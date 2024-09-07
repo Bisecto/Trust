@@ -3,14 +3,17 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:printing/printing.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:teller_trust/res/app_colors.dart';
+import 'package:teller_trust/res/app_images.dart';
 import 'package:teller_trust/utills/app_utils.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/card_request.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
@@ -53,6 +56,9 @@ import '../auth/otp_pin_pages/confirm_with_otp.dart';
 import '../auth/sign_in_with_access_pin_and_biometrics.dart';
 import '../the_app_screens/sevices/build_payment_method.dart';
 import '../the_app_screens/sevices/make_bank_transfer/bank_transfer.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/pdf.dart' as pdfColo;
+import 'package:pdf/widgets.dart' as pw;
 
 class TransactionReceipt extends StatefulWidget {
   final Transaction transaction;
@@ -67,19 +73,324 @@ class TransactionReceipt extends StatefulWidget {
 
 class _TransactionReceiptState extends State<TransactionReceipt> {
   bool isSharingPdf = false;
-  ScreenshotController screenshotController = ScreenshotController();
-  PdfDocument? document = PdfDocument();
   ProductBloc purchaseProductBloc = ProductBloc();
 
   @override
   void initState() {
     // TODO: implement initState
+    //_createAndSharePdf();
     print(widget.transaction.toJson());
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,
     ));
     super.initState();
+  }
+
+  Future<void> _createAndSharePdf(Transaction transaction, bool isShare) async {
+    // Create a new PDF document
+    final pdf = pw.Document();
+
+    // Load the necessary images
+    final ByteData qrCodeBytes = await rootBundle.load(AppImages.qrCode);
+    final Uint8List qrCodeImage = qrCodeBytes.buffer.asUint8List();
+    final ByteData authAppLogoImageBytes =
+        await rootBundle.load(AppImages.authAppLogoImage);
+    final Uint8List authAppLogoImage = qrCodeBytes.buffer.asUint8List();
+
+    final ByteData logoBytes = await rootBundle.load(AppImages.logo);
+    final Uint8List logoImage = logoBytes.buffer.asUint8List();
+
+    final ByteData looperBytes = await rootBundle.load(AppImages.looperImage);
+    final Uint8List looperImage = looperBytes.buffer.asUint8List();
+
+    pdfColo.PdfColor lightGreen = const pdfColo.PdfColor.fromInt(0xffE3FAD6);
+
+    // Add content to the PDF
+    pdf.addPage(
+      pw.Page(
+        pageFormat: const PdfPageFormat(
+            8.5 * PdfPageFormat.inch, 11 * PdfPageFormat.inch),
+        build: (pw.Context context) => pw.Container(
+          width: context.page.pageFormat.width,
+          height: context.page.pageFormat.height,
+          //color: PdfColors.red,
+          child: pw.Stack(
+            children: [
+              pw.Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: pw.Container(
+                  height: 130,
+                  decoration: pw.BoxDecoration(
+                    color: lightGreen,
+                    borderRadius: const pw.BorderRadius.vertical(
+                      bottom: pw.Radius.circular(30),
+                    ),
+                  ),
+                ),
+              ),
+              pw.Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: pw.Container(
+                  height: 120,
+                  decoration: const pw.BoxDecoration(
+                    color: PdfColors.green900,
+                    borderRadius: pw.BorderRadius.vertical(
+                      bottom: pw.Radius.circular(30),
+                    ),
+                  ),
+                  child: pw.Image(
+                    pw.MemoryImage(looperImage),
+                    fit: pw.BoxFit.fill,
+                  ),
+                ),
+              ),
+              pw.Positioned(
+                top: 10,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: pw.Column(
+                  children: [
+                    pw.Padding(
+                      padding: const pw.EdgeInsets.fromLTRB(20.0, 0, 20, 0),
+                      child: pdfCardTopContainer(logoImage),
+                    ),
+                    pw.Expanded(
+                      child: pw.Container(
+                        color: lightGreen,
+                        child: pw.Column(
+                          children: [
+                            pw.SizedBox(height: 10),
+                            // Pass the dynamic transaction to the receipt details
+                            pw.Padding(
+                              padding: const pw.EdgeInsets.all(20),
+                              child: pw.Container(
+                                //color: PdfColors.white,
+                                decoration: pw.BoxDecoration(
+                                  color: PdfColors.white,
+                                  borderRadius: pw.BorderRadius.circular(20),
+                                  //image: pw.DecorationImage(image: AssetImage(AppImages.authAppLogoImage) as ImageProvider)
+                                ),
+                                child: pw.Row(
+                                    mainAxisAlignment:
+                                        pw.MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        pw.CrossAxisAlignment.start,
+                                    children: [
+                                      pdfBuildReceiptDetails(transaction),
+                                      pw.Column(
+                                          mainAxisAlignment:
+                                              pw.MainAxisAlignment.start,
+                                          children: [
+                                            pw.SizedBox(height: 20),
+                                            pw.Image(
+                                                pw.MemoryImage(qrCodeImage),
+                                                //width: double.infinity,
+                                                //fit: pw.BoxFit.fill,
+                                                height: 100),
+                                            pw.SizedBox(height: 10),
+                                            pw.Text('Scan to Download App  ',
+                                                style: const pw.TextStyle(
+                                                    fontSize: 14,
+                                                    color: PdfColors.black)),
+                                          ])
+                                    ]),
+                              ),
+                            ),
+
+                            //pdfBuildReceiptDetails(transaction),
+                            pw.Container(
+                              color: lightGreen,
+                              child: pw.Column(
+                                children: [
+                                  pw.SizedBox(height: 10),
+                                  pdfBuildFooter(qrCodeImage),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    // Save and share the PDF
+    final directory = await getTemporaryDirectory();
+    final file = File(
+        "${directory.path}/TELLATRUST_TRANSACTION_${transaction.order?.product?.name ?? "${transaction.type.toLowerCase().contains('credit') ? 'Credit' : 'Debit'}_${transaction.reference}"}.pdf");
+    await file.writeAsBytes(await pdf.save());
+    if (isShare) {
+      await Printing.sharePdf(
+        bytes: await pdf.save(),
+        filename:
+            'TELLATRUST_TRANSACTION_${transaction.order?.product?.name ?? "${transaction.type.toLowerCase().contains('credit') ? 'Credit' : 'Debit'}_${transaction.reference}"}.pdf',
+      );
+    } else {
+      await Printing.sharePdf(
+        bytes: await pdf.save(),
+        filename:
+            'TELLATRUST_TRANSACTION_${transaction.order?.product?.name ?? "${transaction.type.toLowerCase().contains('credit') ? 'Credit' : 'Debit'}_${transaction.reference}"}.pdf',
+      );
+    }
+  }
+
+  pw.Widget pdfCardTopContainer(logoImage) {
+    return pw.Container(
+      height: 100,
+      // width: context.page.pageFormat.width, // Full width
+      child: pw.Row(
+        mainAxisAlignment: pw.MainAxisAlignment.center,
+        crossAxisAlignment: pw.CrossAxisAlignment.center,
+        children: [
+          pw.Column(
+            children: [
+              pw.Image(pw.MemoryImage(logoImage),
+                  //width: double.infinity,
+                  //fit: pw.BoxFit.fill,
+                  height: 50),
+              //pw.SvgImage(svg: AppIcons.logoReceipt, height: 40),
+              // Adjusted size
+              pw.SizedBox(height: 5),
+              pw.Text('TellaTrust',
+                  style:
+                      const pw.TextStyle(color: PdfColors.white, fontSize: 18)),
+              pw.Text('Transaction Receipt',
+                  style:
+                      const pw.TextStyle(color: PdfColors.white, fontSize: 12)),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+// Translated buildReceiptDetails for PDF
+  pw.Widget pdfBuildReceiptDetails(Transaction transaction) {
+    return pw.Container(
+      padding: const pw.EdgeInsets.all(16),
+      decoration: const pw.BoxDecoration(
+        color: PdfColors.white,
+        borderRadius: pw.BorderRadius.only(
+          topLeft: pw.Radius.circular(0),
+          topRight: pw.Radius.circular(0),
+        ),
+      ),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pdfBuildDetailRow('Amount', 'N${transaction.amount}'),
+          pdfBuildDetailRow(
+              'Product Name',
+              widget.transaction.order?.product?.name ??
+                  (widget.transaction.type.toLowerCase().contains('credit')
+                      ? 'Credit'
+                      : 'Debit')),
+          if (widget.transaction.order != null) pw.SizedBox(height: 12),
+          if (widget.transaction.order != null &&
+              (widget.transaction.order?.requiredFields.meterNumber ??
+                      widget.transaction.order?.requiredFields.cardNumber ??
+                      widget.transaction.order?.requiredFields.phoneNumber ??
+                      '')
+                  .isNotEmpty) ...[
+            pdfBuildDetailRow(
+                'To',
+                widget.transaction.order?.requiredFields.meterNumber ??
+                    widget.transaction.order?.requiredFields.cardNumber ??
+                    widget.transaction.order?.requiredFields.phoneNumber ??
+                    ''),
+          ],
+          // pdfBuildDetailRow(
+          //     'To', transaction.order?.requiredFields.meterNumber ?? 'N/A'),
+          pdfBuildDetailRow('Description', transaction.description),
+          if (widget.transaction.order?.response?.utilityToken != null &&
+              widget.transaction.order!.response!.utilityToken.isNotEmpty &&
+              widget.transaction.status.toLowerCase() == 'success') ...[
+            pw.SizedBox(height: 12),
+            pdfBuildDetailRow(
+              'Utility Token',
+              widget.transaction.order!.response!.utilityToken,
+            ),
+          ],
+          pdfBuildDetailRow(
+              'Date',
+              AppUtils.formateSimpleDate(
+                  dateTime: widget.transaction.createdAt.toString())),
+          pw.Divider(),
+          pdfBuildDetailRow('Transaction Reference', transaction.reference),
+          pdfBuildDetailRow(
+              'Status',
+              widget.transaction.status.toLowerCase() == 'success'
+                  ? "SUCCESSFUL"
+                  : widget.transaction.status.toUpperCase()),
+          pw.SizedBox(height: 20),
+        ],
+      ),
+    );
+  }
+
+// Translated buildDetailRow for PDF
+  pw.Widget pdfBuildDetailRow(String label, String value) {
+    return pw.Padding(
+      padding: const pw.EdgeInsets.all(3.0),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.Text(label,
+              style: const pw.TextStyle(fontSize: 12, color: PdfColors.grey)),
+          pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            children: [
+              pw.SizedBox(
+                width: 200, // Limit width for wrapping text
+                child: pw.Text(value, style: const pw.TextStyle(fontSize: 14)),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+// Translated buildFooter for PDF
+  pw.Widget pdfBuildFooter(qrCodeImage) {
+    return pw.Column(
+      children: [
+        pw.Text('Thank You!',
+            style: const pw.TextStyle(fontSize: 14, color: PdfColors.black)),
+        pw.Text('For Your Purchase',
+            style: const pw.TextStyle(fontSize: 14, color: PdfColors.black)),
+        pw.Padding(
+          padding: const pw.EdgeInsets.all(10.0),
+          child: pw.Text(
+            'Want to save money on transfers and recharge cards? Download TellaTrust today!',
+            style: const pw.TextStyle(fontSize: 14, color: PdfColors.black),
+            textAlign: pw.TextAlign.center,
+          ),
+        ),
+        pw.SizedBox(height: 20),
+        pw.Row(
+          mainAxisAlignment: pw.MainAxisAlignment.center,
+          children: [
+            pw.Icon(const pw.IconData(0xe900), color: PdfColors.green),
+            pw.Text('Secured by TellaTrust',
+                style:
+                    const pw.TextStyle(fontSize: 14, color: PdfColors.black)),
+          ],
+        ),
+      ],
+    );
   }
 
   @override
@@ -111,7 +422,8 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
               // AppNavigator.pushAndRemovePreviousPages(context,
               //     page: LandingPage(studentProfile: state.studentProfile));
             } else if (state is QuickPayInitiated) {
-              String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
+              String accessToken =
+                  await SharedPref.getString(SharedPrefKey.accessTokenKey);
 
               AppNavigator.pushAndStackPage(context,
                   page: MakePayment(
@@ -127,7 +439,8 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
 
               //MSG.warningSnackBar(context, state.error);
 
-              String firstame = await SharedPref.getString(SharedPrefKey.firstNameKey);
+              String firstame =
+                  await SharedPref.getString(SharedPrefKey.firstNameKey);
 
               AppNavigator.pushAndRemovePreviousPages(context,
                   page: SignInWIthAccessPinBiometrics(
@@ -150,112 +463,109 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
               color: theme.isDark
                   ? AppColors.darkModeBackgroundColor
                   : const Color(0xffF3FFEB),
-              child: Screenshot(
-                controller: screenshotController,
-                child: Container(
-                  width: double.maxFinite,
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        height: 130,
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            color: Color(0xffF3FFEB),
-                            borderRadius: BorderRadius.vertical(
-                                bottom: Radius.circular(30)),
-                          ),
+              child: SizedBox(
+                width: double.maxFinite,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: 130,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          color: Color(0xffF3FFEB),
+                          borderRadius: BorderRadius.vertical(
+                              bottom: Radius.circular(30)),
                         ),
                       ),
-                      Positioned(
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        height: 120,
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            color: AppColors.darkGreen,
-                            borderRadius: BorderRadius.vertical(
-                                bottom: Radius.circular(30)),
-                          ),
-                          child: SvgPicture.asset(
-                            AppIcons.looper1,
-                            width: double.infinity,
-                            fit: BoxFit.fill,
-                          ),
+                    ),
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: 120,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          color: AppColors.darkGreen,
+                          borderRadius: BorderRadius.vertical(
+                              bottom: Radius.circular(30)),
+                        ),
+                        child: SvgPicture.asset(
+                          AppIcons.looper1,
+                          width: double.infinity,
+                          fit: BoxFit.fill,
                         ),
                       ),
-                      Positioned(
-                        top: 40,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.fromLTRB(20.0, 0, 20, 0),
-                              child: cardTopContainer(theme),
-                            ),
-                            Expanded(
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  children: [
-                                    buildReceiptDetails(theme),
-                                    Container(
-                                      //height: isSharingPdf ? 400 : 400,
-                                      color: theme.isDark
-                                          ? AppColors
-                                              .darkModeBackgroundContainerColor
-                                          : const Color(0xffF3FFEB),
-                                      child: Column(
-                                        children: [
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          if (!isSharingPdf)
-                                            buildActionButtons(
-                                              widget.transaction.description,
-                                              theme,
-                                            ),
-                                          if (!isSharingPdf && widget.isHome)
-                                            FormButton(
-                                              onPressed: () {
-                                                AppNavigator
-                                                    .pushAndRemovePreviousPages(
-                                                        context,
-                                                        page:
-                                                            const LandingPage());
-                                              },
-                                              width: AppUtils.deviceScreenSize(
-                                                          context)
-                                                      .width /
-                                                  2,
-                                              text: 'Homepage',
-                                              iconWidget: Icons.arrow_forward,
-                                              textColor: AppColors.white,
-                                              isIcon: true,
-                                              borderRadius: 20,
-                                              bgColor: AppColors.green,
-                                            ),
-                                          const SizedBox(height: 10),
-                                          buildFooter(
+                    ),
+                    Positioned(
+                      top: 40,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding:
+                                const EdgeInsets.fromLTRB(20.0, 0, 20, 0),
+                            child: cardTopContainer(theme),
+                          ),
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  buildReceiptDetails(theme),
+                                  Container(
+                                    //height: isSharingPdf ? 400 : 400,
+                                    color: theme.isDark
+                                        ? AppColors
+                                            .darkModeBackgroundContainerColor
+                                        : const Color(0xffF3FFEB),
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        if (!isSharingPdf)
+                                          buildActionButtons(
+                                            widget.transaction.description,
                                             theme,
                                           ),
-                                        ],
-                                      ),
+                                        if (!isSharingPdf && widget.isHome)
+                                          FormButton(
+                                            onPressed: () {
+                                              AppNavigator
+                                                  .pushAndRemovePreviousPages(
+                                                      context,
+                                                      page:
+                                                          const LandingPage());
+                                            },
+                                            width: AppUtils.deviceScreenSize(
+                                                        context)
+                                                    .width /
+                                                2,
+                                            text: 'Homepage',
+                                            iconWidget: Icons.arrow_forward,
+                                            textColor: AppColors.white,
+                                            isIcon: true,
+                                            borderRadius: 20,
+                                            bgColor: AppColors.green,
+                                          ),
+                                        const SizedBox(height: 10),
+                                        buildFooter(
+                                          theme,
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             );
@@ -290,10 +600,6 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
               ),
             ],
           ),
-          if (isSharingPdf)
-            const CircleAvatar(
-              backgroundColor: Colors.transparent,
-            ),
           if (!isSharingPdf)
             GestureDetector(
               onTap: () {
@@ -343,11 +649,13 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
           ),
           buildDetailRow('Amount', theme, 'N${widget.transaction.amount}'),
           if (widget.transaction.order != null) const SizedBox(height: 12),
-          if (widget.transaction.order != null&&(widget.transaction.order?.requiredFields.meterNumber ??
-              widget.transaction.order?.requiredFields.cardNumber ??
-              widget.transaction.order?.requiredFields.phoneNumber ??
-              '').isNotEmpty)
-            ...[buildDetailRow(
+          if (widget.transaction.order != null &&
+              (widget.transaction.order?.requiredFields.meterNumber ??
+                      widget.transaction.order?.requiredFields.cardNumber ??
+                      widget.transaction.order?.requiredFields.phoneNumber ??
+                      '')
+                  .isNotEmpty) ...[
+            buildDetailRow(
                 'To',
                 theme,
                 widget.transaction.order?.requiredFields.meterNumber ??
@@ -355,7 +663,8 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                     widget.transaction.order?.requiredFields.phoneNumber ??
                     '',
                 true),
-          const SizedBox(height: 12),],
+            const SizedBox(height: 12),
+          ],
           buildDetailRow('Description', theme, widget.transaction.description),
           if (widget.transaction.order?.response?.utilityToken != null &&
               widget.transaction.order!.response!.utilityToken.isNotEmpty &&
@@ -406,7 +715,6 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
               SizedBox(
                 width:
                     //isCopyable
-
                     // ?
                     AppUtils.deviceScreenSize(context).width / 1.5,
 
@@ -439,23 +747,26 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
       children: [
         GestureDetector(
           onTap: () {
-            imageShare(context, title, theme);
+            _createAndSharePdf(widget.transaction, true);
+            //imageShare(context, title, theme);
           },
           child: buildActionButton(
             'Share',
             AppIcons.send,
-            imageShare,
+            _createAndSharePdf,
             theme,
           ),
         ),
         GestureDetector(
           onTap: () {
-            imageDownload(context, title);
+            _createAndSharePdf(widget.transaction, false);
+
+            //imageDownload(context, title);
           },
           child: buildActionButton(
             'Download',
             AppIcons.download,
-            imageDownload,
+            _createAndSharePdf,
             theme,
           ),
         ),
@@ -603,7 +914,10 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                     },
                     child: const Align(
                         alignment: Alignment.topRight,
-                        child: Icon(Icons.cancel,size: 30,)),
+                        child: Icon(
+                          Icons.cancel,
+                          size: 30,
+                        )),
                   ),
                   PaymentMethodScreen(
                     amtToPay: transaction.amount.toString(),
@@ -673,455 +987,455 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
     }
   }
 
-  // Future<void> pdfShare(BuildContext context, String title, theme) async {
-  //   final plugin = DeviceInfoPlugin();
-  //   final deviceInfo = await plugin.deviceInfo;
-  //   bool isAndroid = deviceInfo is AndroidDeviceInfo;
-  //
-  //   showDialog(
-  //     barrierDismissible: false,
-  //     context: context,
-  //     builder: (_) => const LoadingDialog('Preparing to share...'),
-  //   );
-  //
-  //   final storageStatus = isAndroid
-  //       ? deviceInfo.version.sdkInt < 33
-  //           ? (await Permission.storage.request())
-  //           : PermissionStatus.granted
-  //       : PermissionStatus.granted;
-  //   print(storageStatus);
-  //   if (storageStatus == PermissionStatus.granted) {
-  //     setState(() {
-  //       isSharingPdf = true;
-  //     });
-  //
-  //     var freeSpace = await DiskSpace.getFreeDiskSpace;
-  //     if (freeSpace != null && freeSpace > 10.00) {
-  //       try {
-  //         Uint8List? image = await screenshotController.capture(
-  //             delay: const Duration(milliseconds: 5));
-  //
-  //         if (image != null) {
-  //           var path = isAndroid
-  //               ? await ExternalPath.getExternalStoragePublicDirectory(
-  //                   ExternalPath.DIRECTORY_DOWNLOADS)
-  //               : (await getApplicationDocumentsDirectory()).path;
-  //
-  //           final directory = Directory(path);
-  //           if (!directory.existsSync()) {
-  //             directory.createSync(recursive: true);
-  //           }
-  //
-  //           final imagePath =
-  //               await File('$path/${title + getCurrentDate()}.png')
-  //                   .create(recursive: true);
-  //           await imagePath.writeAsBytes(image);
-  //
-  //           final Uint8List imageData = File(imagePath.path).readAsBytesSync();
-  //           final PdfBitmap pdfBitmap = PdfBitmap(imageData);
-  //
-  //           final PdfDocument document = PdfDocument();
-  //           final PdfPage page = document.pages.add();
-  //           final Size pageSize = page.getClientSize();
-  //
-  //           page.graphics.drawImage(pdfBitmap,
-  //               Rect.fromLTWH(0, 0, pageSize.width, pageSize.height));
-  //
-  //           var pdfPath = '$path/${title + getCurrentDate()}.pdf';
-  //           await File(pdfPath).writeAsBytes(await document.save());
-  //           document.dispose();
-  //
-  //           final targetFile = File(imagePath.path);
-  //           if (targetFile.existsSync()) {
-  //             targetFile.deleteSync(recursive: true);
-  //           }
-  //
-  //           await Share.shareXFiles([
-  //             XFile(pdfPath,
-  //                 mimeType: 'application/pdf',
-  //                 name: '${title + getCurrentDate()}.pdf')
-  //           ]);
-  //
-  //           final targetFile2 = File(pdfPath);
-  //           if (targetFile2.existsSync()) {
-  //             targetFile2.deleteSync(recursive: true);
-  //           }
-  //
-  //           setState(() {
-  //             Navigator.pop(context);
-  //             isSharingPdf = false;
-  //           });
-  //         } else {
-  //           setState(() {
-  //             Navigator.pop(context);
-  //             isSharingPdf = false;
-  //           });
-  //         }
-  //       } catch (e) {
-  //         setState(() {
-  //           Navigator.pop(context);
-  //           isSharingPdf = false;
-  //         });
-  //         showToast(
-  //           context: context,
-  //           title: 'Error occurred',
-  //           subtitle: 'An error occurred while preparing the PDF',
-  //           type: ToastMessageType.error,
-  //         );
-  //       }
-  //     } else {
-  //       Navigator.pop(context);
-  //       setState(() {
-  //         isSharingPdf = false;
-  //       });
-  //       await Permission.storage.request();
-  //       // showToast(
-  //       //   context: context,
-  //       //   title: 'Error occurred',
-  //       //   subtitle: 'Inadequate space on disk',
-  //       //   type: ToastMessageType.error,
-  //       // );
-  //     }
-  //   } else {
-  //     Navigator.pop(context);
-  //     setState(() {
-  //       isSharingPdf = false;
-  //     });
-  //     await Permission.storage.request();
-  //     // showToast(
-  //     //   context: context,
-  //     //   title: "Permission required",
-  //     //   subtitle: 'Permission was denied',
-  //     //   type: ToastMessageType.info,
-  //     // );
-  //   }
-  // }
-  //
-  // Future<void> pdfDownload(BuildContext context, String title) async {
-  //   try {
-  //     setState(() {
-  //       isSharingPdf = true;
-  //     });
-  //     showDialog(
-  //       barrierDismissible: false,
-  //       context: context,
-  //       builder: (_) => const LoadingDialog('Preparing to download...'),
-  //     );
-  //
-  //     final plugin = DeviceInfoPlugin();
-  //     final deviceInfo = await plugin.deviceInfo;
-  //     bool isAndroid = deviceInfo is AndroidDeviceInfo;
-  //
-  //     final storageStatus = isAndroid
-  //         ? deviceInfo.version.sdkInt < 33
-  //             ? (await Permission.storage.request())
-  //             : PermissionStatus.granted
-  //         : PermissionStatus.granted;
-  //
-  //     if (storageStatus == PermissionStatus.granted) {
-  //       setState(() {
-  //         isSharingPdf = true;
-  //       });
-  //
-  //       var freeSpace = await DiskSpace.getFreeDiskSpace;
-  //       if (freeSpace != null && freeSpace > 10.00) {
-  //         try {
-  //           Uint8List? image = await screenshotController.capture(
-  //               delay: const Duration(milliseconds: 5));
-  //           if (image != null) {
-  //             var path = isAndroid
-  //                 ? await ExternalPath.getExternalStoragePublicDirectory(
-  //                     ExternalPath.DIRECTORY_DOWNLOADS)
-  //                 : (await getApplicationDocumentsDirectory()).path;
-  //
-  //             final directory = Directory(path);
-  //             if (!directory.existsSync()) {
-  //               directory.createSync(recursive: true);
-  //             }
-  //
-  //             final imagePath =
-  //                 await File('$path/${title + getCurrentDate()}.png')
-  //                     .create(recursive: true);
-  //             await imagePath.writeAsBytes(image);
-  //
-  //             final Uint8List imageData =
-  //                 File(imagePath.path).readAsBytesSync();
-  //             final PdfBitmap pdfBitmap = PdfBitmap(imageData);
-  //
-  //             final PdfDocument document = PdfDocument();
-  //             final PdfPage page = document.pages.add();
-  //             final Size pageSize = page.getClientSize();
-  //             page.graphics.drawImage(pdfBitmap,
-  //                 Rect.fromLTWH(0, 0, pageSize.width, pageSize.height));
-  //
-  //             var pdfPath = '$path/${title + getCurrentDate()}.pdf';
-  //             await File(pdfPath).writeAsBytes(await document.save());
-  //             document.dispose();
-  //
-  //             final targetFile = File(imagePath.path);
-  //             if (targetFile.existsSync()) {
-  //               targetFile.deleteSync(recursive: true);
-  //             }
-  //
-  //             setState(() {
-  //               isSharingPdf = false;
-  //               Navigator.pop(context);
-  //             });
-  //             showToast(
-  //               context: context,
-  //               title: 'Download Successful',
-  //               subtitle: 'View PDF in downloads',
-  //               type: ToastMessageType.success,
-  //             );
-  //           }
-  //         } catch (e) {
-  //           setState(() {
-  //             isSharingPdf = false;
-  //             Navigator.pop(context);
-  //           });
-  //           showToast(
-  //             context: context,
-  //             title: 'Error occurred',
-  //             subtitle: 'An error occurred while preparing the PDF',
-  //             type: ToastMessageType.error,
-  //           );
-  //         }
-  //       } else {
-  //         setState(() {
-  //           isSharingPdf = false;
-  //           Navigator.pop(context);
-  //         });
-  //         showToast(
-  //           context: context,
-  //           title: 'Error occurred',
-  //           subtitle: 'Inadequate space on disk',
-  //           type: ToastMessageType.error,
-  //         );
-  //       }
-  //     } else {
-  //       setState(() {
-  //         isSharingPdf = false;
-  //         Navigator.pop(context);
-  //       });
-  //       showToast(
-  //         context: context,
-  //         title: "Permission required",
-  //         subtitle: 'Permission was denied',
-  //         type: ToastMessageType.info,
-  //       );
-  //     }
-  //   } catch (e) {
-  //     setState(() {
-  //       isSharingPdf = false;
-  //       Navigator.pop(context);
-  //     });
-  //     showToast(
-  //       context: context,
-  //       title: 'Error occurred',
-  //       subtitle: 'An unexpected error has occurred, try again later',
-  //       type: ToastMessageType.error,
-  //     );
-  //   }
-  // }
+// Future<void> pdfShare(BuildContext context, String title, theme) async {
+//   final plugin = DeviceInfoPlugin();
+//   final deviceInfo = await plugin.deviceInfo;
+//   bool isAndroid = deviceInfo is AndroidDeviceInfo;
+//
+//   showDialog(
+//     barrierDismissible: false,
+//     context: context,
+//     builder: (_) => const LoadingDialog('Preparing to share...'),
+//   );
+//
+//   final storageStatus = isAndroid
+//       ? deviceInfo.version.sdkInt < 33
+//           ? (await Permission.storage.request())
+//           : PermissionStatus.granted
+//       : PermissionStatus.granted;
+//   print(storageStatus);
+//   if (storageStatus == PermissionStatus.granted) {
+//     setState(() {
+//       isSharingPdf = true;
+//     });
+//
+//     var freeSpace = await DiskSpace.getFreeDiskSpace;
+//     if (freeSpace != null && freeSpace > 10.00) {
+//       try {
+//         Uint8List? image = await screenshotController.capture(
+//             delay: const Duration(milliseconds: 5));
+//
+//         if (image != null) {
+//           var path = isAndroid
+//               ? await ExternalPath.getExternalStoragePublicDirectory(
+//                   ExternalPath.DIRECTORY_DOWNLOADS)
+//               : (await getApplicationDocumentsDirectory()).path;
+//
+//           final directory = Directory(path);
+//           if (!directory.existsSync()) {
+//             directory.createSync(recursive: true);
+//           }
+//
+//           final imagePath =
+//               await File('$path/${title + getCurrentDate()}.png')
+//                   .create(recursive: true);
+//           await imagePath.writeAsBytes(image);
+//
+//           final Uint8List imageData = File(imagePath.path).readAsBytesSync();
+//           final PdfBitmap pdfBitmap = PdfBitmap(imageData);
+//
+//           final PdfDocument document = PdfDocument();
+//           final PdfPage page = document.pages.add();
+//           final Size pageSize = page.getClientSize();
+//
+//           page.graphics.drawImage(pdfBitmap,
+//               Rect.fromLTWH(0, 0, pageSize.width, pageSize.height));
+//
+//           var pdfPath = '$path/${title + getCurrentDate()}.pdf';
+//           await File(pdfPath).writeAsBytes(await document.save());
+//           document.dispose();
+//
+//           final targetFile = File(imagePath.path);
+//           if (targetFile.existsSync()) {
+//             targetFile.deleteSync(recursive: true);
+//           }
+//
+//           await Share.shareXFiles([
+//             XFile(pdfPath,
+//                 mimeType: 'application/pdf',
+//                 name: '${title + getCurrentDate()}.pdf')
+//           ]);
+//
+//           final targetFile2 = File(pdfPath);
+//           if (targetFile2.existsSync()) {
+//             targetFile2.deleteSync(recursive: true);
+//           }
+//
+//           setState(() {
+//             Navigator.pop(context);
+//             isSharingPdf = false;
+//           });
+//         } else {
+//           setState(() {
+//             Navigator.pop(context);
+//             isSharingPdf = false;
+//           });
+//         }
+//       } catch (e) {
+//         setState(() {
+//           Navigator.pop(context);
+//           isSharingPdf = false;
+//         });
+//         showToast(
+//           context: context,
+//           title: 'Error occurred',
+//           subtitle: 'An error occurred while preparing the PDF',
+//           type: ToastMessageType.error,
+//         );
+//       }
+//     } else {
+//       Navigator.pop(context);
+//       setState(() {
+//         isSharingPdf = false;
+//       });
+//       await Permission.storage.request();
+//       // showToast(
+//       //   context: context,
+//       //   title: 'Error occurred',
+//       //   subtitle: 'Inadequate space on disk',
+//       //   type: ToastMessageType.error,
+//       // );
+//     }
+//   } else {
+//     Navigator.pop(context);
+//     setState(() {
+//       isSharingPdf = false;
+//     });
+//     await Permission.storage.request();
+//     // showToast(
+//     //   context: context,
+//     //   title: "Permission required",
+//     //   subtitle: 'Permission was denied',
+//     //   type: ToastMessageType.info,
+//     // );
+//   }
+// }
+//
+// Future<void> pdfDownload(BuildContext context, String title) async {
+//   try {
+//     setState(() {
+//       isSharingPdf = true;
+//     });
+//     showDialog(
+//       barrierDismissible: false,
+//       context: context,
+//       builder: (_) => const LoadingDialog('Preparing to download...'),
+//     );
+//
+//     final plugin = DeviceInfoPlugin();
+//     final deviceInfo = await plugin.deviceInfo;
+//     bool isAndroid = deviceInfo is AndroidDeviceInfo;
+//
+//     final storageStatus = isAndroid
+//         ? deviceInfo.version.sdkInt < 33
+//             ? (await Permission.storage.request())
+//             : PermissionStatus.granted
+//         : PermissionStatus.granted;
+//
+//     if (storageStatus == PermissionStatus.granted) {
+//       setState(() {
+//         isSharingPdf = true;
+//       });
+//
+//       var freeSpace = await DiskSpace.getFreeDiskSpace;
+//       if (freeSpace != null && freeSpace > 10.00) {
+//         try {
+//           Uint8List? image = await screenshotController.capture(
+//               delay: const Duration(milliseconds: 5));
+//           if (image != null) {
+//             var path = isAndroid
+//                 ? await ExternalPath.getExternalStoragePublicDirectory(
+//                     ExternalPath.DIRECTORY_DOWNLOADS)
+//                 : (await getApplicationDocumentsDirectory()).path;
+//
+//             final directory = Directory(path);
+//             if (!directory.existsSync()) {
+//               directory.createSync(recursive: true);
+//             }
+//
+//             final imagePath =
+//                 await File('$path/${title + getCurrentDate()}.png')
+//                     .create(recursive: true);
+//             await imagePath.writeAsBytes(image);
+//
+//             final Uint8List imageData =
+//                 File(imagePath.path).readAsBytesSync();
+//             final PdfBitmap pdfBitmap = PdfBitmap(imageData);
+//
+//             final PdfDocument document = PdfDocument();
+//             final PdfPage page = document.pages.add();
+//             final Size pageSize = page.getClientSize();
+//             page.graphics.drawImage(pdfBitmap,
+//                 Rect.fromLTWH(0, 0, pageSize.width, pageSize.height));
+//
+//             var pdfPath = '$path/${title + getCurrentDate()}.pdf';
+//             await File(pdfPath).writeAsBytes(await document.save());
+//             document.dispose();
+//
+//             final targetFile = File(imagePath.path);
+//             if (targetFile.existsSync()) {
+//               targetFile.deleteSync(recursive: true);
+//             }
+//
+//             setState(() {
+//               isSharingPdf = false;
+//               Navigator.pop(context);
+//             });
+//             showToast(
+//               context: context,
+//               title: 'Download Successful',
+//               subtitle: 'View PDF in downloads',
+//               type: ToastMessageType.success,
+//             );
+//           }
+//         } catch (e) {
+//           setState(() {
+//             isSharingPdf = false;
+//             Navigator.pop(context);
+//           });
+//           showToast(
+//             context: context,
+//             title: 'Error occurred',
+//             subtitle: 'An error occurred while preparing the PDF',
+//             type: ToastMessageType.error,
+//           );
+//         }
+//       } else {
+//         setState(() {
+//           isSharingPdf = false;
+//           Navigator.pop(context);
+//         });
+//         showToast(
+//           context: context,
+//           title: 'Error occurred',
+//           subtitle: 'Inadequate space on disk',
+//           type: ToastMessageType.error,
+//         );
+//       }
+//     } else {
+//       setState(() {
+//         isSharingPdf = false;
+//         Navigator.pop(context);
+//       });
+//       showToast(
+//         context: context,
+//         title: "Permission required",
+//         subtitle: 'Permission was denied',
+//         type: ToastMessageType.info,
+//       );
+//     }
+//   } catch (e) {
+//     setState(() {
+//       isSharingPdf = false;
+//       Navigator.pop(context);
+//     });
+//     showToast(
+//       context: context,
+//       title: 'Error occurred',
+//       subtitle: 'An unexpected error has occurred, try again later',
+//       type: ToastMessageType.error,
+//     );
+//   }
+// }
 
-  Future<void> imageShare(BuildContext context, String title, theme) async {
-    final plugin = DeviceInfoPlugin();
-    final deviceInfo = await plugin.deviceInfo;
-    bool isAndroid = deviceInfo is AndroidDeviceInfo;
-
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (_) => const LoadingDialog('Preparing to share...'),
-    );
-
-    final storageStatus = isAndroid
-        ? deviceInfo.version.sdkInt < 33
-            ? (await Permission.storage.request())
-            : PermissionStatus.granted
-        : PermissionStatus.granted;
-    print(storageStatus);
-    if (storageStatus == PermissionStatus.granted) {
-      setState(() {
-        isSharingPdf = true;
-      });
-
-      var freeSpace = await DiskSpace.getFreeDiskSpace;
-      if (freeSpace != null && freeSpace > 10.00) {
-        try {
-          Uint8List? image = await screenshotController.capture(
-              delay: const Duration(milliseconds: 5));
-
-          if (image != null) {
-            var path = isAndroid
-                ? await ExternalPath.getExternalStoragePublicDirectory(
-                    ExternalPath.DIRECTORY_DOWNLOADS)
-                : (await getApplicationDocumentsDirectory()).path;
-
-            final directory = Directory(path);
-            if (!directory.existsSync()) {
-              directory.createSync(recursive: true);
-            }
-
-            final imagePath =
-                await File('$path/${title + getCurrentDate()}.png')
-                    .create(recursive: true);
-            await imagePath.writeAsBytes(image);
-
-            await Share.shareXFiles([
-              XFile(imagePath.path,
-                  mimeType: 'image/png',
-                  name: '${title + getCurrentDate()}.png')
-            ]);
-
-            final targetFile = File(imagePath.path);
-            if (targetFile.existsSync()) {
-              targetFile.deleteSync(recursive: true);
-            }
-
-            setState(() {
-              Navigator.pop(context);
-              isSharingPdf = false;
-            });
-          } else {
-            setState(() {
-              Navigator.pop(context);
-              isSharingPdf = false;
-            });
-          }
-        } catch (e) {
-          setState(() {
-            Navigator.pop(context);
-            isSharingPdf = false;
-          });
-          showToast(
-            context: context,
-            title: 'Error occurred',
-            subtitle: 'An error occurred while preparing the image',
-            type: ToastMessageType.error,
-          );
-        }
-      } else {
-        Navigator.pop(context);
-        setState(() {
-          isSharingPdf = false;
-        });
-        await Permission.storage.request();
-      }
-    } else {
-      Navigator.pop(context);
-      setState(() {
-        isSharingPdf = false;
-      });
-      await Permission.storage.request();
-    }
-  }
-
-  Future<void> imageDownload(BuildContext context, String title) async {
-    try {
-      setState(() {
-        isSharingPdf = true;
-      });
-      showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (_) => const LoadingDialog('Preparing to download...'),
-      );
-
-      final plugin = DeviceInfoPlugin();
-      final deviceInfo = await plugin.deviceInfo;
-      bool isAndroid = deviceInfo is AndroidDeviceInfo;
-
-      final storageStatus = isAndroid
-          ? deviceInfo.version.sdkInt < 33
-              ? (await Permission.storage.request())
-              : PermissionStatus.granted
-          : PermissionStatus.granted;
-
-      if (storageStatus == PermissionStatus.granted) {
-        setState(() {
-          isSharingPdf = true;
-        });
-
-        var freeSpace = await DiskSpace.getFreeDiskSpace;
-        if (freeSpace != null && freeSpace > 10.00) {
-          try {
-            Uint8List? image = await screenshotController.capture(
-                delay: const Duration(milliseconds: 5));
-            if (image != null) {
-              var path = isAndroid
-                  ? await ExternalPath.getExternalStoragePublicDirectory(
-                      ExternalPath.DIRECTORY_DOWNLOADS)
-                  : (await getApplicationDocumentsDirectory()).path;
-
-              final directory = Directory(path);
-              if (!directory.existsSync()) {
-                directory.createSync(recursive: true);
-              }
-
-              final imagePath =
-                  await File('$path/${title + getCurrentDate()}.png')
-                      .create(recursive: true);
-              await imagePath.writeAsBytes(image);
-
-              setState(() {
-                isSharingPdf = false;
-                Navigator.pop(context);
-              });
-              showToast(
-                context: context,
-                title: 'Download Successful',
-                subtitle: 'View image in downloads',
-                type: ToastMessageType.success,
-              );
-            }
-          } catch (e) {
-            setState(() {
-              isSharingPdf = false;
-              Navigator.pop(context);
-            });
-            showToast(
-              context: context,
-              title: 'Error occurred',
-              subtitle: 'An error occurred while preparing the image',
-              type: ToastMessageType.error,
-            );
-          }
-        } else {
-          setState(() {
-            isSharingPdf = false;
-            Navigator.pop(context);
-          });
-          showToast(
-            context: context,
-            title: 'Error occurred',
-            subtitle: 'Inadequate space on disk',
-            type: ToastMessageType.error,
-          );
-        }
-      } else {
-        setState(() {
-          isSharingPdf = false;
-          Navigator.pop(context);
-        });
-        showToast(
-          context: context,
-          title: "Permission required",
-          subtitle: 'Permission was denied',
-          type: ToastMessageType.info,
-        );
-      }
-    } catch (e) {
-      setState(() {
-        isSharingPdf = false;
-        Navigator.pop(context);
-      });
-      showToast(
-        context: context,
-        title: 'Error occurred',
-        subtitle: 'An unexpected error has occurred, try again later',
-        type: ToastMessageType.error,
-      );
-    }
-  }
+// Future<void> imageShare(BuildContext context, String title, theme) async {
+//   final plugin = DeviceInfoPlugin();
+//   final deviceInfo = await plugin.deviceInfo;
+//   bool isAndroid = deviceInfo is AndroidDeviceInfo;
+//
+//   showDialog(
+//     barrierDismissible: false,
+//     context: context,
+//     builder: (_) => const LoadingDialog('Preparing to share...'),
+//   );
+//
+//   final storageStatus = isAndroid
+//       ? deviceInfo.version.sdkInt < 33
+//           ? (await Permission.storage.request())
+//           : PermissionStatus.granted
+//       : PermissionStatus.granted;
+//   print(storageStatus);
+//   if (storageStatus == PermissionStatus.granted) {
+//     setState(() {
+//       isSharingPdf = true;
+//     });
+//
+//     var freeSpace = await DiskSpace.getFreeDiskSpace;
+//     if (freeSpace != null && freeSpace > 10.00) {
+//       try {
+//         Uint8List? image = await screenshotController.capture(
+//             delay: const Duration(milliseconds: 5));
+//
+//         if (image != null) {
+//           var path = isAndroid
+//               ? await ExternalPath.getExternalStoragePublicDirectory(
+//                   ExternalPath.DIRECTORY_DOWNLOADS)
+//               : (await getApplicationDocumentsDirectory()).path;
+//
+//           final directory = Directory(path);
+//           if (!directory.existsSync()) {
+//             directory.createSync(recursive: true);
+//           }
+//
+//           final imagePath =
+//               await File('$path/${title + getCurrentDate()}.png')
+//                   .create(recursive: true);
+//           await imagePath.writeAsBytes(image);
+//
+//           await Share.shareXFiles([
+//             XFile(imagePath.path,
+//                 mimeType: 'image/png',
+//                 name: '${title + getCurrentDate()}.png')
+//           ]);
+//
+//           final targetFile = File(imagePath.path);
+//           if (targetFile.existsSync()) {
+//             targetFile.deleteSync(recursive: true);
+//           }
+//
+//           setState(() {
+//             Navigator.pop(context);
+//             isSharingPdf = false;
+//           });
+//         } else {
+//           setState(() {
+//             Navigator.pop(context);
+//             isSharingPdf = false;
+//           });
+//         }
+//       } catch (e) {
+//         setState(() {
+//           Navigator.pop(context);
+//           isSharingPdf = false;
+//         });
+//         showToast(
+//           context: context,
+//           title: 'Error occurred',
+//           subtitle: 'An error occurred while preparing the image',
+//           type: ToastMessageType.error,
+//         );
+//       }
+//     } else {
+//       Navigator.pop(context);
+//       setState(() {
+//         isSharingPdf = false;
+//       });
+//       await Permission.storage.request();
+//     }
+//   } else {
+//     Navigator.pop(context);
+//     setState(() {
+//       isSharingPdf = false;
+//     });
+//     await Permission.storage.request();
+//   }
+// }
+//
+// Future<void> imageDownload(BuildContext context, String title) async {
+//   try {
+//     setState(() {
+//       isSharingPdf = true;
+//     });
+//     showDialog(
+//       barrierDismissible: false,
+//       context: context,
+//       builder: (_) => const LoadingDialog('Preparing to download...'),
+//     );
+//
+//     final plugin = DeviceInfoPlugin();
+//     final deviceInfo = await plugin.deviceInfo;
+//     bool isAndroid = deviceInfo is AndroidDeviceInfo;
+//
+//     final storageStatus = isAndroid
+//         ? deviceInfo.version.sdkInt < 33
+//             ? (await Permission.storage.request())
+//             : PermissionStatus.granted
+//         : PermissionStatus.granted;
+//
+//     if (storageStatus == PermissionStatus.granted) {
+//       setState(() {
+//         isSharingPdf = true;
+//       });
+//
+//       var freeSpace = await DiskSpace.getFreeDiskSpace;
+//       if (freeSpace != null && freeSpace > 10.00) {
+//         try {
+//           Uint8List? image = await screenshotController.capture(
+//               delay: const Duration(milliseconds: 5));
+//           if (image != null) {
+//             var path = isAndroid
+//                 ? await ExternalPath.getExternalStoragePublicDirectory(
+//                     ExternalPath.DIRECTORY_DOWNLOADS)
+//                 : (await getApplicationDocumentsDirectory()).path;
+//
+//             final directory = Directory(path);
+//             if (!directory.existsSync()) {
+//               directory.createSync(recursive: true);
+//             }
+//
+//             final imagePath =
+//                 await File('$path/${title + getCurrentDate()}.png')
+//                     .create(recursive: true);
+//             await imagePath.writeAsBytes(image);
+//
+//             setState(() {
+//               isSharingPdf = false;
+//               Navigator.pop(context);
+//             });
+//             showToast(
+//               context: context,
+//               title: 'Download Successful',
+//               subtitle: 'View image in downloads',
+//               type: ToastMessageType.success,
+//             );
+//           }
+//         } catch (e) {
+//           setState(() {
+//             isSharingPdf = false;
+//             Navigator.pop(context);
+//           });
+//           showToast(
+//             context: context,
+//             title: 'Error occurred',
+//             subtitle: 'An error occurred while preparing the image',
+//             type: ToastMessageType.error,
+//           );
+//         }
+//       } else {
+//         setState(() {
+//           isSharingPdf = false;
+//           Navigator.pop(context);
+//         });
+//         showToast(
+//           context: context,
+//           title: 'Error occurred',
+//           subtitle: 'Inadequate space on disk',
+//           type: ToastMessageType.error,
+//         );
+//       }
+//     } else {
+//       setState(() {
+//         isSharingPdf = false;
+//         Navigator.pop(context);
+//       });
+//       showToast(
+//         context: context,
+//         title: "Permission required",
+//         subtitle: 'Permission was denied',
+//         type: ToastMessageType.info,
+//       );
+//     }
+//   } catch (e) {
+//     setState(() {
+//       isSharingPdf = false;
+//       Navigator.pop(context);
+//     });
+//     showToast(
+//       context: context,
+//       title: 'Error occurred',
+//       subtitle: 'An unexpected error has occurred, try again later',
+//       type: ToastMessageType.error,
+//     );
+//   }
+// }
 }
