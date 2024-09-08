@@ -370,7 +370,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
                                                     color: theme.isDark
                                                         ? AppColors
                                                             .darkModeBackgroundSubTextColor
-                                                        : AppColors.white,
+                                                        : AppColors.textColor2,
                                                   ),
                                                 ),
                                               ),

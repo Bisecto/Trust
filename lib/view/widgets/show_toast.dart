@@ -53,7 +53,7 @@ Future<bool?> alert({
         backgroundColor: Colors.transparent,
         content: Container(
           width: double.infinity,
-          height: 350,
+          height: 400,
           decoration: BoxDecoration(
               color: theme.isDark
                   ? AppColors.darkModeBackgroundContainerColor
