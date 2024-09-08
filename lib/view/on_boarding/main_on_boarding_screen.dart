@@ -137,7 +137,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                                     ? AppColors.darkModeBackgroundMainTextColor
                                     : AppColors.textColor,
                                 maxLines: 2,
-                                size: 28,
+                                size: 23,
                                 weight: FontWeight.bold,
                                 textAlign: TextAlign.center,
                               ),
@@ -148,7 +148,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                                   color: theme.isDark
                                       ? AppColors.darkModeBackgroundSubTextColor
                                       : AppColors.textColor,
-                                  size: 16,
+                                  size: 14,
                                   maxLines: 4,
                                   textAlign: TextAlign.center,
                                 ),

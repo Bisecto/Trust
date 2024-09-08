@@ -253,7 +253,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Map<String, dynamic> data = {
       "userData": event.userData,
       "password": event.password,
-      "deviceId": deviceID
+      "deviceId": "UE1A.230829.036.A2"
     };
     //try {
     var response = await authRepository.appPostRequest(data, AppApis.login);
