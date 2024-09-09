@@ -81,7 +81,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             } else if (state is VerificationContinueState) {
               AppNavigator.pushAndStackPage(context,
                   page: VerifyOtp(
-                      phone: _emailController.text, isRegister: true));
+                      phone: _phoneController.text, isRegister: true));
               // AppNavigator.pushAndStackNamed(context,
               //     name: AppRouter.otpVerification);
             } else if (state is SuccessState) {

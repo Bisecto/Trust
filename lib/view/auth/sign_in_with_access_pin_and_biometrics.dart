@@ -53,18 +53,21 @@ class _SignInWIthAccessPinBiometricsState
   }
 
   Future<void> getCanUseBiometrics() async {
-    bool isBiometricsEnabled = await SharedPref.getBool(SharedPrefKey.biometricKey) ?? false;
+    bool isBiometricsEnabled =
+        await SharedPref.getBool(SharedPrefKey.biometricKey) ?? false;
     var availableBiometrics = await auth.getAvailableBiometrics();
     bool canCheck = await auth.canCheckBiometrics;
     bool isSupported = await auth.isDeviceSupported();
 
     // Update the state using setState
     setState(() {
-      canUseBiometrics = canCheck && isSupported && availableBiometrics.isNotEmpty && isBiometricsEnabled;
+      canUseBiometrics = canCheck &&
+          isSupported &&
+          availableBiometrics.isNotEmpty &&
+          isBiometricsEnabled;
     });
     print(canUseBiometrics);
   }
-
 
   Future<void> getCanUseBiometrics2() async {
     var availableBiometrics = await auth.getAvailableBiometrics();
@@ -80,7 +83,9 @@ class _SignInWIthAccessPinBiometricsState
 
   @override
   Widget build(BuildContext context) {
-    final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
+    final theme = Provider
+        .of<CustomThemeState>(context)
+        .adaptiveThemeMode;
 
     return Scaffold(
         resizeToAvoidBottomInset: true,
@@ -97,8 +102,10 @@ class _SignInWIthAccessPinBiometricsState
                 //   pinInputController.text = '    ';
                 // });
 
-
-                AppNavigator.pushAndRemovePreviousPages(context, page: SignInWIthAccessPinBiometrics(userName: widget.userName,));
+                AppNavigator.pushAndRemovePreviousPages(context,
+                    page: SignInWIthAccessPinBiometrics(
+                      userName: widget.userName,
+                    ));
                 showToast(
                     context: context,
                     title: 'Error',
@@ -118,8 +125,12 @@ class _SignInWIthAccessPinBiometricsState
                 case AuthInitial || ErrorState:
                   return SingleChildScrollView(
                     child: SizedBox(
-                      height: AppUtils.deviceScreenSize(context).height,
-                      width: AppUtils.deviceScreenSize(context).width,
+                      height: AppUtils
+                          .deviceScreenSize(context)
+                          .height,
+                      width: AppUtils
+                          .deviceScreenSize(context)
+                          .width,
                       child: Stack(
                         //alignment: Alignment.,
                         children: [
@@ -130,9 +141,13 @@ class _SignInWIthAccessPinBiometricsState
                             //bottom: 20,
                             child: Container(
                               height:
-                                  AppUtils.deviceScreenSize(context).height *
-                                      0.5,
-                              width: AppUtils.deviceScreenSize(context).width,
+                              AppUtils
+                                  .deviceScreenSize(context)
+                                  .height *
+                                  0.5,
+                              width: AppUtils
+                                  .deviceScreenSize(context)
+                                  .width,
                               decoration: const BoxDecoration(
                                 image: DecorationImage(
                                   image: AssetImage(AppImages.authAppLogoImage),
@@ -172,8 +187,12 @@ class _SignInWIthAccessPinBiometricsState
                           ),
                           Positioned.fill(
                             top:
-                                AppUtils.deviceScreenSize(context).height * 0.2,
-                            bottom: AppUtils.deviceScreenSize(context).height *
+                            AppUtils
+                                .deviceScreenSize(context)
+                                .height * 0.2,
+                            bottom: AppUtils
+                                .deviceScreenSize(context)
+                                .height *
                                 0.05,
                             right: 20,
                             left: 20,
@@ -183,13 +202,17 @@ class _SignInWIthAccessPinBiometricsState
                               },
                               child: Container(
                                 height:
-                                    AppUtils.deviceScreenSize(context).height *
-                                        0.6,
-                                width: AppUtils.deviceScreenSize(context).width,
+                                AppUtils
+                                    .deviceScreenSize(context)
+                                    .height *
+                                    0.6,
+                                width: AppUtils
+                                    .deviceScreenSize(context)
+                                    .width,
                                 decoration: BoxDecoration(
                                     color: theme.isDark
                                         ? AppColors
-                                            .darkModeBackgroundContainerColor
+                                        .darkModeBackgroundContainerColor
                                         : AppColors.white,
                                     borderRadius: BorderRadius.circular(15)),
                                 child: Padding(
@@ -199,27 +222,28 @@ class _SignInWIthAccessPinBiometricsState
                                     //     const NeverScrollableScrollPhysics(),
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: [
                                         CustomText(
                                           text:
-                                              "${AppUtils.formatString(data: widget.userName)},",
+                                          "${AppUtils.formatString(
+                                              data: widget.userName)},",
                                           weight: FontWeight.w600,
                                           size: 16,
                                           color: theme.isDark
                                               ? AppColors
-                                                  .darkModeBackgroundMainTextColor
+                                              .darkModeBackgroundMainTextColor
                                               : AppColors.textColor,
                                         ),
                                         CustomText(
                                           text:
-                                              "Please confirm your pin to access your TellaTrust account.",
+                                          "Please confirm your pin to access your TellaTrust account.",
                                           //weight: FontWeight.bold,
                                           size: 12,
                                           maxLines: 2,
                                           color: theme.isDark
                                               ? AppColors
-                                                  .darkModeBackgroundSubTextColor
+                                              .darkModeBackgroundSubTextColor
                                               : AppColors.textColor,
                                         ),
                                         const SizedBox(
@@ -231,7 +255,7 @@ class _SignInWIthAccessPinBiometricsState
                                               text: "Not you?",
                                               color: theme.isDark
                                                   ? AppColors
-                                                      .darkModeBackgroundSubTextColor
+                                                  .darkModeBackgroundSubTextColor
                                                   : AppColors.textColor,
                                               //weight: FontWeight.bold,
                                               size: 12,
@@ -241,8 +265,10 @@ class _SignInWIthAccessPinBiometricsState
                                             ),
                                             GestureDetector(
                                               onTap: () async {
-                                                await AppUtils().logout(context);
-                                                await FirebaseMessaging.instance.deleteToken();
+                                                await AppUtils()
+                                                    .logout(context);
+                                                await FirebaseMessaging.instance
+                                                    .deleteToken();
 
                                                 AppNavigator.pushAndReplacePage(
                                                     context,
@@ -253,8 +279,8 @@ class _SignInWIthAccessPinBiometricsState
                                                     border: Border.all(
                                                         color: AppColors.red),
                                                     borderRadius:
-                                                        BorderRadius.circular(
-                                                            10)),
+                                                    BorderRadius.circular(
+                                                        10)),
                                                 child: const Padding(
                                                   padding: EdgeInsets.fromLTRB(
                                                       10, 4.0, 10, 4),
@@ -289,11 +315,12 @@ class _SignInWIthAccessPinBiometricsState
                                         //   ),
                                         PinPlusKeyBoardPackage(
                                           keyboardButtonShape:
-                                              KeyboardButtonShape.defaultShape,
+                                          KeyboardButtonShape.defaultShape,
                                           inputShape: InputShape.defaultShape,
                                           keyboardMaxWidth:
-                                              AppUtils.deviceScreenSize(context)
-                                                  .width,
+                                          AppUtils
+                                              .deviceScreenSize(context)
+                                              .width,
                                           inputHasBorder: true,
                                           inputFillColor: theme.isDark
                                               ? AppColors.black
@@ -308,7 +335,7 @@ class _SignInWIthAccessPinBiometricsState
                                               ? AppColors.white
                                               : AppColors.black,
                                           inputBorderRadius:
-                                              BorderRadius.circular(10),
+                                          BorderRadius.circular(10),
                                           doneButton: Icon(
                                             Icons.done,
                                             color: theme.isDark
@@ -318,81 +345,84 @@ class _SignInWIthAccessPinBiometricsState
 
                                           leftExtraInputWidget: canUseBiometrics
                                               ? GestureDetector(
-                                                  onTap: () async {
-                                                    bool didAuthenticate =
-                                                        await AppUtils.biometrics(
-                                                            "Please authenticate to sign in");
-                                                    if (didAuthenticate) {
-                                                      String hashedPin =
-                                                          await SharedPref
-                                                              .getString(
-                                                              SharedPrefKey.hashedAccessPinKey);
-                                                      print(hashedPin);
-                                                      String unHashedPin =
-                                                          AppUtils().decryptData(
-                                                                  hashedPin) ??
-                                                              '';
-                                                      print(unHashedPin);
-                                                      String userData =
-                                                          await SharedPref
-                                                              .getString(
-                                                              SharedPrefKey.userDataKey);
-                                                      String password =
-                                                          await SharedPref
-                                                              .getString(
-                                                              SharedPrefKey.passwordKey);
-                                                      authBloc.add(
-                                                          SignInEventClick(
-                                                              userData,
-                                                              password,
-                                                              unHashedPin,
-                                                              'accessPin',
-                                                              context));
-                                                      //model.signIn(context, withBiometrics: true);
-                                                    }
-                                                    // final LocalAuthentication
-                                                    //     _localAuthentication =
-                                                    //     LocalAuthentication();
-                                                    // bool isBiometricAvailable =
-                                                    //     await _localAuthentication
-                                                    //         .canCheckBiometrics;
-                                                    // if (isBiometricAvailable) {
-                                                    //   LocalAuthentication();
-                                                    //   bool isAuthenticated =
-                                                    //       await _localAuthentication
-                                                    //           .authenticate(
-                                                    //               localizedReason:
-                                                    //                   'Authenticate '
-                                                    //                   'using biometrics');
-                                                    //   if (isAuthenticated) {
-                                                    //     print(12345678);
-                                                    //   }
-                                                    // } else {
-                                                    //   MSG.warningSnackBar(context,
-                                                    //       "No biometrics is set");
-                                                    // }
-                                                  },
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            5.0),
-                                                    child: Container(
-                                                        height: 70,
-                                                        width: 100,
-                                                        decoration: BoxDecoration(
-                                                            border: Border.all(
-                                                                color: AppColors
-                                                                    .grey),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        10)),
-                                                        child: const Icon(
-                                                            Icons.fingerprint)),
-                                                  ))
+                                              onTap: () async {
+                                                bool didAuthenticate =
+                                                await AppUtils.biometrics(
+                                                    "Please authenticate to sign in");
+                                                if (didAuthenticate) {
+                                                  String hashedPin =
+                                                  await SharedPref
+                                                      .getString(
+                                                      SharedPrefKey
+                                                          .hashedAccessPinKey);
+                                                  print(hashedPin);
+                                                  String unHashedPin =
+                                                      AppUtils().decryptData(
+                                                          hashedPin) ??
+                                                          '';
+                                                  print(unHashedPin);
+                                                  String userData =
+                                                  await SharedPref
+                                                      .getString(
+                                                      SharedPrefKey
+                                                          .userDataKey);
+                                                  String password =
+                                                  await SharedPref
+                                                      .getString(
+                                                      SharedPrefKey
+                                                          .passwordKey);
+                                                  authBloc.add(
+                                                      SignInEventClick(
+                                                          userData,
+                                                          password,
+                                                          unHashedPin,
+                                                          'accessPin',
+                                                          context));
+                                                  //model.signIn(context, withBiometrics: true);
+                                                }
+                                                // final LocalAuthentication
+                                                //     _localAuthentication =
+                                                //     LocalAuthentication();
+                                                // bool isBiometricAvailable =
+                                                //     await _localAuthentication
+                                                //         .canCheckBiometrics;
+                                                // if (isBiometricAvailable) {
+                                                //   LocalAuthentication();
+                                                //   bool isAuthenticated =
+                                                //       await _localAuthentication
+                                                //           .authenticate(
+                                                //               localizedReason:
+                                                //                   'Authenticate '
+                                                //                   'using biometrics');
+                                                //   if (isAuthenticated) {
+                                                //     print(12345678);
+                                                //   }
+                                                // } else {
+                                                //   MSG.warningSnackBar(context,
+                                                //       "No biometrics is set");
+                                                // }
+                                              },
+                                              child: Padding(
+                                                padding:
+                                                const EdgeInsets.all(
+                                                    5.0),
+                                                child: Container(
+                                                    height: 70,
+                                                    width: 100,
+                                                    decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                            color: AppColors
+                                                                .grey),
+                                                        borderRadius:
+                                                        BorderRadius
+                                                            .circular(
+                                                            10)),
+                                                    child: const Icon(
+                                                        Icons.fingerprint)),
+                                              ))
                                               : const SizedBox(),
                                           keyoardBtnBorderRadius:
-                                              BorderRadius.circular(10),
+                                          BorderRadius.circular(10),
                                           //inputElevation: 3,
                                           buttonFillColor: theme.isDark
                                               ? AppColors.black
@@ -402,19 +432,20 @@ class _SignInWIthAccessPinBiometricsState
                                               : AppColors.textColor,
                                           buttonBorderColor: AppColors.grey,
                                           spacing:
-                                              AppUtils.deviceScreenSize(context)
-                                                      .height *
-                                                  0.06,
+                                          AppUtils
+                                              .deviceScreenSize(context)
+                                              .height *
+                                              0.06,
                                           pinInputController:
-                                              pinInputController,
+                                          pinInputController,
                                           onSubmit: () async {
                                             /// ignore: avoid_print
                                             String userData =
-                                                await SharedPref.getString(
-                                                    SharedPrefKey.userDataKey);
+                                            await SharedPref.getString(
+                                                SharedPrefKey.userDataKey);
                                             String password =
-                                                await SharedPref.getString(
-                                                    SharedPrefKey.passwordKey);
+                                            await SharedPref.getString(
+                                                SharedPrefKey.passwordKey);
                                             authBloc.add(SignInEventClick(
                                                 userData,
                                                 password,
@@ -429,7 +460,8 @@ class _SignInWIthAccessPinBiometricsState
                                             //authBloc.add(CreatePinEvent(widget.pin, pinInputController.text));
                                             // }
                                             print(
-                                                "Text is : ${pinInputController.text}");
+                                                "Text is : ${pinInputController
+                                                    .text}");
                                           },
                                           keyboardFontFamily: '',
                                         ),
@@ -444,10 +476,10 @@ class _SignInWIthAccessPinBiometricsState
                       ),
                     ),
                   );
-                // case LoadingState:
-                //   return const Center(
-                //     child: CircularProgressIndicator(),
-                //   );
+              // case LoadingState:
+              //   return const Center(
+              //     child: CircularProgressIndicator(),
+              //   );
                 default:
                   return const Center(
                     child: NotFoundPage(),
@@ -456,10 +488,8 @@ class _SignInWIthAccessPinBiometricsState
             }));
   }
 
-  welcomeAlertDialog(
-    BuildContext context,
-    AdaptiveThemeMode theme,
-  ) {
+  welcomeAlertDialog(BuildContext context,
+      AdaptiveThemeMode theme,) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -481,7 +511,9 @@ class _SignInWIthAccessPinBiometricsState
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    width: AppUtils.deviceScreenSize(context).width,
+                    width: AppUtils
+                        .deviceScreenSize(context)
+                        .width,
                     height: 150,
                     decoration: BoxDecoration(
                         color: theme.isDark

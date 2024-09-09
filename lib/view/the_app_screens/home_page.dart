@@ -328,7 +328,7 @@ class _HomePageState extends State<HomePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CustomText(
-                          text: "Hellos",
+                          text: "Hello",
                           color: theme.isDark
                               ? AppColors.darkModeBackgroundSubTextColor
                               : AppColors.textColor2,
