@@ -55,7 +55,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         Navigator.pop(event.context);
         emit(AuthOtpRequestState(
             AppUtils.convertString(json.decode(response.body)['message']),
-            event.data["email"]!));
+            event.data["phone"]!));
         emit(AuthInitial());
       } else {
         Navigator.pop(event.context);
@@ -296,12 +296,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           SharedPrefKey.phoneKey, json.decode(response.body)['data']['phone']);
       emit(AuthOtpRequestState(
           AppUtils.convertString(json.decode(response.body)['message']),
-          event.userData));
+          json.decode(response.body)['data']['phone']));
       emit(AuthInitial());
     } else if (response.statusCode == 400 &&
         (json.decode(response.body)['errorCode'] == 'E301' ||
             json.decode(response.body)['errorCode'] == 'N429')) {
-      SharedPref.putString(SharedPrefKey.temUserDataKey, event.userData);
+      SharedPref.putString(SharedPrefKey.temUserDataKey, json.decode(response.body)['data']['phone']);
       SharedPref.putString(SharedPrefKey.temPasswordKey, event.password);
 
       await SharedPref.putString(
@@ -310,7 +310,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       emit(AuthChangeDeviceOtpRequestState(
           AppUtils.convertString(json.decode(response.body)['message']),
-          event.userData,//json.decode(response.body)['data']['phone'],
+          json.decode(response.body)['data']['phone'],//json.decode(response.body)['data']['phone'],
           true));
       emit(AuthInitial());
     } else {
