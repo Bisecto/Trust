@@ -1,6 +1,7 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_carousel_slider/carousel_slider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/bloc/product_bloc/product_bloc.dart';
@@ -251,35 +252,7 @@ class _BillsPageState extends State<BillsPage> {
                   }
                 },
               ),
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Center(
-                  child: SizedBox(
-                    // Set the desired width of the container
-                    height: 150,
-
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Container(
-                        width: AppUtils.deviceScreenSize(context).width,
-                        // Set the desired width of the container
-                        //height: 150,
-                        // Set the desired height of the container
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          image: const DecorationImage(
-                            image: AssetImage(AppImages.billCard),
-                            // Replace with your actual image file path
-                            fit: BoxFit
-                                .cover, // You can adjust the fit property to cover, contain, or others
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              )
-            ],
+              advertWidget(theme),            ],
           ),
         ));
   }
@@ -313,6 +286,77 @@ class _BillsPageState extends State<BillsPage> {
           size: 12,
         )
       ],
+    );
+  }
+  CarouselSliderController carouselSliderController =
+  CarouselSliderController();
+  final GlobalKey _sliderKey = GlobalKey();
+  final List<String> advertImages = [
+    AppImages.billCard1,
+    AppImages.billCard2,
+    AppImages.billCard3,
+  ];
+
+  Widget advertWidget(AdaptiveThemeMode theme) {
+    return Padding(
+      padding: const EdgeInsets.only(left:15.0,right:15),
+      child: SizedBox(
+        height: 250,
+        child: CarouselSlider.builder(
+          key: _sliderKey,
+          unlimitedMode: true,
+          autoSliderDelay: const Duration(seconds: 3),
+          enableAutoSlider: true,
+          controller: carouselSliderController,
+          // onSlideChanged: (index) {
+          //   setState(() {
+          //     print(index);
+          //     currentIndex = index;
+          //   });
+          // },
+          slideBuilder: (index) {
+            return Center(
+              child: SizedBox(
+                // Set the desired width of the container
+                height: 250,
+
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    width: AppUtils.deviceScreenSize(context).width,
+                    // Set the desired width of the container
+                    height: 230,
+                    // Set the desired height of the container
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      image: DecorationImage(
+                        image: AssetImage(advertImages[index]),
+                        // Replace with your actual image file path
+                        fit: BoxFit
+                            .cover, // You can adjust the fit property to cover, contain, or others
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+          slideTransform: const CubeTransform(),
+          slideIndicator: SequentialFillIndicator(
+            indicatorRadius: 5,
+            itemSpacing: 20,
+
+            // alignment: Alignment.topCenter,
+            indicatorBackgroundColor: AppColors.grey,
+            currentIndicatorColor: AppColors.green,
+            padding: const EdgeInsets.only(bottom: 0),
+          ),
+          itemCount: advertImages.length,
+          onSlideEnd: () {
+            print("ended");
+          },
+        ),
+      ),
     );
   }
 }

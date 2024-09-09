@@ -30,7 +30,9 @@ class AppImages {
   static const advertCard2 = '${_imageBaseUrl}advert_card2.png';
   static const advertCard3 = '${_imageBaseUrl}advert_card3.png';
   static const advertCard4 = '${_imageBaseUrl}advert_card4.png';
-  static const billCard = '${_imageBaseUrl}bill_card.png';
+  static const billCard1 = '${_imageBaseUrl}bill_card_1.png';
+  static const billCard2 = '${_imageBaseUrl}bill_card_2.png';
+  static const billCard3 = '${_imageBaseUrl}bill_card_3.png';
   static const modalBackground = '${_imageBaseUrl}modal_background.png';
   static const looperImage = '${_imageBaseUrl}looper_image.png';
   static const qrCode = '${_imageBaseUrl}qr_code.png';
