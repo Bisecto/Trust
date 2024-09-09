@@ -216,6 +216,7 @@ class _SignInWIthAccessPinBiometricsState
                                               "Please confirm your pin to access your TellaTrust account.",
                                           //weight: FontWeight.bold,
                                           size: 12,
+                                          maxLines: 2,
                                           color: theme.isDark
                                               ? AppColors
                                                   .darkModeBackgroundSubTextColor
