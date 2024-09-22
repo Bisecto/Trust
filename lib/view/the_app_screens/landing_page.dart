@@ -46,13 +46,14 @@ class _LandingPageState extends State<LandingPage> {
 
   StreamSubscription<ConnectivityStatus>? _connectivitySubscription;
   bool isNotification = false;
-
   @override
   void initState() {
     // TODO: implement initState
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
+      context.read<AppBloc>().add(InitialEvent());
+      context.read<ProductBloc>().add(ListCategoryEvent("1", "8"));
       if (notification != null && android != null) {
         // OrderNotification orderNotification =
         //  OrderNotification.fromJson(message.data);
@@ -105,6 +106,8 @@ class _LandingPageState extends State<LandingPage> {
       AppUtils().debuglog('A new MessageOpenedApp event was published');
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
+      context.read<AppBloc>().add(InitialEvent());
+      context.read<ProductBloc>().add(ListCategoryEvent("1", "8"));
       if (notification != null && android != null) {
         // OrderNotification orderNotification =
         // OrderNotification.fromJson(message.data);
