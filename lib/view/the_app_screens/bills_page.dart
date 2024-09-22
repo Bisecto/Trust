@@ -78,7 +78,6 @@ class _BillsPageState extends State<BillsPage> {
                             height: 300,
                             child: GridView.builder(
                               physics: const NeverScrollableScrollPhysics(),
-
                               gridDelegate:
                                   const SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 3,
@@ -96,16 +95,19 @@ class _BillsPageState extends State<BillsPage> {
                                       });
                                       switch (selectedAction) {
                                         case "airtime":
-                                          modalSheet.showMaterialModalBottomSheet(
+                                          modalSheet
+                                              .showMaterialModalBottomSheet(
                                             backgroundColor: Colors.transparent,
                                             shape: const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.vertical(
-                                                  top: Radius.circular(20.0)),
+                                              borderRadius:
+                                                  BorderRadius.vertical(
+                                                      top: Radius.circular(
+                                                          20.0)),
                                             ),
                                             context: context,
                                             builder: (context) => Padding(
-                                              padding:
-                                                  const EdgeInsets.only(top: 100.0),
+                                              padding: const EdgeInsets.only(
+                                                  top: 100.0),
                                               child: AirtimePurchase(
                                                 category: items[index],
                                                 walletInfo: walletInfo,
@@ -116,16 +118,19 @@ class _BillsPageState extends State<BillsPage> {
                                           //     services: AppList().serviceItems[index]));
                                           return;
                                         case "airtime to cash":
-                                          modalSheet.showMaterialModalBottomSheet(
+                                          modalSheet
+                                              .showMaterialModalBottomSheet(
                                             backgroundColor: Colors.transparent,
                                             shape: const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.vertical(
-                                                  top: Radius.circular(20.0)),
+                                              borderRadius:
+                                                  BorderRadius.vertical(
+                                                      top: Radius.circular(
+                                                          20.0)),
                                             ),
                                             context: context,
                                             builder: (context) => Padding(
-                                              padding:
-                                                  const EdgeInsets.only(top: 100.0),
+                                              padding: const EdgeInsets.only(
+                                                  top: 100.0),
                                               child: AirtimeToCash(
                                                 category: items[index],
                                                 walletInfo: walletInfo,
@@ -136,16 +141,19 @@ class _BillsPageState extends State<BillsPage> {
                                           //     services: AppList().serviceItems[index]));
                                           return;
                                         case "data":
-                                          modalSheet.showMaterialModalBottomSheet(
+                                          modalSheet
+                                              .showMaterialModalBottomSheet(
                                             backgroundColor: Colors.transparent,
                                             shape: const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.vertical(
-                                                  top: Radius.circular(20.0)),
+                                              borderRadius:
+                                                  BorderRadius.vertical(
+                                                      top: Radius.circular(
+                                                          20.0)),
                                             ),
                                             context: context,
                                             builder: (context) => Padding(
-                                              padding:
-                                                  const EdgeInsets.only(top: 100.0),
+                                              padding: const EdgeInsets.only(
+                                                  top: 100.0),
                                               child: DataPurchase(
                                                 category: items[index],
                                                 walletInfo: walletInfo,
@@ -156,16 +164,19 @@ class _BillsPageState extends State<BillsPage> {
                                           //     services: AppList().serviceItems[index]));
                                           return;
                                         case "electricity":
-                                          modalSheet.showMaterialModalBottomSheet(
+                                          modalSheet
+                                              .showMaterialModalBottomSheet(
                                             backgroundColor: Colors.transparent,
                                             shape: const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.vertical(
-                                                  top: Radius.circular(20.0)),
+                                              borderRadius:
+                                                  BorderRadius.vertical(
+                                                      top: Radius.circular(
+                                                          20.0)),
                                             ),
                                             context: context,
                                             builder: (context) => Padding(
-                                              padding:
-                                                  const EdgeInsets.only(top: 100.0),
+                                              padding: const EdgeInsets.only(
+                                                  top: 100.0),
                                               child: ElectricityPurchase(
                                                 category: items[index],
                                                 walletInfo: walletInfo,
@@ -176,16 +187,19 @@ class _BillsPageState extends State<BillsPage> {
                                           //     services: AppList().serviceItems[index]));
                                           return;
                                         case 'cable tv':
-                                          modalSheet.showMaterialModalBottomSheet(
+                                          modalSheet
+                                              .showMaterialModalBottomSheet(
                                             backgroundColor: Colors.transparent,
                                             shape: const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.vertical(
-                                                  top: Radius.circular(20.0)),
+                                              borderRadius:
+                                                  BorderRadius.vertical(
+                                                      top: Radius.circular(
+                                                          20.0)),
                                             ),
                                             context: context,
                                             builder: (context) => Padding(
-                                              padding:
-                                                  const EdgeInsets.only(top: 100.0),
+                                              padding: const EdgeInsets.only(
+                                                  top: 100.0),
                                               child: CablePurchase(
                                                 category: items[index],
                                                 walletInfo: walletInfo,
@@ -232,7 +246,8 @@ class _BillsPageState extends State<BillsPage> {
                                           'electricity',
                                           'cable tv',
                                           'airtime to cash'
-                                        ].contains(items[index].name.toLowerCase())));
+                                        ].contains(
+                                            items[index].name.toLowerCase())));
                               },
                             ),
                           );
@@ -252,7 +267,8 @@ class _BillsPageState extends State<BillsPage> {
                   }
                 },
               ),
-              advertWidget(theme),            ],
+              advertWidget(theme),
+            ],
           ),
         ));
   }
@@ -288,8 +304,9 @@ class _BillsPageState extends State<BillsPage> {
       ],
     );
   }
+
   CarouselSliderController carouselSliderController =
-  CarouselSliderController();
+      CarouselSliderController();
   final GlobalKey _sliderKey = GlobalKey();
   final List<String> advertImages = [
     AppImages.billCard1,
@@ -299,7 +316,7 @@ class _BillsPageState extends State<BillsPage> {
 
   Widget advertWidget(AdaptiveThemeMode theme) {
     return Padding(
-      padding: const EdgeInsets.only(left:15.0,right:15),
+      padding: const EdgeInsets.only(left: 15.0, right: 15),
       child: SizedBox(
         height: 250,
         child: CarouselSlider.builder(
@@ -308,25 +325,15 @@ class _BillsPageState extends State<BillsPage> {
           autoSliderDelay: const Duration(seconds: 3),
           enableAutoSlider: true,
           controller: carouselSliderController,
-          // onSlideChanged: (index) {
-          //   setState(() {
-          //     print(index);
-          //     currentIndex = index;
-          //   });
-          // },
           slideBuilder: (index) {
             return Center(
               child: SizedBox(
-                // Set the desired width of the container
                 height: 250,
-
                 child: Align(
                   alignment: Alignment.center,
                   child: Container(
                     width: AppUtils.deviceScreenSize(context).width,
-                    // Set the desired width of the container
                     height: 230,
-                    // Set the desired height of the container
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       image: DecorationImage(
