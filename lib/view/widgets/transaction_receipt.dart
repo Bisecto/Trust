@@ -128,7 +128,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                 left: 0,
                 right: 0,
                 child: pw.Container(
-                  height: 130,
+                  height: 110,
                   decoration: pw.BoxDecoration(
                     color: lightGreen,
                     borderRadius: const pw.BorderRadius.vertical(
@@ -142,30 +142,29 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                 left: 0,
                 right: 0,
                 child: pw.Container(
-                  height: 120,
+                  height: 100,
                   decoration: const pw.BoxDecoration(
                     color: PdfColors.green900,
-                    borderRadius: pw.BorderRadius.vertical(
-                      bottom: pw.Radius.circular(30),
+                    borderRadius: pw.BorderRadius.only(
+                      bottomLeft: pw.Radius.circular(20),
+                      bottomRight: pw.Radius.circular(20),
                     ),
                   ),
                   child: pw.Image(
                     pw.MemoryImage(looperImage),
+
                     fit: pw.BoxFit.fill,
                   ),
                 ),
               ),
               pw.Positioned(
-                top: 10,
+                top: 0,
                 left: 0,
                 right: 0,
                 bottom: 0,
                 child: pw.Column(
                   children: [
-                    pw.Padding(
-                      padding: const pw.EdgeInsets.fromLTRB(20.0, 0, 20, 0),
-                      child: pdfCardTopContainer(logoImage),
-                    ),
+                    pdfCardTopContainer(logoImage),
                     pw.Expanded(
                       child: pw.Container(
                         color: lightGreen,
@@ -174,12 +173,12 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                             pw.SizedBox(height: 10),
                             // Pass the dynamic transaction to the receipt details
                             pw.Padding(
-                              padding: const pw.EdgeInsets.all(20),
+                              padding: const pw.EdgeInsets.all(0),
                               child: pw.Container(
                                 //color: PdfColors.white,
                                 decoration: pw.BoxDecoration(
                                   color: PdfColors.white,
-                                  borderRadius: pw.BorderRadius.circular(20),
+                                  borderRadius: pw.BorderRadius.circular(0),
                                 ),
                                 child: pw.Padding(
                                     padding:
@@ -370,25 +369,35 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
   }
 
   pw.Widget pdfCardTopContainer(logoImage) {
+    pdfColo.PdfColor lightGreen = const pdfColo.PdfColor.fromInt(0xffE3FAD6);
+
     return pw.Container(
       height: 100,
       // width: context.page.pageFormat.width, // Full width
+      //color: null,
+      decoration: pw.BoxDecoration(
+        borderRadius: pw.BorderRadius.only(
+          bottomLeft: pw.Radius.circular(30),
+          bottomRight: pw.Radius.circular(30),
+        ),
+      ),
       child: pw.Row(
         mainAxisAlignment: pw.MainAxisAlignment.center,
         crossAxisAlignment: pw.CrossAxisAlignment.center,
         children: [
           pw.Column(
             children: [
+              pw.SizedBox(height: 10),
               pw.Image(pw.MemoryImage(logoImage),
                   //width: double.infinity,
                   //fit: pw.BoxFit.fill,
-                  height: 50),
+                  height: 30),
               //pw.SvgImage(svg: AppIcons.logoReceipt, height: 40),
               // Adjusted size
               pw.SizedBox(height: 5),
               pw.Text('TellaTrust',
                   style:
-                      const pw.TextStyle(color: PdfColors.white, fontSize: 18)),
+                      const pw.TextStyle(color: PdfColors.white, fontSize: 16)),
               pw.Text('Transaction Receipt',
                   style:
                       const pw.TextStyle(color: PdfColors.white, fontSize: 12)),
