@@ -101,14 +101,14 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
     // Load the necessary images
     final ByteData qrCodeBytes = await rootBundle.load(AppImages.qrCode);
     final Uint8List qrCodeImage = qrCodeBytes.buffer.asUint8List();
-    final ByteData receiptBgBytes = await rootBundle.load(AppImages.receiptBg);
-    final Uint8List receiptBg = receiptBgBytes.buffer.asUint8List();
+    // final ByteData receiptBgBytes = await rootBundle.load(AppImages.receiptBg);
+    // final Uint8List receiptBg = receiptBgBytes.buffer.asUint8List();
 
-    final ByteData logoBytes = await rootBundle.load(AppImages.whiteLogo);
+    final ByteData logoBytes = await rootBundle.load(AppImages.receiptLogo);
     final Uint8List logoImage = logoBytes.buffer.asUint8List();
 
-    final ByteData looperBytes = await rootBundle.load(AppImages.looperImage);
-    final Uint8List looperImage = looperBytes.buffer.asUint8List();
+    // final ByteData looperBytes = await rootBundle.load(AppImages.looperImage);
+    // final Uint8List looperImage = looperBytes.buffer.asUint8List();
 
     pdfColo.PdfColor lightGreen = const pdfColo.PdfColor.fromInt(0xffE3FAD6);
 
@@ -123,40 +123,40 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
           //color: PdfColors.red,
           child: pw.Stack(
             children: [
-              pw.Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: pw.Container(
-                  height: 110,
-                  decoration: pw.BoxDecoration(
-                    color: lightGreen,
-                    borderRadius: const pw.BorderRadius.vertical(
-                      bottom: pw.Radius.circular(30),
-                    ),
-                  ),
-                ),
-              ),
-              pw.Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: pw.Container(
-                  height: 100,
-                  decoration: const pw.BoxDecoration(
-                    color: PdfColors.green900,
-                    borderRadius: pw.BorderRadius.only(
-                      bottomLeft: pw.Radius.circular(20),
-                      bottomRight: pw.Radius.circular(20),
-                    ),
-                  ),
-                  child: pw.Image(
-                    pw.MemoryImage(looperImage),
-
-                    fit: pw.BoxFit.fill,
-                  ),
-                ),
-              ),
+              // pw.Positioned(
+              //   top: 0,
+              //   left: 0,
+              //   right: 0,
+              //   child: pw.Container(
+              //     height: 110,
+              //     decoration: pw.BoxDecoration(
+              //       color: PdfColors.white,
+              //       borderRadius: const pw.BorderRadius.vertical(
+              //         bottom: pw.Radius.circular(30),
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              // pw.Positioned(
+              //   top: 0,
+              //   left: 0,
+              //   right: 0,
+              //   child: pw.Container(
+              //     height: 100,
+              //     decoration: const pw.BoxDecoration(
+              //       color: PdfColors.green900,
+              //       borderRadius: pw.BorderRadius.only(
+              //         bottomLeft: pw.Radius.circular(20),
+              //         bottomRight: pw.Radius.circular(20),
+              //       ),
+              //     ),
+              //     child: pw.Image(
+              //       pw.MemoryImage(looperImage),
+              //
+              //       fit: pw.BoxFit.fill,
+              //     ),
+              //   ),
+              // ),
               pw.Positioned(
                 top: 0,
                 left: 0,
@@ -169,8 +169,9 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                       child: pw.Container(
                         color: lightGreen,
                         child: pw.Column(
+                         // mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                           children: [
-                            pw.SizedBox(height: 10),
+                            //pw.SizedBox(height: 10),
                             // Pass the dynamic transaction to the receipt details
                             pw.Padding(
                               padding: const pw.EdgeInsets.all(0),
@@ -182,17 +183,17 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                                 ),
                                 child: pw.Padding(
                                     padding:
-                                        pw.EdgeInsets.fromLTRB(20, 10, 20, 0),
+                                        pw.EdgeInsets.fromLTRB(20, 30, 20, 0),
                                     child: pw.Container(
                                         decoration: pw.BoxDecoration(
                                           color: PdfColors.white,
-                                          image: pw.DecorationImage(
-                                            image: pw.MemoryImage(receiptBg),
-//dpi: 10,
-                                            // Your background image here
-                                            fit: pw.BoxFit
-                                                .fill, // Set how the background image will fit
-                                          ),
+//                                           image: pw.DecorationImage(
+//                                             image: pw.MemoryImage(receiptBg),
+// //dpi: 10,
+//                                             // Your background image here
+//                                             fit: pw.BoxFit
+//                                                 .fill, // Set how the background image will fit
+//                                           ),
                                         ),
                                         child: pw.Row(
                                             mainAxisAlignment: pw
@@ -322,7 +323,6 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
               'TELLATRUST_TRANSACTION_${transaction.order?.product?.name ?? "${transaction.type.toLowerCase().contains('credit') ? 'Credit' : 'Debit'}_${transaction.reference}"}.pdf',
         );
         Navigator.pop(context);
-
       } else {
         showToast(
           context: context,
@@ -369,38 +369,32 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
   }
 
   pw.Widget pdfCardTopContainer(logoImage) {
-    pdfColo.PdfColor lightGreen = const pdfColo.PdfColor.fromInt(0xffE3FAD6);
-
     return pw.Container(
-      height: 100,
+      //height: 100,
       // width: context.page.pageFormat.width, // Full width
       //color: null,
-      decoration: pw.BoxDecoration(
-        borderRadius: pw.BorderRadius.only(
-          bottomLeft: pw.Radius.circular(30),
-          bottomRight: pw.Radius.circular(30),
-        ),
-      ),
+      color: PdfColors.white,
       child: pw.Row(
         mainAxisAlignment: pw.MainAxisAlignment.center,
         crossAxisAlignment: pw.CrossAxisAlignment.center,
         children: [
           pw.Column(
             children: [
-              pw.SizedBox(height: 10),
+              pw.SizedBox(height: 20),
+
               pw.Image(pw.MemoryImage(logoImage),
                   //width: double.infinity,
                   //fit: pw.BoxFit.fill,
-                  height: 30),
+                  height: 50),
               //pw.SvgImage(svg: AppIcons.logoReceipt, height: 40),
               // Adjusted size
-              pw.SizedBox(height: 5),
-              pw.Text('TellaTrust',
-                  style:
-                      const pw.TextStyle(color: PdfColors.white, fontSize: 16)),
+              pw.SizedBox(height: 10),
+              // pw.Text('TellaTrust',
+              //     style:
+              //         const pw.TextStyle(color: PdfColors.white, fontSize: 16)),
               pw.Text('Transaction Receipt',
                   style:
-                      const pw.TextStyle(color: PdfColors.white, fontSize: 12)),
+                      const pw.TextStyle(color: PdfColors.black, fontSize: 18)),
             ],
           ),
         ],
@@ -459,7 +453,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
               'Date',
               AppUtils.formateSimpleDate(
                   dateTime: widget.transaction.createdAt.toString())),
-          pw.Divider(),
+          //pw.Divider(),
           pdfBuildDetailRow('Transaction Reference', transaction.reference),
           pdfBuildDetailRow(
               'Status',
@@ -475,18 +469,21 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
 // Translated buildDetailRow for PDF
   pw.Widget pdfBuildDetailRow(String label, String value) {
     return pw.Padding(
-      padding: const pw.EdgeInsets.all(3.0),
+      padding: const pw.EdgeInsets.all(5.0),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           pw.Text(label,
-              style: const pw.TextStyle(fontSize: 12, color: PdfColors.grey)),
+              style: const pw.TextStyle(fontSize: 14, color: PdfColors.grey)),
+          pw.SizedBox(
+            height: 3,
+          ),
           pw.Row(
             mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
             children: [
               pw.SizedBox(
                 width: 200, // Limit width for wrapping text
-                child: pw.Text(value, style: const pw.TextStyle(fontSize: 14)),
+                child: pw.Text(value, style: const pw.TextStyle(fontSize: 16)),
               ),
             ],
           ),
@@ -500,15 +497,16 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
     return pw.Column(
       children: [
         pw.Text('Thank You!',
-            style: const pw.TextStyle(fontSize: 14, color: PdfColors.black)),
+            style:  pw.TextStyle(fontSize: 16,fontWeight: pw.FontWeight.bold, color: PdfColors.black)),
         pw.Text('For Your Purchase',
-            style: const pw.TextStyle(fontSize: 14, color: PdfColors.black)),
+            style: const pw.TextStyle(fontSize: 16, color: PdfColors.black)),
         pw.Padding(
           padding: const pw.EdgeInsets.all(10.0),
           child: pw.Text(
-            'Want to save money on transfers and recharge cards? Download TellaTrust today!',
-            style: const pw.TextStyle(fontSize: 14, color: PdfColors.black),
+            'Want to save money on transfers and recharge cards? Download TellaTrust today! Plus, enjoy a referral bonus when you share the love with your friends. Don\'t miss out!',
+            style: const pw.TextStyle(fontSize: 14, color: PdfColors.grey),
             textAlign: pw.TextAlign.center,
+            maxLines: 2
           ),
         ),
         pw.SizedBox(height: 20),
@@ -516,11 +514,13 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
           mainAxisAlignment: pw.MainAxisAlignment.center,
           children: [
             pw.Icon(const pw.IconData(0xe900), color: PdfColors.green),
-            pw.Text('Secured by TellaTrust',
+            pw.Text(' Secured by TellaTrust',
                 style:
                     const pw.TextStyle(fontSize: 14, color: PdfColors.black)),
           ],
         ),
+        pw.SizedBox(height: 20),
+
       ],
     );
   }

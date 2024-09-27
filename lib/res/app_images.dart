@@ -1,6 +1,7 @@
 class AppImages {
   static const String _imageBaseUrl = 'assets/images/';
   static const logo = '${_imageBaseUrl}logo.png';
+  static const receiptLogo = '${_imageBaseUrl}receipt_logo.png';
   static const whiteLogo = '${_imageBaseUrl}white_logo.png';
   static const fullLogo = '${_imageBaseUrl}full_logo.png';
   static const apple = '${_imageBaseUrl}Apple.png';
