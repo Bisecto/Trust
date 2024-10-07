@@ -16,6 +16,7 @@ import 'package:teller_trust/view/auth/sign_in_with_access_pin_and_biometrics.da
 
 import '../res/app_router.dart';
 import '../res/sharedpref_key.dart';
+import '../view/important_pages/dialog_box.dart';
 import 'app_navigator.dart';
 
 String? env(name) {
@@ -157,8 +158,8 @@ class AppUtils {
   }
 
   void copyToClipboard(textToCopy, context) {
-    Clipboard.setData(ClipboardData(text: "${textToCopy} copied"));
-    //MSG.snackBar(context, "$textToCopy copied");
+    Clipboard.setData(ClipboardData(text: "${textToCopy}"));
+    MSG.snackBar(context, "$textToCopy copied");
     // You can also show a snackbar or any other feedback to the user.
     print('Text copied to clipboard: $textToCopy');
   }
