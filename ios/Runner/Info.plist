@@ -26,6 +26,10 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+    <string>This app needs access to the photo library to allow users to select or upload images.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>This app needs access to the camera for taking photos or videos.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Your Face ID will be used for authentication purposes to enhance security and provide a seamless login experience.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
