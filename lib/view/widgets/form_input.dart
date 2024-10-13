@@ -170,6 +170,9 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                     maxLines: widget.maxLines,
                     maxLength: widget.maxLength,
                     obscureText: widget.isPasswordField?_obscureText:false,
+                    onTapOutside: (PointerDownEvent event) {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                    },
                     onFieldSubmitted: (val) {
                       widget.onFieldSubmitted?.call(val);
                     },
