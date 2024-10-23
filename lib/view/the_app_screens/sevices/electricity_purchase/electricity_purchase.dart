@@ -28,6 +28,7 @@ import '../../../../utills/enums/toast_mesage.dart';
 import '../../../../utills/shared_preferences.dart';
 import '../../../auth/otp_pin_pages/confirm_with_otp.dart';
 import '../../../auth/sign_in_with_access_pin_and_biometrics.dart';
+import '../../../important_pages/dialog_box.dart';
 import '../../../widgets/app_custom_text.dart';
 import '../../../widgets/form_button.dart';
 import '../../../widgets/form_input.dart';
@@ -97,6 +98,8 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
       }).catchError((error) {
         // Handle the error here
       });
+    } else{
+      MSG.warningSnackBar(context, 'Please enter a valid meter number or select a valid provider');
     }
   }
 
@@ -115,7 +118,8 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
 
   Future<String> handleNetworkSelect(String? selectedServiceId) async {
     AppRepository appRepository = AppRepository();
-    String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
+    String accessToken =
+        await SharedPref.getString(SharedPrefKey.accessTokenKey);
     String apiUrl =
         '${AppApis.listProduct}?page=1&pageSize=10&categoryId=${widget.category.id}&serviceId=$selectedServiceId';
 
@@ -211,8 +215,8 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                             // AppNavigator.pushAndRemovePreviousPages(context,
                             //     page: LandingPage(studentProfile: state.studentProfile));
                           } else if (state is QuickPayInitiated) {
-                            String accessToken =
-                                await SharedPref.getString(SharedPrefKey.accessTokenKey);
+                            String accessToken = await SharedPref.getString(
+                                SharedPrefKey.accessTokenKey);
 
                             AppNavigator.pushAndStackPage(context,
                                 page: MakePayment(
@@ -554,6 +558,19 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                             controller: _beneficiaryController,
                                             textInputType: TextInputType.number,
                                             onFieldSubmitted: _onInputChanged,
+                                            suffixIcon: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(5.0),
+                                              child: FormButton(
+                                                onPressed: () {
+                                                  _onInputChanged(_beneficiaryController.text);
+                                                },
+                                                topPadding: 0,
+                                                text: "Verify",
+                                                width: 100,
+                                                height: 30,
+                                              ),
+                                            ),
                                             validator: (value) {
                                               if (value == null ||
                                                   value.isEmpty) {
@@ -737,7 +754,6 @@ class _ElectricityPurchaseState extends State<ElectricityPurchase> {
                                                     ),
                                                   );
                                                 } else if (state
-
                                                     is EntityNumberLoadingState) {
                                                   return Padding(
                                                     padding: const EdgeInsets

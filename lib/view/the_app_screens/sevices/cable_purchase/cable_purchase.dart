@@ -133,6 +133,8 @@ class _CablePurchaseState extends State<CablePurchase> {
       }).catchError((error) {
         // Handle the error here
       });
+    }else{
+      MSG.warningSnackBar(context, 'Please enter a valid cable number or select a valid provider');
     }
   }
   Future<void> verifyEntityNumber(String meterNumber) async {
@@ -583,6 +585,20 @@ class _CablePurchaseState extends State<CablePurchase> {
                                             textInputType: TextInputType.number,
                                             widget: const Icon(Icons.numbers),
                                             onChanged: _onInputChanged,
+                                            suffixIcon: Padding(
+                                              padding:
+                                              const EdgeInsets.all(5.0),
+                                              child: FormButton(
+                                                onPressed: () {
+                                                  _onInputChanged(_beneficiaryController.text);
+                                                },
+                                                topPadding: 0,
+                                                text: "Verify",
+                                                width: 100,
+                                                height: 30,
+                                              ),
+                                            ),
+
                                             validator: (value) {
                                               if (value == null || value.isEmpty) {
                                                 return 'Please enter your SmartCard number';

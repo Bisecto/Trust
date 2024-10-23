@@ -13,6 +13,7 @@ class FormButton extends StatelessWidget {
   final Color textColor;
   final double borderWidth;
   final double borderRadius;
+  final double topPadding;
   final double width;
   final double height;
   final double textSize;
@@ -26,6 +27,7 @@ class FormButton extends StatelessWidget {
     this.iconWidget,
     this.text = '',
     this.textSize = 16,
+    this.topPadding = 24,
     required this.onPressed,
     this.bgColor = AppColors.darkGreen,
     this.textColor = AppColors.white,
@@ -41,7 +43,7 @@ class FormButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.fromLTRB(0, 24, 0, 0),
+      margin: EdgeInsets.fromLTRB(0, topPadding, 0, 0),
       width: width,
       height: height,
       decoration: BoxDecoration(
