@@ -16,8 +16,6 @@ import 'package:teller_trust/view/sendBeneficary/widgets/sendTo/send_to_form_wid
 import 'package:teller_trust/view/sendBeneficary/widgets/sendTo/send_to_header_widget.dart';
 import 'package:teller_trust/view/sendBeneficary/widgets/sendTo/send_to_options_widget.dart';
 import 'package:teller_trust/view/sendBeneficary/widgets/sendTo/top_beneficiaries_widget.dart';
-import 'package:teller_trust/view/the_app_screens/transaction_history/transaction_history.dart';
-import 'package:teller_trust/view/widgets/purchase_receipt.dart';
 import 'package:teller_trust/view/widgets/show_toast.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modal_sheet;
 

@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/res/app_colors.dart';
-import 'package:teller_trust/res/app_spacer.dart';
 import 'package:teller_trust/utills/app_navigator.dart';
 import 'package:teller_trust/view/sendBeneficary/pages/recent_transfer_list_page.dart';
 
 import '../../../../utills/custom_theme.dart';
-import '../../../../utills/shared_preferences.dart';
 
 class SendMainHeaderWidget extends StatefulWidget {
   final String balance;

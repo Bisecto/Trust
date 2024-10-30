@@ -15,8 +15,6 @@ import 'package:teller_trust/view/the_app_screens/more_pages/legal.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/notification.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/profile_details.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/security_page.dart';
-import 'package:teller_trust/view/the_app_screens/more_pages/tella_rewards/tella_manage_point.dart';
-import 'package:teller_trust/view/the_app_screens/more_pages/tella_rewards/tella_reward_main.dart';
 
 import '../../bloc/app_bloc/app_bloc.dart';
 import '../../model/customer_account_model.dart';

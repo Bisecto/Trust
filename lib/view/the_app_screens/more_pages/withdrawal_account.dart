@@ -8,7 +8,6 @@ import 'package:teller_trust/view/widgets/form_button.dart';
 import '../../../bloc/app_bloc/app_bloc.dart' as appBloc;
 import '../../../bloc/bank_bloc/bank_bloc.dart' as bankBloc;
 import '../../../res/app_colors.dart';
-import '../../../res/app_icons.dart';
 import '../../../utills/app_utils.dart';
 import '../../../utills/app_validator.dart';
 import '../../widgets/appBar_widget.dart';

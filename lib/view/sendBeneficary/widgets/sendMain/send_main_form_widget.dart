@@ -8,7 +8,6 @@ import 'package:teller_trust/bloc/sendBloc/states/send_state.dart';
 import 'package:teller_trust/res/app_button.dart';
 import 'package:teller_trust/res/app_colors.dart';
 import 'package:teller_trust/res/app_spacer.dart';
-import 'package:teller_trust/utills/app_navigator.dart';
 import 'package:teller_trust/view/sendBeneficary/widgets/sendMain/custom_key_pad_widget.dart';
 
 import '../../../../utills/custom_theme.dart';

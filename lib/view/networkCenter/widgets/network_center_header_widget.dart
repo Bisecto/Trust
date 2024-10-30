@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:teller_trust/res/app_colors.dart';
 import 'package:teller_trust/res/app_spacer.dart';
 import 'package:teller_trust/view/networkCenter/widgets/network_search_widget.dart';

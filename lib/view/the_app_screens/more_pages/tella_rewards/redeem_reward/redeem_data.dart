@@ -2,12 +2,9 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-//import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
-import 'package:teller_trust/model/category_model.dart' as mainCategory;
-import 'package:teller_trust/model/wallet_info.dart';
 import 'package:teller_trust/view/important_pages/dialog_box.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/product_beneficiary/product_beneficiary.dart';
 
@@ -24,14 +21,12 @@ import '../../../../../utills/app_validator.dart';
 import '../../../../../utills/custom_theme.dart';
 import '../../../../../utills/enums/toast_mesage.dart';
 import '../../../../../utills/shared_preferences.dart';
-import '../../../../auth/otp_pin_pages/confirm_with_otp.dart';
 import '../../../../auth/sign_in_with_access_pin_and_biometrics.dart';
 import '../../../../widgets/app_custom_text.dart';
 import '../../../../widgets/form_button.dart';
 import '../../../../widgets/form_input.dart';
 import '../../../../widgets/show_toast.dart';
 import '../../../../widgets/transaction_receipt.dart';
-import '../../../sevices/build_payment_method.dart';
 import '../../../sevices/make_bank_transfer/bank_transfer.dart';
 import '../tella_point_product_container.dart';
 

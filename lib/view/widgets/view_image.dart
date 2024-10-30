@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:teller_trust/utills/app_utils.dart';
 
 class ImagePage extends StatelessWidget {
   final String imageUrl;

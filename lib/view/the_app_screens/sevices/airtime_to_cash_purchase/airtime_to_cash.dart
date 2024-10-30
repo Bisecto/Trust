@@ -13,11 +13,8 @@ import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/res/app_spacer.dart';
 import 'package:teller_trust/utills/constants/loading_dialog.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/make_bank_transfer/bank_transfer.dart';
-import 'package:teller_trust/view/the_app_screens/sevices/product_beneficiary/product_beneficiary.dart';
-import 'package:teller_trust/view/widgets/purchase_receipt.dart';
 
 import '../../../../bloc/product_bloc/product_bloc.dart';
-import '../../../../model/a2c/a2c_create_transaction_model.dart';
 import '../../../../model/a2c/a2c_detail_model.dart';
 import '../../../../model/category_model.dart' as categoryModel;
 import '../../../../model/product_model.dart' as productMode;
@@ -25,7 +22,6 @@ import '../../../../model/wallet_info.dart';
 import '../../../../repository/app_repository.dart';
 import '../../../../res/apis.dart';
 import '../../../../res/app_colors.dart';
-import '../../../../res/app_images.dart';
 import '../../../../res/sharedpref_key.dart';
 import '../../../../utills/app_navigator.dart';
 import '../../../../utills/app_utils.dart';
@@ -41,8 +37,6 @@ import '../../../widgets/form_input.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
 import '../../../widgets/show_toast.dart';
-import '../../../widgets/transaction_receipt.dart';
-import '../payment_method/payment_method.dart';
 
 class AirtimeToCash extends StatefulWidget {
   final categoryModel.Category category;

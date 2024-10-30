@@ -4,7 +4,6 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-//import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
@@ -12,10 +11,8 @@ import 'package:teller_trust/model/service_model.dart' as serviceModel;
 import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/make_bank_transfer/bank_transfer.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/product_beneficiary/product_beneficiary.dart';
-import 'package:teller_trust/view/widgets/purchase_receipt.dart';
 
 import '../../../../../bloc/product_bloc/product_bloc.dart';
-import '../../../../../model/wallet_info.dart';
 import '../../../../../repository/app_repository.dart';
 import '../../../../../res/apis.dart';
 import '../../../../../res/app_colors.dart';
@@ -27,14 +24,10 @@ import '../../../../../utills/custom_theme.dart';
 import '../../../../../utills/enums/toast_mesage.dart';
 import '../../../../../utills/shared_preferences.dart';
 import '../../../../../bloc/product_bloc/product_bloc.dart';
-import '../../../../../model/category_model.dart' as categoryModel;
 import '../../../../../model/product_model.dart' as productMode;
-import '../../../../../model/wallet_info.dart';
 import '../../../../../repository/app_repository.dart';
 
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
-import '../../../../auth/otp_pin_pages/confirm_with_otp.dart';
 import '../../../../auth/sign_in_with_access_pin_and_biometrics.dart';
 import '../../../../widgets/app_custom_text.dart';
 import '../../../../widgets/form_button.dart';

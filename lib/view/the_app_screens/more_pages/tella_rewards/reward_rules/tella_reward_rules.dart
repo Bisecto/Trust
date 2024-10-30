@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:teller_trust/utills/app_utils.dart';
 
 import '../../../../../utills/custom_theme.dart';
 

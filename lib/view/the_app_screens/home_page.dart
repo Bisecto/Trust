@@ -30,19 +30,14 @@ import 'package:teller_trust/view/the_app_screens/transaction_history/transactio
 import 'package:teller_trust/view/the_app_screens/transaction_history/wallet_history.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
-import 'package:teller_trust/view/widgets/purchase_receipt.dart';
-import 'package:teller_trust/view/widgets/view_image.dart';
 
 import '../../bloc/app_bloc/app_bloc.dart';
-import '../../domain/txn/txn_details_to_send_out.dart';
 import '../../model/category_model.dart';
 import '../../model/customer_account_model.dart';
 import '../../res/app_images.dart';
 import '../../res/sharedpref_key.dart';
 import '../../utills/custom_theme.dart';
 import '../../utills/enums/toast_mesage.dart';
-import '../sendBeneficary/pages/send_main_page.dart';
-import '../sendBeneficary/pages/send_to_page.dart';
 import '../widgets/show_toast.dart';
 import '../widgets/transaction_receipt.dart';
 import 'kyc_verification/kyc_intro_page.dart';

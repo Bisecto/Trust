@@ -7,7 +7,6 @@ import 'package:teller_trust/res/app_images.dart';
 import 'package:teller_trust/res/app_strings.dart';
 import 'package:teller_trust/utills/app_navigator.dart';
 import 'package:teller_trust/utills/app_utils.dart';
-import 'package:teller_trust/utills/shared_preferences.dart';
 import 'package:teller_trust/view/auth/sign_in_with_access_pin_and_biometrics.dart';
 import 'package:teller_trust/view/auth/sign_up_screen.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';

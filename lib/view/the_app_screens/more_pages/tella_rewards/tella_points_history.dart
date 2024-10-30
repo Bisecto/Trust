@@ -2,14 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:provider/provider.dart';
 import 'package:teller_trust/bloc/tellapoint/tellapoint_bloc.dart';
-import 'package:teller_trust/res/app_colors.dart';
 import 'package:teller_trust/res/app_icons.dart';
 
 import '../../../../model/tellapoint_history_model.dart';
 import '../../../../utills/app_utils.dart';
-import '../../../../utills/custom_theme.dart';
 import '../../../widgets/app_custom_text.dart';
 
 class TellaPointsHistory extends StatefulWidget {

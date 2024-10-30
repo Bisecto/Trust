@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
 import 'package:cross_connectivity/cross_connectivity.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -11,12 +10,9 @@ import 'package:provider/provider.dart';
 import 'package:teller_trust/bloc/product_bloc/product_bloc.dart';
 import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/view/important_pages/no_internet.dart';
-import 'package:teller_trust/view/sendBeneficary/pages/send_main_page.dart';
-import 'package:teller_trust/view/the_app_screens/send_page.dart';
 import 'package:teller_trust/view/widgets/show_toast.dart';
 
 import '../../bloc/app_bloc/app_bloc.dart';
-import '../../domain/txn/txn_details_to_send_out.dart';
 import '../../main.dart';
 import '../../res/app_colors.dart';
 import '../../res/sharedpref_key.dart';

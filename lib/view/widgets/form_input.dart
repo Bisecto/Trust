@@ -7,15 +7,6 @@ import '../../res/app_colors.dart';
 import '../../utills/custom_theme.dart';
 import 'app_custom_text.dart';
 
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
-
-import '../../res/app_colors.dart';
-import '../../utills/custom_theme.dart';
-import 'app_custom_text.dart';
-
 class CustomTextFormField extends StatefulWidget {
   final bool isobscure;
   final bool isMobileNumber;
@@ -169,7 +160,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                     validator: widget.validator,
                     maxLines: widget.maxLines,
                     maxLength: widget.maxLength,
-                    obscureText: widget.isPasswordField?_obscureText:false,
+                    obscureText: widget.isPasswordField ? _obscureText : false,
                     onTapOutside: (PointerDownEvent event) {
                       FocusManager.instance.primaryFocus?.unfocus();
                     },

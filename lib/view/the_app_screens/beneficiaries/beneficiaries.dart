@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:teller_trust/view/widgets/form_input.dart';
 
-import '../../widgets/appBar_widget.dart';
 import '../sevices/product_beneficiary/product_beneficiary.dart';
 import 'beneficiary_app_bar.dart';
 

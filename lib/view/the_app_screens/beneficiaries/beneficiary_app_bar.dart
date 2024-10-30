@@ -6,7 +6,6 @@ import 'package:teller_trust/view/widgets/form_input.dart';
 
 import '../../../res/app_colors.dart';
 import '../../../res/app_icons.dart';
-import '../../../utills/app_utils.dart';
 import '../../../utills/custom_theme.dart';
 import '../../widgets/app_custom_text.dart';
 

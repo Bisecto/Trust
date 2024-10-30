@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:shimmer_animation/shimmer_animation.dart';
-import 'package:teller_trust/res/app_router.dart';
 import 'package:teller_trust/utills/constants/loading_dialog.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/tella_rewards/redeem_reward/redeem_airtime.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/tella_rewards/redeem_reward/redeem_data.dart';
@@ -12,7 +10,6 @@ import 'package:teller_trust/view/the_app_screens/more_pages/tella_rewards/tella
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
 import '../../../../bloc/app_bloc/app_bloc.dart';
-import '../../../../bloc/product_bloc/product_bloc.dart';
 import '../../../../model/category_model.dart';
 import '../../../../res/app_colors.dart';
 import '../../../../res/app_icons.dart';
@@ -23,7 +20,6 @@ import '../../../../utills/custom_theme.dart';
 import '../../../../utills/enums/toast_mesage.dart';
 import '../../../widgets/app_custom_text.dart';
 import '../../../widgets/show_toast.dart';
-import '../../sevices/airtime_purchase/airtime.dart';
 
 class TellaPointProductContainer extends StatefulWidget {
   final bool allowClick;

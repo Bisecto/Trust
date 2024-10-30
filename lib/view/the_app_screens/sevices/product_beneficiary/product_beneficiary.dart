@@ -5,7 +5,6 @@ import 'package:flutter_svg/svg.dart';
 
 import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
-import 'package:teller_trust/model/required_field_model.dart';
 import 'package:teller_trust/utills/constants/loading_dialog.dart';
 
 import '../../../../bloc/product_bloc/product_bloc.dart';

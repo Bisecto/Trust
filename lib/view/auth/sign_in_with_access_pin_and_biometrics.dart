@@ -2,7 +2,6 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:otp_text_field/otp_field.dart';
 import 'package:pin_plus_keyboard/package/controllers/pin_input_controller.dart';
 import 'package:pin_plus_keyboard/package/pin_plus_keyboard_package.dart';
 import 'package:provider/provider.dart';

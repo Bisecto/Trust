@@ -5,11 +5,9 @@ import 'package:teller_trust/res/app_colors.dart';
 import 'package:teller_trust/utills/app_utils.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/tella_rewards/tella_manage_point.dart';
 import 'package:teller_trust/view/the_app_screens/more_pages/tella_rewards/tella_points_history.dart';
-import 'package:teller_trust/view/the_app_screens/sevices/card_request.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
 
 
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
 import '../../../../res/app_icons.dart';
 import '../../../../utills/custom_theme.dart';

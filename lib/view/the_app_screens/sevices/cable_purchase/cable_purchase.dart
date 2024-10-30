@@ -13,7 +13,6 @@ import '../../../../bloc/product_bloc/product_bloc.dart';
 import '../../../../model/wallet_info.dart';
 import '../../../../res/app_colors.dart';
 import '../../../../res/app_icons.dart';
-import '../../../../res/app_images.dart';
 import '../../../../res/sharedpref_key.dart';
 import '../../../../utills/app_navigator.dart';
 import '../../../../utills/app_utils.dart';
@@ -28,10 +27,8 @@ import '../../../widgets/form_button.dart';
 import '../../../widgets/form_input.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
-import '../../../widgets/purchase_receipt.dart';
 import '../../../widgets/show_toast.dart';
 import '../../../widgets/transaction_receipt.dart';
-import '../../more_pages/tella_rewards/tella_point_product_container.dart';
 import '../payment_method/payment_method.dart';
 import '../make_bank_transfer/bank_transfer.dart';
 

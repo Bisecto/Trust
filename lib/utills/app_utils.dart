@@ -4,7 +4,6 @@ import 'package:encrypt/encrypt.dart' as prefix0;
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/src/foundation/key.dart' as kk;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';

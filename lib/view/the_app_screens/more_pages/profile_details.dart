@@ -10,7 +10,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/repository/app_repository.dart';
-import 'package:teller_trust/res/app_images.dart';
 import 'package:teller_trust/view/widgets/drop_down.dart';
 import 'package:teller_trust/view/widgets/form_button.dart';
 
@@ -21,14 +20,12 @@ import '../../../res/app_colors.dart';
 import '../../../res/app_icons.dart';
 import '../../../res/sharedpref_key.dart';
 import '../../../utills/app_utils.dart';
-import '../../../utills/app_validator.dart';
 import '../../../utills/constants/loading_dialog.dart';
 import '../../../utills/custom_theme.dart';
 import '../../../utills/enums/toast_mesage.dart';
 import '../../../utills/shared_preferences.dart';
 import '../../widgets/appBar_widget.dart';
 import '../../widgets/app_custom_text.dart';
-import '../../widgets/custom_container.dart';
 import '../../widgets/form_input.dart';
 import '../../widgets/show_toast.dart';
 

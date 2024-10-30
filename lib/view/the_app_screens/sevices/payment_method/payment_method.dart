@@ -8,7 +8,6 @@ import 'package:teller_trust/view/widgets/app_custom_text.dart';
 import 'package:teller_trust/view/widgets/form_button.dart';
 import '../../../../bloc/app_bloc/app_bloc.dart';
 import '../../../../res/app_icons.dart';
-import '../../../../res/app_images.dart';
 import '../../../../utills/app_utils.dart';
 import '../../../../utills/custom_theme.dart';
 import '../../../widgets/form_input.dart';

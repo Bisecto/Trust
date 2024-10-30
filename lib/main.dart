@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -12,15 +11,11 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/bloc/product_bloc/product_bloc.dart';
-import 'package:teller_trust/model/transactionHistory.dart';
 import 'package:teller_trust/res/app_router.dart';
 import 'package:teller_trust/utills/app_utils.dart';
 import 'package:teller_trust/utills/custom_theme.dart';
 import 'package:teller_trust/view/important_pages/no_internet.dart';
-import 'package:teller_trust/view/networkCenter/pages/network_center_main_page.dart';
-import 'package:teller_trust/view/sendBeneficary/pages/send_main_page.dart';
 import 'package:teller_trust/view/splash_screen.dart';
-import 'package:teller_trust/view/widgets/transaction_receipt.dart';
 import 'bloc/app_bloc/app_bloc.dart';
 
 AndroidNotificationChannel channel = const AndroidNotificationChannel(
