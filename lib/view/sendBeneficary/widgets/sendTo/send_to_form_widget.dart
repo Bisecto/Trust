@@ -151,40 +151,42 @@ class _SendToFormWidgetState extends State<SendToFormWidget> {
                   onTap: !isAnyOptionsSelected
                       ? null
                       : () async {
-                    if (isAnyOptionsSelected) {
-                      // Show the modal bottom sheet to select a bank
-                      selectedBank = await modalSheet.showMaterialModalBottomSheet(
-                        backgroundColor: Colors.transparent,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
-                        ),
-                        context: context,
-                        builder: (context) => Padding(
-                          padding: const EdgeInsets.only(top: 100.0),
-                          child: BankViewWidget(
-                            banks: banks,
-                          ),
-                        ),
-                      );
+                          if (isAnyOptionsSelected) {
+                            // Show the modal bottom sheet to select a bank
+                            selectedBank =
+                                await modalSheet.showMaterialModalBottomSheet(
+                              backgroundColor: Colors.transparent,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(20.0)),
+                              ),
+                              context: context,
+                              builder: (context) => Padding(
+                                padding: const EdgeInsets.only(top: 100.0),
+                                child: BankViewWidget(
+                                  banks: banks,
+                                ),
+                              ),
+                            );
 
-                      // Update the selected bank and text field if a bank was selected
-                      if (selectedBank != null) {
-                        setState(() {
-                          bankNameController.text = selectedBank.bankName;
-                        });
+                            // Update the selected bank and text field if a bank was selected
+                            if (selectedBank != null) {
+                              setState(() {
+                                bankNameController.text = selectedBank.bankName;
+                              });
 
-                        // Trigger verification if the account number is already filled
-                        if (accountNumberController.text.length == 10) {
-                          BlocProvider.of<SendBloc>(context).add(
-                            VerifyRecepitentAccountNumber(
-                              accountNumber: accountNumberController.text,
-                              bankCode: selectedBank.bankCode,
-                            ),
-                          );
-                        }
-                      }
-                    }
-                  },
+                              // Trigger verification if the account number is already filled
+                              if (accountNumberController.text.length == 10) {
+                                BlocProvider.of<SendBloc>(context).add(
+                                  VerifyRecepitentAccountNumber(
+                                    accountNumber: accountNumberController.text,
+                                    bankCode: selectedBank.bankCode,
+                                  ),
+                                );
+                              }
+                            }
+                          }
+                        },
                   child: AbsorbPointer(
                     child: TextField(
                       controller: bankNameController,
@@ -199,7 +201,8 @@ class _SendToFormWidgetState extends State<SendToFormWidget> {
                           padding: EdgeInsets.only(right: 15.0),
                           child: Icon(Icons.keyboard_arrow_down),
                         ),
-                        contentPadding: GeneralConstant.sendToFormWidgetContentPadding,
+                        contentPadding:
+                            GeneralConstant.sendToFormWidgetContentPadding,
                         border: GeneralConstant.bankSendSearchBorder,
                         errorBorder: GeneralConstant.bankSendSearchErrorBorder,
                         disabledBorder: GeneralConstant.bankSendSearchBorder,
@@ -210,7 +213,8 @@ class _SendToFormWidgetState extends State<SendToFormWidget> {
                     ),
                   ),
                 ),
-              ),if (!isItForTellaTrust)
+              ),
+            if (!isItForTellaTrust)
               const AppSpacer(
                 height: 10.0,
               ),
@@ -250,8 +254,8 @@ class _SendToFormWidgetState extends State<SendToFormWidget> {
         enabled: isUserVerified
             ? false
             : isItForTellaTrust
-            ? !checkingUpTellaTrustUser
-            : !verifyingUserAccountNumber,
+                ? !checkingUpTellaTrustUser
+                : !verifyingUserAccountNumber,
         textInputAction: TextInputAction.done,
         cursorColor: isItForTellaTrust
             ? AppColors.sendToTellaColor
@@ -264,9 +268,10 @@ class _SendToFormWidgetState extends State<SendToFormWidget> {
           hintStyle: GeneralConstant.normalTextStyle,
           prefixIcon: isItForTellaTrust
               ? Padding(
-            padding: const EdgeInsets.only(left: 15.0, right: 5.0),
-            child: SvgPicture.asset('assets/icons/sendBeneficiary/tellaTrustGrey.svg'),
-          )
+                  padding: const EdgeInsets.only(left: 15.0, right: 5.0),
+                  child: SvgPicture.asset(
+                      'assets/icons/sendBeneficiary/tellaTrustGrey.svg'),
+                )
               : null,
           contentPadding: GeneralConstant.sendToFormWidgetContentPadding,
           border: isItForTellaTrust
@@ -285,8 +290,42 @@ class _SendToFormWidgetState extends State<SendToFormWidget> {
               ? GeneralConstant.tellaSendSearchBorder
               : GeneralConstant.bankSendSearchBorder,
         ),
+        onSubmitted: (value) {
+          if (isItForTellaTrust) {
+            BlocProvider.of<SendBloc>(context).add(
+              EnterTellaTrustReceipentAcc(
+                tellaTrustReceiptentAcc: value,
+              ),
+            );
+          }
+        },
+        onTapOutside: (PointerDownEvent event) {
+          if (!isItForTellaTrust &&
+              accountNumberController.text.length == 10 &&
+              selectedBank.bankCode.isNotEmpty) {
+            FocusManager.instance.primaryFocus?.unfocus();
+            BlocProvider.of<SendBloc>(context).add(
+              VerifyRecepitentAccountNumber(
+                accountNumber: accountNumberController.text,
+                bankCode: selectedBank.bankCode,
+              ),
+            );
+          } else if (isItForTellaTrust) {
+            FocusManager.instance.primaryFocus?.unfocus();
+
+            BlocProvider.of<SendBloc>(context).add(
+              EnterTellaTrustReceipentAcc(
+                tellaTrustReceiptentAcc: accountNumberController.text,
+              ),
+            );
+          } else {
+            FocusManager.instance.primaryFocus?.unfocus();
+          }
+        },
         onChanged: (value) {
-          if (!isItForTellaTrust && value.length == 10 && selectedBank.bankCode.isNotEmpty) {
+          if (!isItForTellaTrust &&
+              value.length == 10 &&
+              selectedBank.bankCode.isNotEmpty) {
             BlocProvider.of<SendBloc>(context).add(
               VerifyRecepitentAccountNumber(
                 accountNumber: value,
