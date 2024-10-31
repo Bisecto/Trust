@@ -125,14 +125,15 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
     // final Uint8List looperImage = looperBytes.buffer.asUint8List();
 
     pdfColo.PdfColor lightGreen = const pdfColo.PdfColor.fromInt(0xffE3FAD6);
-   // pdfColo.PdfColor mainAppColor = const pdfColo.PdfColor.fromInt(0xff185C32);
+    // pdfColo.PdfColor mainAppColor = const pdfColo.PdfColor.fromInt(0xff185C32);
 
     // Add content to the PDF
     pdf.addPage(
       pw.Page(
-       // pageFormat: PdfPageFormat.letter,
-         pageFormat: const PdfPageFormat(
-             8.5 * PdfPageFormat.inch, 12 * PdfPageFormat.inch,marginAll: 0),
+        // pageFormat: PdfPageFormat.letter,
+        pageFormat: const PdfPageFormat(
+            8.5 * PdfPageFormat.inch, 12 * PdfPageFormat.inch,
+            marginAll: 0),
         build: (pw.Context context) => pw.Container(
           width: context.page.pageFormat.width,
           height: context.page.pageFormat.height,
@@ -182,12 +183,11 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                   mainAxisAlignment: pw.MainAxisAlignment.start,
                   children: [
                     pdfCardTopContainer(logoImage),
-
                     pw.Expanded(
                       child: pw.Container(
                         color: lightGreen,
                         child: pw.Column(
-                           mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                           children: [
                             //pw.SizedBox(height: 10),
                             // Pass the dynamic transaction to the receipt details
@@ -229,12 +229,11 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
 
                             //pdfBuildReceiptDetails(transaction),
                             pw.Container(
-
                               color: lightGreen,
                               child: pw.Column(
                                 children: [
                                   pw.SizedBox(height: 10),
-                                  pdfBuildFooter(qrCodeImage,lockIconImage),
+                                  pdfBuildFooter(qrCodeImage, lockIconImage),
                                 ],
                               ),
                             ),
@@ -384,7 +383,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
         children: [
           pw.Column(
             children: [
-             // pw.SizedBox(height: 10),
+              // pw.SizedBox(height: 10),
 
               pw.Image(pw.MemoryImage(logoImage),
                   //width: double.infinity,
@@ -394,13 +393,16 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
               // Adjusted size
               pw.SizedBox(height: 10),
               pw.Text('TellaTrust',
-                  style:
-                  pw.TextStyle(color: PdfColors.white, fontSize: 18,fontWeight: pw.FontWeight.bold)),
+                  style: pw.TextStyle(
+                      color: PdfColors.white,
+                      fontSize: 18,
+                      fontWeight: pw.FontWeight.bold)),
               pw.Text('Transaction Receipt',
-                  style:
-                       pw.TextStyle(color: PdfColors.white, fontSize: 18,fontWeight: pw.FontWeight.bold)),
+                  style: pw.TextStyle(
+                      color: PdfColors.white,
+                      fontSize: 18,
+                      fontWeight: pw.FontWeight.bold)),
               pw.SizedBox(height: 10),
-
             ],
           ),
         ],
@@ -472,12 +474,13 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                 : transaction.status.toUpperCase(),
           ),
           if (transaction.payInfo != null) ...[
-     pdfBuildDetailRow(
-              'Sender Account Name', transaction.payInfo!.senderAccountName),
-          pdfBuildDetailRow('Sender Bank',
-              "${transaction.payInfo!.senderBank.split(' ')[0]} ${transaction.payInfo!.senderBank.split(' ')[1]}"),
-          pdfBuildDetailRow(
-              'Receiver Bank', transaction.payInfo!.receiverBank),]
+            pdfBuildDetailRow(
+                'Sender Account Name', transaction.payInfo!.senderAccountName),
+            pdfBuildDetailRow('Sender Bank',
+                "${transaction.payInfo!.senderBank.split(' ')[0]} ${transaction.payInfo!.senderBank.split(' ')[1]}"),
+            pdfBuildDetailRow(
+                'Receiver Bank', transaction.payInfo!.receiverBank),
+          ]
         ],
       ),
     );
@@ -606,7 +609,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
   }
 
 // Translated buildFooter for PDF
-  pw.Widget pdfBuildFooter(qrCodeImage,lockmage) {
+  pw.Widget pdfBuildFooter(qrCodeImage, lockmage) {
     return pw.Column(
       children: [
         pw.Text('Thank You!',
@@ -624,7 +627,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
               textAlign: pw.TextAlign.center,
               maxLines: 2),
         ),
-       // pw.SizedBox(height: 20),
+        // pw.SizedBox(height: 20),
         pw.Column(mainAxisAlignment: pw.MainAxisAlignment.start, children: [
           pw.Image(pw.MemoryImage(qrCodeImage),
               //width: double.infinity,
@@ -637,8 +640,13 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
         pw.Row(
           mainAxisAlignment: pw.MainAxisAlignment.center,
           children: [
-    pw.Image(pw.MemoryImage(lockmage,),height: 24,width: 24),
-    pw.Text(' Secured by TellaTrust',
+            pw.Image(
+                pw.MemoryImage(
+                  lockmage,
+                ),
+                height: 24,
+                width: 24),
+            pw.Text(' Secured by TellaTrust',
                 style:
                     const pw.TextStyle(fontSize: 14, color: PdfColors.black)),
           ],
