@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:android_intent_plus/android_intent.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:printing/printing.dart';
 import 'package:provider/provider.dart';
+import 'package:teller_trust/res/apis.dart';
 import 'package:teller_trust/res/app_colors.dart';
 import 'package:teller_trust/res/app_images.dart';
 import 'package:teller_trust/utills/app_utils.dart';
@@ -36,6 +38,7 @@ import 'package:path_provider/path_provider.dart';
 
 import '../auth/otp_pin_pages/confirm_with_otp.dart';
 import '../auth/sign_in_with_access_pin_and_biometrics.dart';
+import '../important_pages/dialog_box.dart';
 import '../the_app_screens/sevices/build_payment_method.dart';
 import '../the_app_screens/sevices/make_bank_transfer/bank_transfer.dart';
 import 'package:pdf/pdf.dart';
@@ -43,7 +46,7 @@ import 'package:pdf/pdf.dart' as pdfColo;
 import 'package:pdf/widgets.dart' as pw;
 
 class TransactionReceipt extends StatefulWidget {
-  final Transaction transaction;
+  Transaction transaction;
   final bool isHome;
 
   TransactionReceipt(
@@ -61,12 +64,39 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
   void initState() {
     // TODO: implement initState
     //_createAndSharePdf();
+    getTransaction();
     print(widget.transaction.toJson());
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,
     ));
     super.initState();
+  }
+
+  getTransaction() async {
+    AppRepository appRepository = AppRepository();
+    String accessToken =
+        await SharedPref.getString(SharedPrefKey.accessTokenKey);
+
+    var response = await appRepository.appGetRequest(
+      '${AppApis.getOneTransactionDetails}/${widget.transaction.id}',
+      accessToken: accessToken,
+    );
+
+    print(response.statusCode);
+    print(response.body);
+    //print(widget.transaction.);
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      Transaction transaction =
+          Transaction.fromJson(json.decode(response.body)['data']);
+      setState(() {
+        widget.transaction = transaction;
+      });
+    } else {
+      MSG.infoSnackBar(
+          context, 'There was a problem fetching transactiondetails');
+    }
   }
 
   Future<void> _shareOrDownloadPdf(
@@ -80,6 +110,9 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
     final pdf = pw.Document();
 
     // Load the necessary images
+    final ByteData lockIconBytes = await rootBundle.load(AppImages.lockIcon);
+    final Uint8List lockIconImage = lockIconBytes.buffer.asUint8List();
+
     final ByteData qrCodeBytes = await rootBundle.load(AppImages.qrCode);
     final Uint8List qrCodeImage = qrCodeBytes.buffer.asUint8List();
     // final ByteData receiptBgBytes = await rootBundle.load(AppImages.receiptBg);
@@ -92,12 +125,14 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
     // final Uint8List looperImage = looperBytes.buffer.asUint8List();
 
     pdfColo.PdfColor lightGreen = const pdfColo.PdfColor.fromInt(0xffE3FAD6);
+   // pdfColo.PdfColor mainAppColor = const pdfColo.PdfColor.fromInt(0xff185C32);
 
     // Add content to the PDF
     pdf.addPage(
       pw.Page(
-        pageFormat: const PdfPageFormat(
-            8.5 * PdfPageFormat.inch, 11 * PdfPageFormat.inch),
+       // pageFormat: PdfPageFormat.letter,
+         pageFormat: const PdfPageFormat(
+             8.5 * PdfPageFormat.inch, 12 * PdfPageFormat.inch,marginAll: 0),
         build: (pw.Context context) => pw.Container(
           width: context.page.pageFormat.width,
           height: context.page.pageFormat.height,
@@ -144,13 +179,15 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                 right: 0,
                 bottom: 0,
                 child: pw.Column(
+                  mainAxisAlignment: pw.MainAxisAlignment.start,
                   children: [
                     pdfCardTopContainer(logoImage),
+
                     pw.Expanded(
                       child: pw.Container(
                         color: lightGreen,
                         child: pw.Column(
-                         // mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                           mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                           children: [
                             //pw.SizedBox(height: 10),
                             // Pass the dynamic transaction to the receipt details
@@ -184,37 +221,20 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                                             children: [
                                               pdfBuildReceiptDetails(
                                                   transaction),
-                                              pw.Column(
-                                                  mainAxisAlignment: pw
-                                                      .MainAxisAlignment.start,
-                                                  children: [
-                                                    pw.SizedBox(height: 20),
-                                                    pw.Image(
-                                                        pw.MemoryImage(
-                                                            qrCodeImage),
-                                                        //width: double.infinity,
-                                                        //fit: pw.BoxFit.fill,
-                                                        height: 100),
-                                                    pw.SizedBox(height: 10),
-                                                    pw.Text(
-                                                        'Scan to Download App  ',
-                                                        style:
-                                                            const pw.TextStyle(
-                                                                fontSize: 14,
-                                                                color: PdfColors
-                                                                    .black)),
-                                                  ])
+                                              pdfBuildReceiptDetails2(
+                                                  transaction)
                                             ]))),
                               ),
                             ),
 
                             //pdfBuildReceiptDetails(transaction),
                             pw.Container(
+
                               color: lightGreen,
                               child: pw.Column(
                                 children: [
                                   pw.SizedBox(height: 10),
-                                  pdfBuildFooter(qrCodeImage),
+                                  pdfBuildFooter(qrCodeImage,lockIconImage),
                                 ],
                               ),
                             ),
@@ -350,18 +370,21 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
   }
 
   pw.Widget pdfCardTopContainer(logoImage) {
+    pdfColo.PdfColor mainAppColor = const pdfColo.PdfColor.fromInt(0xff185C32);
+
     return pw.Container(
       //height: 100,
       // width: context.page.pageFormat.width, // Full width
-      //color: null,
-      color: PdfColors.white,
+      color: mainAppColor,
+      padding: pw.EdgeInsets.all(0),
+      //color: PdfColors.white,
       child: pw.Row(
         mainAxisAlignment: pw.MainAxisAlignment.center,
         crossAxisAlignment: pw.CrossAxisAlignment.center,
         children: [
           pw.Column(
             children: [
-              pw.SizedBox(height: 20),
+             // pw.SizedBox(height: 10),
 
               pw.Image(pw.MemoryImage(logoImage),
                   //width: double.infinity,
@@ -370,12 +393,14 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
               //pw.SvgImage(svg: AppIcons.logoReceipt, height: 40),
               // Adjusted size
               pw.SizedBox(height: 10),
-              // pw.Text('TellaTrust',
-              //     style:
-              //         const pw.TextStyle(color: PdfColors.white, fontSize: 16)),
+              pw.Text('TellaTrust',
+                  style:
+                  pw.TextStyle(color: PdfColors.white, fontSize: 18,fontWeight: pw.FontWeight.bold)),
               pw.Text('Transaction Receipt',
                   style:
-                      const pw.TextStyle(color: PdfColors.black, fontSize: 18)),
+                       pw.TextStyle(color: PdfColors.white, fontSize: 18,fontWeight: pw.FontWeight.bold)),
+              pw.SizedBox(height: 10),
+
             ],
           ),
         ],
@@ -386,9 +411,9 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
 // Translated buildReceiptDetails for PDF
   pw.Widget pdfBuildReceiptDetails(Transaction transaction) {
     return pw.Container(
+      //width: AppUtils.deviceScreenSize(context),
       padding: const pw.EdgeInsets.all(0),
       decoration: const pw.BoxDecoration(
-        //color: PdfColors.white,
         borderRadius: pw.BorderRadius.only(
           topLeft: pw.Radius.circular(0),
           topRight: pw.Radius.circular(0),
@@ -398,54 +423,161 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           pdfBuildDetailRow('Amount', 'N${transaction.amount}'),
-          pdfBuildDetailRow(
+          if (transaction.payInfo == null)
+            pdfBuildDetailRow(
               'Product Name',
-              widget.transaction.order?.product?.name ??
-                  (widget.transaction.type.toLowerCase().contains('credit')
+              transaction.order?.product?.name ??
+                  (transaction.type.toLowerCase().contains('credit')
                       ? 'Credit'
-                      : 'Debit')),
-          if (widget.transaction.order != null) pw.SizedBox(height: 12),
-          if (widget.transaction.order != null &&
-              (widget.transaction.order?.requiredFields.meterNumber ??
-                      widget.transaction.order?.requiredFields.cardNumber ??
-                      widget.transaction.order?.requiredFields.phoneNumber ??
+                      : 'Debit'),
+            ),
+          if (transaction.payInfo != null)
+            pdfBuildDetailRow('Type', transaction.payInfo!.cardType),
+          if (transaction.order != null) pw.SizedBox(height: 12),
+          if (transaction.order != null &&
+              (transaction.order?.requiredFields.meterNumber ??
+                      transaction.order?.requiredFields.cardNumber ??
+                      transaction.order?.requiredFields.phoneNumber ??
                       '')
                   .isNotEmpty) ...[
             pdfBuildDetailRow(
-                'To',
-                widget.transaction.order?.requiredFields.meterNumber ??
-                    widget.transaction.order?.requiredFields.cardNumber ??
-                    widget.transaction.order?.requiredFields.phoneNumber ??
-                    ''),
+              'To',
+              transaction.order?.requiredFields.meterNumber ??
+                  transaction.order?.requiredFields.cardNumber ??
+                  transaction.order?.requiredFields.phoneNumber ??
+                  '',
+            ),
           ],
-          // pdfBuildDetailRow(
-          //     'To', transaction.order?.requiredFields.meterNumber ?? 'N/A'),
           pdfBuildDetailRow('Description', transaction.description),
-          if (widget.transaction.order?.response?.utilityToken != null &&
-              widget.transaction.order!.response!.utilityToken.isNotEmpty &&
-              widget.transaction.status.toLowerCase() == 'success') ...[
+          if (transaction.order?.response?.utilityToken != null &&
+              transaction.order!.response!.utilityToken.isNotEmpty &&
+              transaction.status.toLowerCase() == 'success') ...[
             pw.SizedBox(height: 12),
             pdfBuildDetailRow(
               'Utility Token',
-              widget.transaction.order!.response!.utilityToken,
+              transaction.order!.response!.utilityToken,
             ),
           ],
           pdfBuildDetailRow(
-              'Date',
-              AppUtils.formateSimpleDate(
-                  dateTime: widget.transaction.createdAt.toString())),
-          //pw.Divider(),
+            'Date',
+            AppUtils.formateSimpleDate(
+              dateTime: transaction.createdAt.toString(),
+            ),
+          ),
           pdfBuildDetailRow('Transaction Reference', transaction.reference),
           pdfBuildDetailRow(
-              'Status',
-              widget.transaction.status.toLowerCase() == 'success'
-                  ? "SUCCESSFUL"
-                  : widget.transaction.status.toUpperCase()),
-          pw.SizedBox(height: 20),
+            'Status',
+            transaction.status.toLowerCase() == 'success'
+                ? "SUCCESSFUL"
+                : transaction.status.toUpperCase(),
+          ),
+          if (transaction.payInfo != null) ...[
+     pdfBuildDetailRow(
+              'Sender Account Name', transaction.payInfo!.senderAccountName),
+          pdfBuildDetailRow('Sender Bank',
+              "${transaction.payInfo!.senderBank.split(' ')[0]} ${transaction.payInfo!.senderBank.split(' ')[1]}"),
+          pdfBuildDetailRow(
+              'Receiver Bank', transaction.payInfo!.receiverBank),]
         ],
       ),
     );
   }
+
+  pw.Widget pdfBuildReceiptDetails2(Transaction transaction) {
+    return pw.Container(
+      //width: AppUtils.deviceScreenSize(context),
+      padding: const pw.EdgeInsets.all(0),
+      decoration: const pw.BoxDecoration(
+        borderRadius: pw.BorderRadius.only(
+          topLeft: pw.Radius.circular(0),
+          topRight: pw.Radius.circular(0),
+        ),
+      ),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          if (transaction.payInfo != null) ...[
+            // pw.Divider(),
+            //  pdfBuildDetailRow('PayInfo ID', transaction.payInfo!.id),
+            //   pdfBuildDetailRow('Provider', transaction.payInfo!.provider),
+
+            //   pdfBuildDetailRow('Channel', transaction.payInfo!.channel),
+            pdfBuildDetailRow(
+                'Paid At',
+                transaction.payInfo!.paidAt != null
+                    ? AppUtils.formateSimpleDate(
+                        dateTime: transaction.payInfo!.paidAt!.toString())
+                    : 'N/A'),
+            //   pdfBuildDetailRow('Authorization Code', transaction.payInfo!.authorizationCode),
+            pdfBuildDetailRow('Card Type', transaction.payInfo!.cardType),
+          ],
+        ],
+      ),
+    );
+  }
+
+//   pw.Widget pdfBuildReceiptDetails(Transaction transaction) {
+//     return pw.Container(
+//       padding: const pw.EdgeInsets.all(0),
+//       decoration: const pw.BoxDecoration(
+//         //color: PdfColors.white,
+//         borderRadius: pw.BorderRadius.only(
+//           topLeft: pw.Radius.circular(0),
+//           topRight: pw.Radius.circular(0),
+//         ),
+//       ),
+//       child: pw.Column(
+//         crossAxisAlignment: pw.CrossAxisAlignment.start,
+//         children: [
+//           pdfBuildDetailRow('Amount', 'N${transaction.amount}'),
+//           pdfBuildDetailRow(
+//               'Product Name',
+//               widget.transaction.order?.product?.name ??
+//                   (widget.transaction.type.toLowerCase().contains('credit')
+//                       ? 'Credit'
+//                       : 'Debit')),
+//           if (widget.transaction.order != null) pw.SizedBox(height: 12),
+//           if (widget.transaction.order != null &&
+//               (widget.transaction.order?.requiredFields.meterNumber ??
+//                       widget.transaction.order?.requiredFields.cardNumber ??
+//                       widget.transaction.order?.requiredFields.phoneNumber ??
+//                       '')
+//                   .isNotEmpty) ...[
+//             pdfBuildDetailRow(
+//                 'To',
+//                 widget.transaction.order?.requiredFields.meterNumber ??
+//                     widget.transaction.order?.requiredFields.cardNumber ??
+//                     widget.transaction.order?.requiredFields.phoneNumber ??
+//                     ''),
+//           ],
+//           // pdfBuildDetailRow(
+//           //     'To', transaction.order?.requiredFields.meterNumber ?? 'N/A'),
+//           pdfBuildDetailRow('Description', transaction.description),
+//           if (widget.transaction.order?.response?.utilityToken != null &&
+//               widget.transaction.order!.response!.utilityToken.isNotEmpty &&
+//               widget.transaction.status.toLowerCase() == 'success') ...[
+//             pw.SizedBox(height: 12),
+//             pdfBuildDetailRow(
+//               'Utility Token',
+//               widget.transaction.order!.response!.utilityToken,
+//             ),
+//           ],
+//           pdfBuildDetailRow(
+//               'Date',
+//               AppUtils.formateSimpleDate(
+//                   dateTime: widget.transaction.createdAt.toString())),
+//           //pw.Divider(),
+//           pdfBuildDetailRow('Transaction Reference', transaction.reference),
+//           pdfBuildDetailRow(
+//               'Status',
+//               widget.transaction.status.toLowerCase() == 'success'
+//                   ? "SUCCESSFUL"
+//                   : widget.transaction.status.toUpperCase()),
+//           pw.SizedBox(height: 20),
+//         ],
+//       ),
+//     );
+//   }
 
 // Translated buildDetailRow for PDF
   pw.Widget pdfBuildDetailRow(String label, String value) {
@@ -464,7 +596,7 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
             children: [
               pw.SizedBox(
                 width: 200, // Limit width for wrapping text
-                child: pw.Text(value, style: const pw.TextStyle(fontSize: 16)),
+                child: pw.Text(value, style: const pw.TextStyle(fontSize: 14)),
               ),
             ],
           ),
@@ -474,34 +606,44 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
   }
 
 // Translated buildFooter for PDF
-  pw.Widget pdfBuildFooter(qrCodeImage) {
+  pw.Widget pdfBuildFooter(qrCodeImage,lockmage) {
     return pw.Column(
       children: [
         pw.Text('Thank You!',
-            style:  pw.TextStyle(fontSize: 16,fontWeight: pw.FontWeight.bold, color: PdfColors.black)),
+            style: pw.TextStyle(
+                fontSize: 16,
+                fontWeight: pw.FontWeight.bold,
+                color: PdfColors.black)),
         pw.Text('For Your Purchase',
             style: const pw.TextStyle(fontSize: 16, color: PdfColors.black)),
         pw.Padding(
-          padding: const pw.EdgeInsets.all(10.0),
+          padding: const pw.EdgeInsets.all(5.0),
           child: pw.Text(
-            'Want to save money on transfers and recharge cards? Download TellaTrust today! Plus, enjoy a referral bonus when you share the love with your friends. Don\'t miss out!',
-            style: const pw.TextStyle(fontSize: 14, color: PdfColors.grey),
-            textAlign: pw.TextAlign.center,
-            maxLines: 2
-          ),
+              'Want to save money on transfers and recharge cards? Download TellaTrust today! Plus, enjoy a referral bonus when you share the love with your friends. Don\'t miss out!',
+              style: const pw.TextStyle(fontSize: 14, color: PdfColors.grey),
+              textAlign: pw.TextAlign.center,
+              maxLines: 2),
         ),
-        pw.SizedBox(height: 20),
+       // pw.SizedBox(height: 20),
+        pw.Column(mainAxisAlignment: pw.MainAxisAlignment.start, children: [
+          pw.Image(pw.MemoryImage(qrCodeImage),
+              //width: double.infinity,
+              //fit: pw.BoxFit.fill,
+              height: 100),
+          pw.SizedBox(height: 10),
+          pw.Text('Scan to Download App  ',
+              style: const pw.TextStyle(fontSize: 14, color: PdfColors.black)),
+        ]),
         pw.Row(
           mainAxisAlignment: pw.MainAxisAlignment.center,
           children: [
-            pw.Icon(const pw.IconData(0xe900), color: PdfColors.green),
-            pw.Text(' Secured by TellaTrust',
+    pw.Image(pw.MemoryImage(lockmage,),height: 24,width: 24),
+    pw.Text(' Secured by TellaTrust',
                 style:
                     const pw.TextStyle(fontSize: 14, color: PdfColors.black)),
           ],
         ),
-        pw.SizedBox(height: 20),
-
+        //pw.SizedBox(height: 20),
       ],
     );
   }
@@ -745,7 +887,6 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
             theme.isDark ? AppColors.darkModeBackgroundColor : AppColors.white,
         borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(0), topRight: Radius.circular(0)),
-        // boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 10)],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -759,37 +900,34 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                     ? 'Credit'
                     : 'Debit'),
           ),
-          buildDetailRow('Amount', theme, 'N${widget.transaction.amount}'),
-          if (widget.transaction.order != null) const SizedBox(height: 12),
-          if (widget.transaction.order != null &&
-              (widget.transaction.order?.requiredFields.meterNumber ??
-                      widget.transaction.order?.requiredFields.cardNumber ??
-                      widget.transaction.order?.requiredFields.phoneNumber ??
-                      '')
-                  .isNotEmpty) ...[
-            buildDetailRow(
-                'To',
-                theme,
-                widget.transaction.order?.requiredFields.meterNumber ??
-                    widget.transaction.order?.requiredFields.cardNumber ??
-                    widget.transaction.order?.requiredFields.phoneNumber ??
-                    '',
-                true),
-            const SizedBox(height: 12),
-          ],
           buildDetailRow('Description', theme, widget.transaction.description),
-          if (widget.transaction.order?.response?.utilityToken != null &&
-              widget.transaction.order!.response!.utilityToken.isNotEmpty &&
-              widget.transaction.status.toLowerCase() == 'success') ...[
-            const SizedBox(height: 12),
+
+          // Additional Transfer Parameters from payInfo
+          if (widget.transaction.payInfo != null) ...[
+            //const SizedBox(height: 12),
             buildDetailRow(
-              'Utility Token',
+                'Provider', theme, widget.transaction.payInfo!.provider),
+            buildDetailRow(
+                'Channel', theme, widget.transaction.payInfo!.channel),
+            buildDetailRow('Sender Account', theme,
+                widget.transaction.payInfo!.senderAccountName),
+            buildDetailRow(
+                'Sender Bank', theme, widget.transaction.payInfo!.senderBank),
+            buildDetailRow('Receiver Account', theme,
+                widget.transaction.payInfo!.receiverNuban),
+            buildDetailRow('Receiver Bank', theme,
+                widget.transaction.payInfo!.receiverBank),
+            // buildDetailRow('Authorization Code', theme,
+            //     widget.transaction.payInfo!.authorizationCode),
+            buildDetailRow(
+              'Transaction Status',
               theme,
-              widget.transaction.order!.response!.utilityToken,
-              true,
+              widget.transaction.payInfo!.status.toUpperCase(),
             ),
           ],
-          const SizedBox(height: 12),
+
+          // Transaction Metadata
+          //const SizedBox(height: 12),
           buildDetailRow(
               'Date',
               theme,
@@ -802,16 +940,93 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
               widget.transaction.reference, true),
           const SizedBox(height: 12),
           buildDetailRow(
-              'Status',
-              theme,
-              widget.transaction.status.toLowerCase() == 'success'
-                  ? "SUCCESSFUL"
-                  : widget.transaction.status.toUpperCase()),
+            'Status',
+            theme,
+            widget.transaction.status.toLowerCase() == 'success'
+                ? "SUCCESSFUL"
+                : widget.transaction.status.toUpperCase(),
+          ),
           const SizedBox(height: 20),
         ],
       ),
     );
   }
+
+  // Widget buildReceiptDetails(theme) {
+  //   return Container(
+  //     padding: const EdgeInsets.all(16),
+  //     decoration: BoxDecoration(
+  //       color:
+  //           theme.isDark ? AppColors.darkModeBackgroundColor : AppColors.white,
+  //       borderRadius: const BorderRadius.only(
+  //           topLeft: Radius.circular(0), topRight: Radius.circular(0)),
+  //       // boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 10)],
+  //     ),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         buildDetailRow('Amount', theme, 'N${widget.transaction.amount}'),
+  //         buildDetailRow(
+  //           'Product Name',
+  //           theme,
+  //           widget.transaction.order?.product?.name ??
+  //               (widget.transaction.type.toLowerCase().contains('credit')
+  //                   ? 'Credit'
+  //                   : 'Debit'),
+  //         ),
+  //         buildDetailRow('Amount', theme, 'N${widget.transaction.amount}'),
+  //         if (widget.transaction.order != null) const SizedBox(height: 12),
+  //         if (widget.transaction.order != null &&
+  //             (widget.transaction.order?.requiredFields.meterNumber ??
+  //                     widget.transaction.order?.requiredFields.cardNumber ??
+  //                     widget.transaction.order?.requiredFields.phoneNumber ??
+  //                     '')
+  //                 .isNotEmpty) ...[
+  //           buildDetailRow(
+  //               'To',
+  //               theme,
+  //               widget.transaction.order?.requiredFields.meterNumber ??
+  //                   widget.transaction.order?.requiredFields.cardNumber ??
+  //                   widget.transaction.order?.requiredFields.phoneNumber ??
+  //                   '',
+  //               true),
+  //           const SizedBox(height: 12),
+  //         ],
+  //         buildDetailRow('Description', theme, widget.transaction.description),
+  //         if (widget.transaction.order?.response?.utilityToken != null &&
+  //             widget.transaction.order!.response!.utilityToken.isNotEmpty &&
+  //             widget.transaction.status.toLowerCase() == 'success') ...[
+  //           const SizedBox(height: 12),
+  //           buildDetailRow(
+  //             'Utility Token',
+  //             theme,
+  //             widget.transaction.order!.response!.utilityToken,
+  //             true,
+  //           ),
+  //         ],
+  //         const SizedBox(height: 12),
+  //         buildDetailRow(
+  //             'Date',
+  //             theme,
+  //             AppUtils.formateSimpleDate(
+  //                 dateTime: widget.transaction.createdAt.toString())),
+  //         const SizedBox(height: 20),
+  //         const Divider(),
+  //         const SizedBox(height: 12),
+  //         buildDetailRow('Transaction Reference', theme,
+  //             widget.transaction.reference, true),
+  //         const SizedBox(height: 12),
+  //         buildDetailRow(
+  //             'Status',
+  //             theme,
+  //             widget.transaction.status.toLowerCase() == 'success'
+  //                 ? "SUCCESSFUL"
+  //                 : widget.transaction.status.toUpperCase()),
+  //         const SizedBox(height: 20),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget buildDetailRow(String label, theme, String value,
       [bool isCopyable = false]) {

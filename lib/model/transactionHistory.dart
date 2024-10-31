@@ -1,4 +1,5 @@
 
+import 'package:teller_trust/model/payer_info_model.dart';
 import 'package:teller_trust/model/required_field_model.dart';
 
 class TransactionHistoryModel {
@@ -60,6 +61,7 @@ class Transaction {
   final String status;
   final DateTime createdAt;
   final Order? order;
+  final PayInfo? payInfo; // Add PayInfo here
 
   Transaction({
     required this.id,
@@ -70,6 +72,7 @@ class Transaction {
     required this.status,
     required this.createdAt,
     this.order,
+    this.payInfo, // Add PayInfo here
   });
 
   factory Transaction.fromJson(Map<String, dynamic> json) {
@@ -82,7 +85,7 @@ class Transaction {
       status: json['status'],
       createdAt: DateTime.parse(json['createdAt']),
       order: json['order'] != null ? Order.fromJson(json['order']) : null,
-
+      payInfo: json['payInfo'] != null ? PayInfo.fromJson(json['payInfo']) : null, // Deserialize PayInfo
     );
   }
 
@@ -96,6 +99,7 @@ class Transaction {
       'status': status,
       'createdAt': createdAt.toIso8601String(),
       'order': order?.toJson(),
+      'payInfo': payInfo?.toJson(), // Serialize PayInfo
     };
   }
 }
