@@ -909,7 +909,18 @@ class _TransactionReceiptState extends State<TransactionReceipt> {
                     : 'Debit'),
           ),
           buildDetailRow('Description', theme, widget.transaction.description),
-
+          if (widget.transaction.order?.response?.utilityToken != null &&
+              widget.transaction.order!.response!.utilityToken.isNotEmpty &&
+              widget.transaction.status.toLowerCase() == 'success') ...[
+            const SizedBox(height: 12),
+            buildDetailRow(
+              'Utility Token',
+              theme,
+              widget.transaction.order!.response!.utilityToken,
+              true,
+            ),
+          ],
+          const SizedBox(height: 12),
           // Additional Transfer Parameters from payInfo
           if (widget.transaction.payInfo != null) ...[
             //const SizedBox(height: 12),
