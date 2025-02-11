@@ -35,14 +35,11 @@ class AppRepository {
     return response;
   }
 
-
-
   Future<http.Response> appPostRequestWithSingleImages(
       Map<String, dynamic> data, String apiUrl, XFile? image,
       {String accessToken = '',
-        String accessPIN = '',
-        String refreshToken = ''}) async {
-
+      String accessPIN = '',
+      String refreshToken = ''}) async {
     // Initialize headers
     var headers = {
       'x-access-token': accessToken,
@@ -90,12 +87,13 @@ class AppRepository {
     AppUtils().debuglog('Response Body: ${response.body}');
 
     return response;
-  }Future<http.Response> appPutRequestWithSingleImages(
+  }
+
+  Future<http.Response> appPutRequestWithSingleImages(
       Map<String, dynamic> data, String apiUrl, XFile? image,
       {String accessToken = '',
-        String accessPIN = '',
-        String refreshToken = ''}) async {
-
+      String accessPIN = '',
+      String refreshToken = ''}) async {
     // Initialize headers
     var headers = {
       'x-access-token': accessToken,
