@@ -26,6 +26,7 @@ import 'package:teller_trust/view/the_app_screens/sevices/airtime_to_cash_purcha
 import 'package:teller_trust/view/the_app_screens/sevices/cable_purchase/cable_purchase.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/data_purchase/data.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/electricity_purchase/electricity_purchase.dart';
+import 'package:teller_trust/view/the_app_screens/sevices/giftcard/buy_giftard/buy_giftcard.dart';
 import 'package:teller_trust/view/the_app_screens/transaction_history/transaction_history.dart';
 import 'package:teller_trust/view/the_app_screens/transaction_history/wallet_history.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
@@ -974,8 +975,8 @@ class _HomePageState extends State<HomePage> {
                             context: context,
                             builder: (context) => Padding(
                               padding: const EdgeInsets.only(top: 100.0),
-                              child: AirtimePurchase(
-                                category: items[index],
+                              child: BuyGiftCard(
+                                //category: items[index],
                                 walletInfo: walletInfo,
                               ),
                             ),
