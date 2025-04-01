@@ -26,7 +26,7 @@ import 'package:teller_trust/view/the_app_screens/sevices/airtime_to_cash_purcha
 import 'package:teller_trust/view/the_app_screens/sevices/cable_purchase/cable_purchase.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/data_purchase/data.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/electricity_purchase/electricity_purchase.dart';
-import 'package:teller_trust/view/the_app_screens/sevices/giftcard/buy_giftard/buy_giftcard.dart';
+import 'package:teller_trust/view/the_app_screens/sevices/giftcard/buy_giftcard.dart';
 import 'package:teller_trust/view/the_app_screens/transaction_history/transaction_history.dart';
 import 'package:teller_trust/view/the_app_screens/transaction_history/wallet_history.dart';
 import 'package:teller_trust/view/widgets/app_custom_text.dart';
@@ -68,7 +68,8 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> getName() async {
     firstname = await SharedPref.getString(SharedPrefKey.firstNameKey) ?? "";
-    isMoneyBlocked = await SharedPref.getBool(SharedPrefKey.isMoneyBlockedKey) ?? false;
+    isMoneyBlocked =
+        await SharedPref.getBool(SharedPrefKey.isMoneyBlockedKey) ?? false;
     print('Initial isMoneyBlocked: $isMoneyBlocked');
     setState(() {});
   }
@@ -886,8 +887,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            widget.onPageChanged(
-                                1); //
+                            widget.onPageChanged(1); //
                             // AppNavigator.pushAndStackPage(
                             //   context,
                             //   page: const SendToPage(),
@@ -975,9 +975,10 @@ class _HomePageState extends State<HomePage> {
                             context: context,
                             builder: (context) => Padding(
                               padding: const EdgeInsets.only(top: 100.0),
-                              child: BuyGiftCard(
+                              child: AirtimePurchase(
                                 //category: items[index],
                                 walletInfo: walletInfo,
+                                category: items[index],
                               ),
                             ),
                           );
@@ -1060,23 +1061,25 @@ class _HomePageState extends State<HomePage> {
                           // AppNavigator.pushAndStackPage(context, page: InternetPurchase(
                           //     services: AppList().serviceItems[index]));
                           return;
-                        // case 'Electricity':
-                        //   modalSheet.showMaterialModalBottomSheet(
-                        //     backgroundColor: Colors.transparent,
-                        //     shape: const RoundedRectangleBorder(
-                        //       borderRadius:
-                        //           BorderRadius.vertical(top: Radius.circular(20.0)),
-                        //     ),
-                        //     context: context,
-                        //     builder: (context) => Padding(
-                        //       padding: const EdgeInsets.only(top: 100.0),
-                        //       child: Electricity(
-                        //           services: AppList().serviceItems[index]),
-                        //     ),
-                        //   );
-                        //   // AppNavigator.pushAndStackPage(context, page: InternetPurchase(
-                        //   //     services: AppList().serviceItems[index]));
-                        //   return;
+                        case 'gift-card':
+                          modalSheet.showMaterialModalBottomSheet(
+                            backgroundColor: Colors.transparent,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(20.0)),
+                            ),
+                            context: context,
+                            builder: (context) => Padding(
+                              padding: const EdgeInsets.only(top: 100.0),
+                              child: GiftCardPurchase(
+                                walletInfo: walletInfo,
+                                category: items[index],
+                              ),
+                            ),
+                          );
+                          // AppNavigator.pushAndStackPage(context, page: InternetPurchase(
+                          //     services: AppList().serviceItems[index]));
+                          return;
                         default:
                           showToast(
                               context: context,
@@ -1096,6 +1099,7 @@ class _HomePageState extends State<HomePage> {
                           'data',
                           'electricity',
                           'cable tv',
+                          'gift-card',
                           'airtime to cash'
                         ].contains(items[index].name.toLowerCase())));
               },

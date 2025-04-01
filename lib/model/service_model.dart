@@ -58,6 +58,7 @@ class Service {
   String slug;
   Category category;
 
+
   Service({
     required this.image,
     required this.id,
