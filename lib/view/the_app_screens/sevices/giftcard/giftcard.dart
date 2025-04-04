@@ -8,15 +8,12 @@ import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:teller_trust/model/service_model.dart' as serviceModel;
 import 'package:teller_trust/res/app_icons.dart';
-import 'package:teller_trust/res/app_images.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/giftcard/buy_giftard/buy_giftcard.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/giftcard/sell_giftcard/sell_giftcard.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/make_bank_transfer/bank_transfer.dart';
-import 'package:teller_trust/view/the_app_screens/sevices/product_beneficiary/product_beneficiary.dart';
 
 import '../../../../bloc/product_bloc/product_bloc.dart';
 import '../../../../model/category_model.dart' as categoryModel;
-import '../../../../model/product_model.dart' as productMode;
 import '../../../../model/wallet_info.dart';
 import '../../../../repository/app_repository.dart';
 import '../../../../res/apis.dart';
@@ -28,7 +25,6 @@ import '../../../../utills/app_validator.dart';
 import '../../../../utills/custom_theme.dart';
 import '../../../../utills/enums/toast_mesage.dart';
 import '../../../../utills/shared_preferences.dart';
-import '../../../auth/otp_pin_pages/confirm_with_otp.dart';
 import '../../../auth/sign_in_with_access_pin_and_biometrics.dart';
 import '../../../widgets/app_custom_text.dart';
 import '../../../widgets/form_button.dart';
@@ -37,7 +33,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
 import '../../../widgets/show_toast.dart';
 import '../../../widgets/transaction_receipt.dart';
-import '../payment_method/payment_method.dart';
+import 'giftcard_value.dart';
 
 class GiftCardPurchase extends StatefulWidget {
   final categoryModel.Category category;
@@ -61,42 +57,38 @@ class _GiftCardPurchaseState extends State<GiftCardPurchase> {
   void initState() {
     // TODO: implement initState
     productBloc.add(ListServiceEvent("1", "15", widget.category.id));
-
+    fetch();
     super.initState();
   }
 
   bool isInitial = true;
-  String productId = '';
 
-  void _handleCardSelect(String? networkName) async {
-    setState(() {
-      productId = '';
-    });
+  String amtUSD = '0';
+  String cardNo = '0';
+
+  void fetch() async {
     AppRepository appRepository = AppRepository();
     String accessToken =
         await SharedPref.getString(SharedPrefKey.accessTokenKey);
-    String apiUrl =
-        '${AppApis.listProduct}?page=1&pageSize=10&categoryId=${widget.category.id}&serviceId=$networkName';
+    String apiUrl = AppApis.totalUsd;
 
     try {
-      var listServiceResponse = await appRepository.appGetRequest(
+      var getTotalUsd = await appRepository.appGetRequest(
         apiUrl,
         accessToken: accessToken,
       );
 
-      if (listServiceResponse.statusCode == 200) {
-        print("productModel dtddhdhd: ${listServiceResponse.body}");
-        productMode.ProductModel productModel =
-            productMode.ProductModel.fromJson(
-                json.decode(listServiceResponse.body));
+      if (getTotalUsd.statusCode == 200) {
+        print("productModel dtddhdhd: ${getTotalUsd.body}");
+
         setState(() {
-          productId = productModel.data.items[0].id;
-          isInitial = false;
+          amtUSD = json.decode(getTotalUsd.body)['totalUsd'].toString();
+          cardNo = json.decode(getTotalUsd.body)['totalCard'] ?? '0'.toString();
         });
-        print(productId);
+
         // Process the data as needed
       } else {
-        print("Error: ${listServiceResponse.statusCode}");
+        print("Error: ${getTotalUsd.statusCode}");
         // Handle error
       }
     } catch (e) {
@@ -289,6 +281,12 @@ class _GiftCardPurchaseState extends State<GiftCardPurchase> {
                                   //         });
                                   //       },
                                   //     )),
+                                  GiftCardValue(
+                                    showForwardIcon: true,
+                                    amtUSD: amtUSD,
+                                    allowClick: false,
+                                    cardNo: cardNo,
+                                  ),
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceEvenly,
@@ -354,40 +352,16 @@ class _GiftCardPurchaseState extends State<GiftCardPurchase> {
                                                       .toLowerCase())) {
                                                 return GestureDetector(
                                                     onTap: () {
-                                                      String selectedAction =
-                                                          '';
                                                       setState(() {
+                                                        selectedService =
+                                                            services[index];
                                                         //selectedAction=services[index].name;
                                                       });
-
-                                                      //showGiftCardModal(context, AppList().serviceItems[index]);
                                                     },
                                                     child: sevicesItem(
                                                         services[index].name,
                                                         services[index].image,
-                                                        theme,
-                                                        () => _handleCardSelect(services
-                                                            .firstWhere(
-                                                                (service) =>
-                                                                    service
-                                                                        .name
-                                                                        .toLowerCase() ==
-                                                                    services[
-                                                                            index]
-                                                                        .name
-                                                                        .toLowerCase(),
-                                                                orElse: () => serviceModel.Service(
-                                                                    image: '',
-                                                                    id: '',
-                                                                    name: '',
-                                                                    slug: '',
-                                                                    category: serviceModel.Category(
-                                                                        id: '',
-                                                                        name:
-                                                                            '',
-                                                                        slug:
-                                                                            '')))
-                                                            .id)));
+                                                        theme));
                                               } else {
                                                 return Container();
                                               }
@@ -421,45 +395,45 @@ class _GiftCardPurchaseState extends State<GiftCardPurchase> {
                                         10.0, 0, 10, 10),
                                     child: Form(
                                         key: _formKey,
-                                        child: const Column(
+                                        child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
                                             // CustomTextFormField(
-                                            //   hint: '0.00',
-                                            //   label: 'Select Amount',
+                                            //   hint: 'Eg. 1',
+                                            //   label: 'How Many',
                                             //   controller:
-                                            //       _selectedAmtController,
+                                            //       _qtytController,
                                             //   textInputType:
                                             //       TextInputType.number,
                                             //   validator: AppValidator
                                             //       .validateTextfield,
-                                            //   widget: SvgPicture.asset(
-                                            //     AppIcons.naira,
-                                            //     color: _selectedAmtController
-                                            //             .text.isNotEmpty
-                                            //         ? AppColors.darkGreen
-                                            //         : AppColors.grey,
-                                            //     height: 22,
-                                            //     width: 22,
-                                            //   ),
+                                            //   // widget: SvgPicture.asset(
+                                            //   //   AppIcons.naira,
+                                            //   //   color: _qtytController
+                                            //   //           .text.isNotEmpty
+                                            //   //       ? AppColors.darkGreen
+                                            //   //       : AppColors.grey,
+                                            //   //   height: 22,
+                                            //   //   width: 22,
+                                            //   // ),
                                             //   borderColor:
-                                            //       _selectedAmtController
+                                            //       _qtytController
                                             //               .text.isNotEmpty
                                             //           ? AppColors.green
                                             //           : AppColors.grey,
                                             // ),
-                                            SizedBox(
+                                            const SizedBox(
                                               height: 10,
                                             ),
 
                                             // SizedBox(
                                             //   height: 310,
                                             //   child: PaymentMethodScreen(
-                                            //     amtToPay: _selectedAmtController
+                                            //     amtToPay: _qtytController
                                             //             .text.isEmpty
                                             //         ? '0'
-                                            //         : _selectedAmtController
+                                            //         : _qtytController
                                             //             .text,
                                             //     onPaymentMethodSelected:
                                             //         (method) {
@@ -533,41 +507,42 @@ class _GiftCardPurchaseState extends State<GiftCardPurchase> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(bottom: 10, left: 20, right: 20),
+              padding: EdgeInsets.only(bottom: 10, left: 20, right: 20),
               child: FormButton(
                 onPressed: () async {
                   if (!(selectedIndex == -1 || selectedCard.isEmpty)) {
-
-                    if(selectedIndex==0){
+                    if (selectedIndex == 0) {
                       modalSheet.showMaterialModalBottomSheet(
                         backgroundColor: Colors.transparent,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(20.0)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(20.0)),
                         ),
                         context: context,
-                        builder: (context) => const Padding(
+                        builder: (context) => Padding(
                           padding: EdgeInsets.only(top: 140.0),
                           child: BuyGiftcard(
-                            // walletInfo: walletInfo,
-                            // category: items[index],
+                            walletInfo: widget.walletInfo,
+                            category: widget.category,
+                            productBloc: purchaseProductBloc,
+                            service: selectedService,
                           ),
                         ),
                       );
-                    } else  if(selectedIndex==1){
+                    } else if (selectedIndex == 1) {
                       modalSheet.showMaterialModalBottomSheet(
                         backgroundColor: Colors.transparent,
                         shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(20.0)),
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(20.0)),
                         ),
                         context: context,
                         builder: (context) => const Padding(
                           padding: EdgeInsets.only(top: 140.0),
                           child: SellGiftcard(
-                            // walletInfo: walletInfo,
-                            // category: items[index],
-                          ),
+                              // walletInfo: walletInfo,
+                              // category: items[index],
+                              ),
                         ),
                       );
                     }
@@ -604,7 +579,14 @@ class _GiftCardPurchaseState extends State<GiftCardPurchase> {
   final _formKey = GlobalKey<FormState>();
 
   String selectedCard = "";
+  serviceModel.Service selectedService = serviceModel.Service(
+      image: '',
+      id: '',
+      name: '',
+      slug: '',
+      category: serviceModel.Category(id: '', name: '', slug: ''));
   final _searchController = TextEditingController();
+  final _qtytController = TextEditingController();
 
   int selectedIndex = -1;
 
@@ -670,7 +652,6 @@ class _GiftCardPurchaseState extends State<GiftCardPurchase> {
     String name,
     String image,
     AdaptiveThemeMode theme,
-    void Function() onCardSelect, // Callback for network request
   ) {
     return Padding(
       padding: const EdgeInsets.all(5.0),
@@ -693,7 +674,6 @@ class _GiftCardPurchaseState extends State<GiftCardPurchase> {
               setState(() {
                 selectedCard = name.toLowerCase();
               });
-              onCardSelect(); // Trigger the network request
             },
             child: Row(
               children: [

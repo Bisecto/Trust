@@ -49,9 +49,9 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       "${AppApis.listTransaction}?page=1&pageSize=5",
       accessToken: accessToken,
     );
-    String? token = await FirebaseMessaging.instance.getToken();
+   // String? token = await FirebaseMessaging.instance.getToken();
     var respons = await appRepository.appPutRequest(
-        {"fcmToken": token, "isSubscribe": true},
+        {"fcmToken": 'token', "isSubscribe": true},
         "${AppApis.appBaseUrl}/user/c/enable-push-message",accessToken: accessToken);
     //FirebaseMessaging.instance.onTokenRefresh.listen(saveTokenToDatabase);
     print(respons.body);
