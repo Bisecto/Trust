@@ -9,6 +9,8 @@ import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:teller_trust/model/service_model.dart' as serviceModel;
 import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/res/app_images.dart';
+import 'package:teller_trust/view/the_app_screens/sevices/giftcard/buy_giftard/buy_giftcard.dart';
+import 'package:teller_trust/view/the_app_screens/sevices/giftcard/sell_giftcard/sell_giftcard.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/make_bank_transfer/bank_transfer.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/product_beneficiary/product_beneficiary.dart';
 
@@ -188,10 +190,10 @@ class _GiftCardPurchaseState extends State<GiftCardPurchase> {
                           },
                           builder: (context, state) {
                             return SingleChildScrollView(
-                              physics: NeverScrollableScrollPhysics(),
+                              physics: const NeverScrollableScrollPhysics(),
                               child: Column(
                                 children: [
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 20,
                                   ),
                                   Container(
@@ -534,17 +536,48 @@ class _GiftCardPurchaseState extends State<GiftCardPurchase> {
               padding: const EdgeInsets.only(bottom: 10, left: 20, right: 20),
               child: FormButton(
                 onPressed: () async {
-                  if(!(selectedIndex == -1 || selectedCard.isEmpty)){
-                    print(selectedCard+"123456789");
+                  if (!(selectedIndex == -1 || selectedCard.isEmpty)) {
 
-                  } else if(selectedIndex==-1){
+                    if(selectedIndex==0){
+                      modalSheet.showMaterialModalBottomSheet(
+                        backgroundColor: Colors.transparent,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(20.0)),
+                        ),
+                        context: context,
+                        builder: (context) => const Padding(
+                          padding: EdgeInsets.only(top: 140.0),
+                          child: BuyGiftcard(
+                            // walletInfo: walletInfo,
+                            // category: items[index],
+                          ),
+                        ),
+                      );
+                    } else  if(selectedIndex==1){
+                      modalSheet.showMaterialModalBottomSheet(
+                        backgroundColor: Colors.transparent,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(20.0)),
+                        ),
+                        context: context,
+                        builder: (context) => const Padding(
+                          padding: EdgeInsets.only(top: 140.0),
+                          child: SellGiftcard(
+                            // walletInfo: walletInfo,
+                            // category: items[index],
+                          ),
+                        ),
+                      );
+                    }
+                  } else if (selectedIndex == -1) {
                     showToast(
                         context: context,
                         title: 'Info',
                         subtitle: 'Please select a service to proceed',
                         type: ToastMessageType.info);
-
-                  } else if(selectedCard.isEmpty){
+                  } else if (selectedCard.isEmpty) {
                     showToast(
                         context: context,
                         title: 'Info',
@@ -622,7 +655,7 @@ class _GiftCardPurchaseState extends State<GiftCardPurchase> {
             ),
           ),
           if (isSelected)
-            Positioned(
+            const Positioned(
               top: 8,
               right: 8,
               child: Icon(Icons.check_circle,
