@@ -31,6 +31,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   ProductBloc() : super(ProductInitial()) {
     on<ListCategoryEvent>(listCategoryEvent);
     on<ListServiceEvent>(listServiceEvent);
+    on<ListGiftCardProducts>(listGiftCardProducts);
     on<FetchProduct>(fetchProduct);
     on<PurchaseProductEvent>(purchaseProductEvent);
     on<GetA2CDetailsEvent>(getA2CDetailsEvent);
@@ -511,5 +512,40 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     //   emit(a2cDetailErrorState("An error occurred while fetching categories."));
     //   print(e);
     // }
+  }
+
+  FutureOr<void> listGiftCardProducts(ListGiftCardProducts event, Emitter<ProductState> emit) async {
+    emit(ProductLoadingState()); // Emit loading state at the start of the event
+
+    AppRepository appRepository = AppRepository();
+    String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
+    try {
+      var listServiceResponse = await appRepository.appGetRequest(
+        AppApis.getGiftCardProduct,
+        accessToken: accessToken,
+      );
+
+
+      print("productModel status Code ${listServiceResponse.statusCode}");
+      print("productModel Data ${listServiceResponse.body}");
+      print(json.decode(listServiceResponse.body));
+      if (listServiceResponse.statusCode == 200 ||
+          listServiceResponse.statusCode == 201) {
+        ProductModel productModel =
+        ProductModel.fromJson(json.decode(listServiceResponse.body));
+        //updateData(customerProfile);
+        print(productModel);
+        emit(ProductSuccessState(productModel)); // Emit success state with data
+      } else if (json.decode(listServiceResponse.body)['errorCode'] == "N404") {
+        emit(AccessTokenExpireState());
+      } else {
+        emit(ProductErrorState(AppUtils.convertString(
+            json.decode(listServiceResponse.body)['message'])));
+        print(json.decode(listServiceResponse.body));
+      }
+    } catch (e) {
+      emit(ProductErrorState("An error occurred while fetching categories."));
+      print(e);
+    }
   }
 }

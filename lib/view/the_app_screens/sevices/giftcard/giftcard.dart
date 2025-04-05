@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
-import 'package:teller_trust/model/service_model.dart' as serviceModel;
+import 'package:teller_trust/model/product_model.dart';
 import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/giftcard/buy_giftard/buy_giftcard.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/giftcard/sell_giftcard/sell_giftcard.dart';
@@ -56,13 +56,14 @@ class _GiftCardPurchaseState extends State<GiftCardPurchase> {
   @override
   void initState() {
     // TODO: implement initState
-    productBloc.add(ListServiceEvent("1", "15", widget.category.id));
+    productBloc.add(ListGiftCardProducts('', '1', 20, widget.category.id, ''));
     fetch();
     super.initState();
   }
 
   bool isInitial = true;
 
+  String dollarNairaRate = '0';
   String amtUSD = '0';
   String cardNo = '0';
 
@@ -77,16 +78,27 @@ class _GiftCardPurchaseState extends State<GiftCardPurchase> {
         apiUrl,
         accessToken: accessToken,
       );
+      var getDollarNairaRate = await appRepository.appGetRequest(
+        AppApis.nairaDollarRate,
+        accessToken: accessToken,
+      );
 
       if (getTotalUsd.statusCode == 200) {
-        print("productModel dtddhdhd: ${getTotalUsd.body}");
-
         setState(() {
           amtUSD = json.decode(getTotalUsd.body)['totalUsd'].toString();
           cardNo = json.decode(getTotalUsd.body)['totalCard'] ?? '0'.toString();
         });
 
         // Process the data as needed
+      } else {
+        print("Error: ${getTotalUsd.statusCode}");
+        // Handle error
+      }
+      if (getDollarNairaRate.statusCode == 200) {
+        setState(() {
+          dollarNairaRate =
+              json.decode(getDollarNairaRate.body)['rate'].toString();
+        });
       } else {
         print("Error: ${getTotalUsd.statusCode}");
         // Handle error
@@ -185,9 +197,9 @@ class _GiftCardPurchaseState extends State<GiftCardPurchase> {
                               physics: const NeverScrollableScrollPhysics(),
                               child: Column(
                                 children: [
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
+                                  // const SizedBox(
+                                  //   height: 20,
+                                  // ),
                                   Container(
                                     height: 60,
                                     width: double.infinity,
@@ -325,43 +337,53 @@ class _GiftCardPurchaseState extends State<GiftCardPurchase> {
                                               : AppColors.grey,
                                     ),
                                   ),
-                                  const SizedBox(
-                                    height: 0,
-                                  ),
+
                                   BlocConsumer<ProductBloc, ProductState>(
                                     bloc: productBloc,
                                     builder: (context, state) {
-                                      if (state is ServiceSuccessState) {
-                                        serviceModel.ServiceModel serviceItem =
-                                            state.serviceModel;
-                                        List<serviceModel.Service> services =
-                                            serviceItem.data.services;
+                                      if (state is ProductSuccessState) {
+                                        ProductModel productModel =
+                                            state.productModel;
+                                        List<Item> products = productModel
+                                            .data.items
+                                            .where((item) =>
+                                                item.category.name
+                                                    .toLowerCase() ==
+                                                'gift-card')
+                                            .toList();
+
+                                        // List<Item> products =
+                                        //     productModel.data.items;
                                         if (isInitial) {}
                                         return SizedBox(
-                                          height: services.length * 70,
+                                          height: products.length * 55,
                                           // Adjust height dynamically
                                           child: ListView.builder(
-                                            physics: const ScrollPhysics(),
-                                            itemCount: services.length,
+                                            padding: EdgeInsets.only(top: 10),
+                                            physics:
+                                                const NeverScrollableScrollPhysics(),
+                                            itemCount: products.length,
                                             itemBuilder: (context, index) {
-                                              if (services[index]
+                                              if (products[index]
                                                   .name
                                                   .toLowerCase()
                                                   .contains(_searchController
                                                       .text
                                                       .toLowerCase())) {
-                                                return GestureDetector(
+                                                return InkWell(
                                                     onTap: () {
                                                       setState(() {
-                                                        selectedService =
-                                                            services[index];
-                                                        //selectedAction=services[index].name;
+                                                        selectedProduct =
+                                                            products[index];
+                                                        //selectedAction=products[index].name;
                                                       });
                                                     },
                                                     child: sevicesItem(
-                                                        services[index].name,
-                                                        services[index].image,
-                                                        theme));
+                                                      products[index].name,
+                                                      products[index].image,
+                                                      theme,
+                                                      products[index],
+                                                    ));
                                               } else {
                                                 return Container();
                                               }
@@ -525,7 +547,7 @@ class _GiftCardPurchaseState extends State<GiftCardPurchase> {
                             walletInfo: widget.walletInfo,
                             category: widget.category,
                             productBloc: purchaseProductBloc,
-                            service: selectedService,
+                            product: selectedProduct,
                           ),
                         ),
                       );
@@ -550,7 +572,7 @@ class _GiftCardPurchaseState extends State<GiftCardPurchase> {
                     showToast(
                         context: context,
                         title: 'Info',
-                        subtitle: 'Please select a service to proceed',
+                        subtitle: 'Please select a product to proceed',
                         type: ToastMessageType.info);
                   } else if (selectedCard.isEmpty) {
                     showToast(
@@ -579,12 +601,17 @@ class _GiftCardPurchaseState extends State<GiftCardPurchase> {
   final _formKey = GlobalKey<FormState>();
 
   String selectedCard = "";
-  serviceModel.Service selectedService = serviceModel.Service(
+  Item selectedProduct = Item(
       image: '',
       id: '',
       name: '',
-      slug: '',
-      category: serviceModel.Category(id: '', name: '', slug: ''));
+      category: Category(id: '', name: '', slug: ''),
+      buyerPrice: 0,
+      reference: '',
+      service: Service(
+          id: '',
+          name: ''
+              ''));
   final _searchController = TextEditingController();
   final _qtytController = TextEditingController();
 
@@ -649,12 +676,9 @@ class _GiftCardPurchaseState extends State<GiftCardPurchase> {
   }
 
   Widget sevicesItem(
-    String name,
-    String image,
-    AdaptiveThemeMode theme,
-  ) {
+      String name, String image, AdaptiveThemeMode theme, Item product) {
     return Padding(
-      padding: const EdgeInsets.all(5.0),
+      padding: const EdgeInsets.fromLTRB(8, 0, 8, 5.0),
       child: Container(
         width: AppUtils.deviceScreenSize(context).width,
         height: 50,
@@ -669,38 +693,55 @@ class _GiftCardPurchaseState extends State<GiftCardPurchase> {
         ),
         child: Padding(
           padding: const EdgeInsets.all(6.0),
-          child: GestureDetector(
+          child: InkWell(
             onTap: () {
               setState(() {
+                selectedProduct = product;
                 selectedCard = name.toLowerCase();
               });
             },
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CircleAvatar(
-                  radius: 20,
-                  backgroundImage: NetworkImage(image),
+                Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 20,
+                      backgroundImage: NetworkImage(image),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    if (selectedCard == name.toLowerCase())
+                      TextStyles.textHeadings(
+                        textValue: name,
+                        textSize: 10,
+
+                        textColor: AppColors.darkGreen,
+                      ),
+                    if (selectedCard != name.toLowerCase())
+                      CustomText(
+                        text: name,
+                        size: 10,
+                        weight: FontWeight.bold,
+                        color: selectedCard == name.toLowerCase()
+                            ? AppColors.darkGreen
+                            : theme.isDark
+                                ? AppColors.white
+                                : AppColors.black,
+                      ),
+                  ],
                 ),
-                const SizedBox(
-                  width: 10,
+                CustomText(
+                  text: "₦$dollarNairaRate/\$",
+                  size: 10,
+                  weight: FontWeight.bold,
+                  color: selectedCard == name.toLowerCase()
+                      ? AppColors.darkGreen
+                      : theme.isDark
+                          ? AppColors.white
+                          : AppColors.black,
                 ),
-                if (selectedCard == name.toLowerCase())
-                  TextStyles.textHeadings(
-                    textValue: name,
-                    textSize: 12,
-                    textColor: AppColors.darkGreen,
-                  ),
-                if (selectedCard != name.toLowerCase())
-                  CustomText(
-                    text: name,
-                    size: 10,
-                    weight: FontWeight.bold,
-                    color: selectedCard == name.toLowerCase()
-                        ? AppColors.darkGreen
-                        : theme.isDark
-                            ? AppColors.white
-                            : AppColors.black,
-                  ),
               ],
             ),
           ),
@@ -770,7 +811,7 @@ class _GiftCardPurchaseState extends State<GiftCardPurchase> {
     );
   }
 
-// void showGiftCardModal(BuildContext context, Services services) {
+// void showGiftCardModal(BuildContext context, Products products) {
 //   modalSheet.showMaterialModalBottomSheet(
 //     context: context,
 //     enableDrag: true,

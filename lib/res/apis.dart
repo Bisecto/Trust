@@ -24,6 +24,9 @@ class AppApis {
   ///PRODUCTS ENDPOINTS
   static String listCategory = "$appBaseUrl/c/p/list-category";
   static String totalUsd = "$appBaseUrl/c/gift-card/my/total-usd";
+  static String nairaDollarRate = "$appBaseUrl/c/gift-card/refresh";
+  static String getPrices = "$appBaseUrl/c/gift-card/prices/";
+  static String getGiftCardProduct = "$appBaseUrl/c/gift-card/list-created-giftcards";
   static String listProduct = "$appBaseUrl/c/p/list-product";
   static String listService = "$appBaseUrl/c/p/list-service";
   static String purchaseProduct = "$appBaseUrl/c/pay/create-wallet-order";

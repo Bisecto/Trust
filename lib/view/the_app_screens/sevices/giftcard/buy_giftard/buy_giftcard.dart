@@ -1,12 +1,19 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:teller_trust/bloc/product_bloc/product_bloc.dart';
+import 'package:teller_trust/model/product_model.dart';
+import 'package:teller_trust/utills/constants/loading_dialog.dart';
+import 'package:teller_trust/view/widgets/drop_down.dart';
 import '../../../../../model/wallet_info.dart';
 import '../../../../../model/category_model.dart' as categoryModel;
 import 'package:teller_trust/model/service_model.dart' as serviceModel;
 
+import '../../../../../repository/app_repository.dart';
+import '../../../../../res/apis.dart';
 import '../../../../../res/app_colors.dart';
 import '../../../../../res/app_icons.dart';
 import '../../../../../res/sharedpref_key.dart';
@@ -28,20 +35,64 @@ class BuyGiftcard extends StatefulWidget {
   final categoryModel.Category category;
   final WalletInfo? walletInfo;
   final ProductBloc productBloc;
-  final serviceModel.Service service;
+  final Item product;
 
   const BuyGiftcard(
       {super.key,
       required this.category,
       required this.walletInfo,
       required this.productBloc,
-      required this.service});
+      required this.product});
 
   @override
   State<BuyGiftcard> createState() => _BuyGiftcardState();
 }
 
 class _BuyGiftcardState extends State<BuyGiftcard> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    fetch();
+    super.initState();
+  }
+
+  bool isPricesLoading = true;
+  String selectedValue = '';
+  List<dynamic> prices = [];
+
+  void fetch() async {
+    AppRepository appRepository = AppRepository();
+    String accessToken =
+        await SharedPref.getString(SharedPrefKey.accessTokenKey);
+
+    try {
+      var getPrices = await appRepository.appGetRequest(
+        "${AppApis.getPrices + widget.product.reference}",
+        accessToken: accessToken,
+      );
+
+      if (getPrices.statusCode == 200) {
+        // print(json.decode(getPrices.body));
+        // print(json.decode(getPrices.body));
+        print(json.decode(getPrices.body));
+
+        setState(() {
+          prices = json.decode(getPrices.body)['data']['denominations'];
+          isPricesLoading = false;
+        });
+        print(prices);
+        print(prices);
+        print(prices);
+      } else {
+        print("Error: ${getPrices.statusCode}");
+        // Handle error
+      }
+    } catch (e) {
+      print("Card request failed: $e");
+      // Handle exception
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
@@ -119,9 +170,6 @@ class _BuyGiftcardState extends State<BuyGiftcard> {
                               physics: const NeverScrollableScrollPhysics(),
                               child: Column(
                                 children: [
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
                                   Container(
                                     height: 60,
                                     width: double.infinity,
@@ -173,7 +221,7 @@ class _BuyGiftcardState extends State<BuyGiftcard> {
                                                       .spaceBetween,
                                               children: [
                                                 TextStyles.textHeadings(
-                                                  textValue: widget.service.name
+                                                  textValue: widget.product.name
                                                       .toUpperCase(),
                                                   textColor:
                                                       AppColors.darkGreen,
@@ -221,6 +269,25 @@ class _BuyGiftcardState extends State<BuyGiftcard> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
+                                            if (isPricesLoading)
+                                              LoadingDialog(''),
+                                            if (!isPricesLoading)
+                                              DropDown(
+                                                selectedValue: selectedValue,
+                                                label: "Card category",
+                                                hint: "Eg. \$10",
+                                                items: prices
+                                                    .map((e) => e.toString())
+                                                    .toList(),
+                                                onChanged: (val) {
+                                                  setState(() {
+                                                    selectedValue = val;
+                                                  });
+                                                },
+                                              ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
                                             CustomTextFormField(
                                               hint: 'Eg. 1',
                                               label: 'How Many',

@@ -60,8 +60,8 @@ class Item {
   String image;
   String id;
   String name;
-  String description;
-  int buyerPrice;
+  double buyerPrice;
+  dynamic sellerCost;
   String reference;
   Service service;
   Category category;
@@ -70,8 +70,8 @@ class Item {
     required this.image,
     required this.id,
     required this.name,
-    required this.description,
     required this.buyerPrice,
+     this.sellerCost,
     required this.reference,
     required this.service,
     required this.category,
@@ -81,8 +81,8 @@ class Item {
     image: json["image"],
     id: json["id"],
     name: json["name"],
-    description: json["description"],
-    buyerPrice: json["buyerPrice"],
+    buyerPrice: double.parse(json["buyerPrice"].toString())??0.0,
+    sellerCost:json["sellerCost"]??0.0,
     reference: json["reference"],
     service: Service.fromJson(json["service"]),
     category: Category.fromJson(json["category"]),
@@ -92,8 +92,8 @@ class Item {
     "image": image,
     "id": id,
     "name": name,
-    "description": description,
     "buyerPrice": buyerPrice,
+    "sellerCost": sellerCost,
     "reference": reference,
     "service": service.toJson(),
     "category": category.toJson(),

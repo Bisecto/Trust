@@ -56,6 +56,7 @@ class Service {
   String id;
   String name;
   String slug;
+  String? reference;
   Category category;
 
 
@@ -64,6 +65,7 @@ class Service {
     required this.id,
     required this.name,
     required this.slug,
+     this.reference,
     required this.category,
   });
 
@@ -72,6 +74,7 @@ class Service {
     id: json["id"],
     name: json["name"],
     slug: json["slug"],
+    reference: json["reference"],
     category: Category.fromJson(json["category"]),
   );
 
@@ -80,6 +83,7 @@ class Service {
     "id": id,
     "name": name,
     "slug": slug,
+    "reference": reference,
     "category": category.toJson(),
   };
 }

@@ -31,7 +31,15 @@ class ListServiceEvent extends ProductEvent {
 
   ListServiceEvent(this.page, this.pageSize, this.categoryId);
 }
+class ListGiftCardProducts extends ProductEvent {
+  final String query;
+  final String page;
+  final int pageSize;
+  final String categoryId;
+  final String serviceId;
 
+  ListGiftCardProducts(this.query, this.page, this.pageSize, this.categoryId, this.serviceId);
+}
 class FetchProduct extends ProductEvent {
   final String query;
   final String page;
@@ -81,7 +89,9 @@ class GetA2CDetailsEvent extends ProductEvent {
     this.accessPIN,
     this.amount,
   );
-}class ReportTransferEvent extends ProductEvent {
+}
+
+class ReportTransferEvent extends ProductEvent {
   final BuildContext context;
   final String transactionId;
   final String accessPIN;
@@ -91,9 +101,10 @@ class GetA2CDetailsEvent extends ProductEvent {
     this.context,
     this.transactionId,
     this.accessPIN,
-      this.proofImage,
+    this.proofImage,
   );
 }
+
 class CreateA2CDetailsEvent extends ProductEvent {
   final BuildContext context;
   final String productId;
