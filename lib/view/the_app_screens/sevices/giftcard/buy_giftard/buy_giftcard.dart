@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modalSheet;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,12 +24,14 @@ import '../../../../../utills/app_validator.dart';
 import '../../../../../utills/custom_theme.dart';
 import '../../../../../utills/enums/toast_mesage.dart';
 import '../../../../../utills/shared_preferences.dart';
+import '../../../../auth/otp_pin_pages/confirm_with_otp.dart';
 import '../../../../auth/sign_in_with_access_pin_and_biometrics.dart';
 import '../../../../widgets/app_custom_text.dart';
 import '../../../../widgets/form_button.dart';
 import '../../../../widgets/form_input.dart';
 import '../../../../widgets/show_toast.dart';
 import '../../../../widgets/transaction_receipt.dart';
+import '../../build_payment_method.dart';
 import '../../make_bank_transfer/bank_transfer.dart';
 
 class BuyGiftcard extends StatefulWidget {
@@ -36,13 +39,15 @@ class BuyGiftcard extends StatefulWidget {
   final WalletInfo? walletInfo;
   final ProductBloc productBloc;
   final Item product;
+  final double rate;
 
   const BuyGiftcard(
       {super.key,
       required this.category,
       required this.walletInfo,
       required this.productBloc,
-      required this.product});
+      required this.product,
+      required this.rate});
 
   @override
   State<BuyGiftcard> createState() => _BuyGiftcardState();
@@ -55,10 +60,12 @@ class _BuyGiftcardState extends State<BuyGiftcard> {
     fetch();
     super.initState();
   }
-
+  double totalAmt=0.0;
   bool isPricesLoading = true;
-  String selectedValue = '';
+  String selectedValue = '0';
   List<dynamic> prices = [];
+  String selectedPaymentMethod = 'wallet';
+  bool isPaymentAllowed = false;
 
   void fetch() async {
     AppRepository appRepository = AppRepository();
@@ -67,7 +74,7 @@ class _BuyGiftcardState extends State<BuyGiftcard> {
 
     try {
       var getPrices = await appRepository.appGetRequest(
-        "${AppApis.getPrices + widget.product.reference}",
+        AppApis.getPrices + widget.product.reference,
         accessToken: accessToken,
       );
 
@@ -282,6 +289,12 @@ class _BuyGiftcardState extends State<BuyGiftcard> {
                                                 onChanged: (val) {
                                                   setState(() {
                                                     selectedValue = val;
+                                                    totalAmt=(double.parse(
+                                                        selectedValue) *
+                                                        double.parse(
+                                                            _qtytController
+                                                                .text) *
+                                                        widget.rate);
                                                   });
                                                 },
                                               ),
@@ -294,6 +307,17 @@ class _BuyGiftcardState extends State<BuyGiftcard> {
                                               controller: _qtytController,
                                               textInputType:
                                                   TextInputType.number,
+                                              onChanged: (val){
+                                                setState(() {
+                                                  totalAmt=(double.parse(
+                                                      selectedValue) *
+                                                      double.parse(
+                                                          _qtytController
+                                                              .text) *
+                                                      widget.rate);
+                                                });
+
+                                              },
                                               validator: AppValidator
                                                   .validateTextfield,
                                               borderColor: _qtytController
@@ -329,72 +353,62 @@ class _BuyGiftcardState extends State<BuyGiftcard> {
                                             const SizedBox(
                                               height: 10,
                                             ),
+                                            if (selectedValue!='0' &&
+                                                _qtytController.text.isNotEmpty)
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: amount((double.parse(
+                                                            selectedValue) *
+                                                        double.parse(
+                                                            _qtytController
+                                                                .text) *
+                                                        widget.rate)
+                                                    .toString()),
+                                              ),
+                                            if (selectedValue!='0' &&
+                                                _qtytController.text.isNotEmpty)
 
-                                            // SizedBox(
-                                            //   height: 310,
-                                            //   child: PaymentMethodScreen(
-                                            //     amtToPay: _qtytController
-                                            //             .text.isEmpty
-                                            //         ? '0'
-                                            //         : _qtytController
-                                            //             .text,
-                                            //     onPaymentMethodSelected:
-                                            //         (method) {
-                                            //       // No need to use setState here directly as it might be called during the build phase
-                                            //       Future.microtask(() {
-                                            //         if (mounted) {
-                                            //           setState(() {
-                                            //             _selectedPaymentMethod =
-                                            //                 method;
-                                            //             //print(_selectedPaymentMethod);
-                                            //           });
-                                            //         }
-                                            //       });
-                                            //     },
-                                            //     ispaymentAllowed: (allowed) {
-                                            //       // Deferred update to avoid issues during the build phase
-                                            //       Future.microtask(() {
-                                            //         if (mounted) {
-                                            //           setState(() {
-                                            //             isPaymentAllowed =
-                                            //                 allowed;
-                                            //             // print(isPaymentAllowed);
-                                            //           });
-                                            //         }
-                                            //       });
-                                            //     },
-                                            //     number:
-                                            //         _beneficiaryController.text,
-                                            //     name: (value) {
-                                            //       print(value);
-                                            //       Future.microtask(() {
-                                            //         if (mounted) {
-                                            //           setState(() {
-                                            //             print(value);
-                                            //             beneficiaryName = value;
-                                            //             // print(isPaymentAllowed);
-                                            //           });
-                                            //         }
-                                            //       });
-                                            //     },
-                                            //     isSaveAsBeneficiarySelected:
-                                            //         (value) {
-                                            //       print(value);
-                                            //       Future.microtask(() {
-                                            //         if (mounted) {
-                                            //           setState(() {
-                                            //             isSaveAsBeneficiarySelected =
-                                            //                 value;
-                                            //             // print(isPaymentAllowed);
-                                            //           });
-                                            //         }
-                                            //       });
-                                            //     },
-                                            //   ),
-                                            // ),
-                                            // SizedBox(
-                                            //   height: 0,
-                                            // )
+                                              SizedBox(
+                                              height: 310,
+                                              child: PaymentMethodScreen(
+                                                amtToPay:
+                                                (double.parse(
+                                                    selectedValue) *
+                                                    double.parse(
+                                                        _qtytController
+                                                            .text) *
+                                                    widget.rate).toString(),
+                                                onPaymentMethodSelected:
+                                                    (method) {
+                                                  // No need to use setState here directly as it might be called during the build phase
+                                                  Future.microtask(() {
+                                                    if (mounted) {
+                                                      setState(() {
+                                                        selectedPaymentMethod =
+                                                            method;
+                                                        //print(_selectedPaymentMethod);
+                                                      });
+                                                    }
+                                                  });
+                                                },
+                                                ispaymentAllowed: (allowed) {
+                                                  // Deferred update to avoid issues during the build phase
+                                                  Future.microtask(() {
+                                                    if (mounted) {
+                                                      setState(() {
+                                                        isPaymentAllowed =
+                                                            allowed;
+                                                        // print(isPaymentAllowed);
+                                                      });
+                                                    }
+                                                  });
+                                                },
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 0,
+                                            )
 
                                             ///Remember to add beneficiary
                                           ],
@@ -410,11 +424,69 @@ class _BuyGiftcardState extends State<BuyGiftcard> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(bottom: 10, left: 20, right: 20),
+              padding: EdgeInsets.only(bottom: 20, left: 20, right: 20),
               child: FormButton(
-                onPressed: () async {},
+                onPressed: () async {
+                  if (_formKey.currentState!.validate()) {
+                    if (selectedPaymentMethod != 'wallet') {
+                      var transactionPin = '';
+                      // widget.category.requiredFields.amount =
+                      //     _selectedAmtController.text;
+                      // widget.category.requiredFields.phoneNumber =
+                      //     _beneficiaryController.text;
+                      //
+                      // purchaseProductBloc.add(PurchaseProductEvent(
+                      //     context,
+                      //     widget.category.requiredFields,
+                      //     productId,
+                      //     transactionPin,
+                      //     true,
+                      //     isSaveAsBeneficiarySelected,
+                      //     beneficiaryName));
+                    } else
+                    {
+                      var transactionPin = '';
+                      transactionPin =
+                      await modalSheet.showMaterialModalBottomSheet(
+                          backgroundColor: Colors.transparent,
+                          isDismissible: true,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(20.0)),
+                          ),
+                          context: context,
+                          builder: (context) => Padding(
+                            padding: const EdgeInsets.only(top: 200.0),
+                            child: ConfirmWithPin(
+                              context: context,
+                              title:
+                              'Input your transaction pin to continue',
+                            ),
+                          ))??'';
+                      print(transactionPin);
+                      if (transactionPin != '') {
+                        // setState(() {
+                        //   widget.category.requiredFields.amount =
+                        //       _selectedAmtController.text;
+                        //   widget.category.requiredFields.phoneNumber =
+                        //       _beneficiaryController.text;
+                        // });
+
+                        // purchaseProductBloc.add(PurchaseProductEvent(
+                        //     context,
+                        //     widget.category.requiredFields,
+                        //     productId,
+                        //     transactionPin,
+                        //     false,
+                        //     isSaveAsBeneficiarySelected,
+                        //     beneficiaryName));
+                      }
+                    }
+                  }
+                },
+
                 topPadding: 10,
-                // disableButton: selectedIndex == -1 || selectedCard.isEmpty,
+                disableButton: !isPaymentAllowed,
                 text: 'Proceed',
                 borderColor: AppColors.darkGreen,
                 bgColor: AppColors.darkGreen,
@@ -425,6 +497,58 @@ class _BuyGiftcardState extends State<BuyGiftcard> {
             )
           ],
         ),
+      ),
+    );
+  }
+
+  Widget amount(String amt) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const CustomText(
+                text: 'Rate',
+                size: 14,
+                color: Colors.grey,
+              ),
+              const SizedBox(height: 4),
+              CustomText(
+                text: 'NGN ${AppUtils.convertPrice(
+                  widget.rate,
+                )}/\$',
+                // Replace with your actual rate variable
+                size: 14,
+                weight: FontWeight.bold,
+              ),
+            ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              const CustomText(
+                text: 'Total Amount',
+                size: 12,
+                color: Colors.grey,
+              ),
+              const SizedBox(height: 4),
+              CustomText(
+                text: AppUtils.convertPrice(amt, showCurrency: true),
+                // Replace with your actual amount variable
+                size: 14,
+                weight: FontWeight.bold,
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

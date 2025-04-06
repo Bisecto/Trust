@@ -547,7 +547,7 @@ class _GiftCardPurchaseState extends State<GiftCardPurchase> {
                             walletInfo: widget.walletInfo,
                             category: widget.category,
                             productBloc: purchaseProductBloc,
-                            product: selectedProduct,
+                            product: selectedProduct, rate: double.parse(dollarNairaRate),
                           ),
                         ),
                       );
