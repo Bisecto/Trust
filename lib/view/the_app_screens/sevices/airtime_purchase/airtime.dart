@@ -579,7 +579,8 @@ class _AirtimePurchaseState extends State<AirtimePurchase> {
                               true,
                               isSaveAsBeneficiarySelected,
                               beneficiaryName));
-                        } else {
+                        } else
+                        {
                           var transactionPin = '';
                           transactionPin =
                           await modalSheet.showMaterialModalBottomSheet(
