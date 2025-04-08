@@ -30,6 +30,7 @@ class AppApis {
   static String listProduct = "$appBaseUrl/c/p/list-product";
   static String listService = "$appBaseUrl/c/p/list-service";
   static String purchaseProduct = "$appBaseUrl/c/pay/create-wallet-order";
+  static String purchaseGiftCard = "$appBaseUrl/c/gift-card/buy-giftcard";
   static String a2cDetails = "$appBaseUrl/c/pay/get-a2c-details";
   static String createA2c = "$appBaseUrl/c/pay/create-a2c";
   static String reportA2c = "$appBaseUrl/c/pay/report-transfer-a2c";

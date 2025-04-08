@@ -133,396 +133,335 @@ class _GiftCardPurchaseState extends State<GiftCardPurchase> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      BlocConsumer<ProductBloc, ProductState>(
-                          bloc: purchaseProductBloc,
-                          listenWhen: (previous, current) =>
-                              current is! ProductInitial,
-                          listener: (context, state) async {
-                            print(state);
-                            if (state is PurchaseSuccess) {
-                              _searchController.clear();
-                              state.transaction.order!.product!.name ==
-                                  widget.category.name;
-                              AppNavigator.pushAndStackPage(context,
-                                  page: TransactionReceipt(
-                                      transaction: state.transaction));
-
-                              // showToast(
-                              //     context: context,
-                              //     title: 'Success',
-                              //     subtitle: 'Purchase was successful',
-                              //     type: ToastMessageType.info);
-                              //refresh();
-                              //MSG.snackBar(context, state.msg);
-
-                              // AppNavigator.pushAndRemovePreviousPages(context,
-                              //     page: LandingPage(studentProfile: state.studentProfile));
-                            } else if (state is QuickPayInitiated) {
-                              String accessToken = await SharedPref.getString(
-                                  SharedPrefKey.accessTokenKey);
-
-                              AppNavigator.pushAndStackPage(context,
-                                  page: MakePayment(
-                                    quickPayModel: state.quickPayModel,
-                                    accessToken: accessToken,
-                                  ));
-                            } else if (state is AccessTokenExpireState) {
-                              // showToast(
-                              //     context: context,
-                              //     title: 'Token expired',
-                              //     subtitle: 'Login again.',
-                              //     type: ToastMessageType.error);
-
-                              //MSG.warningSnackBar(context, state.error);
-
-                              String firstame = await SharedPref.getString(
-                                  SharedPrefKey.firstNameKey);
-
-                              AppNavigator.pushAndRemovePreviousPages(context,
-                                  page: SignInWIthAccessPinBiometrics(
-                                    userName: firstame,
-                                  ));
-                            } else if (state is PurchaseErrorState) {
-                              showToast(
-                                  context: context,
-                                  title: 'Info',
-                                  subtitle: state.error,
-                                  type: ToastMessageType.error);
-
-                              //MSG.warningSnackBar(context, state.error);
-                            }
-                          },
-                          builder: (context, state) {
-                            return SingleChildScrollView(
-                              physics: const NeverScrollableScrollPhysics(),
-                              child: Column(
-                                children: [
-                                  // const SizedBox(
-                                  //   height: 20,
-                                  // ),
-                                  Container(
-                                    height: 60,
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                        color: theme.isDark
-                                            ? AppColors.darkModeBackgroundColor
-                                            : AppColors.white,
-                                        borderRadius: const BorderRadius.only(
-                                            topRight: Radius.circular(10),
-                                            topLeft: Radius.circular(10))),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(0.0),
-                                      child: Stack(
-                                        alignment: Alignment.center,
-                                        children: [
-                                          Positioned(
-                                            top: 0, // Adjust position as needed
-                                            left: 0,
-                                            right: 0,
-                                            child: SvgPicture.asset(
-                                              AppIcons.billTopBackground,
-                                              height: 60,
-                                              // Increase height to fit the text
-                                              width: AppUtils.deviceScreenSize(
-                                                      context)
-                                                  .width,
-                                              color: AppColors.darkGreen,
-                                              // Set the color if needed
-                                              placeholderBuilder: (context) {
-                                                return Container(
-                                                  height: 50,
-                                                  width: double.infinity,
-                                                  color: Colors.grey[300],
-                                                  child: const Center(
-                                                      child:
-                                                          CircularProgressIndicator()),
-                                                );
-                                              },
-                                            ),
-                                          ),
-                                          Positioned(
-                                            top: 10,
-                                            // Adjust position as needed
-                                            left: 10,
-                                            right: 10,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                TextStyles.textHeadings(
-                                                  textValue: 'GiftCard',
-                                                  textColor:
-                                                      AppColors.darkGreen,
-                                                  // w: FontWeight.w600,
-                                                  textSize: 14,
-                                                ),
-                                                // Text(
-                                                //   "GiftCard purchase",
-                                                //   style: TextStyle(
-                                                //     color: AppColors.darkGreen,
-                                                //     fontWeight: FontWeight.w600,
-                                                //     fontSize: 18,
-                                                //   ),
-                                                // ),
-                                                InkWell(
-                                                  onTap: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                  child: const Icon(
-                                                    Icons.cancel,
-                                                    color: Colors.grey,
-                                                    size: 30,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
+                  SingleChildScrollView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  child: Column(
+                    children: [
+                      // const SizedBox(
+                      //   height: 20,
+                      // ),
+                      Container(
+                        height: 60,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            color: theme.isDark
+                                ? AppColors.darkModeBackgroundColor
+                                : AppColors.white,
+                            borderRadius: const BorderRadius.only(
+                                topRight: Radius.circular(10),
+                                topLeft: Radius.circular(10))),
+                        child: Padding(
+                          padding: const EdgeInsets.all(0.0),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Positioned(
+                                top: 0, // Adjust position as needed
+                                left: 0,
+                                right: 0,
+                                child: SvgPicture.asset(
+                                  AppIcons.billTopBackground,
+                                  height: 60,
+                                  // Increase height to fit the text
+                                  width: AppUtils.deviceScreenSize(
+                                      context)
+                                      .width,
+                                  color: AppColors.darkGreen,
+                                  // Set the color if needed
+                                  placeholderBuilder: (context) {
+                                    return Container(
+                                      height: 50,
+                                      width: double.infinity,
+                                      color: Colors.grey[300],
+                                      child: const Center(
+                                          child:
+                                          CircularProgressIndicator()),
+                                    );
+                                  },
+                                ),
+                              ),
+                              Positioned(
+                                top: 10,
+                                // Adjust position as needed
+                                left: 10,
+                                right: 10,
+                                child: Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment
+                                      .spaceBetween,
+                                  children: [
+                                    TextStyles.textHeadings(
+                                      textValue: 'GiftCard',
+                                      textColor:
+                                      AppColors.darkGreen,
+                                      // w: FontWeight.w600,
+                                      textSize: 14,
+                                    ),
+                                    // Text(
+                                    //   "GiftCard purchase",
+                                    //   style: TextStyle(
+                                    //     color: AppColors.darkGreen,
+                                    //     fontWeight: FontWeight.w600,
+                                    //     fontSize: 18,
+                                    //   ),
+                                    // ),
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Icon(
+                                        Icons.cancel,
+                                        color: Colors.grey,
+                                        size: 30,
                                       ),
                                     ),
-                                  ),
-                                  // Padding(
-                                  //     padding: const EdgeInsets.all(15.0),
-                                  //     child: Beneficiary(
-                                  //       billType: 'giftCard',
-                                  //       onBeneficiarySelected: (phone) {
-                                  //         setState(() {
-                                  //           numberTextEditingControlller.text =
-                                  //               phone; // Update the selected beneficiary's phone number
-                                  //         });
-                                  //       },
-                                  //     )),
-                                  GiftCardValue(
-                                    showForwardIcon: true,
-                                    amtUSD: amtUSD,
-                                    allowClick: false,
-                                    cardNo: cardNo,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      _buildSelectableItem(
-                                          0,
-                                          "Buy Gift Cards",
-                                          AppColors
-                                              .darkModeBackgroundContainerColor,
-                                          const Color(0xFFFEFFEB)),
-                                      _buildSelectableItem(
-                                          1,
-                                          "Sell Gift Cards",
-                                          AppColors
-                                              .darkModeBackgroundContainerColor,
-                                          const Color(0xFFFFF5F4)),
-                                    ],
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: CustomTextFormField(
-                                      hint: 'Search......',
-                                      label: '',
-                                      controller: _searchController,
-                                      textInputType: TextInputType.text,
-                                      validator: AppValidator.validateTextfield,
-                                      onChanged: (val) {
-                                        setState(() {
-                                          _searchController.text = val;
-                                        });
-                                      },
-                                      suffixIcon: const Icon(Icons.search),
-                                      borderColor:
-                                          _searchController.text.isNotEmpty
-                                              ? AppColors.green
-                                              : AppColors.grey,
-                                    ),
-                                  ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      // Padding(
+                      //     padding: const EdgeInsets.all(15.0),
+                      //     child: Beneficiary(
+                      //       billType: 'giftCard',
+                      //       onBeneficiarySelected: (phone) {
+                      //         setState(() {
+                      //           numberTextEditingControlller.text =
+                      //               phone; // Update the selected beneficiary's phone number
+                      //         });
+                      //       },
+                      //     )),
+                      GiftCardValue(
+                        showForwardIcon: true,
+                        amtUSD: amtUSD,
+                        allowClick: false,
+                        cardNo: cardNo,
+                      ),
+                      Row(
+                        mainAxisAlignment:
+                        MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _buildSelectableItem(
+                              0,
+                              "Buy Gift Cards",
+                              AppColors
+                                  .darkModeBackgroundContainerColor,
+                              const Color(0xFFFEFFEB)),
+                          _buildSelectableItem(
+                              1,
+                              "Sell Gift Cards",
+                              AppColors
+                                  .darkModeBackgroundContainerColor,
+                              const Color(0xFFFFF5F4)),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: CustomTextFormField(
+                          hint: 'Search......',
+                          label: '',
+                          controller: _searchController,
+                          textInputType: TextInputType.text,
+                          validator: AppValidator.validateTextfield,
+                          onChanged: (val) {
+                            setState(() {
+                              _searchController.text = val;
+                            });
+                          },
+                          suffixIcon: const Icon(Icons.search),
+                          borderColor:
+                          _searchController.text.isNotEmpty
+                              ? AppColors.green
+                              : AppColors.grey,
+                        ),
+                      ),
 
-                                  BlocConsumer<ProductBloc, ProductState>(
-                                    bloc: productBloc,
-                                    builder: (context, state) {
-                                      if (state is ProductSuccessState) {
-                                        ProductModel productModel =
-                                            state.productModel;
-                                        List<Item> products = productModel
-                                            .data.items
-                                            .where((item) =>
-                                                item.category.name
-                                                    .toLowerCase() ==
-                                                'gift-card')
-                                            .toList();
+                      BlocConsumer<ProductBloc, ProductState>(
+                        bloc: productBloc,
+                        builder: (context, state) {
+                          if (state is ProductSuccessState) {
+                            ProductModel productModel =
+                                state.productModel;
+                            List<Item> products = productModel
+                                .data.items
+                                .where((item) =>
+                            item.category.name
+                                .toLowerCase() ==
+                                'gift-card')
+                                .toList();
 
-                                        // List<Item> products =
-                                        //     productModel.data.items;
-                                        if (isInitial) {}
-                                        return SizedBox(
-                                          height: products.length * 55,
-                                          // Adjust height dynamically
-                                          child: ListView.builder(
-                                            padding: EdgeInsets.only(top: 10),
-                                            physics:
-                                                const NeverScrollableScrollPhysics(),
-                                            itemCount: products.length,
-                                            itemBuilder: (context, index) {
-                                              if (products[index]
-                                                  .name
-                                                  .toLowerCase()
-                                                  .contains(_searchController
-                                                      .text
-                                                      .toLowerCase())) {
-                                                return InkWell(
-                                                    onTap: () {
-                                                      setState(() {
-                                                        selectedProduct =
-                                                            products[index];
-                                                        //selectedAction=products[index].name;
-                                                      });
-                                                    },
-                                                    child: sevicesItem(
-                                                      products[index].name,
-                                                      products[index].image,
-                                                      theme,
-                                                      products[index],
-                                                    ));
-                                              } else {
-                                                return Container();
-                                              }
-                                            },
-                                          ),
-                                        );
-                                      } else {
-                                        return _loadingCard(); // Show loading indicator or handle error state
-                                      }
-                                    },
-                                    listener: (BuildContext context,
-                                        ProductState state) async {
-                                      if (state is AccessTokenExpireState) {
-                                        String firstame =
-                                            await SharedPref.getString(
-                                                SharedPrefKey.firstNameKey);
-
-                                        AppNavigator.pushAndRemovePreviousPages(
-                                            context,
-                                            page: SignInWIthAccessPinBiometrics(
-                                              userName: firstame,
-                                            ));
-                                      }
-                                    },
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        10.0, 0, 10, 10),
-                                    child: Form(
-                                        key: _formKey,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            // CustomTextFormField(
-                                            //   hint: 'Eg. 1',
-                                            //   label: 'How Many',
-                                            //   controller:
-                                            //       _qtytController,
-                                            //   textInputType:
-                                            //       TextInputType.number,
-                                            //   validator: AppValidator
-                                            //       .validateTextfield,
-                                            //   // widget: SvgPicture.asset(
-                                            //   //   AppIcons.naira,
-                                            //   //   color: _qtytController
-                                            //   //           .text.isNotEmpty
-                                            //   //       ? AppColors.darkGreen
-                                            //   //       : AppColors.grey,
-                                            //   //   height: 22,
-                                            //   //   width: 22,
-                                            //   // ),
-                                            //   borderColor:
-                                            //       _qtytController
-                                            //               .text.isNotEmpty
-                                            //           ? AppColors.green
-                                            //           : AppColors.grey,
-                                            // ),
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-
-                                            // SizedBox(
-                                            //   height: 310,
-                                            //   child: PaymentMethodScreen(
-                                            //     amtToPay: _qtytController
-                                            //             .text.isEmpty
-                                            //         ? '0'
-                                            //         : _qtytController
-                                            //             .text,
-                                            //     onPaymentMethodSelected:
-                                            //         (method) {
-                                            //       // No need to use setState here directly as it might be called during the build phase
-                                            //       Future.microtask(() {
-                                            //         if (mounted) {
-                                            //           setState(() {
-                                            //             _selectedPaymentMethod =
-                                            //                 method;
-                                            //             //print(_selectedPaymentMethod);
-                                            //           });
-                                            //         }
-                                            //       });
-                                            //     },
-                                            //     ispaymentAllowed: (allowed) {
-                                            //       // Deferred update to avoid issues during the build phase
-                                            //       Future.microtask(() {
-                                            //         if (mounted) {
-                                            //           setState(() {
-                                            //             isPaymentAllowed =
-                                            //                 allowed;
-                                            //             // print(isPaymentAllowed);
-                                            //           });
-                                            //         }
-                                            //       });
-                                            //     },
-                                            //     number:
-                                            //         _beneficiaryController.text,
-                                            //     name: (value) {
-                                            //       print(value);
-                                            //       Future.microtask(() {
-                                            //         if (mounted) {
-                                            //           setState(() {
-                                            //             print(value);
-                                            //             beneficiaryName = value;
-                                            //             // print(isPaymentAllowed);
-                                            //           });
-                                            //         }
-                                            //       });
-                                            //     },
-                                            //     isSaveAsBeneficiarySelected:
-                                            //         (value) {
-                                            //       print(value);
-                                            //       Future.microtask(() {
-                                            //         if (mounted) {
-                                            //           setState(() {
-                                            //             isSaveAsBeneficiarySelected =
-                                            //                 value;
-                                            //             // print(isPaymentAllowed);
-                                            //           });
-                                            //         }
-                                            //       });
-                                            //     },
-                                            //   ),
-                                            // ),
-                                            // SizedBox(
-                                            //   height: 0,
-                                            // )
-
-                                            ///Remember to add beneficiary
-                                          ],
-                                        )),
-                                  ),
-                                ],
+                            // List<Item> products =
+                            //     productModel.data.items;
+                            if (isInitial) {}
+                            return SizedBox(
+                              height: products.length * 55,
+                              // Adjust height dynamically
+                              child: ListView.builder(
+                                padding: EdgeInsets.only(top: 10),
+                                physics:
+                                const NeverScrollableScrollPhysics(),
+                                itemCount: products.length,
+                                itemBuilder: (context, index) {
+                                  if (products[index]
+                                      .name
+                                      .toLowerCase()
+                                      .contains(_searchController
+                                      .text
+                                      .toLowerCase())) {
+                                    return InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            selectedProduct =
+                                            products[index];
+                                            //selectedAction=products[index].name;
+                                          });
+                                        },
+                                        child: sevicesItem(
+                                          products[index].name,
+                                          products[index].image,
+                                          theme,
+                                          products[index],
+                                        ));
+                                  } else {
+                                    return Container();
+                                  }
+                                },
                               ),
                             );
-                          }),
+                          } else {
+                            return _loadingCard(); // Show loading indicator or handle error state
+                          }
+                        },
+                        listener: (BuildContext context,
+                            ProductState state) async {
+                          if (state is AccessTokenExpireState) {
+                            String firstame =
+                            await SharedPref.getString(
+                                SharedPrefKey.firstNameKey);
+
+                            AppNavigator.pushAndRemovePreviousPages(
+                                context,
+                                page: SignInWIthAccessPinBiometrics(
+                                  userName: firstame,
+                                ));
+                          }
+                        },
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(
+                            10.0, 0, 10, 10),
+                        child: Form(
+                            key: _formKey,
+                            child: Column(
+                              crossAxisAlignment:
+                              CrossAxisAlignment.start,
+                              children: [
+                                // CustomTextFormField(
+                                //   hint: 'Eg. 1',
+                                //   label: 'How Many',
+                                //   controller:
+                                //       _qtytController,
+                                //   textInputType:
+                                //       TextInputType.number,
+                                //   validator: AppValidator
+                                //       .validateTextfield,
+                                //   // widget: SvgPicture.asset(
+                                //   //   AppIcons.naira,
+                                //   //   color: _qtytController
+                                //   //           .text.isNotEmpty
+                                //   //       ? AppColors.darkGreen
+                                //   //       : AppColors.grey,
+                                //   //   height: 22,
+                                //   //   width: 22,
+                                //   // ),
+                                //   borderColor:
+                                //       _qtytController
+                                //               .text.isNotEmpty
+                                //           ? AppColors.green
+                                //           : AppColors.grey,
+                                // ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+
+                                // SizedBox(
+                                //   height: 310,
+                                //   child: PaymentMethodScreen(
+                                //     amtToPay: _qtytController
+                                //             .text.isEmpty
+                                //         ? '0'
+                                //         : _qtytController
+                                //             .text,
+                                //     onPaymentMethodSelected:
+                                //         (method) {
+                                //       // No need to use setState here directly as it might be called during the build phase
+                                //       Future.microtask(() {
+                                //         if (mounted) {
+                                //           setState(() {
+                                //             _selectedPaymentMethod =
+                                //                 method;
+                                //             //print(_selectedPaymentMethod);
+                                //           });
+                                //         }
+                                //       });
+                                //     },
+                                //     ispaymentAllowed: (allowed) {
+                                //       // Deferred update to avoid issues during the build phase
+                                //       Future.microtask(() {
+                                //         if (mounted) {
+                                //           setState(() {
+                                //             isPaymentAllowed =
+                                //                 allowed;
+                                //             // print(isPaymentAllowed);
+                                //           });
+                                //         }
+                                //       });
+                                //     },
+                                //     number:
+                                //         _beneficiaryController.text,
+                                //     name: (value) {
+                                //       print(value);
+                                //       Future.microtask(() {
+                                //         if (mounted) {
+                                //           setState(() {
+                                //             print(value);
+                                //             beneficiaryName = value;
+                                //             // print(isPaymentAllowed);
+                                //           });
+                                //         }
+                                //       });
+                                //     },
+                                //     isSaveAsBeneficiarySelected:
+                                //         (value) {
+                                //       print(value);
+                                //       Future.microtask(() {
+                                //         if (mounted) {
+                                //           setState(() {
+                                //             isSaveAsBeneficiarySelected =
+                                //                 value;
+                                //             // print(isPaymentAllowed);
+                                //           });
+                                //         }
+                                //       });
+                                //     },
+                                //   ),
+                                // ),
+                                // SizedBox(
+                                //   height: 0,
+                                // )
+
+                                ///Remember to add beneficiary
+                              ],
+                            )),
+                      ),
+                    ],
+                  ),
+                )
                     ],
                   ),
                 ),
@@ -547,26 +486,36 @@ class _GiftCardPurchaseState extends State<GiftCardPurchase> {
                             walletInfo: widget.walletInfo,
                             category: widget.category,
                             productBloc: purchaseProductBloc,
-                            product: selectedProduct, rate: double.parse(dollarNairaRate),
+                            product: selectedProduct,
+                            rate: double.parse(dollarNairaRate),
                           ),
                         ),
                       );
                     } else if (selectedIndex == 1) {
-                      modalSheet.showMaterialModalBottomSheet(
-                        backgroundColor: Colors.transparent,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.vertical(top: Radius.circular(20.0)),
-                        ),
-                        context: context,
-                        builder: (context) => const Padding(
-                          padding: EdgeInsets.only(top: 140.0),
-                          child: SellGiftcard(
-                              // walletInfo: walletInfo,
-                              // category: items[index],
-                              ),
-                        ),
-                      );
+                      showToast(
+                          context: context,
+                          title: 'Info',
+                          subtitle:
+                              'Oops! It looks like this service is still in the oven. We\'re baking up something great, so stay tuned! 🍰',
+                          type: ToastMessageType.info);
+                      // modalSheet.showMaterialModalBottomSheet(
+                      //   backgroundColor: Colors.transparent,
+                      //   shape: const RoundedRectangleBorder(
+                      //     borderRadius:
+                      //         BorderRadius.vertical(top: Radius.circular(20.0)),
+                      //   ),
+                      //   context: context,
+                      //   builder: (context) => Padding(
+                      //     padding: const EdgeInsets.only(top: 140.0),
+                      //     child: SellGiftCard(
+                      //       walletInfo: widget.walletInfo,
+                      //       category: widget.category,
+                      //       productBloc: purchaseProductBloc,
+                      //       product: selectedProduct,
+                      //       rate: double.parse(dollarNairaRate),
+                      //     ),
+                      //   ),
+                      // );
                     }
                   } else if (selectedIndex == -1) {
                     showToast(
@@ -716,7 +665,6 @@ class _GiftCardPurchaseState extends State<GiftCardPurchase> {
                       TextStyles.textHeadings(
                         textValue: name,
                         textSize: 10,
-
                         textColor: AppColors.darkGreen,
                       ),
                     if (selectedCard != name.toLowerCase())

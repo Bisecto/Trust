@@ -31,6 +31,7 @@ class ListServiceEvent extends ProductEvent {
 
   ListServiceEvent(this.page, this.pageSize, this.categoryId);
 }
+
 class ListGiftCardProducts extends ProductEvent {
   final String query;
   final String page;
@@ -38,8 +39,10 @@ class ListGiftCardProducts extends ProductEvent {
   final String categoryId;
   final String serviceId;
 
-  ListGiftCardProducts(this.query, this.page, this.pageSize, this.categoryId, this.serviceId);
+  ListGiftCardProducts(
+      this.query, this.page, this.pageSize, this.categoryId, this.serviceId);
 }
+
 class FetchProduct extends ProductEvent {
   final String query;
   final String page;
@@ -75,6 +78,25 @@ class PurchaseProductEvent extends ProductEvent {
       this.isQuickPay,
       this.isSaveAsBeneficiarySelected,
       this.beneficiaryName);
+}
+
+class PurchaseGiftCardEvent extends ProductEvent {
+  final BuildContext context;
+  final String giftCardTypeId;
+  final String accessPIN;
+  final bool isQuickPay;
+  final String quantity;
+  final String recipientEmail;
+  final String denominationUSD;
+
+  PurchaseGiftCardEvent(
+    this.context,
+    this.accessPIN,
+    this.isQuickPay,
+    this.giftCardTypeId,
+    this.quantity,
+    this.recipientEmail, this.denominationUSD,
+  );
 }
 
 class GetA2CDetailsEvent extends ProductEvent {

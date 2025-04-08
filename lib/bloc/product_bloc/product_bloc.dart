@@ -34,6 +34,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     on<ListGiftCardProducts>(listGiftCardProducts);
     on<FetchProduct>(fetchProduct);
     on<PurchaseProductEvent>(purchaseProductEvent);
+    on<PurchaseGiftCardEvent>(purchaseGiftCardEvent);
     on<GetA2CDetailsEvent>(getA2CDetailsEvent);
     on<CreateA2CDetailsEvent>(createA2CDetailsEvent);
     on<ReportTransferEvent>(reportTransferEvent);
@@ -547,5 +548,62 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       emit(ProductErrorState("An error occurred while fetching categories."));
       print(e);
     }
+  }
+
+  FutureOr<void> purchaseGiftCardEvent(PurchaseGiftCardEvent event, Emitter<ProductState> emit) async {
+    showDialog(
+        barrierDismissible: false,
+        context: event.context,
+        builder: (_) {
+          return const LoadingDialog('Processing purchase...');
+        });
+
+    AppRepository appRepository = AppRepository();
+    String accessToken = await SharedPref.getString(SharedPrefKey.accessTokenKey);
+    //try {
+    Map<String, dynamic> data = {
+      "giftCardTypeId" : event.giftCardTypeId,
+      "quantity" : event.quantity,
+      "recipientEmail" : event.recipientEmail,
+      "denominationUSD" : event.denominationUSD,
+
+    };
+    var purchaseResponse = await appRepository.appPostRequest(
+      data,
+     // event.isQuickPay ? AppApis.quickPay :
+      AppApis.purchaseGiftCard,
+      accessToken: accessToken,
+      accessPIN: event.accessPIN,
+    );
+
+    Navigator.pop(event.context);
+    print(purchaseResponse.body);
+
+    print("purchaseResponse status Code ${purchaseResponse.statusCode}");
+    print("purchaseResponse Data ${purchaseResponse.body}");
+    print(json.decode(purchaseResponse.body));
+    if (purchaseResponse.statusCode == 200 ||
+        purchaseResponse.statusCode == 201) {
+
+      // if (event.isQuickPay) {
+      //   QuickPayModel quickPayModel =
+      //   QuickPayModel.fromJson(json.decode(purchaseResponse.body)['data']);
+      //   emit(QuickPayInitiated(quickPayModel));
+      // } else {
+        Transaction transaction =
+        Transaction.fromJson(json.decode(purchaseResponse.body)['data']);
+        emit(PurchaseSuccess(transaction));
+     // } // Emit success state with data
+    } else if (json.decode(purchaseResponse.body)['errorCode'] == "N404") {
+      emit(AccessTokenExpireState());
+    } else {
+      emit(PurchaseErrorState(AppUtils.convertString(
+          json.decode(purchaseResponse.body)['message'])));
+      print(json.decode(purchaseResponse.body));
+    }
+    // } catch (e) {
+    //   emit(PurchaseErrorState("An error occurred while fetching categories."));
+    //   print(e);
+    // }
   }
 }
