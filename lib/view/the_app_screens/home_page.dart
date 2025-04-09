@@ -273,30 +273,30 @@ class _HomePageState extends State<HomePage> {
                       )
                     ],
                   ),
-                  Row(
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          AppNavigator.pushAndStackPage(
-                            context,
-                            page: const NetworkCenterMainPage(),
-                          );
-                        },
-                        child: SvgPicture.asset(AppIcons.network),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      SvgPicture.asset(AppIcons.qrCode),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      CircleAvatar(
-                        backgroundColor: AppColors.lightgreen2,
-                        child: SvgPicture.asset(AppIcons.notification),
-                      )
-                    ],
-                  )
+                  // Row(
+                  //   children: [
+                  //     InkWell(
+                  //       onTap: () {
+                  //         AppNavigator.pushAndStackPage(
+                  //           context,
+                  //           page: const NetworkCenterMainPage(),
+                  //         );
+                  //       },
+                  //       child: SvgPicture.asset(AppIcons.network),
+                  //     ),
+                  //     const SizedBox(
+                  //       width: 10,
+                  //     ),
+                  //     SvgPicture.asset(AppIcons.qrCode),
+                  //     const SizedBox(
+                  //       width: 10,
+                  //     ),
+                  //     CircleAvatar(
+                  //       backgroundColor: AppColors.lightgreen2,
+                  //       child: SvgPicture.asset(AppIcons.notification),
+                  //     )
+                  //   ],
+                  // )
                 ],
               ),
             ),

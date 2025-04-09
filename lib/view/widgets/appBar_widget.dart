@@ -24,7 +24,7 @@ class CustomAppBar extends StatelessWidget {
     return Container(
       height: 120,
       decoration: BoxDecoration(
-          color: theme.isDark?AppColors.lightGreen:subColor,
+          color: theme.isDark ? AppColors.lightGreen : subColor,
           borderRadius:
               const BorderRadius.vertical(bottom: Radius.circular(30))),
       child: Column(
@@ -34,17 +34,29 @@ class CustomAppBar extends StatelessWidget {
             height: 100,
             width: AppUtils.deviceScreenSize(context).width,
             decoration: BoxDecoration(
-                color:theme.isDark?AppColors.darkModeBackgroundColor: mainColor,
+                color: theme.isDark
+                    ? AppColors.darkModeBackgroundColor
+                    : mainColor,
                 borderRadius:
                     const BorderRadius.vertical(bottom: Radius.circular(30))),
             child: Padding(
-              padding: const EdgeInsets.only(left: 20.0,top: 20),
+              padding: const EdgeInsets.only(left: 20.0, top: 20),
               child: Row(
                 children: [
-                 GestureDetector(onTap:(){
-                  Navigator.pop(context);
-                 },child: const Icon(Icons.arrow_back_ios)),
-                  TextStyles.textHeadings(textValue: title,textColor: theme.isDark?AppColors.white:AppColors.black)
+                  InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Icon(Icons.arrow_back_ios)),
+                  InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child:                    TextStyles.textHeadings(
+                          textValue: title,
+                          textColor:
+                          theme.isDark ? AppColors.white : AppColors.black)
+                  ),
                 ],
               ),
             ),

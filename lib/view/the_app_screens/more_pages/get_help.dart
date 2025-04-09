@@ -29,8 +29,8 @@ class _GetHelpState extends State<GetHelp> {
     final theme = Provider.of<CustomThemeState>(context).adaptiveThemeMode;
 
     return Scaffold(
-      backgroundColor: theme.isDark?AppColors.darkModeBackgroundColor:AppColors.white,
-
+      backgroundColor:
+          theme.isDark ? AppColors.darkModeBackgroundColor : AppColors.white,
       body: Column(
         children: [
           const CustomAppBar(
@@ -44,21 +44,37 @@ class _GetHelpState extends State<GetHelp> {
               children: [
                 CustomContainerFirTitleDescIcon(
                   title: "Have feedback or need support?\nSend us an Email",
-                  description: "Support@tellatrust.com",
-                  iconData:SvgPicture.asset(AppIcons.person,color: Colors.purple,),
+                  description: "Tellatrust@gmail.com",
+                  iconData: SvgPicture.asset(
+                    AppIcons.person,
+                    color: Colors.purple,
+                  ),
                 ),
                 CustomContainerFirTitleDescIcon(
                   title: "Our agent are available 9am-5pm",
-                  description: "0804747483 0907474832",
-                  iconData:SvgPicture.asset(AppIcons.phone,color: Colors.purple,),
-                ), CustomContainerFirTitleDescIcon(
+                  description: "09069496990",
+                  iconData: SvgPicture.asset(
+                    AppIcons.phone,
+                    color: Colors.purple,
+                  ),
+                ),
+                CustomContainerFirTitleDescIcon(
                   title: "Whatsapp supports is available 24/7",
-                  description: "0804747483",
-                  iconData:SvgPicture.asset(AppIcons.phone,color: Colors.purple,),
-                ), CustomContainerFirTitleDescIcon(
+                  description: "09069496990",
+                  iconData: SvgPicture.asset(
+                    AppIcons.phone,
+                    color: Colors.purple,
+                  ),
+                ),
+                CustomContainerFirTitleDescIcon(
                   title: "Visit us at our Office Address",
-                  description: "Somewhere within Abuja",
-                  iconData:SvgPicture.asset(AppIcons.phone,color: Colors.purple,),
+                  description:
+                      "No 9B Seguela Street, Wuse Zone 2, British\nVillage,"
+                      " Off IBB Boulevard Abuja, Nigeria",
+                  iconData: SvgPicture.asset(
+                    AppIcons.phone,
+                    color: Colors.purple,
+                  ),
                 ),
               ],
             ),

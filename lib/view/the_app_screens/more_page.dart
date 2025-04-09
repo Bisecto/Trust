@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:easy_url_launcher/easy_url_launcher.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -228,7 +229,9 @@ class _MorePageState extends State<MorePage> {
                     // AppNavigator.pushAndStackPage(context,
                     //     page: TellaPointMainPage());
                   },
-                  child: TellaPointProductContainer(showForwardIcon: true,),
+                  child: TellaPointProductContainer(
+                    showForwardIcon: true,
+                  ),
                 ),
                 const SizedBox(
                   height: 10,
@@ -249,14 +252,14 @@ class _MorePageState extends State<MorePage> {
                           page: const Security());
                     },
                     child: itemContainer(AppIcons.security, 'Security', theme)),
-                itemContainer(AppIcons.statement, 'Statement', theme),
-                InkWell(
-                    onTap: () {
-                      AppNavigator.pushAndStackPage(context,
-                          page: const NotificationSetting());
-                    },
-                    child: itemContainer(
-                        AppIcons.notificationSetting, 'Notifications', theme)),
+                // itemContainer(AppIcons.statement, 'Statement', theme),
+                // InkWell(
+                //     onTap: () {
+                //       AppNavigator.pushAndStackPage(context,
+                //           page: const NotificationSetting());
+                //     },
+                //     child: itemContainer(
+                //         AppIcons.notificationSetting, 'Notifications', theme)),
                 const Padding(
                   padding: EdgeInsets.all(20.0),
                   child: Divider(),
@@ -273,8 +276,13 @@ class _MorePageState extends State<MorePage> {
                           page: const Legal());
                     },
                     child: itemContainer(AppIcons.legal, 'Legal', theme)),
-                itemContainer(
-                    AppIcons.aboutTellaTrust, 'About Tellatrust', theme),
+                InkWell(
+                  onTap: () async {
+                    await EasyLauncher.url(url: "https://tellatrust.com/about");
+                  },
+                  child: itemContainer(
+                      AppIcons.aboutTellaTrust, 'About Tellatrust', theme),
+                ),
                 const Padding(
                   padding: EdgeInsets.all(20.0),
                   child: Divider(),
@@ -334,7 +342,8 @@ class _MorePageState extends State<MorePage> {
           // Use user data here
           return InkWell(
             onTap: () {
-              AppNavigator.pushAndStackPage(context, page: const ProfileDetails());
+              AppNavigator.pushAndStackPage(context,
+                  page: const ProfileDetails());
               //print(json.encode(state.customerProfile));
             },
             child: SizedBox(
@@ -382,8 +391,9 @@ class _MorePageState extends State<MorePage> {
                                 textSize: 12,
                               ),
                               GestureDetector(
-                                onTap: (){
-                                  AppUtils().copyToClipboard(personalInfo.userName, context);
+                                onTap: () {
+                                  AppUtils().copyToClipboard(
+                                      personalInfo.userName, context);
                                 },
                                 child: CustomText(
                                   text: personalInfo.userName,

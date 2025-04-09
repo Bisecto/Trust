@@ -75,13 +75,13 @@ class _BillsPageState extends State<BillsPage> {
                           List<Category> items = categoryModel.data.categories;
                           //Use user data here
                           return SizedBox(
-                            height: 300,
+                            height: 105.0 * ((items.length + 2) ~/ 3).toDouble(),
                             child: GridView.builder(
                               physics: const NeverScrollableScrollPhysics(),
                               gridDelegate:
                                   const SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 3,
-                                crossAxisSpacing: 20.0,
+                                crossAxisSpacing: 50.0,
                                 mainAxisSpacing: 8.0,
                               ),
                               itemCount: items.length,
@@ -245,6 +245,7 @@ class _BillsPageState extends State<BillsPage> {
                                           'data',
                                           'electricity',
                                           'cable tv',
+                                          'gift-card',
                                           'airtime to cash'
                                         ].contains(
                                             items[index].name.toLowerCase())));
