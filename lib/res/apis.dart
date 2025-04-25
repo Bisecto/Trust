@@ -8,6 +8,7 @@ class AppApis {
   static String verifyDeviceChange = "$appBaseUrl/auth/c/change-device";
   static String createAccessPin = "$appBaseUrl/auth/c/access-pin";
   static String sendPhoneToken = "$appBaseUrl/auth/c/send-token";
+  static String deactivate = "$appBaseUrl/auth/c/deactivate/";
   static String resetPassword = "$appBaseUrl/auth/c/reset-password";
   static String changePassword = "$appBaseUrl/auth/c/change-password";
   static String changeAccessPin = "$appBaseUrl/auth/c/change-access-pin";

@@ -3,7 +3,7 @@ import 'package:teller_trust/repository/app_repository.dart';
 import 'package:teller_trust/res/apis.dart';
 import 'package:teller_trust/utills/app_navigator.dart';
 import 'package:teller_trust/view/the_app_screens/sevices/payment_receipt.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+//import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:convert';
 
 import '../../../../../res/app_colors.dart';
@@ -26,8 +26,9 @@ class MakePayment extends StatefulWidget {
 }
 
 class _MakePaymentState extends State<MakePayment> {
-  late WebViewController _webViewController;
+ // late final WebViewController _webViewController;
   var loadingPercentage = 0;
+  bool isLoading = true;
 
   late String htmlString;
 
@@ -101,7 +102,7 @@ class _MakePaymentState extends State<MakePayment> {
         },
         callback: (response) => { 
           console.log(response);
-          window.flutter_inappwebview.callHandler('paymentCompleted', response);
+          window.flutter_inappwebview?.callHandler?.('paymentCompleted', response) || window.Flutter.postMessage(JSON.stringify(response));
         }
       });
     };
@@ -111,6 +112,38 @@ class _MakePaymentState extends State<MakePayment> {
 </body>
 </html>
     """;
+
+    // Initialize WebViewController in a more modern way
+    // _webViewController = WebViewController()
+    //   ..setJavaScriptMode(JavaScriptMode.unrestricted)
+    //   ..setNavigationDelegate(
+    //     NavigationDelegate(
+    //       onPageStarted: (String url) {
+    //         setState(() {
+    //           isLoading = true;
+    //         });
+    //       },
+    //       onPageFinished: (String url) {
+    //         setState(() {
+    //           isLoading = false;
+    //         });
+    //         print('Page finished loading: $url');
+    //       },
+    //       onProgress: (int progress) {
+    //         setState(() {
+    //           loadingPercentage = progress;
+    //         });
+    //       },
+    //     ),
+    //   )
+    //   ..addJavaScriptChannel(
+    //     'Flutter',
+    //     onMessageReceived: (JavaScriptMessage message) {
+    //       String apiUrl = "${AppApis.appBaseUrl}/c/pay/conclude-checkout/${widget.quickPayModel.referenceCode}";
+    //       performGetRequest(apiUrl);
+    //     },
+    //   )
+    //   ..loadHtmlString(htmlString);
   }
 
   @override
@@ -138,42 +171,13 @@ class _MakePaymentState extends State<MakePayment> {
       ),
       body: Stack(
         children: [
-          WebView(
-            initialUrl: '',
-            onWebViewCreated: (WebViewController webViewController) {
-              _webViewController = webViewController;
-              _loadHtmlFromAssets();
-            },
-            javascriptMode: JavascriptMode.unrestricted,
-            onPageFinished: (String url) {
-              print('Page finished loading: $url');
-            },
-            javascriptChannels: <JavascriptChannel>{
-              _createJavascriptChannel(context),
-            },
-          ),
+         // WebViewWidget(controller: _webViewController),
           if (loadingPercentage < 100)
             LinearProgressIndicator(
               value: loadingPercentage / 100.0,
             ),
         ],
       ),
-    );
-  }
-
-  JavascriptChannel _createJavascriptChannel(BuildContext context) {
-    return JavascriptChannel(
-      name: 'Flutter',
-      onMessageReceived: (JavascriptMessage message) {
-        String apiUrl = "${AppApis.appBaseUrl}/c/pay/conclude-checkout/${widget.quickPayModel.referenceCode}";
-        performGetRequest(apiUrl);
-      },
-    );
-  }
-
-  void _loadHtmlFromAssets() {
-    _webViewController.loadUrl(
-      Uri.dataFromString(htmlString, mimeType: 'text/html', encoding: Encoding.getByName('utf-8')).toString(),
     );
   }
 }

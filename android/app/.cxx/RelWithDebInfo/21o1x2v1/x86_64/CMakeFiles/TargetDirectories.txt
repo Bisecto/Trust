@@ -1,0 +1,2 @@
+/Users/precious/StudioProjects/tellatrust/android/app/.cxx/RelWithDebInfo/21o1x2v1/x86_64/CMakeFiles/edit_cache.dir
+/Users/precious/StudioProjects/tellatrust/android/app/.cxx/RelWithDebInfo/21o1x2v1/x86_64/CMakeFiles/rebuild_cache.dir

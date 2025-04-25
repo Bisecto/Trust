@@ -1,0 +1,1 @@
+/Users/precious/StudioProjects/tellatrust/build/app/intermediates/cxx/RelWithDebInfo/21o1x2v1/obj/arm64-v8a

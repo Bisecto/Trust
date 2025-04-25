@@ -1,3 +1,5 @@
+import 'package:shared_preferences/shared_preferences.dart';
+
 class SharedPrefKey {
   ///Temporal data
   static const String temUserDataKey = 'temUserData';
@@ -18,4 +20,30 @@ class SharedPrefKey {
   static const String isMoneyBlockedKey = 'isMoneyBlocked';
   static const String notificationKey = 'notification';
   static const String biometricKey = 'biometric';
+}
+Future<void> clearAllSharedPrefs() async {
+  final prefs = await SharedPreferences.getInstance();
+
+  final keysToClear = [
+    SharedPrefKey.temUserDataKey,
+    SharedPrefKey.temPasswordKey,
+    SharedPrefKey.passwordKey,
+    SharedPrefKey.emailKey,
+    SharedPrefKey.phoneKey,
+    SharedPrefKey.userDataKey,
+    SharedPrefKey.userIdKey,
+    SharedPrefKey.hashedAccessPinKey,
+    SharedPrefKey.refreshTokenKey,
+    SharedPrefKey.accessTokenKey,
+    SharedPrefKey.firstNameKey,
+    SharedPrefKey.lastNameKey,
+    SharedPrefKey.isFirstOpenKey,
+    SharedPrefKey.isMoneyBlockedKey,
+    SharedPrefKey.notificationKey,
+    SharedPrefKey.biometricKey,
+  ];
+
+  for (var key in keysToClear) {
+    await prefs.remove(key);
+  }
 }

@@ -9,6 +9,7 @@ import 'package:teller_trust/model/customer_account_model.dart';
 import 'package:teller_trust/repository/app_repository.dart';
 import 'package:teller_trust/res/app_icons.dart';
 import 'package:teller_trust/res/app_spacer.dart';
+import 'package:teller_trust/view/auth/sign_in_screen.dart';
 import 'package:teller_trust/view/the_app_screens/kyc_verification/kyc_intro_page.dart';
 
 import '../../../res/apis.dart';
@@ -68,8 +69,10 @@ class _AccountSettingState extends State<AccountSetting> {
   }
 
   Future<void> getCanUseBiometrics() async {
-    bool biometricEnabled = await SharedPref.getBool(SharedPrefKey.biometricKey) ?? false;
-    bool notificationEnabled = await SharedPref.getBool(SharedPrefKey.notificationKey) ?? true;
+    bool biometricEnabled =
+        await SharedPref.getBool(SharedPrefKey.biometricKey) ?? false;
+    bool notificationEnabled =
+        await SharedPref.getBool(SharedPrefKey.notificationKey) ?? true;
     setState(() {
       isBiometricEnabled = biometricEnabled;
       isNotificationEnabled = notificationEnabled;
@@ -153,7 +156,7 @@ class _AccountSettingState extends State<AccountSetting> {
                     //   isSwitched: isSwitched,
                     //   toggleSwitch: _toggleSwitch,
                     // ),
-                    AppSpacer(
+                    const AppSpacer(
                       height: 15,
                     ),
                     BuildListTile(
@@ -166,11 +169,11 @@ class _AccountSettingState extends State<AccountSetting> {
                           setState(() {
                             print(value);
                             isNotificationEnabled = value;
-                            SharedPref.putBool(SharedPrefKey.notificationKey, value);
-
+                            SharedPref.putBool(
+                                SharedPrefKey.notificationKey, value);
                           });
-                          String accessToken =
-                              await SharedPref.getString(SharedPrefKey.accessTokenKey);
+                          String accessToken = await SharedPref.getString(
+                              SharedPrefKey.accessTokenKey);
                           AppRepository appRepository = AppRepository();
                           String? token =
                               await FirebaseMessaging.instance.getToken();
@@ -194,13 +197,14 @@ class _AccountSettingState extends State<AccountSetting> {
                               onChanged: (value) {
                                 setState(() {
                                   isBiometricEnabled = value;
-                                  SharedPref.putBool(SharedPrefKey.biometricKey, value);
+                                  SharedPref.putBool(
+                                      SharedPrefKey.biometricKey, value);
                                 });
                               },
                               activeColor: AppColors.darkGreen,
                             ),
                           )
-                        : SizedBox(),
+                        : const SizedBox(),
                     // BuildListTile(
                     //   icon: AppIcons.darkMode,
                     //   title: "Enable Biometrics",
@@ -226,9 +230,151 @@ class _AccountSettingState extends State<AccountSetting> {
                       onPressed: null,
                       trailingWidget: buildSwitchToggle(),
                     ),
-                    const CustomContainerFirTitleDesc(
-                        title: "Close Account",
-                        description: "Deactivate your Tella Trust account"),
+                    InkWell(
+                      onTap: () async {
+                        Future<bool?> showAccountDeletionModal({
+                          required BuildContext context,
+                          required VoidCallback onConfirm,
+                        }) {
+                          final theme = Provider.of<CustomThemeState>(context,
+                                  listen: false)
+                              .adaptiveThemeMode;
+
+                          return showDialog<bool>(
+                            context: context,
+                            barrierDismissible: true,
+                            builder: (context) {
+                              return Dialog(
+                                backgroundColor: Colors.transparent,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 50, horizontal: 20),
+                                  decoration: BoxDecoration(
+                                    color: theme.isDark
+                                        ? AppColors
+                                            .darkModeBackgroundContainerColor
+                                        : AppColors.white,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text(
+                                        "Are you sure you want to close your account as this action cannot be reversed?",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 18,
+                                          fontFamily: 'CeraPro',
+                                        ),
+                                      ),
+                                      const SizedBox(height: 30),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          SizedBox(
+                                            width: 100,
+                                            child: ElevatedButton(
+                                              onPressed: () {
+                                                Navigator.pop(context, false);
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    AppColors.white,
+                                                foregroundColor:
+                                                    AppColors.white,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 15,
+                                                        horizontal: 8),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(15),
+                                                ),
+                                              ),
+                                              child: const Text(
+                                                "No",
+                                                style: TextStyle(
+                                                  color: AppColors.black,
+                                                  fontFamily: 'CeraPro',
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 100,
+                                            child: ElevatedButton(
+                                              onPressed: () {
+                                                Navigator.pop(context,
+                                                    true); // returns true
+                                                onConfirm();
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    AppColors.green,
+                                                foregroundColor:
+                                                    AppColors.white,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 15,
+                                                        horizontal: 8),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(15),
+                                                ),
+                                              ),
+                                              child: const Text(
+                                                "Yes, I want to",
+                                                style: TextStyle(
+                                                  color: AppColors.white,
+                                                  fontFamily: 'CeraPro',
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        }
+
+                        final confirmed = await showAccountDeletionModal(
+                          context: context,
+                          onConfirm: () async {
+                            final repository = AppRepository();
+                            final userId = await SharedPref.getString(
+                                SharedPrefKey.userIdKey);
+                            final accessToken = await SharedPref.getString(
+                                SharedPrefKey.accessTokenKey);
+
+                            await repository.appPutRequest(
+                              {"consent": "DELETE"},
+                              AppApis.deactivate + userId,
+                              accessToken: accessToken,
+                            );
+
+                            // await FirebaseMessaging.instance
+                            //     .unsubscribeFromTopic(userId);
+                            await clearAllSharedPrefs();
+                            AppNavigator.pushAndRemovePreviousPages(context,
+                                page: const SignInScreen());
+                          },
+                        );
+
+                        if (confirmed == true) {
+                          // Optionally handle any additional cleanup here
+                        }
+                      },
+                      child: const CustomContainerFirTitleDesc(
+                          title: "Close Account",
+                          description: "Deactivate your Tella Trust account"),
+                    ),
                   ],
                 ),
               ),

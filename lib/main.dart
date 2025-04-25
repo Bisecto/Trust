@@ -70,6 +70,8 @@ void main() async {
   } else {
     AppUtils().debuglog('User declined or has not accepted permission');
   }
+  await FirebaseMessaging.instance.requestPermission();
+
   FirebaseMessaging.instance.subscribeToTopic("TellaTrust");
   //await FirebaseMessaging.instance.deleteToken();
 
