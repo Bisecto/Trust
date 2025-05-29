@@ -1,5 +1,5 @@
 class AppApis {
-  static String appBaseUrl = "https://api.tellatrust.com";
+  static String appBaseUrl = "";
 
   ///Authentication Endpoints
   static String signUpApi = "$appBaseUrl/auth/c/register";
@@ -54,6 +54,5 @@ class AppApis {
   static String sendExternalFund = '$appBaseUrl/c/pay/send-funds-external';
   static String verifyAccount = '$appBaseUrl/c/pay/verify-nuban';
 
-  static String refreshToken =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0NmE3M2YwNy1lMWEyLTRkODUtYjFmNi0zNTM4ZTg0N2Q3MjkiLCJleHAiOjE3MTAxNTk0OTIsImlhdCI6MTcwNzU2NzQ5Mn0.QLpqzjkn9PSzI3tnyOL0rHxCPZUx9dEOw14W2EQtE_M";
+
 }
